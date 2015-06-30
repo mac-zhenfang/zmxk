@@ -1,0 +1,220 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.smartool</groupId>
+  <artifactId>admin</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  	<parent>
+		<groupId>com.smartool</groupId>
+		<artifactId>zmxk</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	
+	
+    <dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<!-- Conflicts with jcl-over-slf4j dependency -->
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-logging-juli</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jasper</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jasper-el</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jsp-api</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- For test -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>${testng.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- Surefire for unit tests only -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.14.1</version>
+				<configuration>
+					<systemPropertyVariables>
+						<CassandraHostAddress>${cassandra.host.address}</CassandraHostAddress>
+					</systemPropertyVariables>
+					<trimStackTrace>false</trimStackTrace>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/Test*.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/*IT.java</exclude>
+						<exclude>**/it/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Failsafe for integration tests -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-failsafe-plugin</artifactId> 
+				<version>2.16</version> <executions> <execution> <id>integration-tests</id> 
+				<goals> <goal>integration-test</goal> <goal>verify</goal> </goals> <configuration> 
+				<includes> <include>**/*IT.java</include> <include>**/it/**/*Test.java</include> 
+				<include>**/it/**/Test*.java</include> </includes> </configuration> </execution> 
+				</executions> </plugin> -->
+			<plugin>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.0.1</version>
+				<executions>
+					<execution>
+						<id>enforce-java-version</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>[${java.version},)</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${java.source.version}</source>
+					<target>${java.target.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<failOnError>false</failOnError>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<violationSeverity>warning</violationSeverity>
+					<failsOnError>false</failsOnError>
+					<failOnViolation>false</failOnViolation>
+					<consoleOutput>false</consoleOutput>
+					<includeTestSourceDirectory>false</includeTestSourceDirectory>
+					<enableRSS>false</enableRSS>
+					<configLocation>${projectrootdir}/buildtools/checkstyle.xml</configLocation>
+					<enableRulesSummary>false</enableRulesSummary>
+					<excludes>**/generated-sources/**/*</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<linkXRef>false</linkXRef>
+					<failOnViolation>false</failOnViolation>
+					<verbose>true</verbose>
+					<rulesets>
+						<ruleset>${projectrootdir}/buildtools/pmd.xml</ruleset>
+					</rulesets>
+					<excludes>
+						<exclude>**/*Test.java</exclude>
+						<exclude>**/generated-sources/**/*</exclude>
+					</excludes>
+					<targetJdk>1.7</targetJdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.cisco.ipcentral</groupId>
+				<artifactId>maven-ipcentral-plugin</artifactId>
+				<version>4.20</version>
+				<configuration>
+					<!-- Server URL pointing to IPCentral -->
+					<url>http://ipcentral.cisco.com/ipcentral/services</url>
+					<ipcProject>true</ipcProject>
+					<businessUnit>SQBU</businessUnit>
+					<componentEditorsGrouper>wx2-ipcentral</componentEditorsGrouper>
+					<assetEditorsGrouper>wx2-ipcentral</assetEditorsGrouper>
+					<!-- TODO: No support for generic user in IPCentral yet -->
+					<username>amrangan</username>
+					<componentattributes>
+						<componentattribute>
+							<type>JAVA</type>
+							<value>1.7</value>
+							<forcecreation>true</forcecreation>
+						</componentattribute>
+					</componentattributes>
+				</configuration>
+			</plugin>
+
+
+
+		</plugins>
+	</build>
+</project>

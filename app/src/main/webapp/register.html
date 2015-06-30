@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>{{const.registerTitle}}</title>
+
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+<!-- Optional theme 
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+<!-- FONTAWESOME STYLE CSS -->
+<link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+<!-- CUSTOM STYLE CSS -->
+<link href="assets/css/style.css" rel="stylesheet" />
+
+<!-- GOOGLE FONT -->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans'
+	rel='stylesheet' type='text/css' />
+
+</head>
+<body ng-controller="MainController as main">
+	<div class="container">
+		<div class="row  pad-top">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<form role="form" ng-controller="RegisterController"
+						ng-submit="processForm()">
+						<div class="form-group input-group">
+							<!--  <i
+									class="fa fa-circle-o-notch"></i> -->
+							<span class="input-group-addon">#</span> <input type="text"
+								class="form-control" placeholder="{{const.mobile}}"
+								ng-model="formData.mobile" ng-readonly="mobileVerifySent" />
+						</div>
+						<div class="form-group input-group" ng-show="mobileVerifySent">
+							<span class="input-group-addon">#</span> <input type="text"
+								class="form-control" placeholder="验证码" />
+						</div>
+						<div ng-show="mobileVerified">
+							<div class="form-group input-group">
+								<span class="input-group-addon"><i
+									class="fa fa-circle-o-notch"></i></span> <input type="text"
+									class="form-control" placeholder="小孩姓名" />
+							</div>
+							<div class="form-group input-group">
+								<span class="input-group-addon"><i
+									class="fa fa-life-bouy"></i></span> <input type="text"
+									class="form-control" placeholder="年龄" />
+							</div>
+							<div class="form-group input-group">
+								<span class="input-group-addon"><i class="fa fa-tag"></i></span>
+								<select class="selectpicker form-control" data-style="btn-info"
+									data-live-search="true">
+									<option>幼儿园</option>
+									<option>小学</option>
+									<option>还未上幼儿园</option>
+								</select>
+							</div>
+							<div class="form-group input-group">
+								<span class="input-group-addon">@</span> <input type="text"
+									class="form-control" placeholder="Your Email" optional />
+							</div>
+						</div>
+						<input type="submit" value="{{submit_label}}" class="btn btn-info btn-block">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ANGULAR -->
+	<script src="assets/plugins/angular.min.js"></script>
+	<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+	<!-- CORE JQUERY  -->
+	<script src="assets/plugins/jquery-1.10.2.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="assets/plugins/bootstrap.js"></script>
+	<script>
+		var zmxk = angular.module('zmxk', []);
+
+		zmxk.controller('MainController', [ '$scope', function($scope) {
+			$scope.const = {};
+			$scope.const.registerTitle = '注册';
+			$scope.const.mobile = '手机号码';
+			$scope.const.submit_send_verification = "发送验证码";
+			$scope.const.submit_enter_verification = "输入验证码";
+			$scope.const.submit_register = "注册";
+			$scope.submit_label = $scope.const.submit_send_verification;
+
+			$scope.mobileVerifySent = false;
+			$scope.mobileVerified = false;
+		} ]);
+
+		zmxk.controller('RegisterController', [ '$scope', '$http',
+				function($scope, $http) {
+					$scope.formData = {};
+					$scope.processForm = function() {
+						console.log($scope.formData);
+						if($scope.mobileVerifySent) {
+							// submit verification code
+							$scope.submit_label = $scope.const.submit_register;
+							$scope.mobileVerified = true;
+							$scope.mobileVerifySent = true;
+						} else if($scope.mobileVerified) {
+							// register
+							$scope.submit_label = $scope.const.submit_send_verification;
+							$scope.mobileVerifySent = false;
+							$scope.mobileVerified = false;
+							
+						} else {
+							// send verification code
+							$scope.mobileVerifySent = true;
+							$scope.submit_label = $scope.const.submit_enter_verification;
+						}
+						/*$http({
+						    method  : 'POST',
+						    url     : 'process.php',
+						    data    : $.param($scope.formData),  // pass in data as strings
+						    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+						}).success(function(data) {
+						    console.log(data);
+						    if (!data.success) {
+						    	// if not successful, bind errors to error variables
+						        $scope.errorName = data.errors.name;
+						        $scope.errorSuperhero = data.errors.superheroAlias;
+						    } else {
+						    	// if successful, bind success message to message
+						        $scope.message = data.message;
+						                    $scope.errorName = '';
+						        $scope.errorSuperhero = '';
+						    }
+						});*/
+
+					};
+				} ]);
+		angular.bootstrap(document, [ 'zmxk' ]);
+	</script>
+</body>
+</html>
