@@ -9,21 +9,21 @@ public class EventController {
 	
 	/**
 	 * Create/List
-	 * */
-	@RequestMapping(value = "/events")
+	 * 
+	@RequestMapping(value = "/events")*/
 	/**
 	 * 
-	 * */
-	@RequestMapping(value = "/events/{eventId}")
+	 *
+	@RequestMapping(value = "/events/{eventId}") */
 	/**
 	 * Enroll user into one event
 	 * The attendee is mirror of registered user
-	 * */
-	@RequestMapping(value = "/events/{eventId}/attendees")
+	 * 
+	@RequestMapping(value = "/events/{eventId}/attendees")*/
 	/**
 	 * Set the attendee rank of the event and score
-	 * */
-	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}")
+	 *
+	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}") */
 	
 	
 }
