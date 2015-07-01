@@ -9,6 +9,7 @@
 		<param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
 	</context-param>
 
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>com.smartool.service.config.SmartoolServiceConfig</param-value>
@@ -16,6 +17,10 @@
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 
 	<servlet>

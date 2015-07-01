@@ -3,8 +3,11 @@ package com.smartool.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,17 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartool.common.dto.User;
 
 @RestController
-@RequestMapping(value = "/smartool/api/v1/users")
+@RequestMapping(value = "/smartool/api/v1")
 public class UserController {
 	private static final String FAKE_CODE = "8888";
 	private static final String FAKE_USER_ID = "8888";
-	@RequestMapping(value = "{userId}", method = RequestMethod.GET)
-	public User getUser(@PathVariable String userId) {
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
+	public User getUser(@PathVariable String userId, @CookieValue("mac-test") String fooCookie) {
+		System.out.println(fooCookie);
 		User user = new User();
 		return user;
 	}
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
 		List<User> userList = new ArrayList<User>();
 		return userList;
@@ -38,18 +42,20 @@ public class UserController {
 	 * 
 	 * @return userId String
 	 */
-	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public String register(@RequestBody User user, @RequestParam(value = "code", required = true) String code) {
+	@RequestMapping(value = "/users/register", method = RequestMethod.POST)
+	public ResponseEntity<String> register(@RequestParam(value = "code", required = false) String code) {
 		// return token
-		return FAKE_USER_ID;
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Set-Cookie","mac-test="+FAKE_USER_ID);
+		return new ResponseEntity<String>(FAKE_USER_ID,headers,HttpStatus.OK);    
 	}
 
 	/**
 	 * 1. Get the SMS verify code
 	 * 2. Verify captcha
 	 */
-	@RequestMapping(value = "code", method = RequestMethod.POST)
-	public String createCode(@RequestParam(value = "mobileNum", required = true) String mobileNum) {
+	@RequestMapping(value = "/users/code", method = RequestMethod.POST)
+	public String createCode(@RequestParam(value = "mobileNum", required = false) String mobileNum) {
 		return FAKE_CODE;
 	}
 
