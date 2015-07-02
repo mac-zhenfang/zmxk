@@ -6,10 +6,19 @@ public class User {
 	String id;
 	String name;
 	String mobileNum;
+	String wcId;
 	String location;
 	List<Kid> kids;
 
 	public User() {
+	}
+
+	public String getWcId() {
+		return wcId;
+	}
+
+	public void setWcId(String wcId) {
+		this.wcId = wcId;
 	}
 
 	public String getId() {
