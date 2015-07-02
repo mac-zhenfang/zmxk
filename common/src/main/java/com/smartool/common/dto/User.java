@@ -3,11 +3,39 @@ package com.smartool.common.dto;
 import java.util.List;
 
 public class User {
-	
-	String userId;
-	
-	public String getUserId() {
-		return userId;
+	String id;
+	String name;
+	String mobileNum;
+	String location;
+	List<Kid> kids;
+
+	public User() {
+	}
+
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public void setMobileNum(String mobileNum) {
+		this.mobileNum = mobileNum;
+	}
+
+	public void setKids(List<Kid> kids) {
+		this.kids = kids;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getMobileNum() {
@@ -24,21 +52,5 @@ public class User {
 
 	public String getName() {
 		return name;
-	}
-
-	String mobileNum;
-	
-	List<Kid> kids;
-	
-	String location;
-	
-	String name;
-	
-	public User(final String userId, final String mobileNum, final List<Kid> kids, final String localtion, final String name) {
-		this.userId = userId;
-		this.mobileNum = mobileNum;
-		this.kids = kids;
-		this.location = localtion;
-		this.name = name;
 	}
 }

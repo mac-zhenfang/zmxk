@@ -56,8 +56,7 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/users/register", method = RequestMethod.POST)
 	public ResponseEntity<User> register(@RequestParam(value = "code", required = false) String securityCode,
-			@RequestParam(value = "code", required = false) String mobileNumber, @RequestBody User user) {
-		// return token
+			@RequestParam(value = "mobileNumber", required = false) String mobileNumber, @RequestBody User user) {
 		if (!userDao.isValidSecurityCode(mobileNumber, securityCode)) {
 			return new ResponseEntity<User>(null, null, HttpStatus.UNAUTHORIZED);
 		}
@@ -72,7 +71,7 @@ public class UserController {
 	
 	private User mergeUserInfo(User weChatUser, User user){
 		// FIXME
-		return weChatUser;
+		return user;
 	}
 
 	/**
