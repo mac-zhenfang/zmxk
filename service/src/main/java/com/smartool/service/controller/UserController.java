@@ -3,27 +3,34 @@ package com.smartool.service.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.User;
+
+import net.glxn.qrgen.core.image.ImageType;
+import net.glxn.qrgen.javase.QRCode;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class UserController {
 	private static final String FAKE_CODE = "8888";
 	private static final String FAKE_USER_ID = "8888";
-	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-	public User getUser(@PathVariable String userId, @CookieValue("mac-test") String fooCookie) {
-		System.out.println(fooCookie);
-		User user = new User();
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody User getUser(@PathVariable String userId, @CookieValue("mac-test") String fooCookie) {
+		System.out.println("Token cookie : " + fooCookie);
+		System.out.println("userId : " + userId);
+		User user = new User(userId, "13706516916", null, "Hang Zhou", "Smarttool test");
 		return user;
 	}
 
@@ -42,11 +49,11 @@ public class UserController {
 	 * 
 	 * @return userId String
 	 */
-	@RequestMapping(value = "/users/register", method = RequestMethod.POST)
+	@RequestMapping(value = "/users/register", method = RequestMethod.GET)
 	public ResponseEntity<String> register(@RequestParam(value = "code", required = false) String code) {
 		// return token
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Set-Cookie","mac-test="+FAKE_USER_ID);
+		headers.add("Set-Cookie","mac-test="+FAKE_USER_ID+";Max-Age=2592000;");
 		return new ResponseEntity<String>(FAKE_USER_ID,headers,HttpStatus.OK);    
 	}
 
@@ -61,11 +68,15 @@ public class UserController {
 
 	/**
 	 * Return the qrcode with url+token
-	 * 
+	 * */
 	 
-	@RequestMapping(value = "qrcode", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getQRCode(@RequestParam(value = "userId", required = true) String userId) {
-		
-	}*/
-
+	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		QRCode.from("http://123456wechat.ngrok.io/service/smartool/api/v1/users/"+userId).withSize(800, 800).to(ImageType.PNG).writeTo(out);
+		byte[] qrcode = out.toByteArray();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.IMAGE_PNG);
+		return new ResponseEntity<byte[]> (qrcode, httpHeaders, HttpStatus.CREATED);
+	}
 }
