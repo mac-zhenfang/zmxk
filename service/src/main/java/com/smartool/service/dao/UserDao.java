@@ -9,6 +9,8 @@ public interface UserDao {
 
 	User getUserById(String userId);
 
+	User getUserFromWeChat(String mobileNumber);
+
 	User updateUser(User user);
 
 	List<User> listAllUser();

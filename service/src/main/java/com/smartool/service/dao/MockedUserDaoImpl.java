@@ -1,15 +1,26 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Random;
 
 import com.smartool.common.dto.User;
 
 public class MockedUserDaoImpl implements UserDao {
+	private static int securityCodeLength = 6;
+
+	private String getRandomSecurityCode() {
+		Random random = new Random();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < securityCodeLength; i++) {
+			sb.append(random.nextInt(10));
+		}
+		return sb.toString();
+	}
 
 	@Override
 	public User createUser(User user) {
 		// TODO Auto-generated method stub
-//		user.setId()
+		// user.setId()
 		return user;
 	}
 
@@ -33,12 +44,16 @@ public class MockedUserDaoImpl implements UserDao {
 
 	@Override
 	public boolean isValidSecurityCode(String mobileNumber, String securityCode) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public String generateSecurityCode(String mobileNumber) {
+		return getRandomSecurityCode();
+	}
+
+	@Override
+	public User getUserFromWeChat(String mobileNumber) {
 		// TODO Auto-generated method stub
 		return null;
 	}

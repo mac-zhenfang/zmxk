@@ -38,11 +38,9 @@ public class UserController {
 	}
 
 	/**
-	 * 1. verify sms code
-	 * 2. ask wechat for user profile (Oauth)
-	 * 3. create user
-	 * 4. return userId (response body) and token (response cookie)
-	 * Verify the SMS code and register the user, return token
+	 * 1. verify sms code 2. ask wechat for user profile (Oauth) 3. create user
+	 * 4. return userId (response body) and token (response cookie) Verify the
+	 * SMS code and register the user, return token
 	 * 
 	 * @return userId String
 	 */
@@ -51,12 +49,18 @@ public class UserController {
 			@RequestParam(value = "code", required = false) String mobileNumber, @RequestBody User user) {
 		// return token
 		if (!userDao.isValidSecurityCode(mobileNumber, securityCode)) {
-			return new ResponseEntity<User>(null, null, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<User>(null, null, HttpStatus.UNAUTHORIZED);
 		}
-		User createdUser = userDao.createUser(user);
+		User weChatUser = userDao.getUserFromWeChat(mobileNumber);
+		User createdUser = userDao.createUser(mergeUserInfo(weChatUser, user));
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Set-Cookie", "mac-test=" + FAKE_USER_ID);
 		return new ResponseEntity<User>(createdUser, headers, HttpStatus.OK);
+	}
+	
+	private User mergeUserInfo(User weChatUser, User user){
+		// FIXME
+		return weChatUser;
 	}
 
 	/**
