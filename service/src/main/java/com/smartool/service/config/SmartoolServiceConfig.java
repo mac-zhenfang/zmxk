@@ -13,11 +13,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.smartool.service.dao.MockedUserDaoImpl;
 import com.smartool.service.dao.UserDao;
+import com.smartool.service.dao.UserDaoImpl;
 
 @Configuration
 @ComponentScan(basePackages = { "com.smartool.service.*" })
@@ -29,7 +30,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public UserDao getUserDao() {
-		return new MockedUserDaoImpl();
+//		return new MockedUserDaoImpl();
+		return new UserDaoImpl();
 	}
 
 	@Bean
@@ -61,6 +63,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public SqlSessionFactoryBean getSqlSessionFactoryBean() throws PropertyVetoException {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(getComboPooledDataSource());
+		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("spring/mybatis-config.xml"));
 		return sqlSessionFactoryBean;
 	}
 

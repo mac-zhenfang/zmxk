@@ -38,7 +38,7 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public List<User> listAllUser() {
 		// TODO Auto-generated method stub
-		return sqlSession.selectList("USER.listall");
+		return sqlSession.selectList("USER.listAll");
 	}
 
 	@Override
