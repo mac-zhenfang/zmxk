@@ -130,8 +130,10 @@
 	<script src="js/custom.min.js"></script>
 	<script>
 		var zmxk = angular.module('zmxk', []);
-		var currentPage = "users";
+		var currentModule = "users";
+		var mainControllerScope;
 		zmxk.controller('MainController', [ '$scope','$location', function($scope, $location) {
+			mainControllerScope = $scope
 			$scope.enroll_form_data = {};
 			$scope.$location = $location;
 			
@@ -139,7 +141,7 @@
 
 			$scope.includePage = function() {
 				var returnPage = "user_list.html";
-				switch(currentPage) {
+				switch(currentModule) {
 					case  "userList":
 						returnPage = "user_list.html";
 						break;
@@ -158,38 +160,43 @@
 				//TODO: init if no cookie token, return to login page
 				
 				// init enroll
-				console.log("initEnrollPage")
-				if(!angular.isUndefined($scope.userId) && !angular.isUndefined($scope.$location.search().page)) {
-					console.log($scope.userId);
-					currentPage = $scope.$location.search().page;
+				//console.log("initEnrollPage")
+				if(!angular.isUndefined($scope.$location.search().page)) {
+					//console.log($scope.userId);
+					currentModule = $scope.$location.search().page;
 				}
+			
 				//TODO get from user api
-				$scope.enroll_form_data.name = "Mac Fang";
-				$scope.enroll_form_data.mobileNum = "13706516916";
+				if(!angular.isUndefined($scope.userId) && ) {
+					
+					$scope.enroll_form_data.name = "Mac Fang";
+					$scope.enroll_form_data.mobileNum = "13706516916";
+				}
 			}
 			
 			$scope.processForm = function() {
 				//TODO process
-				console.log($scope.enroll_form_data);
+				
 			}
 			
 			
-			$scope.init();
+			//$scope.init();
 		} ]);
 		
-		zmxk.controller('SideBarController', [ '$scope','$controller', function($scope, $controller) {
-			//var mainCtrlScope = $scope.$new();
-			//$controller('MainController',{$scope : mainCtrlScope });
-			//mainCtrlScope.initEnrollPage();
+		zmxk.controller('SideBarController', [ '$scope', function($scope) {
+			/*var mainCtrlScope = $scope.$new();
+			
+			$controller('MainController',{$scope : mainCtrlScope });*/
 			$scope.processPages = function (pageType) {
-				currentPage = pageType;
-				console.log(currentPage);
+				currentModule = pageType;
+				//console.log(currentPage);
 			}
+			//console.log($scope.userId);
+			
 		} ]);
 		
 		angular.element(document).ready(function () {
-			
-
+			mainControllerScope.init();
 		});
 	</script>
 	<!-- end: JavaScript-->
