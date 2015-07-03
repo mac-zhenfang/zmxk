@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SECURITYCODE">
+	<select id="getByMobileNumber" resultType="com.smartool.common.dto.SecurityCode">
+		select * from securityCode where mobileNumber = #{mobileNumber}
+	</select>
+	<select id="create" parameterType="com.smartool.common.dto.SecurityCode">
+		insert securityCode (securityCode, mobileNumber, createdTime, lastModifiedTime)
+		values (#{securityCode},#{mobileNumber},now(),now())
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.SecurityCode">
+		update securityCode
+		set securityCode=#{securityCode}
+		where mobileNumber = #{mobileNumber};
+	</select>
+	<select id="remove" resultType="String">
+		delete from securityCode where mobileNumber = #{mobileNumber}
+	</select>
+</mapper>

@@ -2,14 +2,16 @@ package com.smartool.common.dto;
 
 import java.util.List;
 
-public class User {
-	String id;
-	String name;
-	String mobileNum;
-	String wcId;
-	String location;
-	String roleId;
-	int status;
+public class User extends BaseDateTrackingBean {
+	private String id;
+	private String name;
+	private String mobileNum;
+	private String wcId;
+	private String location;
+	private String roleId;
+	private List<Kid> kids;
+	private int status;
+
 	public int getStatus() {
 		return status;
 	}
@@ -26,8 +28,6 @@ public class User {
 		this.roleId = roleId;
 	}
 
-	List<Kid> kids;
-
 	public User() {
 	}
 
@@ -43,11 +43,9 @@ public class User {
 		return id;
 	}
 
-
 	public void setId(String id) {
 		this.id = id;
 	}
-
 
 	public void setMobileNum(String mobileNum) {
 		this.mobileNum = mobileNum;

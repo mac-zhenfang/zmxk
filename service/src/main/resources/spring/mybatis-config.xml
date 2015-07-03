@@ -11,5 +11,6 @@
 	</settings>
 	<mappers>
 		<mapper resource="mybatis.mapping/user.map.xml" />
+		<mapper resource="mybatis.mapping/securityCode.map.xml" />
 	</mappers>
 </configuration>

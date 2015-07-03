@@ -17,6 +17,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.smartool.service.dao.SecurityCodeDao;
+import com.smartool.service.dao.SecurityCodeDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
 
@@ -30,8 +32,12 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public UserDao getUserDao() {
-//		return new MockedUserDaoImpl();
 		return new UserDaoImpl();
+	}
+
+	@Bean
+	public SecurityCodeDao getSecurityCodeDao() {
+		return new SecurityCodeDaoImpl();
 	}
 
 	@Bean

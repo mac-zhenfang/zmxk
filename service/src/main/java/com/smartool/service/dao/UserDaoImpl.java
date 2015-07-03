@@ -7,49 +7,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.smartool.common.dto.User;
 
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
 	@Autowired
-	SqlSession sqlSession;
+	private SqlSession sqlSession;
 
 	@Override
 	public User createUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		sqlSession.insert("USER.create", user);
+		return sqlSession.selectOne("USER.getById", user.getId());
 	}
 
 	@Override
 	public User getUserById(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public User getUserFromWeChat(String mobileNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectOne("USER.getById", userId);
 	}
 
 	@Override
 	public User updateUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		sqlSession.insert("USER.update", user);
+		return sqlSession.selectOne("USER.getById", user.getId());
 	}
 
 	@Override
 	public List<User> listAllUser() {
-		// TODO Auto-generated method stub
 		return sqlSession.selectList("USER.listAll");
-	}
-
-	@Override
-	public boolean isValidSecurityCode(String mobileNumber, String securityCode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String generateSecurityCode(String mobileNumber) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

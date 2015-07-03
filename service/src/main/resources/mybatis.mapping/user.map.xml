@@ -6,4 +6,23 @@
 	<select id="listAll" resultType="com.smartool.common.dto.User">
 		select * from users
 	</select>
+	<select id="getById" parameterType="String"
+		resultType="com.smartool.common.dto.User">
+		select * from users where id = #{id}
+	</select>
+	<select id="create" parameterType="com.smartool.common.dto.User">
+		insert users (id, name,
+		mobileNum, wcId,location,
+		roleId,status,createdTime, lastModifiedTime)
+		values
+		(#{id},#{name},#{mobileNum},#{wcId},#{location},#{roleId},#{status},now(),now())
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.User">
+		update users
+		set
+		name=#{name}, mobileNum=#{mobileNum}, wcId=#{wcId},
+		location=#{location}, roleId=#{roleId}, status=#{status}
+		where id =
+		#{id};
+	</select>
 </mapper>
