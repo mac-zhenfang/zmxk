@@ -1,0 +1,20 @@
+<div class="row-fluid actions">
+
+	<input type="text" class="search span12" placeholder="..." />
+
+</div>
+
+<div class="nav-collapse sidebar-nav" ng-controller="SideBarController">
+	<ul class="nav nav-tabs nav-stacked main-menu">
+		<li><a href="#"><i class="icon-bar-chart"></i><span
+				class="hidden-tablet"> Dashboard</span></a></li>
+		<li><a href="#" ng-click="processPages('userList')"><i
+				class="icon-eye-open"></i><span class="hidden-tablet"> 用户</span></a></li>
+		<li><a href="#" ng-click="processPages('eventList')"><i
+				class="icon-hdd"></i><span class="hidden-tablet"> 赛事成绩管理</span></a></li>
+		<li><a href="#" ng-click="processPages('eventEnroll')"><i
+				class="icon-hdd"></i><span class="hidden-tablet"> 赛事录入</span></a></li>
+		<li><a href="#" ng-click="processPages('eventList')"><i
+				class="icon-hdd"></i><span class="hidden-tablet"> 赛事类型管理</span></a></li>
+	</ul>
+</div>

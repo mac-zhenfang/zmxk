@@ -1,0 +1,122 @@
+<div class="box span12">
+	<div class="box-header">
+		<h2>
+			<i class="icon-edit"></i>Wizard
+		</h2>
+		<div class="box-icon">
+			<a href="#" class="btn-setting"><i class="icon-wrench"></i></a> <a
+				href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a> <a
+				href="#" class="btn-close"><i class="icon-remove"></i></a>
+		</div>
+	</div>
+	<div class="box-content">
+		<div id="MyWizard" class="wizard">
+			<ul class="steps">
+				<li data-target="#step1" class="active"><span
+					class="badge badge-info">1</span></li>
+				<li data-target="#step2"><span class="badge">2</span></li>
+			</ul>
+			<div class="actions">
+				<button type="button" class="btn btn-prev">
+					<i class="icon-arrow-left"></i> Prev
+				</button>
+				<button type="button" class="btn btn-success btn-next"
+					data-last="Finish">
+					Next <i class="icon-arrow-right"></i>
+				</button>
+			</div>
+		</div>
+		<div class="step-content">
+			<div class="step-pane active" id="step1">
+				<form class="form-horizontal" ng-submit="processForm()" />
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label" for="inputWarning">姓名</label>
+						<div class="controls">
+							<input type="text" ng-model="enroll_form_data.name" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputWarning">手机号码</label>
+						<div class="controls">
+							<input type="text" ng-model="enroll_form_data.mobileNum" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputWarning">小孩姓名</label>
+						<div class="controls">
+							<input type="text" ng-model="enroll_form_data.kidName" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputWarning">微信号</label>
+						<div class="controls">
+							<input type="text" ng-model="enroll_form_data.wcId" />
+						</div>
+					</div>
+				</fieldset>
+				</form>
+			</div>
+			<div class="step-pane" id="step2">
+				<form class="form-horizontal" />
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label" for="selectError3"></label>
+						<div class="box span11">
+							<div class="box-header">
+								<h2>
+									<i class="icon-align-justify"></i><span class="break"></span>赛事列表
+								</h2>
+								<div class="box-icon">
+									<a href="#" class="btn-setting"><i class="icon-wrench"></i></a>
+									<a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
+									<a href="#" class="btn-close"><i class="icon-remove"></i></a>
+								</div>
+							</div>
+							<div class="box-content">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>时间</th>
+											<th>目前人数</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="center">2012/01/01</td>
+											<td class="center">30</td>
+											<td class="center"><a class="btn btn-info" href="#">
+													<i class="icon-choose">选择</i>
+											</a></td>
+										</tr>
+										<tr>
+											<td class="center">2012/01/01</td>
+											<td class="center">16</td>
+											<td class="center"><a class="btn btn-info" href="#">
+													<i class="icon-choose">选择</i>
+											</a></td>
+										</tr>
+										<tr>
+											<td class="center">2012/01/01</td>
+											<td class="center">29</td>
+											<td class="center"><a class="btn btn-info" href="#">
+													<i class="icon-choose">选择</i>
+											</a></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!--/span-->
+					</div>
+				</fieldset>
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+<!--/span-->
