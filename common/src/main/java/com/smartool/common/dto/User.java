@@ -8,6 +8,15 @@ public class User {
 	String mobileNum;
 	String wcId;
 	String location;
+	String roleId;
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+
 	List<Kid> kids;
 
 	public User() {
