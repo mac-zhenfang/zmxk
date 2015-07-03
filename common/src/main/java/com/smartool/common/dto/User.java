@@ -9,6 +9,15 @@ public class User {
 	String wcId;
 	String location;
 	String roleId;
+	int status;
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public String getRoleId() {
 		return roleId;
 	}
