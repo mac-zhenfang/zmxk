@@ -1,0 +1,36 @@
+<form class="form-horizontal" />
+<fieldset>
+	<div class="control-group">
+		<label class="control-label" for="selectError3"></label>
+		<div class="box span11">
+			<div class="box-header">
+				<h2>
+					<i class="icon-align-justify"></i><span class="break"></span>赛事列表
+				</h2>
+			</div>
+			<div class="box-content">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>时间</th>
+							<th>目前人数</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="event in events">
+							<td class="center">{{event.eventTime}}</td>
+							<td class="center">{{event.currentAttendeeNum}}</td>
+							<td class="center"><label class="radio"> <input
+									type="radio" name="optionsRadios" id="optionsRadios1"
+									checked="" value="{{event.eventId}}" ng-model="value" ng-click='selectEvent(value)'/>
+							</label></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!--/span-->
+	</div>
+</fieldset>
+</form>

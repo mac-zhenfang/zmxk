@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EVENT">
+	<resultMap type="com.smartool.common.dto.Event" id="event">
+		<id property="eventId" column="eventId" />
+
+		<result property="eventTime" column="eventTime" />
+		<result property="eventName" column="eventName" />
+
+		<result property="eventsType" column="eventsType" />
+
+		<result property="eventsTypeId" column="eventsTypeId" />
+		<result property="quota" column="quota" />
+		<result property="createdTime" column="createdTime" />
+		<result property="lastModifiedTime" column="lastModifiedTime" />
+
+
+		<collection property="attendees" ofType="com.smartool.common.dto.Attendee">
+			<id property="attendeeId" column="attendeeId" />
+			<result property="userId" column="userId" />
+		</collection>
+	</resultMap>
+	<select id="listAll" resultMap="event">
+		select e.eventTime as eventTime,
+		e.name as eventName, t.name as eventsType, e.id as eventId, t.id as
+		eventsTypeId, e.quota as quota, a.id as attendeeId, a.userId as
+		userId, e.createdTime as createdTime, e.lastModifiedTime as
+		lastModifiedTime from events e, eventsType t, attendees a where
+		e.eventTypeId=t.id and a.eventId = e.id
+	</select>
+
+	<select id="create" parameterType="com.smartool.common.dto.User">
+		insert users (id, name,
+		mobileNum, wcId,location,
+		roleId,status,createdTime, lastModifiedTime)
+		values
+		(#{id},#{name},#{mobileNum},#{wcId},#{location},#{roleId},#{status},now(),now())
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.User">
+		update users
+		set
+		name=#{name},
+		mobileNum=#{mobileNum}, wcId=#{wcId},
+		location=#{location},
+		roleId=#{roleId}, status=#{status}
+		where id =
+		#{id};
+	</select>
+</mapper>

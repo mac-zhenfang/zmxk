@@ -5,11 +5,9 @@
 <!-- start: Meta -->
 <meta charset="utf-8" />
 <title>Smartool</title>
-<meta name="description"
-	content="Smartool" />
+<meta name="description" content="Smartool" />
 <meta name="author" content="Mac Fang" />
-<meta name="keyword"
-	content="Smartool" />
+<meta name="keyword" content="Smartool" />
 <!-- end: Meta -->
 
 <!-- start: Mobile Specific -->
@@ -34,18 +32,6 @@
 <!--[if IE 9]>
 		<link id="ie9style" href="css/ie9.css" rel="stylesheet">
 	<![endif]-->
-
-<!-- start: Favicon and Touch Icons -->
-<link rel="apple-touch-icon-precomposed" sizes="144x144"
-	href="ico/apple-touch-icon-144-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="114x114"
-	href="ico/apple-touch-icon-114-precomposed.png" />
-<link rel="apple-touch-icon-precomposed" sizes="72x72"
-	href="ico/apple-touch-icon-72-precomposed.png" />
-<link rel="apple-touch-icon-precomposed"
-	href="ico/apple-touch-icon-57-precomposed.png" />
-<link rel="shortcut icon" href="ico/favicon.png" />
-<!-- end: Favicon and Touch Icons -->
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
@@ -90,14 +76,13 @@
 	<!-- start: JavaScript-->
 	<script src="js/jquery-1.10.2.min.js"></script>
 	<script src="js/angular.min.js"></script>
+	<script src="js/angular-resource.min.js"></script>
 	<script src="js/jquery-migrate-1.2.1.min.js"></script>
 	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="js/jquery.ui.touch-punch.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/jquery.cookie.js"></script>
 	<script src='js/fullcalendar.min.js'></script>
 	<script src='js/jquery.dataTables.min.js'></script>
-	
+
 
 	<script src="js/jquery.chosen.min.js"></script>
 	<script src="js/jquery.uniform.min.js"></script>
@@ -111,8 +96,7 @@
 	<script src="js/jquery.masonry.min.js"></script>
 	<script src="js/jquery.knob.modified.js"></script>
 	<script src="js/jquery.sparkline.min.js"></script>
-	<script src="js/counter.min.js"></script>
-	
+
 	<script src="js/jquery.autosize.min.js"></script>
 	<script src="js/retina.js"></script>
 	<script src="js/jquery.placeholder.min.js"></script>
@@ -121,126 +105,278 @@
 	<script src="js/charts.min.js"></script>
 	<script src="js/custom.min.js"></script>
 	<script>
-		var zmxk = angular.module('zmxk', []);
 		var currentModule = "users";
-		var mainControllerScope;
-		zmxk.controller('MainController', [ '$scope','$location', function($scope, $location) {
-			mainControllerScope = $scope
-			$scope.enroll_form_data = {};
-			$scope.$location = $location;
-			
-			$scope.userId = $scope.$location.search().userId;  
-
-			$scope.includePage = function() {
-				var returnPage = "user_list.html";
-				switch(currentModule) {
-					case  "userList":
-						returnPage = "user_list.html";
-						break;
-					case "eventList":
-						returnPage = "event_list.html";
-						break;
-					case "eventEnroll":
-						returnPage = "event_enroll.html";
-						break
-					
-				}
-				return returnPage;
+		var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+		// Event Service
+		zmxk.service('eventService',['$resource', 'zmxkConfig', '$q', function($resource, zmxkConfig, $q){
+			var eventResource = $resource(
+					zmxkConfig.event_rest_uri,
+					{
+						eventId : '@id'
+					})
+			this.list = function() {
+				var defer = $q.defer();
+				eventResource
+				.query(function(data,headers) {
+					defer.resolve(data);
+				},function(data,headers) {
+					defer.reject(data);
+				});
+				return defer.promise;
 			}
-			
+		}]);
+		// User Service 
+		zmxk
+				.service(
+						'userService',
+						[
+								'$resource',
+								'zmxkConfig',
+								'$q',
+								function($resource, zmxkConfig, $q) {
+									var usersResource = $resource(
+											zmxkConfig.user_rest_uri,
+											{
+												userId : '@id'
+											},
+											{
+												login : {
+													url : zmxkConfig.user_login_uri,
+													method : 'Post',
+													headers : {
+														'Content-Type' : 'application/x-www-form-urlencoded'
+													}
+												},
+												logout : {
+													url : zmxkConfig.user_logout_uri,
+													method : 'Post'
+												}
+											})
+									this.login = function() {
+										//TODO
+									};
 
-			
-			$scope.init = function() {
-				//TODO: init if no cookie token, return to login page
-				
-				// init enroll
-				//console.log("initEnrollPage")
-				if(!angular.isUndefined($scope.$location.search().page)) {
-					//console.log($scope.userId);
-					currentModule = $scope.$location.search().page;
-				}
-			}
-			
+									this.register = function() {
+										//TODO
+									}
 
-			
-			
-			//$scope.init();
+									this.list = function() {
+										var users = usersResource
+												.query(function(data) {
+													console.log(data);
+												});
+									}
+
+									this.getUserForEnroll = function(
+											giveUserId) {
+										var defer = $q.defer();
+										usersResource
+												.get(
+														{
+															userId : giveUserId
+														},
+														function(user, headers) {
+															console.log(user.data);
+
+															/*enrollScope.enroll_form_data.userId = user.id;
+															enrollScope.enroll_form_data.name = user.name
+															enrollScope.enroll_form_data.mobileNum = user.mobileNum;
+															enrollScope.enroll_form_data.kidName = "弘毅";
+															enrollScope.enroll_form_data.wcId = user.wcId;*/
+															defer.resolve(user);
+														},function(user, headers) {
+															/*enrollScope.enroll_form_data.userId = user.id;
+															enrollScope.enroll_form_data.name = user.name
+															enrollScope.enroll_form_data.mobileNum = user.mobileNum;
+															enrollScope.enroll_form_data.kidName = "弘毅";
+															enrollScope.enroll_form_data.wcId = user.wcId;
+															console.log(user);*/
+															defer.reject(user);
+														});
+										return defer.promise; 
+									}
+
+								} ]);
+		//put all labels / constants in
+		zmxk.constant('zmxkConstant', {
+
+		});
+
+		zmxk.value('zmxkConfig', {
+			user_login_uri : "/service/api/v1/users/login",
+			user_logout_uri : "/service/api/v1/users/logout",
+			user_rest_uri : "/service/smartool/api/v1/users/:userId",
+			event_rest_uri: "/service/smartool/api/v1/events/:eventId"
+		});
+
+		zmxk.config([ '$resourceProvider', function($resourceProvider) {
+			// Don't strip trailing slashes from calculated URLs
+			$resourceProvider.defaults.stripTrailingSlashes = false;
 		} ]);
-		
+
+		zmxk.controller('MainController', [
+				'$scope',
+				'$location',
+				'userService',
+				function($scope, $location, userService) {
+					console.log(userService);
+					$scope.enroll_form_data = {};
+					$scope.$location = $location;
+
+					$scope.userId = $scope.$location.search().userId;
+
+					$scope.includePage = function() {
+						var returnPage = "user_list.html";
+						switch (currentModule) {
+						case "userList":
+							returnPage = "user_list.html";
+							break;
+						case "eventList":
+							returnPage = "event_list.html";
+							break;
+						case "eventEnroll":
+							returnPage = "event_enroll.html";
+							break
+
+						}
+						return returnPage;
+					}
+
+					$scope.init = function() {
+						//TODO: init if no cookie token, return to login page
+						//userService.list();
+
+						if (!angular
+								.isUndefined($scope.$location.search().page)) {
+							//console.log($scope.userId);
+							currentModule = $scope.$location.search().page;
+						}
+					}
+
+					$scope.init();
+				} ]);
+		//MainController.$inject = ['$scope', 'userService'];
+
+		//Main end
+
 		zmxk.controller('SideBarController', [ '$scope', function($scope) {
 			/*var mainCtrlScope = $scope.$new();
 			
 			$controller('MainController',{$scope : mainCtrlScope });*/
-			$scope.processPages = function (pageType) {
+			$scope.processPages = function(pageType) {
 				currentModule = pageType;
 				//console.log(currentPage);
 			}
 			//console.log($scope.userId);
-			
-		} ]);
-		
-		zmxk.controller('EnrollController', [ '$scope', function($scope) {
-			$scope.found_user = {};
-			$scope.totalSteps = 0;
-			$scope.currentStep = 1;
-			$scope.previous_label = "上一步";
-			$scope.next_label = "下一步";
-			$scope.selectWizard = function() {
-				if(!angular.isUndefined($scope.userId)) {
-					$scope.totalSteps = 2;
-					return "enroll_wizard_with_userId.html";
-				} else {
-					$scope.totalSteps = 3;
-					return "enroll_wizard_no_userId.html";
-				}
-			}
-			$scope.selectStep = function (step) {
-				
-				if($scope.currentStep > 0 && $scope.currentStep + step <= $scope.totalSteps) {
-					$scope.currentStep = $scope.currentStep + step;
-				}
-				
-				
-				//change label
-				if($scope.currentStep==$scope.totalSteps) {
-					$scope.next_label = "提交";
-				} else {
-					$scope.next_label = "下一步";
-				}
-			}
-			
-			$scope.processForm = function() {
-				console.log($scope.enroll_form_data);
-				
-			}
-			$scope.searchUser = function() {
-				console.log($scope.enroll_form_data.userQueryString)
-				//TODO from user API
-				$scope.found_user.id = "12313123";
-				$scope.found_user.name = "Mac Fang";
-				$scope.found_user.mobileNum = "13706516916";
-			}
-			
 
-			$scope.chooseUser = function() {
-				$scope.enroll_form_data.name = $scope.found_user.name;
-				$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
-			}
-			
-			//TODO get from user api
-			if(!angular.isUndefined($scope.userId)) {
-				$scope.enroll_form_data.name = "Mac Fang";
-				$scope.enroll_form_data.mobileNum = "13706516916";
-				$scope.enroll_form_data.kidName = "弘毅";
-				$scope.enroll_form_data.wcId = "1111";
-			}
-			
-			
 		} ]);
-		
-		angular.element(document).ready(function () {
-			mainControllerScope.init();
-		});
+		//Enroll Start
+		zmxk
+				.controller(
+						'EnrollController',
+						[
+								'$scope',
+								'userService',
+								'eventService',
+								function($scope, userService, eventService) {
+									$scope.found_user = {};
+									$scope.totalSteps = 0;
+									$scope.currentStep = 1;
+									$scope.steps = [];
+									$scope.previous_label = "上一步";
+									$scope.next_label = "下一步";
+									$scope.events = [{
+										eventTime: "2015/07/04",
+										currentAttendeeNum : 15,
+										eventId: "12345"
+									},{
+										eventTime: "2015/07/05",
+										currentAttendeeNum : 16,
+										eventId: "67890"
+									},{
+										eventTime: "2015/07/06",
+										currentAttendeeNum : 17,
+										eventId: "24680"
+									}];
+									$scope.selectStep = function(step) {
+
+										if ($scope.currentStep > 0
+												&& $scope.currentStep + step <= $scope.totalSteps) {
+											$scope.currentStep = $scope.currentStep
+													+ step;
+										}
+
+										//change label
+										if ($scope.currentStep == $scope.totalSteps) {
+											$scope.next_label = "提交";
+										} else {
+											$scope.next_label = "下一步";
+										}
+									}
+									
+									$scope.selectEvent = function(eventId) {
+										$scope.enroll_form_data.eventId = eventId;
+										console.log($scope.enroll_form_data);
+									}
+
+									$scope.processForm = function() {
+										console.log($scope.enroll_form_data);
+
+									}
+									$scope.searchUser = function() {
+										console
+												.log($scope.enroll_form_data.userQueryString)
+										//TODO from user API
+										$scope.found_user.id = "12313123";
+										$scope.found_user.name = "Mac Fang";
+										$scope.found_user.mobileNum = "13706516916";
+									}
+
+									$scope.chooseUser = function() {
+										$scope.enroll_form_data.name = $scope.found_user.name;
+										$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
+									}
+									
+									
+
+									$scope.init = function() {
+										//TODO get from user api
+										if (!angular.isUndefined($scope.userId)) {
+											//"9c1cc2b5-ee76-41f2-bd92-a1161a92dda6" - Mac Fang
+											var user = userService.getUserForEnroll(
+													$scope.userId);
+											console.log(user);
+											$scope.enroll_form_data.userId = user.id;
+											$scope.enroll_form_data.name = user.name
+											$scope.enroll_form_data.mobileNum = user.mobileNum;
+											$scope.enroll_form_data.kidName = "弘毅";
+											$scope.enroll_form_data.wcId = user.wcId;
+											
+										}
+										if (!$scope.noUserIdPassed()) {
+											$scope.totalSteps = 2;
+											$scope.steps = [ 1, 2 ];
+										} else {
+											$scope.totalSteps = 3;
+											$scope.steps = [ 1, 2, 3 ];
+										}
+										
+										//TODO : call eventServie to list events 
+										var events = eventService.list();
+										console.log("~~~~");
+										console.log(events);
+									}
+									
+									$scope.noUserIdPassed = function() {
+										return angular.isUndefined($scope.userId);
+									}
+
+									$scope.init();
+								} ]);
+		//init
+		//angular.element(document).ready(function () {
+		//	mainControllerScope.init();
+		//});
 	</script>
 	<!-- end: JavaScript-->
 
