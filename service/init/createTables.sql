@@ -91,3 +91,9 @@ CREATE TABLE `securityCodes` (
   	UNIQUE KEY `securityCode_mobileNumber` (`mobileNumber`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+SET GLOBAL event_scheduler = ON;
+DROP EVENT IF EXISTS `cleanSecurityCodes`;
+CREATE EVENT `cleanSecurityCodes`
+ON SCHEDULE
+    EVERY 1 HOUR
+DO DELETE FROM `securityCodes` WHERE `lastModifiedTime` < DATE_SUB(NOW(), INTERVAL 24 HOUR);
