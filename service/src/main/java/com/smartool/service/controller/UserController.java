@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.Constants;
 import com.smartool.service.SmartoolException;
+import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -35,13 +37,13 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserDao userDao;
 	@Autowired
+	private KidDao kidDao;
+	@Autowired
 	private SecurityCodeDao securityCodeDao;
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody User getUser(@PathVariable String userId,
 			@CookieValue(Constants.KEY_FOR_USER_ID) String fooCookie) {
-		System.out.println("Token cookie : " + fooCookie);
-		System.out.println("userId : " + userId);
 		User user = userDao.getUserById(userId);
 		return user;
 	}
@@ -64,13 +66,46 @@ public class UserController extends BaseController {
 			@RequestBody User user) {
 		// Validate fields (no duplicated mobileNum/wcId ?)
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
-			return new ResponseEntity<User>(null, null, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<User>(null, null, HttpStatus.BAD_REQUEST);
 		}
+		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		User createdUser = userDao.createUser(user);
+		if (user.getKids() != null && !user.getKids().isEmpty()) {
+			for (Kid kid : user.getKids()) {
+				kidDao.create(kid);
+			}
+		}
+		securityCodeDao.remove(user.getMobileNum());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Set-Cookie", Constants.KEY_FOR_USER_ID + "=" + createdUser.getId() + ";Max-Age=2592000;");
 		return new ResponseEntity<User>(createdUser, headers, HttpStatus.OK);
+	}
+
+	private boolean isUserValidForCreate(User user) {
+		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					Constants.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+		}
+		if (userDao.getUserByWcId(user.getWcId()) != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), Constants.WC_ID_ALREADY_USED_ERROR_MESSAGE);
+		}
+		// TODO add more validation
+		if (user.getKids() != null && !user.getKids().isEmpty()) {
+			for (Kid kid : user.getKids()) {
+				isKidValidForCreate(kid);
+			}
+		}
+		return true;
+	}
+
+	private void isKidValidForCreate(Kid kid) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private boolean isUserValidForUpdate(User user) {
+		return true;
 	}
 
 	private boolean isValidSecurityCode(String mobileNum, String securityCode) {
@@ -83,6 +118,11 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = "/users/code", method = RequestMethod.POST)
 	public String createCode(@RequestParam(value = "mobileNum", required = false) String mobileNumber) {
+		User userByMobileNumber = userDao.getUserByMobileNumber(mobileNumber);
+		if (userByMobileNumber != null) {
+			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
+					Constants.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+		}
 		SecurityCode existSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNumber);
 		if (existSecurityCode != null) {
 			Date lastModifiedTime = existSecurityCode.getLastModifiedTime();
@@ -110,7 +150,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/service/smartool/api/v1/users/" + userId).withSize(800, 800)
+		QRCode.from("http://123456wechat.ngrok.io/#/?page=eventEnroll&userId=" + userId).withSize(800, 800)
 				.to(ImageType.PNG).writeTo(out);
 		byte[] qrcode = out.toByteArray();
 		HttpHeaders httpHeaders = new HttpHeaders();

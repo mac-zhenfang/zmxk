@@ -9,6 +9,10 @@ public interface UserDao {
 
 	User getUserById(String userId);
 
+	User getUserByMobileNumber(String mobileNumber);
+
+	User getUserByWcId(String wcId);
+
 	User updateUser(User user);
 
 	List<User> listAllUser();

@@ -3,11 +3,39 @@
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="KID">
-	<select id="listAll" resultType="com.smartool.common.dto.User">
-		select * from users
+	<select id="create" parameterType="com.smartool.common.dto.Kid">
+		insert kids (id, name,
+		schoolType, schoolName,userId,
+		createdTime, lastModifiedTime)
+		values
+		(#{id},#{name},#{schoolType},#{schoolName},#{userId},#{status},now(),now())
 	</select>
-	<select id="getById" parameterType="String"
-		resultType="com.smartool.common.dto.User">
-		select * from users where id = #{id}
+	<select id="update" parameterType="com.smartool.common.dto.Kid">
+		update kids
+		set
+		name=#{name},
+		schoolType=#{schoolType}, schoolName=#{schoolName},
+		userId=#{userId}
+		where id =
+		#{id};
+	</select>
+	<select id="remove" parameterType="String">
+		delete from kids where id =
+		#{id}
+	</select>
+	<select id="removeByUserId" parameterType="String">
+		delete from kids where
+		userId=#{userId}
+	</select>
+	<select id="listAll" resultType="com.smartool.common.dto.Kid">
+		select * from kids
+	</select>
+	<select id="listByUserId" parameterType="String"
+		resultType="com.smartool.common.dto.Kid">
+		select * from kids where userId=#{userId}
+	</select>
+	<select id="getById" parameterType="String" resultType="com.smartool.common.dto.Kid">
+		select *
+		from kids where id = #{id}
 	</select>
 </mapper>

@@ -15,7 +15,7 @@
 		set securityCode=#{securityCode}
 		where mobileNumber = #{mobileNumber};
 	</select>
-	<select id="remove" resultType="String">
+	<select id="remove" parameterType="String">
 		delete from securityCode where mobileNumber = #{mobileNumber}
 	</select>
 </mapper>

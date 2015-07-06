@@ -32,4 +32,14 @@ public class UserDaoImpl implements UserDao {
 	public List<User> listAllUser() {
 		return sqlSession.selectList("USER.listAll");
 	}
+
+	@Override
+	public User getUserByMobileNumber(String mobileNumber) {
+		return sqlSession.selectOne("USER.getByMobileNumber", mobileNumber);
+	}
+
+	@Override
+	public User getUserByWcId(String wcId) {
+		return sqlSession.selectOne("USER.getByWcId", wcId);
+	}
 }
