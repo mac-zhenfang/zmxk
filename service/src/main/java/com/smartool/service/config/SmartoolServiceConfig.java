@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -21,6 +22,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
+import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.KidDaoImpl;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
 import com.smartool.service.dao.UserDao;
@@ -38,7 +41,12 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public UserDao getUserDao() {
 		return new UserDaoImpl();
 	}
-	
+
+	@Bean
+	public KidDao getKidDao() {
+		return new KidDaoImpl();
+	}
+
 	@Bean
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
@@ -73,11 +81,19 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return comboPooledDataSource;
 	}
 
+	@Bean
 	public SqlSessionFactoryBean getSqlSessionFactoryBean() throws PropertyVetoException {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(getComboPooledDataSource());
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("spring/mybatis-config.xml"));
 		return sqlSessionFactoryBean;
+	}
+
+	@Bean
+	public DataSourceTransactionManager getDataSourceTransactionManager() throws PropertyVetoException {
+		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+		dataSourceTransactionManager.setDataSource(getComboPooledDataSource());
+		return dataSourceTransactionManager;
 	}
 
 	@Bean

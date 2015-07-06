@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +24,9 @@ import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.Constants;
+import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
-import com.smartool.service.dao.KidDao;
+import com.smartool.service.UserRole;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -37,8 +39,6 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserDao userDao;
 	@Autowired
-	private KidDao kidDao;
-	@Autowired
 	private SecurityCodeDao securityCodeDao;
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +50,8 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
-		return userDao.listAllUser();
+		List<User> users = userDao.listAllUser();
+		return users;
 	}
 
 	/**
@@ -60,22 +61,19 @@ public class UserController extends BaseController {
 	 * 
 	 * @return userId String
 	 */
-	@RequestMapping(value = "/users/register", method = RequestMethod.POST, consumes = {
+	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
+	@Transactional
 	public ResponseEntity<User> register(@RequestParam(value = "code", required = false) String securityCode,
 			@RequestBody User user) {
 		// Validate fields (no duplicated mobileNum/wcId ?)
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
-			return new ResponseEntity<User>(null, null, HttpStatus.BAD_REQUEST);
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
+		user.setRoleId(UserRole.NORMAL_USER.getValue());
 		User createdUser = userDao.createUser(user);
-		if (user.getKids() != null && !user.getKids().isEmpty()) {
-			for (Kid kid : user.getKids()) {
-				kidDao.create(kid);
-			}
-		}
 		securityCodeDao.remove(user.getMobileNum());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Set-Cookie", Constants.KEY_FOR_USER_ID + "=" + createdUser.getId() + ";Max-Age=2592000;");
@@ -83,14 +81,28 @@ public class UserController extends BaseController {
 	}
 
 	private boolean isUserValidForCreate(User user) {
+		// All string fields not empty
+		if (CommonUtils.isEmptyString(user.getName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_USER_NAME_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(user.getMobileNum())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(user.getWcId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_WC_ID_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(user.getLocation())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
+		}
+		// Phone number/ WC id not registered before
 		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					Constants.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
 		}
 		if (userDao.getUserByWcId(user.getWcId()) != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), Constants.WC_ID_ALREADY_USED_ERROR_MESSAGE);
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WC_ID_ALREADY_USED_ERROR_MESSAGE);
 		}
-		// TODO add more validation
 		if (user.getKids() != null && !user.getKids().isEmpty()) {
 			for (Kid kid : user.getKids()) {
 				isKidValidForCreate(kid);
@@ -100,13 +112,18 @@ public class UserController extends BaseController {
 	}
 
 	private void isKidValidForCreate(Kid kid) {
-		// TODO Auto-generated method stub
-
+		if (CommonUtils.isEmptyString(kid.getName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_NAME_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(kid.getSchoolName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_KID_SCHOOL_NAME_ERROR_MESSAGE);
+		}
 	}
 
-	private boolean isUserValidForUpdate(User user) {
-		return true;
-	}
+	// private boolean isUserValidForUpdate(User user) {
+	// return true;
+	// }
 
 	private boolean isValidSecurityCode(String mobileNum, String securityCode) {
 		SecurityCode getSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNum);
@@ -116,19 +133,20 @@ public class UserController extends BaseController {
 	/**
 	 * 1. Get the SMS verify code 2. Verify captcha
 	 */
-	@RequestMapping(value = "/users/code", method = RequestMethod.POST)
+	@Transactional
+	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST)
 	public String createCode(@RequestParam(value = "mobileNum", required = false) String mobileNumber) {
 		User userByMobileNumber = userDao.getUserByMobileNumber(mobileNumber);
 		if (userByMobileNumber != null) {
 			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
-					Constants.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
 		}
 		SecurityCode existSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNumber);
 		if (existSecurityCode != null) {
 			Date lastModifiedTime = existSecurityCode.getLastModifiedTime();
 			if (System.currentTimeMillis() - lastModifiedTime.getTime() < 30000l) {
 				throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
-						Constants.FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE);
+						ErrorMessages.FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE);
 			} else {
 				existSecurityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
 				securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
@@ -150,8 +168,8 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId).withSize(800, 800)
-				.to(ImageType.PNG).writeTo(out);
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId)
+				.withSize(800, 800).to(ImageType.PNG).writeTo(out);
 		byte[] qrcode = out.toByteArray();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);
