@@ -1,0 +1,19 @@
+<h1 class="page-header">{{const.grade_dashboard_title}}</h1>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th ng-repeat="x in table_headers">{{x}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in grades">
+				<td>{{item.name}}</td>
+				<td>{{item.grade}}</td>
+				<td>{{item.match}}</td>
+				<td>{{item.time}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

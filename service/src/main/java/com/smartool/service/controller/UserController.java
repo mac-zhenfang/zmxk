@@ -150,7 +150,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/#/?page=eventEnroll&userId=" + userId).withSize(800, 800)
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId).withSize(800, 800)
 				.to(ImageType.PNG).writeTo(out);
 		byte[] qrcode = out.toByteArray();
 		HttpHeaders httpHeaders = new HttpHeaders();

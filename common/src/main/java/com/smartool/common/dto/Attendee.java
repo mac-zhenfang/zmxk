@@ -2,15 +2,63 @@ package com.smartool.common.dto;
 
 public class Attendee {
 	
-	String attendeeId;
+	private String attendeeId;
 	
-	String userId;
+	private String userId;
 	
-	String eventId;
+	private String eventId;
 	
-	float score;
+	private float score;
 	
-	int rank;
+	private int rank;
 	
-	long createTime;
+	private long createTime;
+
+	public String getAttendeeId() {
+		return attendeeId;
+	}
+
+	public void setAttendeeId(String attendeeId) {
+		this.attendeeId = attendeeId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
+	}
+
+	public float getScore() {
+		return score;
+	}
+
+	public void setScore(float score) {
+		this.score = score;
+	}
+
+	public int getRank() {
+		return rank;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+
+	public long getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
+	}
 }
