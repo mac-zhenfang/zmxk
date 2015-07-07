@@ -27,6 +27,7 @@ import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -43,7 +44,7 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody User getUser(@PathVariable String userId,
-			@CookieValue(Constants.KEY_FOR_USER_ID) String fooCookie) {
+			@CookieValue(Constants.KEY_FOR_USER_TOKEN) String fooCookie) {
 		User user = userDao.getUserById(userId);
 		return user;
 	}
@@ -54,6 +55,15 @@ public class UserController extends BaseController {
 		return users;
 	}
 
+	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE })
+	@Transactional
+	public User login(@RequestBody User user) {
+		// TODO
+		UserSessionManager.setSessionUser(user);
+		return null;
+	}
+
 	/**
 	 * 1. verify sms code 2. ask wechat for user profile (Oauth) 3. create user
 	 * 4. return userId (response body) and token (response cookie) Verify the
@@ -61,12 +71,10 @@ public class UserController extends BaseController {
 	 * 
 	 * @return userId String
 	 */
+	@Transactional
 	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	@Transactional
-	public ResponseEntity<User> register(@RequestParam(value = "code", required = false) String securityCode,
-			@RequestBody User user) {
-		// Validate fields (no duplicated mobileNum/wcId ?)
+	public User register(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
@@ -75,9 +83,8 @@ public class UserController extends BaseController {
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Set-Cookie", Constants.KEY_FOR_USER_ID + "=" + createdUser.getId() + ";Max-Age=2592000;");
-		return new ResponseEntity<User>(createdUser, headers, HttpStatus.OK);
+		UserSessionManager.setSessionUser(createdUser);
+		return createdUser;
 	}
 
 	private boolean isUserValidForCreate(User user) {
@@ -127,7 +134,8 @@ public class UserController extends BaseController {
 
 	private boolean isValidSecurityCode(String mobileNum, String securityCode) {
 		SecurityCode getSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNum);
-		return getSecurityCode.getSecurityCode().equals(securityCode);
+		return getSecurityCode != null && getSecurityCode.getSecurityCode() != null
+				&& getSecurityCode.getSecurityCode().equals(securityCode);
 	}
 
 	/**

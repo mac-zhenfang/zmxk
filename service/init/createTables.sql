@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` varchar(36) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
   `location` varchar(36) CHARACTER SET utf8 NOT NULL,
   `mobileNum` varchar(255) NOT NULL,
   `wcId` varchar(36),

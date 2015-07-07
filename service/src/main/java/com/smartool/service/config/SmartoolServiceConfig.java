@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.smartool.service.Encrypter;
 import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
@@ -34,8 +35,14 @@ import com.smartool.service.dao.UserDaoImpl;
 @PropertySource("classpath:zmxk.properties")
 @PropertySource("classpath:jdbc.properties")
 public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
+	private String defaultKey = "JJ7kKLiXxkTWZFjl43+X9A==";
 	@Autowired
 	Environment env;
+
+	@Bean
+	public Encrypter getEncrypter() {
+		return new Encrypter(env.getProperty("secure_algorithm"), env.getProperty("secure_key", defaultKey));
+	}
 
 	@Bean
 	public UserDao getUserDao() {

@@ -11,8 +11,8 @@
 		values (#{securityCode},#{mobileNumber},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.SecurityCode">
-		update securityCode
-		set securityCodes=#{securityCode}
+		update securityCodes
+		set securityCode=#{securityCode}
 		where mobileNumber = #{mobileNumber};
 	</select>
 	<select id="remove" parameterType="String">

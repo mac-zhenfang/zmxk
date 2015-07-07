@@ -1,10 +1,21 @@
 package com.smartool.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.UUID;
 
 public class CommonUtils {
 	private static int securityCodeLength = 6;
+	private static MessageDigest messageDigest;
+
+	static {
+		try {
+			messageDigest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static String getRandomUUID() {
 		return UUID.randomUUID().toString();
@@ -24,5 +35,10 @@ public class CommonUtils {
 			return true;
 		}
 		return false;
+	}
+
+	public static String encryptBySha2(String string) {
+		byte[] digest = messageDigest.digest(string.getBytes());
+		return new String(digest);
 	}
 }
