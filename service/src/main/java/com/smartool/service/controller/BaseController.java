@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.smartool.service.SmartoolException;
 
 public class BaseController {
-	private Logger logger = Logger.getLogger(BaseController.class);
+	private static Logger logger = Logger.getLogger(BaseController.class);
 	private static final String DEFAULT_ERROR_MESSAGE = "Unknown";
 
 	@ExceptionHandler(SmartoolException.class)
