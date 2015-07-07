@@ -50,31 +50,7 @@
 									class="fa fa-circle-o-notch"></i></span> <input type="text"
 									class="form-control" placeholder="用户名" ng-model="formData.name" />
 							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-circle-o-notch"></i></span> <input type="text"
-									class="form-control" placeholder="小孩姓名"
-									ng-model="formData.kids[0].name" />
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-life-bouy"></i></span> <input type="text"
-									class="form-control" placeholder="小孩年龄"
-									ng-model="formData.kids[0].age" />
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon">学校类型</span> <select
-									class="selectpicker form-control" data-style="btn-info" ng-model="formData.kids[0].schoolType">
-									<option value="0">幼儿园</option>
-									<option value="1">小学</option>
-									<option value="2">还未上幼儿园</option>
-								</select>
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon">@</span> <input type="text"
-									class="form-control" placeholder="学校名"
-									ng-model="formData.kids[0].schoolName" />
-							</div>
+							
 							<div class="form-group input-group">
 								<span class="input-group-addon">@</span> <input type="text"
 									class="form-control" placeholder="微信ID"
@@ -89,7 +65,8 @@
 						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<div ng-show="currentStep == 3">注册成功</div>
+						<div ng-show="currentStep == 3">注册成功
+						<img src=""></img></div>
 					</form>
 				</div>
 			</div>
