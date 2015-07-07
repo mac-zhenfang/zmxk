@@ -418,7 +418,6 @@
 																$scope.enroll_form_data.userId = user.id;
 																$scope.enroll_form_data.name = user.name
 																$scope.enroll_form_data.mobileNum = user.mobileNum;
-																$scope.enroll_form_data.kidName = "弘毅";
 																$scope.enroll_form_data.wcId = user.wcId;
 															}, function(error) {
 																//TODO
@@ -448,11 +447,15 @@
 														});
 
 									}
-
+									
+									
 									$scope.noUserIdPassed = function() {
 										return angular
 												.isUndefined($scope.userId);
 									}
+									
+									$scope.noUserIdPassedValue = $scope.noUserIdPassed();
+
 
 									$scope.formatDate = function(timestamp) {
 										var dateOut = new Date(timestamp);
