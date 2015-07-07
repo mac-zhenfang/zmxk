@@ -9,7 +9,9 @@ CREATE TABLE `users` (
   `roleId` varchar (36) NOT NULL,
   `createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_mobileNum` (`mobileNum`),
+  UNIQUE KEY `users_wcId` (`wcId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `roles`;
@@ -70,8 +72,8 @@ CREATE TABLE `attendees` (
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `eventType`;
-CREATE TABLE `eventsType` (
+DROP TABLE IF EXISTS `eventTypes`;
+CREATE TABLE `eventTypes` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`siteId` varchar(36) NOT NULL,
@@ -80,8 +82,8 @@ CREATE TABLE `eventsType` (
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `securityCode`;
-CREATE TABLE `securityCode` (
+DROP TABLE IF EXISTS `securityCodes`;
+CREATE TABLE `securityCodes` (
 	`id` int(20) NOT NULL AUTO_INCREMENT,
 	`securityCode` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`mobileNumber` varchar(36) NOT NULL,
@@ -91,3 +93,9 @@ CREATE TABLE `securityCode` (
   	UNIQUE KEY `securityCode_mobileNumber` (`mobileNumber`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+SET GLOBAL event_scheduler = ON;
+DROP EVENT IF EXISTS `cleanSecurityCodes`;
+CREATE EVENT `cleanSecurityCodes`
+ON SCHEDULE
+    EVERY 1 HOUR
+DO DELETE FROM `securityCodes` WHERE `lastModifiedTime` < DATE_SUB(NOW(), INTERVAL 24 HOUR);

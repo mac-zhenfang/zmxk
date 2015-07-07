@@ -18,4 +18,11 @@ public class CommonUtils {
 		}
 		return sb.toString();
 	}
+
+	public static boolean isEmptyString(String string) {
+		if (string == null || string.trim().isEmpty()) {
+			return true;
+		}
+		return false;
+	}
 }

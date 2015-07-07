@@ -4,18 +4,18 @@
 
 <mapper namespace="SECURITYCODE">
 	<select id="getByMobileNumber" resultType="com.smartool.common.dto.SecurityCode">
-		select * from securityCode where mobileNumber = #{mobileNumber}
+		select * from securityCodes where mobileNumber = #{mobileNumber}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.SecurityCode">
-		insert securityCode (securityCode, mobileNumber, createdTime, lastModifiedTime)
+		insert securityCodes (securityCode, mobileNumber, createdTime, lastModifiedTime)
 		values (#{securityCode},#{mobileNumber},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.SecurityCode">
 		update securityCode
-		set securityCode=#{securityCode}
+		set securityCodes=#{securityCode}
 		where mobileNumber = #{mobileNumber};
 	</select>
-	<select id="remove" resultType="String">
-		delete from securityCode where mobileNumber = #{mobileNumber}
+	<select id="remove" parameterType="String">
+		delete from securityCodes where mobileNumber = #{mobileNumber}
 	</select>
 </mapper>

@@ -14,11 +14,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
+import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.KidDaoImpl;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
 import com.smartool.service.dao.UserDao;
@@ -36,7 +41,12 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public UserDao getUserDao() {
 		return new UserDaoImpl();
 	}
-	
+
+	@Bean
+	public KidDao getKidDao() {
+		return new KidDaoImpl();
+	}
+
 	@Bean
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
@@ -45,6 +55,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public SecurityCodeDao getSecurityCodeDao() {
 		return new SecurityCodeDaoImpl();
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new AuthenticationInterceptor());
 	}
 
 	@Bean
@@ -66,13 +81,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return comboPooledDataSource;
 	}
 
-	// @Bean
-	// public DataSourceTransactionManager getDataSourceTransactionManager() {
-	// DataSourceTransactionManager dataSourceTransactionManager = new
-	// DataSourceTransactionManager();
-	// return dataSourceTransactionManager;
-	// }
-
+	@Bean
 	public SqlSessionFactoryBean getSqlSessionFactoryBean() throws PropertyVetoException {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(getComboPooledDataSource());
@@ -81,43 +90,15 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean
+	public DataSourceTransactionManager getDataSourceTransactionManager() throws PropertyVetoException {
+		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
+		dataSourceTransactionManager.setDataSource(getComboPooledDataSource());
+		return dataSourceTransactionManager;
+	}
+
+	@Bean
 	public SqlSession getSqlSessionTemplate() throws Exception {
 		SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(getSqlSessionFactoryBean().getObject());
 		return sqlSessionTemplate;
 	}
-
-	// <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-	// destroy-method="close">
-	// <property name="driverClass" value="${jdbc.driverClassName}" />
-	// <property name="jdbcUrl" value="${jdbc.url}" />
-	// <property name="user" value="${jdbc.username}" />
-	// <property name="password" value="${jdbc.password}" />
-	//
-	// <property name="autoCommitOnClose" value="true" />
-	// <property name="checkoutTimeout" value="${cpool.checkoutTimeout}" />
-	// <property name="initialPoolSize" value="${cpool.minPoolSize}" />
-	// <property name="minPoolSize" value="${cpool.minPoolSize}" />
-	// <property name="maxPoolSize" value="${cpool.maxPoolSize}" />
-	// <property name="maxIdleTime" value="${cpool.maxIdleTime}" />
-	// <property name="acquireIncrement" value="${cpool.acquireIncrement}" />
-	// <property name="maxIdleTimeExcessConnections"
-	// value="${cpool.maxIdleTimeExcessConnections}" />
-	// </bean>
-	//
-	// <!-- See
-	// http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/transaction.html
-	// -->
-	// <bean id="transactionManager"
-	// class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
-	// p:dataSource-ref="dataSource" />
-	//
-	// <bean id="sqlSessionFactory"
-	// class="org.mybatis.spring.SqlSessionFactoryBean">
-	// <property name="dataSource" ref="dataSource" />
-	// <property name="configLocation"
-	// value="classpath:spring/mybatis-config.xml" />
-	// </bean>
-	// <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-	// <constructor-arg index="0" ref="sqlSessionFactory" />
-	// </bean>
 }
