@@ -2,6 +2,7 @@ package com.smartool.service.dao;
 
 import java.util.List;
 
+import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.Event;
 
 public interface EventDao {
@@ -11,4 +12,6 @@ public interface EventDao {
 	Event createEvent(Event event);
 	
 	Event updateEvent(Event event);
+	
+	Attendee enroll(Attendee attendee);
 }

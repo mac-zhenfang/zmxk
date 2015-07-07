@@ -1,8 +1,10 @@
 package com.smartool.common.dto;
 
-public class Attendee {
+public class Attendee extends BaseDateTrackingBean {
 	
-	private String attendeeId;
+	private String id;
+	
+	private String kidId;
 	
 	private String userId;
 	
@@ -11,15 +13,16 @@ public class Attendee {
 	private float score;
 	
 	private int rank;
-	
-	private long createTime;
 
-	public String getAttendeeId() {
-		return attendeeId;
+	public Attendee() {
+	}
+	
+	public String getId() {
+		return id;
 	}
 
-	public void setAttendeeId(String attendeeId) {
-		this.attendeeId = attendeeId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getUserId() {
@@ -54,11 +57,11 @@ public class Attendee {
 		this.rank = rank;
 	}
 
-	public long getCreateTime() {
-		return createTime;
+	public String getKidId() {
+		return kidId;
 	}
 
-	public void setCreateTime(long createTime) {
-		this.createTime = createTime;
+	public void setKidId(String kidId) {
+		this.kidId = kidId;
 	}
 }

@@ -167,7 +167,7 @@
 												});
 									}
 
-									this.getUserForEnroll = function(
+									this.getUser = function(
 											giveUserId) {
 										var defer = $q.defer();
 										usersResource
@@ -343,15 +343,17 @@
 										//TODO get from user api
 										if (!angular.isUndefined($scope.userId)) {
 											//"9c1cc2b5-ee76-41f2-bd92-a1161a92dda6" - Mac Fang
-											var user = userService.getUserForEnroll(
-													$scope.userId);
-											console.log(user);
-											$scope.enroll_form_data.userId = user.id;
-											$scope.enroll_form_data.name = user.name
-											$scope.enroll_form_data.mobileNum = user.mobileNum;
-											$scope.enroll_form_data.kidName = "弘毅";
-											$scope.enroll_form_data.wcId = user.wcId;
-											
+											userService.getUser(
+													$scope.userId).then(function(user){
+														//TODO, 
+														$scope.enroll_form_data.userId = user.id;
+														$scope.enroll_form_data.name = user.name
+														$scope.enroll_form_data.mobileNum = user.mobileNum;
+														$scope.enroll_form_data.kidName = "弘毅";
+														$scope.enroll_form_data.wcId = user.wcId;
+													},function(error){
+														//TODO
+													});											
 										}
 										if (!$scope.noUserIdPassed()) {
 											$scope.totalSteps = 2;
@@ -362,14 +364,26 @@
 										}
 										
 										//TODO : call eventServie to list events 
-										var events = eventService.list();
-										console.log("~~~~");
-										console.log(events);
+										eventService.list().then(function(data){
+											console.log("then events ~~~");
+											$scope.events = data;
+											
+											//console.log($scope.events);
+
+										}, function(error) {
+								            //TODO
+								        });
+									
 									}
 									
 									$scope.noUserIdPassed = function() {
 										return angular.isUndefined($scope.userId);
 									}
+									
+									$scope.formatDate = function(timestamp){
+								          var dateOut = new Date(timestamp);
+								          return dateOut;
+								    };
 
 									$scope.init();
 								} ]);

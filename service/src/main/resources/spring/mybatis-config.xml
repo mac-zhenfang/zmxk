@@ -12,6 +12,8 @@
 	<mappers>
 		<mapper resource="mybatis.mapping/user.map.xml" />
 		<mapper resource="mybatis.mapping/event.map.xml" />
+		<mapper resource="mybatis.mapping/attendee.map.xml" />
+
 		<mapper resource="mybatis.mapping/securityCode.map.xml" />
 	</mappers>
 </configuration>

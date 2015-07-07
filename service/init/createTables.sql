@@ -63,6 +63,8 @@ CREATE TABLE `attendees` (
 	`kidId` varchar(36) NOT NULL,
 	`userId` varchar(36) NOT NULL,
 	`eventId` varchar(36) NOT NULL,
+	`score` float,
+	`rank` int,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
