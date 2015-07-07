@@ -106,7 +106,24 @@
 	<script src="js/custom.min.js"></script>
 	<script>
 		var currentModule = "users";
-		var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+		var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
+				$httpProvider) {
+			$httpProvider.interceptors.push(function($q) {
+				return {
+					'responseError' : function(response) {
+						if (response.status == "401") {
+							window.location = "login.html";
+							return;
+						}
+						
+						if (response.data.error.message[0]) {
+							alert(response.data.error.message[0]);
+						}
+						return $q.reject(response);
+					}
+				};
+			});
+		});
 		// Event Service
 		zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				function($resource, zmxkConfig, $q) {
@@ -367,9 +384,11 @@
 															attendee)
 													.then(
 															function(data) {
-																returnAttendees.push(data);
-																if(returnAttendees.length == $scope.enroll_form_data.kids.length) {
-																	console.log("successs !");
+																returnAttendees
+																		.push(data);
+																if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
+																	console
+																			.log("successs !");
 																}
 															}, function(error) {
 																//TODO
@@ -447,15 +466,14 @@
 														});
 
 									}
-									
-									
+
 									$scope.noUserIdPassed = function() {
 										return angular
 												.isUndefined($scope.userId);
 									}
-									
-									$scope.noUserIdPassedValue = $scope.noUserIdPassed();
 
+									$scope.noUserIdPassedValue = $scope
+											.noUserIdPassed();
 
 									$scope.formatDate = function(timestamp) {
 										var dateOut = new Date(timestamp);
