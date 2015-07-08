@@ -49,7 +49,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// TODO clear thread local
+		UserSessionManager.setSessionUser(null);
 		System.out.println("Pre-handle: " + request.getContextPath() + ", handler: " + handler);
 		if (handler instanceof HandlerMethod) {
 			HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -58,13 +58,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			}
 		}
 		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (Constants.KEY_FOR_USER_TOKEN.equals(cookie.getName())) {
-				String value = cookie.getValue();
-				User user = cookieToUser(value);
-				if (user != null) {
-					UserSessionManager.setSessionUser(user);
-					return true;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (Constants.KEY_FOR_USER_TOKEN.equals(cookie.getName())) {
+					String value = cookie.getValue();
+					User user = cookieToUser(value);
+					if (user != null) {
+						UserSessionManager.setSessionUser(user);
+						// Refresh token
+						addCookieIntoResponse(response, user);
+						return true;
+					}
 				}
 			}
 		}
@@ -72,9 +76,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		throw new SmartoolException(401, ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
 	}
 
+	public void addCookieIntoResponse(HttpServletResponse response, User user) {
+		String cookieValue = userToCookie(user);
+		Cookie newCookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
+		newCookie.setMaxAge(Constants.SESSION_AGE);
+		newCookie.setPath("/");
+		response.addCookie(newCookie);
+	}
+
 	private User cookieToUser(String cookieValue) {
 		try {
-			UserSession userSession = objectMapper.readValue(cookieValue, UserSession.class);
+			UserSession userSession = objectMapper.readValue(encrypter.decrypt(cookieValue), UserSession.class);
 			if (userSession.getUserId() != null) {
 				User user = userDao.getUserById(userSession.getUserId());
 				return user;
@@ -112,18 +124,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		User user = UserSessionManager.getSessionUser();
-		if (user != null) {
-			String cookieValue = userToCookie(user);
-			response.setHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN + "=" + cookieValue + ";Max-Age=2592000;");
-		}
+		UserSessionManager.clearSessionUser();
 		System.out.println("Post-handle: " + handler);
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("After-completion: " + handler);
 		if (ex != null) {
 			Map<String, String> map = new HashMap<String, String>();

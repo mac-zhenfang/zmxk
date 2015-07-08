@@ -3,6 +3,8 @@ package com.smartool.service.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +43,10 @@ public class UserController extends BaseController {
 	private UserDao userDao;
 	@Autowired
 	private SecurityCodeDao securityCodeDao;
+	@Autowired
+	private AuthenticationInterceptor authenticationInterceptor;
+	@Autowired
+	private HttpServletResponse httpServletResponse;
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody User getUser(@PathVariable String userId,
@@ -55,12 +61,12 @@ public class UserController extends BaseController {
 		return users;
 	}
 
+	@Transactional
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	@Transactional
 	public User login(@RequestBody User user) {
 		// TODO
-		UserSessionManager.setSessionUser(user);
+//		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return null;
 	}
 
@@ -81,9 +87,10 @@ public class UserController extends BaseController {
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
+		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
-		UserSessionManager.setSessionUser(createdUser);
+		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
 	}
 
@@ -101,6 +108,9 @@ public class UserController extends BaseController {
 		}
 		if (CommonUtils.isEmptyString(user.getLocation())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(user.getPassword())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
 		// Phone number/ WC id not registered before
 		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
