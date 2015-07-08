@@ -109,9 +109,10 @@ public class UserController extends BaseController {
 		if (CommonUtils.isEmptyString(user.getLocation())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
 		}
-		if (CommonUtils.isEmptyString(user.getPassword())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
-		}
+		// if (CommonUtils.isEmptyString(user.getPassword())) {
+		// throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+		// ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
+		// }
 		// Phone number/ WC id not registered before
 		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
