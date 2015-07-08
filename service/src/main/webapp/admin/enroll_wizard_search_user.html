@@ -26,9 +26,10 @@
 					<tr>
 						<td class="center">{{found_user.name}}</td>
 						<td class="center">{{found_user.mobileNum}}</td>
-						<td class="center"><a class="btn btn-info" href="#"> <i
-								class="icon-choose" ng-click="chooseUser()">选择</i>
-						</a></td>
+						<td class="center"><label class="radio"> <input
+									type="radio" name="optionsRadios" id="optionsRadios1"
+									checked="" value="{{found_user}}" ng-model="value" ng-click='chooseUser(value)'/>
+							</label></td>
 					</tr>
 				</tbody>
 			</table>

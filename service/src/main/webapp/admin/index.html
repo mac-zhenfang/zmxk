@@ -404,14 +404,20 @@
 										console
 												.log($scope.enroll_form_data.userQueryString)
 										//TODO from user API
-										$scope.found_user.id = "12313123";
+										$scope.found_user.id = "5405789d-3de5-4072-8fde-e6f5f259c726";
 										$scope.found_user.name = "Mac Fang";
 										$scope.found_user.mobileNum = "13706516916";
+										$scope.found_user.wcId = "testWcId";
 									}
+									
 
-									$scope.chooseUser = function() {
-										$scope.enroll_form_data.name = $scope.found_user.name;
-										$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
+
+									$scope.chooseUser = function(found_user) {
+										console.log(found_user);
+										$scope.enroll_form_data.name = found_user.name;
+										$scope.enroll_form_data.mobileNum = found_user.mobileNum;
+										$scope.enroll_form_data.id = found_user.id;
+										$scope.enroll_form_data.wcId = found_user.wcId;
 									}
 
 									$scope.init = function() {
