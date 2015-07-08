@@ -3,6 +3,7 @@ package com.smartool.service;
 public class ErrorMessages {
 	public static final String WRONG_ERROR_CODE_ERROR_MESSAGE = "验证码错误";
 	public static final String WRONG_USER_NAME_ERROR_MESSAGE = "请输入有效的用户名";
+	public static final String WRONG_PASSWORD_ERROR_MESSAGE = "请输入有效的密码";
 	public static final String WRONG_MOBILE_NUMBER_ERROR_MESSAGE = "请输入有效的手机号码";
 	public static final String WRONG_WC_ID_ERROR_MESSAGE = "请输入有效的微信号码";
 	public static final String WRONG_LOCATION_ERROR_MESSAGE = "请输入有效的地址";

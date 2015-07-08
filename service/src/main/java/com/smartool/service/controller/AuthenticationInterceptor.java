@@ -49,7 +49,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// TODO clear thread local
+		UserSessionManager.setSessionUser(null);
 		System.out.println("Pre-handle: " + request.getContextPath() + ", handler: " + handler);
 		if (handler instanceof HandlerMethod) {
 			HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -58,13 +58,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			}
 		}
 		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (Constants.KEY_FOR_USER_TOKEN.equals(cookie.getName())) {
-				String value = cookie.getValue();
-				User user = cookieToUser(value);
-				if (user != null) {
-					UserSessionManager.setSessionUser(user);
-					return true;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (Constants.KEY_FOR_USER_TOKEN.equals(cookie.getName())) {
+					String value = cookie.getValue();
+					User user = cookieToUser(value);
+					if (user != null) {
+						UserSessionManager.setSessionUser(user);
+						return true;
+					}
 				}
 			}
 		}
@@ -115,15 +117,22 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		User user = UserSessionManager.getSessionUser();
 		if (user != null) {
 			String cookieValue = userToCookie(user);
-			response.setHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN + "=" + cookieValue + ";Max-Age=2592000;");
+			Cookie cookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
+			cookie.setMaxAge(Constants.SESSION_AGE);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+			response.addHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN +
+			 "=" + cookieValue + ";Max-Age=2592000;");
+			// response.setHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN +
+			// "=" + cookieValue + ";Max-Age=2592000;");
 		}
 		System.out.println("Post-handle: " + handler);
+//		super.postH
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		// TODO Auto-generated method stub
 		System.out.println("After-completion: " + handler);
 		if (ex != null) {
 			Map<String, String> map = new HashMap<String, String>();

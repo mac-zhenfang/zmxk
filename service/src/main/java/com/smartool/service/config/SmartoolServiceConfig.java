@@ -15,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -64,9 +65,14 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new SecurityCodeDaoImpl();
 	}
 
+	@Bean
+	public HandlerInterceptor getAuthenticationInterceptor() {
+		return new AuthenticationInterceptor();
+	}
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new AuthenticationInterceptor());
+		registry.addInterceptor(getAuthenticationInterceptor());
 	}
 
 	@Bean
