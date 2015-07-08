@@ -68,9 +68,10 @@ public class UserController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User login(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
 		if (securityCode == null) {
-			createCodeForLogin(user.getMobileNum());
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
-					ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+			validateMobileNumberForLogin(user.getMobileNum());
+			String securityCodeString = createCodeForLogin(user.getMobileNum());
+			// TODO Temporary solution before implement send code though SMS
+			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
 		}
 
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
@@ -97,9 +98,10 @@ public class UserController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User register(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
 		if (securityCode == null) {
-			createCodeForRegister(user.getMobileNum());
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
-					ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+			validateMobileNumberForRegister(user.getMobileNum());
+			String securityCodeString = createCodeForRegister(user.getMobileNum());
+			// TODO Temporary solution before implement send code though SMS
+			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
 		}
 
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
@@ -113,6 +115,30 @@ public class UserController extends BaseController {
 		securityCodeDao.remove(user.getMobileNum());
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
+	}
+
+	public boolean validateMobileNumberForRegister(String mobileNumber) {
+		if (CommonUtils.isEmptyString(mobileNumber)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
+		}
+		if (userDao.getUserByMobileNumber(mobileNumber) != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+		}
+		return true;
+	}
+
+	public boolean validateMobileNumberForLogin(String mobileNumber) {
+		if (CommonUtils.isEmptyString(mobileNumber)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
+		}
+		if (userDao.getUserByMobileNumber(mobileNumber) == null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.MOBILE_NUMBER_HAVNT_REGISTERED_ERROR_MESSAGE);
+		}
+		return true;
 	}
 
 	private boolean isUserValidForCreate(User user) {

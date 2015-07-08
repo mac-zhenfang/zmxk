@@ -80,7 +80,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		String cookieValue = userToCookie(user);
 		Cookie newCookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
 		newCookie.setMaxAge(Constants.SESSION_AGE);
-		// newCookie.setPath("/");
+		newCookie.setPath("/");
 		response.addCookie(newCookie);
 	}
 
