@@ -18,7 +18,7 @@
 
 
 		<collection property="attendees" ofType="com.smartool.common.dto.Attendee">
-			<id property="attendeeId" column="attendeeId" />
+			<id property="id" column="attendeeId" />
 			<result property="userId" column="userId" />
 		</collection>
 	</resultMap>
@@ -27,7 +27,7 @@
 		e.name as eventName, t.name as eventsType, e.id as eventId, t.id as
 		eventsTypeId, e.quota as quota, a.id as attendeeId, a.userId as
 		userId, e.createdTime as createdTime, e.lastModifiedTime as
-		lastModifiedTime from events e, eventsType t, attendees a where
+		lastModifiedTime from events e, eventTypes t, attendees a where
 		e.eventTypeId=t.id and a.eventId = e.id
 	</select>
 

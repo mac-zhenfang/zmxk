@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.Event;
 import com.smartool.service.CommonUtils;
+import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 
 @RestController
@@ -21,6 +22,9 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private EventDao eventDao;
+	
+	@Autowired
+	private AttendeeDao attendeeDao;
 
 	/**
 	 * List
@@ -43,7 +47,7 @@ public class EventController extends BaseController {
 		attendee.setId(CommonUtils.getRandomUUID());
 		//FIXME: check Kid/User/Event if valid
 		attendee.setEventId(eventId);
-		Attendee createdAttendee = eventDao.enroll(attendee);
+		Attendee createdAttendee = attendeeDao.enroll(attendee);
 		return createdAttendee;
 	}
 	/**

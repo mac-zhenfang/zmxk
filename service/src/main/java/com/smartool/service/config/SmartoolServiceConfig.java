@@ -22,6 +22,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.smartool.service.Encrypter;
 import com.smartool.service.controller.AuthenticationInterceptor;
+import com.smartool.service.dao.AttendeeDao;
+import com.smartool.service.dao.AttendeeDaoImpl;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
 import com.smartool.service.dao.KidDao;
@@ -58,6 +60,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
+	}
+	
+	@Bean
+	public AttendeeDao getAttendeeDao() {
+		return new AttendeeDaoImpl();
 	}
 
 	@Bean

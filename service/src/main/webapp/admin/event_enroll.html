@@ -22,7 +22,7 @@
 			<!--  -->
 			<div ng-if="noUserIdPassed()" class="step-pane active"
 				ng-include="'enroll_wizard_search_user.html'" id="{{noUserIdPassed() ? 'step1' : ' '}}"></div>
-			<div class="step-pane active" 
+			<div ng-class="{'step-pane active': noUserIdPassed() == false, 'step-pane': noUserIdPassed() == true}" 
 				ng-include="'enroll_wizard_show_user_info.html'" id="{{noUserIdPassed() ? 'step2' : 'step1'}}"></div>
 			<div class="step-pane"
 				ng-include="'enroll_wizard_list_events.html'"  id="{{noUserIdPassed() ? 'step3' : 'step2'}}"></div>

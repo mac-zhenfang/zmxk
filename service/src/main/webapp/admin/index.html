@@ -106,25 +106,62 @@
 	<script src="js/custom.min.js"></script>
 	<script>
 		var currentModule = "users";
-		var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+		var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
+				$httpProvider) {
+			$httpProvider.interceptors.push(function($q) {
+				return {
+					'responseError' : function(response) {
+						if (response.status == "401") {
+							window.location = "login.html";
+							return;
+						}
+						
+						if (response.data.error.message[0]) {
+							alert(response.data.error.message[0]);
+						}
+						return $q.reject(response);
+					}
+				};
+			});
+		});
 		// Event Service
-		zmxk.service('eventService',['$resource', 'zmxkConfig', '$q', function($resource, zmxkConfig, $q){
-			var eventResource = $resource(
-					zmxkConfig.event_rest_uri,
-					{
+		zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
+				function($resource, zmxkConfig, $q) {
+					var eventResource = $resource(zmxkConfig.event_rest_uri, {
 						eventId : '@id'
+					}, {
+						saveAttendee : {
+							url : zmxkConfig.event_add_attendee_uri,
+							method : "POST",
+							headers : {
+								'Content-Type' : 'application/json'
+							}
+						}
 					})
-			this.list = function() {
-				var defer = $q.defer();
-				eventResource
-				.query(function(data,headers) {
-					defer.resolve(data);
-				},function(data,headers) {
-					defer.reject(data);
-				});
-				return defer.promise;
-			}
-		}]);
+					this.list = function() {
+						var defer = $q.defer();
+						eventResource.query(function(data, headers) {
+							defer.resolve(data);
+						}, function(data, headers) {
+							defer.reject(data);
+						});
+						return defer.promise;
+					}
+
+					this.addAttendee = function(eventId, attendeeData) {
+						var defer = $q.defer();
+						eventResource.saveAttendee({
+							eventId : eventId
+						}, attendeeData, function(body, headers) {
+							console.log(body.data);
+							defer.resolve(body);
+						}, function(body, headers) {
+							console.log(body.data);
+							defer.reject(body);
+						})
+						return defer.promise;
+					}
+				} ]);
 		// User Service 
 		zmxk
 				.service(
@@ -167,33 +204,16 @@
 												});
 									}
 
-									this.getUser = function(
-											giveUserId) {
+									this.getUser = function(giveUserId) {
 										var defer = $q.defer();
-										usersResource
-												.get(
-														{
-															userId : giveUserId
-														},
-														function(user, headers) {
-															console.log(user.data);
-
-															/*enrollScope.enroll_form_data.userId = user.id;
-															enrollScope.enroll_form_data.name = user.name
-															enrollScope.enroll_form_data.mobileNum = user.mobileNum;
-															enrollScope.enroll_form_data.kidName = "弘毅";
-															enrollScope.enroll_form_data.wcId = user.wcId;*/
-															defer.resolve(user);
-														},function(user, headers) {
-															/*enrollScope.enroll_form_data.userId = user.id;
-															enrollScope.enroll_form_data.name = user.name
-															enrollScope.enroll_form_data.mobileNum = user.mobileNum;
-															enrollScope.enroll_form_data.kidName = "弘毅";
-															enrollScope.enroll_form_data.wcId = user.wcId;
-															console.log(user);*/
-															defer.reject(user);
-														});
-										return defer.promise; 
+										usersResource.get({
+											userId : giveUserId
+										}, function(user, headers) {
+											defer.resolve(user);
+										}, function(user, headers) {
+											defer.reject(user);
+										});
+										return defer.promise;
 									}
 
 								} ]);
@@ -202,12 +222,16 @@
 
 		});
 
-		zmxk.value('zmxkConfig', {
-			user_login_uri : "/service/api/v1/users/login",
-			user_logout_uri : "/service/api/v1/users/logout",
-			user_rest_uri : "/service/smartool/api/v1/users/:userId",
-			event_rest_uri: "/service/smartool/api/v1/events/:eventId"
-		});
+		zmxk
+				.value(
+						'zmxkConfig',
+						{
+							user_login_uri : "/service/api/v1/users/login",
+							user_logout_uri : "/service/api/v1/users/logout",
+							user_rest_uri : "/service/smartool/api/v1/users/:userId",
+							event_rest_uri : "/service/smartool/api/v1/events/:eventId",
+							event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees"
+						});
 
 		zmxk.config([ '$resourceProvider', function($resourceProvider) {
 			// Don't strip trailing slashes from calculated URLs
@@ -220,7 +244,7 @@
 				'userService',
 				function($scope, $location, userService) {
 					console.log(userService);
-					$scope.enroll_form_data = {};
+
 					$scope.$location = $location;
 
 					$scope.userId = $scope.$location.search().userId;
@@ -237,7 +261,6 @@
 						case "eventEnroll":
 							returnPage = "event_enroll.html";
 							break
-
 						}
 						return returnPage;
 					}
@@ -279,25 +302,46 @@
 								'userService',
 								'eventService',
 								function($scope, userService, eventService) {
+									$scope.enroll_form_data = {};
+									$scope.enroll_form_data.kids = [];
+									$scope.kidsToShow = [];
 									$scope.found_user = {};
 									$scope.totalSteps = 0;
 									$scope.currentStep = 1;
 									$scope.steps = [];
 									$scope.previous_label = "上一步";
 									$scope.next_label = "下一步";
-									$scope.events = [{
-										eventTime: "2015/07/04",
+									$scope.events = [ {
+										eventTime : "2015/07/04",
 										currentAttendeeNum : 15,
-										eventId: "12345"
-									},{
-										eventTime: "2015/07/05",
+										eventId : "12345"
+									}, {
+										eventTime : "2015/07/05",
 										currentAttendeeNum : 16,
-										eventId: "67890"
-									},{
-										eventTime: "2015/07/06",
+										eventId : "67890"
+									}, {
+										eventTime : "2015/07/06",
 										currentAttendeeNum : 17,
-										eventId: "24680"
-									}];
+										eventId : "24680"
+									} ];
+									//FIXME
+									$scope.kids_school_options = [ {
+										value : 0,
+										label : "幼儿园"
+									}, {
+										value : 1,
+										label : "小学"
+									}, {
+										value : 2,
+										label : "未上幼儿园"
+									} ]
+
+									$scope.addChild = function() {
+										var kid = {};
+										kid["existed"] = false;
+										$scope.kidsToShow.push(kid);
+									}
+
 									$scope.selectStep = function(step) {
 
 										if ($scope.currentStep > 0
@@ -305,7 +349,6 @@
 											$scope.currentStep = $scope.currentStep
 													+ step;
 										}
-
 										//change label
 										if ($scope.currentStep == $scope.totalSteps) {
 											$scope.next_label = "提交";
@@ -313,16 +356,50 @@
 											$scope.next_label = "下一步";
 										}
 									}
-									
+
 									$scope.selectEvent = function(eventId) {
 										$scope.enroll_form_data.eventId = eventId;
 										console.log($scope.enroll_form_data);
 									}
 
 									$scope.processForm = function() {
-										console.log($scope.enroll_form_data);
+										for (var i = 0; i < $scope.kidsToShow.length; i++) {
+											var kid = $scope.kidsToShow[i];
+											console.log(kid);
+											if (kid.selected) {
+												$scope.enroll_form_data.kids
+														.push(kid);
+											}
+										}
+										//TODO call Kid API to create Kid
+										var returnAttendees = [];
+										for (var j = 0; j < $scope.enroll_form_data.kids.length; j++) {
+											var kid = $scope.enroll_form_data.kids[j];
+											var attendee = {};
+											attendee["kidId"] = kid.id;
+											attendee["userId"] = kid.userId;
+											eventService
+													.addAttendee(
+															$scope.enroll_form_data.eventId,
+															attendee)
+													.then(
+															function(data) {
+																returnAttendees
+																		.push(data);
+																if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
+																	console
+																			.log("successs !");
+																}
+															}, function(error) {
+																//TODO
+															})
+
+										}
+
+										//console.log($scope.enroll_form_data);
 
 									}
+
 									$scope.searchUser = function() {
 										console
 												.log($scope.enroll_form_data.userQueryString)
@@ -336,24 +413,34 @@
 										$scope.enroll_form_data.name = $scope.found_user.name;
 										$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
 									}
-									
-									
 
 									$scope.init = function() {
 										//TODO get from user api
 										if (!angular.isUndefined($scope.userId)) {
 											//"9c1cc2b5-ee76-41f2-bd92-a1161a92dda6" - Mac Fang
-											userService.getUser(
-													$scope.userId).then(function(user){
-														//TODO, 
-														$scope.enroll_form_data.userId = user.id;
-														$scope.enroll_form_data.name = user.name
-														$scope.enroll_form_data.mobileNum = user.mobileNum;
-														$scope.enroll_form_data.kidName = "弘毅";
-														$scope.enroll_form_data.wcId = user.wcId;
-													},function(error){
-														//TODO
-													});											
+											userService
+													.getUser($scope.userId)
+													.then(
+															function(user) {
+
+																if (!angular
+																		.isUndefined(user.kids)) {
+
+																	for (var i = 0; i < user.kids.length; i++) {
+																		var kid = user.kids[i];
+																		kid["existed"] = true;
+																		$scope.kidsToShow
+																				.push(kid);
+																	}
+																}
+																//TODO, 
+																$scope.enroll_form_data.userId = user.id;
+																$scope.enroll_form_data.name = user.name
+																$scope.enroll_form_data.mobileNum = user.mobileNum;
+																$scope.enroll_form_data.wcId = user.wcId;
+															}, function(error) {
+																//TODO
+															});
 										}
 										if (!$scope.noUserIdPassed()) {
 											$scope.totalSteps = 2;
@@ -362,28 +449,36 @@
 											$scope.totalSteps = 3;
 											$scope.steps = [ 1, 2, 3 ];
 										}
-										
-										//TODO : call eventServie to list events 
-										eventService.list().then(function(data){
-											console.log("then events ~~~");
-											$scope.events = data;
-											
-											//console.log($scope.events);
 
-										}, function(error) {
-								            //TODO
-								        });
-									
+										//TODO : call eventServie to list events 
+										eventService
+												.list()
+												.then(
+														function(data) {
+															console
+																	.log("then events ~~~");
+															$scope.events = data;
+
+															//console.log($scope.events);
+
+														}, function(error) {
+															//TODO
+														});
+
 									}
-									
+
 									$scope.noUserIdPassed = function() {
-										return angular.isUndefined($scope.userId);
+										return angular
+												.isUndefined($scope.userId);
 									}
-									
-									$scope.formatDate = function(timestamp){
-								          var dateOut = new Date(timestamp);
-								          return dateOut;
-								    };
+
+									$scope.noUserIdPassedValue = $scope
+											.noUserIdPassed();
+
+									$scope.formatDate = function(timestamp) {
+										var dateOut = new Date(timestamp);
+										return dateOut;
+									};
 
 									$scope.init();
 								} ]);

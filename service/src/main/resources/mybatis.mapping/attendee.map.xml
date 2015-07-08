@@ -8,4 +8,11 @@
 		userId,eventId, createdTime,lastModifiedTime) values
 		(#{id},#{kidId},#{userId},#{eventId},now(),now())
 	</select>
+		<select id="listAll" resultType="com.smartool.common.dto.Attendee">
+		select * from attendees
+	</select>
+	<select id="getById" parameterType="String"
+		resultType="com.smartool.common.dto.Attendee">
+		select * from attendees where id = #{id}
+	</select>
 </mapper>

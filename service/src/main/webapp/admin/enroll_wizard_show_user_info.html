@@ -13,16 +13,53 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="inputWarning">小孩姓名</label>
-		<div class="controls">
-			<input type="text" ng-model="enroll_form_data.kidName" />
-		</div>
-	</div>
-	<div class="control-group">
 		<label class="control-label" for="inputWarning">微信号</label>
 		<div class="controls">
 			<input type="text" ng-model="enroll_form_data.wcId" />
 		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="button" ng-click="addChild()">添加小孩信息</button>
+		</div>
+	</div>
+	<div class="box-content">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>姓名</th>
+					<th>学校类型</th>
+					<th>学校名</th>
+					<th>选择</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="kid in kidsToShow">
+					<td class="center">
+						<div class="controls">
+							<input type="text" class="form-control" ng-model="kid.name" />
+						</div>
+					</td>
+					<td class="center">
+						<div class="controls">
+							<select class="selectpicker form-control" data-style="btn-info"
+								ng-model="kid.schoolType"  ng-init="kid.schoolType == kids_school_options[0]"   ng-options="option.value as option.label for option in kids_school_options">
+							</select>
+						</div>
+					</td>
+					<td class="center">
+						<div class="controls">
+							<input type="text" class="form-control" ng-model="kid.schoolName"/>
+						</div>
+					</td>
+					<td class="center"><label class="checkbox"> 
+					<input
+							type="checkbox" ng-model="kid.selected"
+							 ng-true-value="{{true}}" ng-false-value="{{false}}"/>
+					</label></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </fieldset>
 </form>
