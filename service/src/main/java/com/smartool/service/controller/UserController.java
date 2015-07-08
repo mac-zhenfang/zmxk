@@ -106,9 +106,9 @@ public class UserController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
 		}
-		if (CommonUtils.isEmptyString(user.getWcId())) {
+		/*if (CommonUtils.isEmptyString(user.getWcId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_WC_ID_ERROR_MESSAGE);
-		}
+		}*/
 		if (CommonUtils.isEmptyString(user.getLocation())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
 		}
