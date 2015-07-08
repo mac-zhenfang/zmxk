@@ -88,6 +88,7 @@ CREATE TABLE `securityCodes` (
 	`id` int(20) NOT NULL AUTO_INCREMENT,
 	`securityCode` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`mobileNumber` varchar(36) NOT NULL,
+	`remoteAddr` varchar(255) NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`),

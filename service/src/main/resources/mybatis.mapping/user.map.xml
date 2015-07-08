@@ -14,23 +14,19 @@
 		resultType="com.smartool.common.dto.User">
 		select * from users where mobileNum = #{mobileNum}
 	</select>
-	<select id="getByWcId" parameterType="String"
-		resultType="com.smartool.common.dto.User">
-		select * from users where wcId = #{wcId}
-	</select>
 	<select id="create" parameterType="com.smartool.common.dto.User">
 		insert users (id, name,
-		mobileNum, wcId,location,
+		mobileNum, location,
 		roleId,status,createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{mobileNum},#{wcId},#{location},#{roleId},#{status},now(),now())
+		(#{id},#{name},#{mobileNum},#{location},#{roleId},#{status},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.User">
 		update users
 		set
 		name=#{name},
-		mobileNum=#{mobileNum}, wcId=#{wcId},
+		mobileNum=#{mobileNum},
 		location=#{location},
 		roleId=#{roleId}, status=#{status}
 		where id =

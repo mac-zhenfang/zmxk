@@ -43,28 +43,9 @@
 							<span class="input-group-addon">验证码</span> <input type="text"
 								class="form-control" ng-model="formData.code" placeholder="验证码" />
 						</div>
-						<div ng-show="currentStep == 2">
-							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-circle-o-notch"></i></span> <input type="text"
-									class="form-control" placeholder="用户名" ng-model="formData.name" />
-							</div>
-							
-							<div class="form-group input-group">
-								<span class="input-group-addon">@</span> <input type="text"
-									class="form-control" placeholder="微信ID"
-									ng-model="formData.wcId" />
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-life-bouy"></i></span> <input type="text"
-									class="form-control" placeholder="所在城市"
-									ng-model="formData.location" />
-							</div>
-						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<div ng-show="currentStep == 3">注册成功
+						<div ng-show="currentStep == 3">登录成功
 						<img src=""></img></div>
 					</form>
 				</div>
@@ -122,11 +103,11 @@
 		});
 		zmxk.controller('MainController', [ '$scope', function($scope) {
 			$scope.const = {};
-			$scope.const.registerTitle = '注册';
+			$scope.const.registerTitle = '登录';
 			$scope.const.mobile = '手机号码';
 			$scope.const.submit_send_verification = "发送验证码";
 			//$scope.const.submit_enter_verification = "输入验证码";
-			$scope.const.submit_register = "注册";
+			$scope.const.submit_register = "登录";
 			$scope.submit_label = $scope.const.submit_send_verification;
 
 			$scope.mobileVerifySent = false;
@@ -146,7 +127,7 @@
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
-											$scope.send_code_uri = "service/smartool/api/v1/users/register";
+											$scope.send_code_uri = "service/smartool/api/v1/users/login";
 											if($scope.currentStep == 2){
 												$scope.send_code_uri = $scope.send_code_uri+"?code="+$scope.formData.code;
 											}

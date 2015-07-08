@@ -4,18 +4,28 @@
 
 <mapper namespace="SECURITYCODE">
 	<select id="getByMobileNumber" resultType="com.smartool.common.dto.SecurityCode">
-		select * from securityCodes where mobileNumber = #{mobileNumber}
+		select * from
+		securityCodes where mobileNumber = #{mobileNumber}
+	</select>
+	<select id="getByRemoteAddr" resultType="com.smartool.common.dto.SecurityCode">
+		select * from
+		securityCodes where remoteAddr = #{remoteAddr}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.SecurityCode">
-		insert securityCodes (securityCode, mobileNumber, createdTime, lastModifiedTime)
-		values (#{securityCode},#{mobileNumber},now(),now())
+		insert securityCodes
+		(securityCode, mobileNumber, remoteAddr, createdTime,
+		lastModifiedTime)
+		values
+		(#{securityCode},#{mobileNumber},#{remoteAddr},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.SecurityCode">
 		update securityCodes
-		set securityCode=#{securityCode}
+		set
+		securityCode=#{securityCode}
 		where mobileNumber = #{mobileNumber};
 	</select>
 	<select id="remove" parameterType="String">
-		delete from securityCodes where mobileNumber = #{mobileNumber}
+		delete from securityCodes
+		where mobileNumber = #{mobileNumber}
 	</select>
 </mapper>

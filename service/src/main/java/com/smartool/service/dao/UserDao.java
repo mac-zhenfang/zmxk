@@ -11,8 +11,6 @@ public interface UserDao {
 
 	User getUserByMobileNumber(String mobileNumber);
 
-	User getUserByWcId(String wcId);
-
 	User updateUser(User user);
 
 	List<User> listAllUser();
