@@ -30,6 +30,7 @@ import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -59,6 +60,13 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
+		User sessionUser = UserSessionManager.getSessionUser();
+		if (sessionUser == null) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
+		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId())) {
+			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+		}
 		List<User> users = userDao.listAllUser();
 		return users;
 	}
@@ -226,12 +234,32 @@ public class UserController extends BaseController {
 		return securityCodeDao.getSecurityCodeByRemoteAddr(remoteAddr);
 	}
 
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
+	public User getUser(@PathVariable String userId) {
+		User sessionUser = UserSessionManager.getSessionUser();
+		if (sessionUser == null) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
+		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId()) && !sessionUser.getId().equals(userId)) {
+			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+		}
+		User user = userDao.getUserById(userId);
+		return user;
+	}
+
 	/**
 	 * Return the qrcode with url+token
 	 */
 	// TODO
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
+		User sessionUser = UserSessionManager.getSessionUser();
+		if (sessionUser == null) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
+		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId()) && !sessionUser.getId().equals(userId)) {
+			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId)
 				.withSize(800, 800).to(ImageType.PNG).writeTo(out);

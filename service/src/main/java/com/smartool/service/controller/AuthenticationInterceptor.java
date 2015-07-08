@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -73,7 +74,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 			}
 		}
 		// Shall do redirect?
-		throw new SmartoolException(401, ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
+		throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(), ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
 	}
 
 	public void addCookieIntoResponse(HttpServletResponse response, User user) {
