@@ -66,11 +66,23 @@ public class UserController extends BaseController {
 	@Transactional
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User login(@RequestBody User user) {
-		// TODO
-		// authenticationInterceptor.addCookieIntoResponse(httpServletResponse,
-		// createdUser);
-		return null;
+	public User login(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
+		if (securityCode == null) {
+			createCodeForLogin(user.getMobileNum());
+			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
+					ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+		}
+
+		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+		}
+		User existUser = userDao.getUserByMobileNumber(user.getMobileNum());
+		if (existUser != null) {
+			authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
+			return existUser;
+		}
+		throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
+				ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
 	}
 
 	/**
@@ -84,6 +96,12 @@ public class UserController extends BaseController {
 	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User register(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
+		if (securityCode == null) {
+			createCodeForRegister(user.getMobileNum());
+			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
+					ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+		}
+
 		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
@@ -106,23 +124,13 @@ public class UserController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
 		}
-		/*if (CommonUtils.isEmptyString(user.getWcId())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_WC_ID_ERROR_MESSAGE);
-		}*/
 		if (CommonUtils.isEmptyString(user.getLocation())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
 		}
-		// if (CommonUtils.isEmptyString(user.getPassword())) {
-		// throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-		// ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
-		// }
 		// Phone number/ WC id not registered before
 		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
-		}
-		if (userDao.getUserByWcId(user.getWcId()) != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WC_ID_ALREADY_USED_ERROR_MESSAGE);
 		}
 		if (user.getKids() != null && !user.getKids().isEmpty()) {
 			for (Kid kid : user.getKids()) {
@@ -152,22 +160,12 @@ public class UserController extends BaseController {
 				&& getSecurityCode.getSecurityCode().equals(securityCode);
 	}
 
-	/**
-	 * 1. Get the SMS verify code 2. Verify captcha
-	 */
-	@Transactional
-	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST)
-	public String createCode(@RequestParam(value = "mobileNum", required = false) String mobileNumber) {
-		User userByMobileNumber = userDao.getUserByMobileNumber(mobileNumber);
-		if (userByMobileNumber != null) {
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
-					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
-		}
-		SecurityCode existSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNumber);
+	private String createCodeForLogin(String mobileNumber) {
+		SecurityCode existSecurityCode = getExistedSecurityCode(mobileNumber);
 		if (existSecurityCode != null) {
 			Date lastModifiedTime = existSecurityCode.getLastModifiedTime();
 			if (System.currentTimeMillis() - lastModifiedTime.getTime() < 30000l) {
-				throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(),
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 						ErrorMessages.FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE);
 			} else {
 				existSecurityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
@@ -178,9 +176,28 @@ public class UserController extends BaseController {
 			SecurityCode securityCode = new SecurityCode();
 			securityCode.setMobileNumber(mobileNumber);
 			securityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
+			securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
 			securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
 			return securityCodeDao.create(securityCode).getSecurityCode();
 		}
+	}
+
+	private String createCodeForRegister(String mobileNumber) {
+		User userByMobileNumber = userDao.getUserByMobileNumber(mobileNumber);
+		if (userByMobileNumber != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
+		}
+		return createCodeForLogin(mobileNumber);
+	}
+
+	private SecurityCode getExistedSecurityCode(String mobileNumber) {
+		SecurityCode securityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNumber);
+		if (securityCode != null) {
+			return securityCode;
+		}
+		String remoteAddr = httpServletRequest.getRemoteAddr();
+		return securityCodeDao.getSecurityCodeByRemoteAddr(remoteAddr);
 	}
 
 	/**

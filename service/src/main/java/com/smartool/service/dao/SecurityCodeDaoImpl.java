@@ -15,6 +15,11 @@ public class SecurityCodeDaoImpl implements SecurityCodeDao {
 	}
 
 	@Override
+	public SecurityCode getSecurityCodeByRemoteAddr(String remoteAddr) {
+		return sqlSession.selectOne("SECURITYCODE.getByRemoteAddr", remoteAddr);
+	}
+
+	@Override
 	public SecurityCode create(SecurityCode securityCode) {
 		sqlSession.insert("SECURITYCODE.create", securityCode);
 		return sqlSession.selectOne("SECURITYCODE.getByMobileNumber", securityCode.getMobileNumber());

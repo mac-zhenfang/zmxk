@@ -7,7 +7,7 @@ public class User extends BaseDateTrackingBean {
 	private String name;
 	private String password;
 	private String mobileNum;
-	private String wcId;
+//	private String wcId;
 	private String location;
 	private String roleId;
 	private List<Kid> kids;
@@ -32,13 +32,13 @@ public class User extends BaseDateTrackingBean {
 	public User() {
 	}
 
-	public String getWcId() {
-		return wcId;
-	}
-
-	public void setWcId(String wcId) {
-		this.wcId = wcId;
-	}
+	// public String getWcId() {
+	// return wcId;
+	// }
+	//
+	// public void setWcId(String wcId) {
+	// this.wcId = wcId;
+	// }
 
 	public String getId() {
 		return id;

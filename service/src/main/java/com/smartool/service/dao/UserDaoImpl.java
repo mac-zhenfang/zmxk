@@ -70,14 +70,4 @@ public class UserDaoImpl implements UserDao {
 		}
 		return user;
 	}
-
-	@Override
-	public User getUserByWcId(String wcId) {
-		User user = sqlSession.selectOne("USER.getByWcId", wcId);
-		if (user != null) {
-			List<Kid> kids = kidDao.listByUserId(user.getId());
-			user.setKids(kids);
-		}
-		return user;
-	}
 }
