@@ -12,6 +12,10 @@ public class UserSessionManager {
 		localUser.set(user);
 	}
 
+	public static void clearSessionUser() {
+		localUser.set(null);
+	}
+
 	public static User getSessionUser() {
 		return localUser.get();
 	}

@@ -65,6 +65,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 					User user = cookieToUser(value);
 					if (user != null) {
 						UserSessionManager.setSessionUser(user);
+						// Refresh token
+						addCookieIntoResponse(response, user);
 						return true;
 					}
 				}
@@ -74,9 +76,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		throw new SmartoolException(401, ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
 	}
 
+	public void addCookieIntoResponse(HttpServletResponse response, User user) {
+		String cookieValue = userToCookie(user);
+		Cookie newCookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
+		newCookie.setMaxAge(Constants.SESSION_AGE);
+		newCookie.setPath("/");
+		response.addCookie(newCookie);
+	}
+
 	private User cookieToUser(String cookieValue) {
 		try {
-			UserSession userSession = objectMapper.readValue(cookieValue, UserSession.class);
+			UserSession userSession = objectMapper.readValue(encrypter.decrypt(cookieValue), UserSession.class);
 			if (userSession.getUserId() != null) {
 				User user = userDao.getUserById(userSession.getUserId());
 				return user;
@@ -114,20 +124,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		User user = UserSessionManager.getSessionUser();
-		if (user != null) {
-			String cookieValue = userToCookie(user);
-			Cookie cookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
-			cookie.setMaxAge(Constants.SESSION_AGE);
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			response.addHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN +
-			 "=" + cookieValue + ";Max-Age=2592000;");
-			// response.setHeader("Set-Cookie", Constants.KEY_FOR_USER_TOKEN +
-			// "=" + cookieValue + ";Max-Age=2592000;");
-		}
+		UserSessionManager.clearSessionUser();
 		System.out.println("Post-handle: " + handler);
-//		super.postH
 	}
 
 	@Override

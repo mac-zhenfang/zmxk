@@ -61,7 +61,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
 	}
-	
+
 	@Bean
 	public AttendeeDao getAttendeeDao() {
 		return new AttendeeDaoImpl();
@@ -73,7 +73,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean
-	public HandlerInterceptor getAuthenticationInterceptor() {
+	public AuthenticationInterceptor getAuthenticationInterceptor() {
 		return new AuthenticationInterceptor();
 	}
 

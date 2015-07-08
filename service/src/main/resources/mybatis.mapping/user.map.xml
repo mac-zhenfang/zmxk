@@ -20,12 +20,11 @@
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.User">
 		insert users (id, name,
-		password,
 		mobileNum, wcId,location,
 		roleId,status,createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{password},#{mobileNum},#{wcId},#{location},#{roleId},#{status},now(),now())
+		(#{id},#{name},#{mobileNum},#{wcId},#{location},#{roleId},#{status},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.User">
 		update users

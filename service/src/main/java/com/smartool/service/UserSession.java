@@ -4,6 +4,9 @@ public class UserSession {
 	private String userId;
 	private long lastActivateTime;
 
+	public UserSession() {
+	}
+
 	public UserSession(String userId, long lastActivateTime) {
 		this.userId = userId;
 		this.lastActivateTime = lastActivateTime;

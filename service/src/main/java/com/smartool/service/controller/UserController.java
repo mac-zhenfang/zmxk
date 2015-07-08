@@ -44,6 +44,8 @@ public class UserController extends BaseController {
 	@Autowired
 	private SecurityCodeDao securityCodeDao;
 	@Autowired
+	private AuthenticationInterceptor authenticationInterceptor;
+	@Autowired
 	private HttpServletResponse httpServletResponse;
 
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +66,7 @@ public class UserController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User login(@RequestBody User user) {
 		// TODO
-		UserSessionManager.setSessionUser(user);
+//		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return null;
 	}
 
@@ -88,7 +90,7 @@ public class UserController extends BaseController {
 		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
-		UserSessionManager.setSessionUser(createdUser);
+		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
 	}
 
