@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.Kid;
+import com.smartool.service.CommonUtils;
 import com.smartool.service.dao.KidDao;
 
 @RestController
@@ -25,6 +26,8 @@ public class KidController  extends BaseController {
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public Kid create(@RequestBody Kid kid, @PathVariable String userId) {
+		//isUserValidForCreate(user);
+		kid.setId(CommonUtils.getRandomUUID());
 		return kidDao.create(kid);
 	}
 	

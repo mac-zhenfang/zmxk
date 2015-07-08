@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Event extends BaseDateTrackingBean {
 	
-	private String eventId;
+	private String id;
 	
-	private String eventName;
+	private String name;
 	
 	private Date eventTime;
 		
@@ -15,26 +15,26 @@ public class Event extends BaseDateTrackingBean {
 	
 	private List<Attendee> attendees;
 	
-	private String eventsTypeId;
+	private String eventTypeId;
 	
-	private String eventsType;
+	private String eventType;
 	
-	private int siteId; //enum
+	private String siteId; //enum
 
-	public String getEventId() {
-		return eventId;
+	public String getId() {
+		return id;
 	}
 
-	public void setEventId(String eventId) {
-		this.eventId = eventId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	public String getEventName() {
-		return eventName;
+	public String getName() {
+		return name;
 	}
 
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getQuota() {
@@ -53,27 +53,27 @@ public class Event extends BaseDateTrackingBean {
 		this.attendees = attendees;
 	}
 
-	public String getEventsTypeId() {
-		return eventsTypeId;
+	public String getEventTypeId() {
+		return eventTypeId;
 	}
 
-	public void setEventsTypeId(String eventsTypeId) {
-		this.eventsTypeId = eventsTypeId;
+	public void setEventTypeId(String eventTypeId) {
+		this.eventTypeId = eventTypeId;
 	}
 
-	public String getEventsType() {
-		return eventsType;
+	public String getEventType() {
+		return eventType;
 	}
 
 	public void setEventType(String eventType) {
-		this.eventsType = eventType;
+		this.eventType = eventType;
 	}
 
-	public int getSiteId() {
+	public String getSiteId() {
 		return siteId;
 	}
 
-	public void setSiteId(int siteId) {
+	public void setSiteId(String siteId) {
 		this.siteId = siteId;
 	}
 

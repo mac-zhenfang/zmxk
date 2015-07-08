@@ -13,19 +13,23 @@
 					<thead>
 						<tr>
 							<th>赛事名</th>
+							<th>赛事类型</th>
 							<th>时间</th>
 							<th>目前人数</th>
+							<th>剩余</th>
 							<th>操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="event in events">
-							<td class="center">{{event.eventsType}}</td>
+							<td class="center">{{event.name}}</td>
+							<td class="center">{{event.eventType}}</td>
 							<td class="center">{{formatDate(event.eventTime) |  date:"MM/dd/yyyy, HH:mm" }}</td>
 							<td class="center">{{event.attendees.length}}</td>
+							<td class="center">{{event.quota - event.attendees.length}}</td>
 							<td class="center"><label class="radio"> <input
 									type="radio" name="optionsRadios" id="optionsRadios1"
-									checked="" value="{{event.eventId}}" ng-model="value" ng-click='selectEvent(value)'/>
+									checked="" value="{{event.id}}" ng-model="value" ng-click='selectEvent(value)'/>
 							</label></td>
 						</tr>
 					</tbody>

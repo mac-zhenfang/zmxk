@@ -1,5 +1,6 @@
 package com.smartool.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class EventController extends BaseController {
 	@Autowired
 	private AttendeeDao attendeeDao;
 
+
 	/**
 	 * List
 	 * 
@@ -33,9 +35,24 @@ public class EventController extends BaseController {
 	 */
 	@RequestMapping(value = "/events", method = RequestMethod.GET)
 	public List<Event> getEvents() {
-		return eventDao.listAllEvent();
+		List<Event> returnList = new ArrayList<Event>();
+		returnList = eventDao.listAllEvent();
+		for(Event event : returnList) {
+			List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(event.getId());
+			event.setAttendees(attendees);
+		}
+		return returnList;
 	}
-
+	
+	/**
+	 * Create Event
+	 * */
+	@RequestMapping(value = "/events", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = {MediaType.APPLICATION_JSON_VALUE })
+	public Event createEvent(@RequestBody Event event) {
+		event.setId(CommonUtils.getRandomUUID());
+		return eventDao.createEvent(event);
+	}
 	/**
 	 * Enroll user into one event The attendee is mirror of registered user
 	 * 

@@ -124,6 +124,23 @@
 				};
 			});
 		});
+		//Kid Service
+		zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q', function()($resource, zmxkConfig, $q) {
+			//kid_rest_uri
+			var kidResource = $resource(zmxkConfig.event_rest_uri, {userId:"@userId", kidId : "@kidId"});
+			
+			this.createKid = function(userId, kid) {
+				var defer = $q.defer();
+				kidResource.save({userId : userId}, kid, function(body, headers) {
+					console.log(body.data);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body.data);
+					defer.reject(body);
+				})
+				return defer.promise;
+			}
+		}]);
 		// Event Service
 		zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				function($resource, zmxkConfig, $q) {
@@ -230,7 +247,8 @@
 							user_logout_uri : "/service/api/v1/users/logout",
 							user_rest_uri : "/service/smartool/api/v1/users/:userId",
 							event_rest_uri : "/service/smartool/api/v1/events/:eventId",
-							event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees"
+							event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees",
+							kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
 						});
 
 		zmxk.config([ '$resourceProvider', function($resourceProvider) {
@@ -301,7 +319,8 @@
 								'$scope',
 								'userService',
 								'eventService',
-								function($scope, userService, eventService) {
+								'kidService',
+								function($scope, userService, eventService, kidService) {
 									$scope.enroll_form_data = {};
 									$scope.enroll_form_data.kids = [];
 									$scope.kidsToShow = [];
@@ -358,19 +377,31 @@
 									}
 
 									$scope.selectEvent = function(eventId) {
-										$scope.enroll_form_data.eventId = eventId;
-										console.log($scope.enroll_form_data);
+										$scope.enroll_form_data.id = eventId;
+										//console.log($scope.enroll_form_data);
 									}
 
 									$scope.processForm = function() {
+										var kidsToCreate = [];
 										for (var i = 0; i < $scope.kidsToShow.length; i++) {
 											var kid = $scope.kidsToShow[i];
-											console.log(kid);
+											//console.log(kid);
+											if(!kid.existed) {
+												kidService.createKid(kid).then(function(data){
+													
+												}, function(error) {
+													
+												});
+											}
 											if (kid.selected) {
 												$scope.enroll_form_data.kids
 														.push(kid);
 											}
+											
+											
 										}
+										console.log($scope.enroll_form_data.kids);
+										
 										//TODO call Kid API to create Kid
 										var returnAttendees = [];
 										for (var j = 0; j < $scope.enroll_form_data.kids.length; j++) {
@@ -380,7 +411,7 @@
 											attendee["userId"] = kid.userId;
 											eventService
 													.addAttendee(
-															$scope.enroll_form_data.eventId,
+															$scope.enroll_form_data.id,
 															attendee)
 													.then(
 															function(data) {
@@ -404,7 +435,7 @@
 										console
 												.log($scope.enroll_form_data.userQueryString)
 										//TODO from user API
-										$scope.found_user.id = "5405789d-3de5-4072-8fde-e6f5f259c726";
+										$scope.found_user.id = "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc";
 										$scope.found_user.name = "Mac Fang";
 										$scope.found_user.mobileNum = "13706516916";
 										$scope.found_user.wcId = "testWcId";
@@ -412,12 +443,11 @@
 									
 
 
-									$scope.chooseUser = function(found_user) {
-										console.log(found_user);
-										$scope.enroll_form_data.name = found_user.name;
-										$scope.enroll_form_data.mobileNum = found_user.mobileNum;
-										$scope.enroll_form_data.id = found_user.id;
-										$scope.enroll_form_data.wcId = found_user.wcId;
+									$scope.chooseUser = function() {
+										$scope.enroll_form_data.name = $scope.found_user.name;
+										$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
+										$scope.enroll_form_data.id = $scope.found_user.id;
+										$scope.enroll_form_data.wcId = $scope.found_user.wcId;
 									}
 
 									$scope.init = function() {
@@ -461,8 +491,6 @@
 												.list()
 												.then(
 														function(data) {
-															console
-																	.log("then events ~~~");
 															$scope.events = data;
 
 															//console.log($scope.events);

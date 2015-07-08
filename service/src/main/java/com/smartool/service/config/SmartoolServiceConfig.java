@@ -46,6 +46,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public Encrypter getEncrypter() {
 		return new Encrypter(env.getProperty("secure_algorithm"), env.getProperty("secure_key", defaultKey));
 	}
+	
 
 	@Bean
 	public UserDao getUserDao() {

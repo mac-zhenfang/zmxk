@@ -15,4 +15,11 @@
 		resultType="com.smartool.common.dto.Attendee">
 		select * from attendees where id = #{id}
 	</select>
+	
+	<select id="getByEventId" parameterType="String"
+		resultType="com.smartool.common.dto.Attendee">
+		select * from attendees where eventId = #{eventId}
+	</select>
+	
+	
 </mapper>
