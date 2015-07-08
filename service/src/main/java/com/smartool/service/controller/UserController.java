@@ -87,7 +87,7 @@ public class UserController extends BaseController {
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
-		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		//user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
@@ -103,9 +103,9 @@ public class UserController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
 		}
-		if (CommonUtils.isEmptyString(user.getWcId())) {
+		/*if (CommonUtils.isEmptyString(user.getWcId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_WC_ID_ERROR_MESSAGE);
-		}
+		}*/
 		if (CommonUtils.isEmptyString(user.getLocation())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
 		}
