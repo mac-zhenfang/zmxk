@@ -20,6 +20,7 @@
 <link href="css/style.min.css" rel="stylesheet" />
 <link href="css/style-responsive.min.css" rel="stylesheet" />
 <link href="css/retina.css" rel="stylesheet" />
+<link href="css/zmxk.css" rel="stylesheet" />
 <!-- end: CSS -->
 
 
@@ -77,6 +78,8 @@
 	<script src="js/jquery-1.10.2.min.js"></script>
 	<script src="js/angular.min.js"></script>
 	<script src="js/angular-resource.min.js"></script>
+	<script src="js/dialogs.min.js"></script>
+	<script src="js/ui-bootstrap-tpls-0.6.0.js"></script>
 	<script src="js/jquery-migrate-1.2.1.min.js"></script>
 	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
@@ -105,9 +108,9 @@
 	<script src="js/charts.min.js"></script>
 	<script src="js/custom.min.js"></script>
 	<script>
-		var currentModule = "users";
-		var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
-				$httpProvider) {
+		var currentModule;
+		var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap',
+				'dialogs' ], function($httpProvider) {
 			$httpProvider.interceptors.push(function($q) {
 				return {
 					'responseError' : function(response) {
@@ -115,7 +118,7 @@
 							window.location = "login.html";
 							return;
 						}
-						
+
 						if (response.data.error.message[0]) {
 							alert(response.data.error.message[0]);
 						}
@@ -124,23 +127,7 @@
 				};
 			});
 		});
-		//Kid Service
-		zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q', function()($resource, zmxkConfig, $q) {
-			//kid_rest_uri
-			var kidResource = $resource(zmxkConfig.event_rest_uri, {userId:"@userId", kidId : "@kidId"});
-			
-			this.createKid = function(userId, kid) {
-				var defer = $q.defer();
-				kidResource.save({userId : userId}, kid, function(body, headers) {
-					console.log(body.data);
-					defer.resolve(body);
-				}, function(body, headers) {
-					console.log(body.data);
-					defer.reject(body);
-				})
-				return defer.promise;
-			}
-		}]);
+
 		// Event Service
 		zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				function($resource, zmxkConfig, $q) {
@@ -260,9 +247,11 @@
 				'$scope',
 				'$location',
 				'userService',
-				function($scope, $location, userService) {
+				'$window',
+				'$dialogs',
+				function($scope, $location, userService, $window, $dialogs) {
 					console.log(userService);
-
+					currentModule = "userList";
 					$scope.$location = $location;
 
 					$scope.userId = $scope.$location.search().userId;
@@ -289,10 +278,62 @@
 
 						if (!angular
 								.isUndefined($scope.$location.search().page)) {
-							//console.log($scope.userId);
+							console.log($scope.$location);
 							currentModule = $scope.$location.search().page;
 						}
 					}
+
+					$scope.hoopPage = function(params) {
+						var givenParams = "?"
+						angular.forEach(params, function(value, key) {
+							givenParams += key;
+							givenParams += "=";
+							givenParams += value;
+							givenParams += "&";
+						});
+						givenParams = givenParams.substring(0,
+								givenParams.length - 1);
+						var uri = $scope.$location.absUrl();
+						var url = $scope.$location.url();
+						uri = uri.substring(0, uri.indexOf(url));
+						uri = uri + "/";
+						uri = uri + givenParams;
+						console.log(uri);
+						console.log(" jump ");
+						window.location.href = uri;
+						window.location.reload();
+						//window.location = uri;
+					}
+
+					$scope.launch = function(which, title, message, yesFun,
+							noFun) {
+						var dlg = null;
+						switch (which) {
+
+						// Error Dialog
+						case 'error':
+							dlg = $dialogs.error(message);
+							break;
+
+						/*
+						case 'wait':
+							dlg = $dialogs.wait(msgs[i++], progress);
+							fakeProgress();
+							break;
+							*/
+						// Notify Dialog
+						case 'notify':
+							dlg = $dialogs.notify(title, message);
+							break;
+
+						// Confirm Dialog
+						case 'confirm':
+							dlg = $dialogs.confirm(title, message);
+							dlg.result.then(yesFun, noFun);
+							break;
+						}
+						; // end switch
+					}; // end launch
 
 					$scope.init();
 				} ]);
@@ -319,8 +360,10 @@
 								'$scope',
 								'userService',
 								'eventService',
-								'kidService',
-								function($scope, userService, eventService, kidService) {
+								'$interval',
+								'$timeout',
+								function($scope, userService, eventService,
+										$interval, $timeout) {
 									$scope.enroll_form_data = {};
 									$scope.enroll_form_data.kids = [];
 									$scope.kidsToShow = [];
@@ -358,6 +401,7 @@
 									$scope.addChild = function() {
 										var kid = {};
 										kid["existed"] = false;
+										kid["userId"] = $scope.enroll_form_data.user.id;
 										$scope.kidsToShow.push(kid);
 									}
 
@@ -385,30 +429,26 @@
 										var kidsToCreate = [];
 										for (var i = 0; i < $scope.kidsToShow.length; i++) {
 											var kid = $scope.kidsToShow[i];
-											//console.log(kid);
-											if(!kid.existed) {
-												kidService.createKid(kid).then(function(data){
-													
-												}, function(error) {
-													
-												});
-											}
+											
 											if (kid.selected) {
 												$scope.enroll_form_data.kids
 														.push(kid);
 											}
-											
-											
 										}
-										console.log($scope.enroll_form_data.kids);
-										
+										//console.log($scope.enroll_form_data.kids);
+
 										//TODO call Kid API to create Kid
 										var returnAttendees = [];
 										for (var j = 0; j < $scope.enroll_form_data.kids.length; j++) {
 											var kid = $scope.enroll_form_data.kids[j];
 											var attendee = {};
-											attendee["kidId"] = kid.id;
-											attendee["userId"] = kid.userId;
+											attendee["userId"] = $scope.enroll_form_data.user.id;
+											if (!kid.existed) {
+												attendee["kid"] = kid;
+											} else {
+												attendee["kidId"] = kid.id;
+
+											}
 											eventService
 													.addAttendee(
 															$scope.enroll_form_data.id,
@@ -418,8 +458,26 @@
 																returnAttendees
 																		.push(data);
 																if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
-																	console
-																			.log("successs !");
+
+																	$scope
+																			.launch(
+																					"notify",
+																					"赛事录入成功",
+																					"请记住您的车次:1, 5秒钟后跳转",
+																					function(){},
+																					function(){});
+																	/**/
+																	$timeout(
+																			function() {
+																				$scope
+																						.hoopPage({
+																							"page" : "eventList",
+																							"eventId" : $scope.enroll_form_data.id
+																						})
+																			},
+																			5000)
+																	//var url = $scope.$location.$$host;
+
 																}
 															}, function(error) {
 																//TODO
@@ -440,20 +498,19 @@
 										$scope.found_user.mobileNum = "13706516916";
 										$scope.found_user.wcId = "testWcId";
 									}
-									
-
 
 									$scope.chooseUser = function() {
-										$scope.enroll_form_data.name = $scope.found_user.name;
+										$scope.enroll_form_data.user = $scope.found_user;
+										/*$scope.enroll_form_data.name = $scope.found_user.name;
 										$scope.enroll_form_data.mobileNum = $scope.found_user.mobileNum;
 										$scope.enroll_form_data.id = $scope.found_user.id;
-										$scope.enroll_form_data.wcId = $scope.found_user.wcId;
+										$scope.enroll_form_data.wcId = $scope.found_user.wcId;*/
 									}
 
 									$scope.init = function() {
 										//TODO get from user api
 										if (!angular.isUndefined($scope.userId)) {
-											//"9c1cc2b5-ee76-41f2-bd92-a1161a92dda6" - Mac Fang
+											//"dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc" - Mac Fang
 											userService
 													.getUser($scope.userId)
 													.then(
@@ -469,11 +526,11 @@
 																				.push(kid);
 																	}
 																}
-																//TODO, 
-																$scope.enroll_form_data.userId = user.id;
+																$scope.enroll_form_data.user = user;
+																/*$scope.enroll_form_data.id = user.id;
 																$scope.enroll_form_data.name = user.name
 																$scope.enroll_form_data.mobileNum = user.mobileNum;
-																$scope.enroll_form_data.wcId = user.wcId;
+																$scope.enroll_form_data.wcId = user.wcId;*/
 															}, function(error) {
 																//TODO
 															});
@@ -487,17 +544,15 @@
 										}
 
 										//TODO : call eventServie to list events 
-										eventService
-												.list()
-												.then(
-														function(data) {
-															$scope.events = data;
+										eventService.list().then(
+												function(data) {
+													$scope.events = data;
 
-															//console.log($scope.events);
+													//console.log($scope.events);
 
-														}, function(error) {
-															//TODO
-														});
+												}, function(error) {
+													//TODO
+												});
 
 									}
 

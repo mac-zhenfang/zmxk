@@ -10,6 +10,7 @@ public class ErrorMessages {
 	public static final String WRONG_KID_NAME_ERROR_MESSAGE = "请输入有效的孩子名";
 	public static final String WRONG_KID_SCHOOL_NAME_ERROR_MESSAGE = "请输入有效的学校名";
 	public static final String FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE = "获取验证码过于频繁";
+	public static final String WRONG_KID_SELECTION = "请重新输入您小孩相关信息";
 	public static final String MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE = "该手机号码已经被注册";
 	public static final String MOBILE_NUMBER_HAVNT_REGISTERED_ERROR_MESSAGE = "该手机号码还未被注册";
 	public static final String WC_ID_ALREADY_USED_ERROR_MESSAGE = "该微信号码已经被注册";
