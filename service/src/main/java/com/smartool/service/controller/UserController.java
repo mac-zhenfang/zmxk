@@ -3,6 +3,7 @@ package com.smartool.service.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
@@ -29,7 +30,6 @@ import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
-import com.smartool.service.UserSessionManager;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -45,6 +45,8 @@ public class UserController extends BaseController {
 	private SecurityCodeDao securityCodeDao;
 	@Autowired
 	private AuthenticationInterceptor authenticationInterceptor;
+	@Autowired
+	private HttpServletRequest httpServletRequest;
 	@Autowired
 	private HttpServletResponse httpServletResponse;
 
@@ -66,7 +68,8 @@ public class UserController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User login(@RequestBody User user) {
 		// TODO
-//		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
+		// authenticationInterceptor.addCookieIntoResponse(httpServletResponse,
+		// createdUser);
 		return null;
 	}
 
@@ -87,7 +90,7 @@ public class UserController extends BaseController {
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
-		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		// user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
