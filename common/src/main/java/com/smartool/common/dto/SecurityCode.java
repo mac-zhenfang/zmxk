@@ -1,6 +1,7 @@
 package com.smartool.common.dto;
 
 public class SecurityCode extends BaseDateTrackingBean {
+	private String id;
 	private String securityCode;
 	private String mobileNumber;
 	private String remoteAddr;
@@ -27,5 +28,13 @@ public class SecurityCode extends BaseDateTrackingBean {
 
 	public void setRemoteAddr(String remoteAddr) {
 		this.remoteAddr = remoteAddr;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }
