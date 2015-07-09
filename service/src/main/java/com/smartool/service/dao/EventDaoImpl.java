@@ -25,11 +25,17 @@ public class EventDaoImpl implements EventDao {
 
 	@Override
 	public Event updateEvent(Event event) {
-		return sqlSession.selectOne("EVENT.update");
+		sqlSession.selectOne("EVENT.update", event);
+		return getEventInternal(event.getId());
 	}
 
 	
 	private Event getEventInternal(String eventId) {
 		return sqlSession.selectOne("EVENT.getById", eventId);
+	}
+
+	@Override
+	public Event getEvent(String eventId) {
+		return getEventInternal(eventId);
 	}
 }

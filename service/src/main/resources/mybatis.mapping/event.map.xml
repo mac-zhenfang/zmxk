@@ -3,63 +3,101 @@
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="EVENT">
-	<!-- <resultMap type="com.smartool.common.dto.Event" id="event">
-		<id property="eventId" column="eventId" />
-
-		<result property="eventTime" column="eventTime" />
-		<result property="name" column="eventName" />
-
-		<result property="eventType" column="eventType" />
-
-		<result property="eventTypeId" column="eventTypeId" />
-		<result property="quota" column="quota" />
-		<result property="createdTime" column="createdTime" />
-		<result property="lastModifiedTime" column="lastModifiedTime" />
-
-
-		<collection property="attendees" ofType="com.smartool.common.dto.Attendee">
-			<id property="id" column="attendeeId" />
-			<result property="userId" column="userId" />
-		</collection>
-	</resultMap> 
-	<select id="listAllWithAttendees" resultMap="event">
-		select e.eventTime as eventTime,
-		e.name as eventName, t.name as eventType, e.id as eventId, t.id as
-		eventTypeId, e.quota as quota, a.id as attendeeId, a.userId as
-		userId, e.createdTime as createdTime, e.lastModifiedTime as
-		lastModifiedTime from events e, eventTypes t, attendees a where
-		e.eventTypeId=t.id and a.eventId = e.id
-	</select>-->
+	<!-- <resultMap type="com.smartool.common.dto.Event" id="event"> <id property="eventId" 
+		column="eventId" /> <result property="eventTime" column="eventTime" /> <result 
+		property="name" column="eventName" /> <result property="eventType" column="eventType" 
+		/> <result property="eventTypeId" column="eventTypeId" /> <result property="quota" 
+		column="quota" /> <result property="createdTime" column="createdTime" /> 
+		<result property="lastModifiedTime" column="lastModifiedTime" /> <collection 
+		property="attendees" ofType="com.smartool.common.dto.Attendee"> <id property="id" 
+		column="attendeeId" /> <result property="userId" column="userId" /> </collection> 
+		</resultMap> <select id="listAllWithAttendees" resultMap="event"> select 
+		e.eventTime as eventTime, e.name as eventName, t.name as eventType, e.id 
+		as eventId, t.id as eventTypeId, e.quota as quota, a.id as attendeeId, a.userId 
+		as userId, e.createdTime as createdTime, e.lastModifiedTime as lastModifiedTime 
+		from events e, eventTypes t, attendees a where e.eventTypeId=t.id and a.eventId 
+		= e.id </select> -->
 	<resultMap type="com.smartool.common.dto.Event" id="event">
 		<id property="id" column="eventId" />
-
 		<result property="eventTime" column="eventTime" />
 		<result property="name" column="eventName" />
-
+		<result property="siteId" column="siteId" />
 		<result property="eventType" column="eventType" />
 
 		<result property="eventTypeId" column="eventTypeId" />
 		<result property="quota" column="quota" />
 		<result property="createdTime" column="createdTime" />
 		<result property="lastModifiedTime" column="lastModifiedTime" />
-	</resultMap> 
-	<select id="listAll"  resultMap="event">
+		<collection property="attendees" ofType="com.smartool.common.dto.Attendee">
+			<id property="id" column="attendeeId" />
+			<result property="kidName" column="kidName" />
+			<result property="eventId" column="eventId" />
+			<result property="kidId" column="kidId" />
+			<result property="userId" column="userId" />
+			<result property="score" column="score" />
+			<result property="rank" column="rank" />
+		</collection>
+	</resultMap>
+	<select id="listAll" resultMap="event">
 		select e.eventTime as eventTime,
 		e.name as eventName, t.name as eventType, e.id as eventId, t.id as
-		eventTypeId, e.quota as quota, e.createdTime as createdTime, e.lastModifiedTime as
-		lastModifiedTime from events e, eventTypes t where
-		e.eventTypeId=t.id
+		eventTypeId, e.quota as quota, e.siteId as siteId, e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		a.id as attendeeId,
+		k.id as kidId,
+		a.score as score,
+		a.rank as rank,
+		k.name as kidName,
+		a.userId as userId
+		from events e,
+		eventTypes t, attendees a, kids k
+		where
+		e.id = a.eventId and
+		e.eventTypeId = t.id and k.id = a.kidId
 	</select>
-	
+
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
-		eventTypeId,siteId, quota, eventTime, createdTime,lastModifiedTime) values
+		eventTypeId,siteId, quota, eventTime, createdTime,lastModifiedTime)
+		values
 		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{eventTime},now(),now())
 	</select>
-	
-	<select id="getById" parameterType="String"
-		resultType="com.smartool.common.dto.Event">
-		select * from events where id = #{id}
+
+	<select id="getById" parameterType="String" resultMap="event">
+		select
+		e.eventTime as eventTime,
+		e.name as eventName, t.name as eventType,
+		e.id as eventId, t.id as
+		eventTypeId, e.quota as quota, e.siteId as
+		siteId, e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		a.id as attendeeId,
+		k.id as kidId,
+		a.score as score,
+		a.rank as rank,
+		k.name as kidName,
+		a.userId as userId
+		from events e,
+		eventTypes t, attendees a, kids k
+		where
+		e.id = a.eventId and
+		e.eventTypeId = t.id and k.id = a.kidId and e.id = #{id};
+	</select>
+
+	<select id="update" parameterType="com.smartool.common.dto.Event">
+		update events
+		set
+		name=#{name},
+		quota=#{quota},
+		eventTypeId=#{eventTypeId},
+		siteId=#{siteId},
+		eventTime=#{eventTime}
+		where id =
+		#{id};
 	</select>
 </mapper>

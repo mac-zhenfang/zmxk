@@ -20,7 +20,9 @@
 <link href="css/style.min.css" rel="stylesheet" />
 <link href="css/style-responsive.min.css" rel="stylesheet" />
 <link href="css/retina.css" rel="stylesheet" />
-<link href="css/zmxk.css" rel="stylesheet" />
+<!---->
+<link href="css/zmxk.css" rel="stylesheet" /> 
+<link href="css/ng-grid.css" rel="stylesheet" /> 
 <!-- end: CSS -->
 
 
@@ -79,6 +81,7 @@
 	<script src="js/angular.min.js"></script>
 	<script src="js/angular-resource.min.js"></script>
 	<script src="js/dialogs.min.js"></script>
+	<script src="js/ng-grid.js"></script>
 	<script src="js/ui-bootstrap-tpls-0.6.0.js"></script>
 	<script src="js/jquery-migrate-1.2.1.min.js"></script>
 	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -110,7 +113,7 @@
 	<script>
 		var currentModule;
 		var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap',
-				'dialogs' ], function($httpProvider) {
+				'dialogs', 'ngGrid' ], function($httpProvider) {
 			$httpProvider.interceptors.push(function($q) {
 				return {
 					'responseError' : function(response) {
@@ -127,6 +130,28 @@
 				};
 			});
 		});
+
+		//put all labels / constants in
+		zmxk.constant('zmxkConstant', {
+
+		});
+
+		zmxk
+				.value(
+						'zmxkConfig',
+						{
+							user_login_uri : "/service/api/v1/users/login",
+							user_logout_uri : "/service/api/v1/users/logout",
+							user_rest_uri : "/service/smartool/api/v1/users/:userId",
+							event_rest_uri : "/service/smartool/api/v1/events/:eventId",
+							event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees",
+							kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
+						});
+
+		zmxk.config([ '$resourceProvider', function($resourceProvider) {
+			// Don't strip trailing slashes from calculated URLs
+			$resourceProvider.defaults.stripTrailingSlashes = false;
+		} ]);
 
 		// Event Service
 		zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
@@ -145,6 +170,18 @@
 					this.list = function() {
 						var defer = $q.defer();
 						eventResource.query(function(data, headers) {
+							defer.resolve(data);
+						}, function(data, headers) {
+							defer.reject(data);
+						});
+						return defer.promise;
+					}
+
+					this.getEvent = function(eventId) {
+						var defer = $q.defer();
+						eventResource.get({
+							eventId : eventId
+						}, function(data, headers) {
 							defer.resolve(data);
 						}, function(data, headers) {
 							defer.reject(data);
@@ -221,27 +258,6 @@
 									}
 
 								} ]);
-		//put all labels / constants in
-		zmxk.constant('zmxkConstant', {
-
-		});
-
-		zmxk
-				.value(
-						'zmxkConfig',
-						{
-							user_login_uri : "/service/api/v1/users/login",
-							user_logout_uri : "/service/api/v1/users/logout",
-							user_rest_uri : "/service/smartool/api/v1/users/:userId",
-							event_rest_uri : "/service/smartool/api/v1/events/:eventId",
-							event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees",
-							kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
-						});
-
-		zmxk.config([ '$resourceProvider', function($resourceProvider) {
-			// Don't strip trailing slashes from calculated URLs
-			$resourceProvider.defaults.stripTrailingSlashes = false;
-		} ]);
 
 		zmxk.controller('MainController', [
 				'$scope',
@@ -255,7 +271,7 @@
 					$scope.$location = $location;
 
 					$scope.userId = $scope.$location.search().userId;
-
+					$scope.eventId = $scope.$location.search().eventId;
 					$scope.includePage = function() {
 						var returnPage = "user_list.html";
 						switch (currentModule) {
@@ -278,7 +294,7 @@
 
 						if (!angular
 								.isUndefined($scope.$location.search().page)) {
-							console.log($scope.$location);
+							//console.log($scope.$location);
 							currentModule = $scope.$location.search().page;
 						}
 					}
@@ -320,7 +336,7 @@
 							dlg = $dialogs.wait(msgs[i++], progress);
 							fakeProgress();
 							break;
-							*/
+						 */
 						// Notify Dialog
 						case 'notify':
 							dlg = $dialogs.notify(title, message);
@@ -335,6 +351,17 @@
 						; // end switch
 					}; // end launch
 
+					$scope.noUserIdPassed = function() {
+						return angular.isUndefined($scope.userId);
+					}
+
+					$scope.noUserIdPassedValue = $scope.noUserIdPassed();
+
+					$scope.formatDate = function(timestamp) {
+						var dateOut = new Date(timestamp);
+						return dateOut;
+					};
+
 					$scope.init();
 				} ]);
 		//MainController.$inject = ['$scope', 'userService'];
@@ -347,11 +374,14 @@
 			$controller('MainController',{$scope : mainCtrlScope });*/
 			$scope.processPages = function(pageType) {
 				currentModule = pageType;
-				//console.log(currentPage);
+				$scope.hoopPage({
+					"page" : pageType
+				})
 			}
 			//console.log($scope.userId);
 
 		} ]);
+
 		//Enroll Start
 		zmxk
 				.controller(
@@ -429,7 +459,7 @@
 										var kidsToCreate = [];
 										for (var i = 0; i < $scope.kidsToShow.length; i++) {
 											var kid = $scope.kidsToShow[i];
-											
+
 											if (kid.selected) {
 												$scope.enroll_form_data.kids
 														.push(kid);
@@ -464,8 +494,10 @@
 																					"notify",
 																					"赛事录入成功",
 																					"请记住您的车次:1, 5秒钟后跳转",
-																					function(){},
-																					function(){});
+																					function() {
+																					},
+																					function() {
+																					});
 																	/**/
 																	$timeout(
 																			function() {
@@ -556,25 +588,81 @@
 
 									}
 
-									$scope.noUserIdPassed = function() {
-										return angular
-												.isUndefined($scope.userId);
-									}
-
-									$scope.noUserIdPassedValue = $scope
-											.noUserIdPassed();
-
-									$scope.formatDate = function(timestamp) {
-										var dateOut = new Date(timestamp);
-										return dateOut;
-									};
-
 									$scope.init();
 								} ]);
+
 		//init
 		//angular.element(document).ready(function () {
 		//	mainControllerScope.init();
 		//});
+		//Event Manage Start
+		zmxk.controller('EventManageCtrl',
+				[
+						'$scope',
+						'userService',
+						'eventService',
+						'$interval',
+						'$timeout',
+						function($scope, userService, eventService, $interval,
+								$timeout) {
+							$scope.viewEventManagePage = function() {
+								if (angular.isUndefined($scope.eventId)) {
+									return "event_manage_show_list.html";
+								} else {
+									return "event_manage_show_detail.html";
+								}
+							}
+
+							$scope.callToEvent = function(eventId) {
+								$scope.hoopPage({
+									"page" : "eventList",
+									"eventId" : eventId
+								})
+							}
+
+							$scope.init = function() {
+
+								//FIXME init ng-grid;
+
+								$scope.gridOptions = {
+									data : 'eventInit.attendees',
+									enableCellSelection : true,
+									enableCellEditOnFocus : true,
+									enableRowSelection : false,
+									columnDefs : [ {
+										field : 'name',
+										displayName : '选手名',
+										enableCellEdit : false
+									}, {
+										field : 'score',
+										displayName : '分数',
+										enableCellEdit : true
+									} , {
+										field : 'rank',
+										displayName : '排名',
+										enableCellEdit : true
+									}]
+								};
+								if (angular.isUndefined($scope.eventId)) {
+									eventService.list().then(function(data) {
+										$scope.listEvents = data;
+										//console.log("~~~~");
+										//console.log($scope.listEvents);
+									}, function(data) {
+									});
+								} else {
+									eventService.getEvent($scope.eventId).then(
+											function(data) {
+												$scope.eventInit = data;
+												console.log($scope.eventInit);
+											}, function(data) {
+												console.log(data);
+											});
+								}
+							}
+
+							$scope.init();
+						} ]);
 	</script>
 	<!-- end: JavaScript-->
 

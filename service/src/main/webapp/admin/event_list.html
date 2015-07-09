@@ -1,118 +1,13 @@
 <div class="row-fluid">
-				
-				<div class="box span12">
-					<div class="box-header">
-						<h2><i class="icon-edit"></i>Wizard</h2>
-						<div class="box-icon">
-							<a href="#" class="btn-setting"><i class="icon-wrench"></i></a>
-							<a href="#" class="btn-minimize"><i class="icon-chevron-up"></i></a>
-							<a href="#" class="btn-close"><i class="icon-remove"></i></a>
-						</div>
-					</div>
-					<div class="box-content">
-						<div id="MyWizard" class="wizard">
-							<ul class="steps">
-								<li data-target="#step1" class="active"><span class="badge badge-info">1</span></li>
-								<li data-target="#step2"><span class="badge">2</span></li>
-								<li data-target="#step3"><span class="badge">3</span></li>
-								<li data-target="#step4"><span class="badge">4</span></li>
-								<li data-target="#step5"><span class="badge">5</span></li>
-							</ul>
-							<div class="actions">
-								<button type="button" class="btn btn-prev"> <i class="icon-arrow-left"></i> Prev</button>
-								<button type="button" class="btn btn-success btn-next" data-last="Finish">Next <i class="icon-arrow-right"></i></button>
-							</div>
-						</div>
-						<div class="step-content">
-							<div class="step-pane active" id="step1">
-								<form class="form-horizontal" />
-									<fieldset>	
-										<div class="control-group warning">
-											<label class="control-label" for="inputWarning">First Name</label>
-											<div class="controls">
-									  			<input type="text" id="inputWarning" />
-									  			<span class="help-inline">Something may have gone wrong</span>
-											</div>
-								  		</div>
-								  		<div class="control-group error">
-											<label class="control-label" for="inputError">Last Name</label>
-											<div class="controls">
-									  			<input type="text" id="inputError" />
-									  			<span class="help-inline">Please correct the error</span>
-											</div>
-								  		</div>
-								  		<div class="control-group success">
-											<label class="control-label" for="inputSuccess">Phone Number</label>
-											<div class="controls">
-									  			<input type="text" id="inputSuccess" />
-									  			<span class="help-inline">Woohoo!</span>
-											</div>
-								  		</div>
-									</fieldset>
-								</form>
-							</div>
-							<div class="step-pane" id="step2">
-								<form class="form-horizontal" />
-									<fieldset>	
-										<div class="control-group">
-											<label class="control-label" for="input1">Company Name</label>
-											<div class="controls">
-									  			<input type="text" id="input1" />
-											</div>
-								  		</div>
-								  		<div class="control-group">
-											<label class="control-label" for="input2">Company Address</label>
-											<div class="controls">
-									  			<input type="text" id="input2" />
-											</div>
-								  		</div>
-								  		<div class="control-group">
-											<label class="control-label" for="input3">WWW</label>
-											<div class="controls">
-									  			<input type="text" id="input3" />
-											</div>
-								  		</div>
-									</fieldset>
-								</form>
-							</div>
-							<div class="step-pane" id="step3">
-								<form class="form-horizontal" />
-									<fieldset>
-
-										<div class="control-group">
-								     		<label class="control-label">Fullname:</label>
-											<div class="controls">
-												<span class="input-xlarge uneditable-input">Łukasz Holeczek</span>
-											</div>
-										</div>
-										<div class="control-group">
-								      		<label class="control-label">Email:</label>
-								     		<div class="controls">
-								          		<span class="input-xlarge uneditable-input">lukasz[@]clabs[dot].com</span>
-								  			</div>
-										</div>
-								        <div class="control-group">
-											<label class="control-label">Phone:</label>
-								            <div class="controls">
-												<span class="input-xlarge uneditable-input">+48 123 456 789</span>
-								     		</div>
-								   		</div>
-								   		<div class="control-group">
-								        	<label class="control-label"></label>
-								           	<div class="controls">
-								     			<label class="checkbox">
-								           			<input type="checkbox" value="" /> I confirm this information
-								             	</label>
-								 			</div>
-								       	</div>
-									</fieldset>
-								</form>	
-							</div>
-
-						</div>
-					
-					</div>
-					
-				</div><!--/span-->
-
-			</div><!--/row-->
+	<div class="box span12" ng-controller="EventManageCtrl">
+		<div class="box-header">
+			<h2>
+				<i class="icon-edit"></i>赛事管理
+			</h2>
+		</div>
+		<div class="box-content" ng-include="viewEventManagePage()">
+			
+		</div>
+	</div>
+</div>
+<!--/row-->

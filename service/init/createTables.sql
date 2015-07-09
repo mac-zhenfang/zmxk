@@ -54,6 +54,7 @@ CREATE TABLE `events` (
 	`eventTypeId` varchar(36) NOT NULL,
 	`siteId` varchar(36) NOT NULL,
 	`quota` int,
+	`status` int,--0: prepare, 1: start, 2:complete
 	`eventTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

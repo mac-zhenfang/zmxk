@@ -4,6 +4,8 @@ public class Attendee extends BaseDateTrackingBean {
 	
 	private String id;
 	
+	private String kidName;
+	
 	private String kidId;
 	
 	private String userId;
@@ -63,5 +65,13 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setKidId(String kidId) {
 		this.kidId = kidId;
+	}
+
+	public String getKidName() {
+		return kidName;
+	}
+
+	public void setKidName(String kidName) {
+		this.kidName = kidName;
 	}
 }

@@ -11,4 +11,6 @@ public interface EventDao {
 	Event createEvent(Event event);
 
 	Event updateEvent(Event event);
+	
+	Event getEvent(String eventId);
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,10 +48,6 @@ public class EventController extends BaseController {
 	public List<Event> getEvents() {
 		List<Event> returnList = new ArrayList<Event>();
 		returnList = eventDao.listAllEvent();
-		for(Event event : returnList) {
-			List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(event.getId());
-			event.setAttendees(attendees);
-		}
 		return returnList;
 	}
 	
@@ -91,11 +88,50 @@ public class EventController extends BaseController {
 		Attendee createdAttendee = attendeeDao.enroll(attendee);
 		return createdAttendee;
 	}
+	
+	
 	/**
 	 * 
-	 *
+	 * Update Event
 	 * @RequestMapping(value = "/events/{eventId}")
 	 */
+	@Transactional
+	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.PUT, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = {
+					MediaType.APPLICATION_JSON_VALUE })
+	public Event updateEvent(@PathVariable String eventId, @RequestBody  Event event) {
+		isEventValid(event);
+		Event retEvent = eventDao.updateEvent(event);
+		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		retEvent.setAttendees(attendees);
+		return retEvent;
+	}
+
+	/**
+	 * 
+	 * Get Event
+	 * @RequestMapping(value = "/events/{eventId}")
+	 */
+	@Transactional
+	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
+	public Event getEvent(@PathVariable String eventId) {
+		Event retEvent = eventDao.getEvent(eventId);
+		/*List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		for(Attendee attendee : attendees) {
+			Kid kid = kidDao.get(attendee.getKidId());
+			attendee.setKidName(kid.getName());
+		}
+		retEvent.setAttendees(attendees);*/
+		return retEvent;
+	}
+	
+	private boolean isEventValid(Event event) {
+		if(Strings.isNullOrEmpty(event.getId())|| Strings.isNullOrEmpty(event.getSiteId()) ||  Strings.isNullOrEmpty(event.getEventTypeId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_EVENT_FORMAT);
+		}
+		return true;
+	}
 
 	/**
 	 * Set the attendee rank of the event and score
