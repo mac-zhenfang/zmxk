@@ -203,6 +203,8 @@ public class UserController extends BaseController {
 						ErrorMessages.FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE);
 			} else {
 				existSecurityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
+				existSecurityCode.setMobileNumber(mobileNumber);
+				existSecurityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
 				securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
 				return securityCodeDao.update(existSecurityCode).getSecurityCode();
 			}
@@ -211,7 +213,7 @@ public class UserController extends BaseController {
 			securityCode.setMobileNumber(mobileNumber);
 			securityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
 			securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-			securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
+			securityCodeDao.sendSecurityCodeThoughSms(securityCode);
 			return securityCodeDao.create(securityCode).getSecurityCode();
 		}
 	}

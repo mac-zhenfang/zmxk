@@ -21,8 +21,10 @@
 	<select id="update" parameterType="com.smartool.common.dto.SecurityCode">
 		update securityCodes
 		set
-		securityCode=#{securityCode}
-		where mobileNumber = #{mobileNumber};
+		securityCode=#{securityCode},
+		mobileNumber=#{mobileNumber},
+		remoteAddr=#{remoteAddr}
+		where id = #{id};
 	</select>
 	<select id="remove" parameterType="String">
 		delete from securityCodes
