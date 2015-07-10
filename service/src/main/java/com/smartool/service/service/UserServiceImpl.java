@@ -143,7 +143,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private SecurityCode getExistedSecurityCode(SecurityCode securityCode) {
-		SecurityCode existedSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(securityCode.getMobileNumber());
+		SecurityCode existedSecurityCode = securityCodeDao
+				.getSecurityCodeByMobileNumber(securityCode.getMobileNumber());
 		if (existedSecurityCode != null) {
 			return existedSecurityCode;
 		}
@@ -192,8 +193,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public byte[] getQRCode(String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId)
-				.withSize(800, 800).to(ImageType.PNG).writeTo(out);
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId).withSize(800, 800)
+				.to(ImageType.PNG).writeTo(out);
 		return out.toByteArray();
 	}
 

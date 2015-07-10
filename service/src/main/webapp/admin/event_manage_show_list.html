@@ -12,7 +12,7 @@
 	<tbody>
 		<tr ng-repeat="event in listEvents">
 			<td class="center"><a
-				href="index.html#/?page=eventList&eventId={{event.id}}" onclick="window.location.reload();">{{event.name}}</a></td>
+				ng-href="events.html#/?eventId={{event.id}}">{{event.name}}</a></td>
 			<td class="center">{{event.eventType}}</td>
 			<td class="center">{{formatDate(event.eventTime) |
 				date:"MM/dd/yyyy, HH:mm" }}</td>
