@@ -263,7 +263,7 @@ public class UserController extends BaseController {
 			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId)
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId)
 				.withSize(800, 800).to(ImageType.PNG).writeTo(out);
 		byte[] qrcode = out.toByteArray();
 		HttpHeaders httpHeaders = new HttpHeaders();
