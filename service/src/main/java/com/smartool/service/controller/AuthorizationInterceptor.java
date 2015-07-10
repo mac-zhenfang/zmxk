@@ -42,15 +42,14 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			String userId = sessionUser.getId();
 			if (requestedScope.getValue().compareTo(userRoleId) > 0) {
 				throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-			} else if(requestedScope.getValue().compareTo(userRoleId) < 0){
+			} else if (requestedScope.getValue().compareTo(userRoleId) < 0) {
+				return true;
+			} else {
+				if (UserRole.INTERNAL_USER.equals(requestedScope) && selfOnly) {
+
+				}
 				return true;
 			}
-			// if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId()) &&
-			// !sessionUser.getId().equals(userId)) {
-			// throw new SmartoolException(HttpStatus.FORBIDDEN.value(),
-			// ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-			// }
-			return true;
 		}
 		// What to return here?
 		return false;
