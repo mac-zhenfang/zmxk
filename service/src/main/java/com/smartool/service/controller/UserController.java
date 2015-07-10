@@ -1,49 +1,37 @@
 package com.smartool.service.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
-import com.smartool.service.CommonUtils;
 import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
-import com.smartool.service.dao.SecurityCodeDao;
-import com.smartool.service.dao.UserDao;
-
-import net.glxn.qrgen.core.image.ImageType;
-import net.glxn.qrgen.javase.QRCode;
+import com.smartool.service.controller.annotation.ApiScope;
+import com.smartool.service.service.UserService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class UserController extends BaseController {
 	@Autowired
-	private UserDao userDao;
-	@Autowired
-	private SecurityCodeDao securityCodeDao;
+	private UserService userService;
 	@Autowired
 	private AuthenticationInterceptor authenticationInterceptor;
 	@Autowired
@@ -51,47 +39,22 @@ public class UserController extends BaseController {
 	@Autowired
 	private HttpServletResponse httpServletResponse;
 
-	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody User getUser(@PathVariable String userId,
-			@CookieValue(Constants.KEY_FOR_USER_TOKEN) String fooCookie) {
-		User user = userDao.getUserById(userId);
-		return user;
-	}
-
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
-		User sessionUser = UserSessionManager.getSessionUser();
-		if (sessionUser == null) {
-			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
-					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
-		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId())) {
-			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-		}
-		List<User> users = userDao.listAllUser();
-		return users;
+		return userService.listAllUser();
 	}
 
-	@Transactional
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User login(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
-		if (securityCode == null) {
-			validateMobileNumberForLogin(user.getMobileNum());
-			String securityCodeString = createCodeForLogin(user.getMobileNum());
-			// TODO Temporary solution before implement send code though SMS
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
-		}
-
-		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
-		}
-		User existUser = userDao.getUserByMobileNumber(user.getMobileNum());
-		if (existUser != null) {
-			authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
-			return existUser;
-		}
-		throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
-				ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
+	public User login(@RequestParam(value = "code", required = false) String code, @RequestBody User user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setSecurityCode(code);
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		User existUser = userService.login(securityCode, user);
+		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
+		return existUser;
 	}
 
 	/**
@@ -101,171 +64,31 @@ public class UserController extends BaseController {
 	 * 
 	 * @return userId String
 	 */
-	@Transactional
 	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User register(@RequestParam(value = "code", required = false) String securityCode, @RequestBody User user) {
-		if (securityCode == null) {
-			validateMobileNumberForRegister(user.getMobileNum());
-			String securityCodeString = createCodeForRegister(user.getMobileNum());
-			// TODO Temporary solution before implement send code though SMS
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
-		}
-
-		if (!isValidSecurityCode(user.getMobileNum(), securityCode)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
-		}
-		isUserValidForCreate(user);
-		user.setId(CommonUtils.getRandomUUID());
-		user.setRoleId(UserRole.NORMAL_USER.getValue());
-		// user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
-		User createdUser = userDao.createUser(user);
-		securityCodeDao.remove(user.getMobileNum());
+	public User register(@RequestParam(value = "code", required = false) String code, @RequestBody User user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setSecurityCode(code);
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		User createdUser = userService.register(securityCode, user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
 	}
 
-	public boolean validateMobileNumberForRegister(String mobileNumber) {
-		if (CommonUtils.isEmptyString(mobileNumber)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
-		}
-		if (userDao.getUserByMobileNumber(mobileNumber) != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
-		}
-		return true;
-	}
-
-	public boolean validateMobileNumberForLogin(String mobileNumber) {
-		if (CommonUtils.isEmptyString(mobileNumber)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
-		}
-		if (userDao.getUserByMobileNumber(mobileNumber) == null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.MOBILE_NUMBER_HAVNT_REGISTERED_ERROR_MESSAGE);
-		}
-		return true;
-	}
-
-	private boolean isUserValidForCreate(User user) {
-		// All string fields not empty
-		if (CommonUtils.isEmptyString(user.getName())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_USER_NAME_ERROR_MESSAGE);
-		}
-		if (CommonUtils.isEmptyString(user.getMobileNum())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
-		}
-		if (CommonUtils.isEmptyString(user.getLocation())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_LOCATION_ERROR_MESSAGE);
-		}
-		// Phone number/ WC id not registered before
-		if (userDao.getUserByMobileNumber(user.getMobileNum()) != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
-		}
-		if (user.getKids() != null && !user.getKids().isEmpty()) {
-			for (Kid kid : user.getKids()) {
-				isKidValidForCreate(kid);
-			}
-		}
-		return true;
-	}
-
-	private void isKidValidForCreate(Kid kid) {
-		if (CommonUtils.isEmptyString(kid.getName())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_NAME_ERROR_MESSAGE);
-		}
-		if (CommonUtils.isEmptyString(kid.getSchoolName())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.WRONG_KID_SCHOOL_NAME_ERROR_MESSAGE);
-		}
-	}
-
-	// private boolean isUserValidForUpdate(User user) {
-	// return true;
-	// }
-
-	private boolean isValidSecurityCode(String mobileNum, String securityCode) {
-		SecurityCode getSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNum);
-		return getSecurityCode != null && getSecurityCode.getSecurityCode() != null
-				&& getSecurityCode.getSecurityCode().equals(securityCode);
-	}
-
-	private String createCodeForLogin(String mobileNumber) {
-		SecurityCode existSecurityCode = getExistedSecurityCode(mobileNumber);
-		if (existSecurityCode != null) {
-			Date lastModifiedTime = existSecurityCode.getLastModifiedTime();
-			if (System.currentTimeMillis() - lastModifiedTime.getTime() < 30000l) {
-				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-						ErrorMessages.FREQUENT_REQUEST_SECURITY_CODE_ERROR_MESSAGE);
-			} else {
-				existSecurityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
-				existSecurityCode.setMobileNumber(mobileNumber);
-				existSecurityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-				securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
-				return securityCodeDao.update(existSecurityCode).getSecurityCode();
-			}
-		} else {
-			SecurityCode securityCode = new SecurityCode();
-			securityCode.setMobileNumber(mobileNumber);
-			securityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
-			securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-			securityCodeDao.sendSecurityCodeThoughSms(securityCode);
-			return securityCodeDao.create(securityCode).getSecurityCode();
-		}
-	}
-
-	private String createCodeForRegister(String mobileNumber) {
-		User userByMobileNumber = userDao.getUserByMobileNumber(mobileNumber);
-		if (userByMobileNumber != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
-					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
-		}
-		return createCodeForLogin(mobileNumber);
-	}
-
-	private SecurityCode getExistedSecurityCode(String mobileNumber) {
-		SecurityCode securityCode = securityCodeDao.getSecurityCodeByMobileNumber(mobileNumber);
-		if (securityCode != null) {
-			return securityCode;
-		}
-		String remoteAddr = httpServletRequest.getRemoteAddr();
-		return securityCodeDao.getSecurityCodeByRemoteAddr(remoteAddr);
-	}
-
+	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
 	public User getUser(@PathVariable String userId) {
-		User sessionUser = UserSessionManager.getSessionUser();
-		if (sessionUser == null) {
-			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
-					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
-		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId()) && !sessionUser.getId().equals(userId)) {
-			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-		}
-		User user = userDao.getUserById(userId);
-		return user;
+		return userService.getUserById(userId);
 	}
 
 	/**
 	 * Return the qrcode with url+token
 	 */
-	// TODO
+	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
-		User sessionUser = UserSessionManager.getSessionUser();
-		if (sessionUser == null) {
-			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
-					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
-		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId()) && !sessionUser.getId().equals(userId)) {
-			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-		}
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#?page=eventEnroll&userId=" + userId)
-				.withSize(800, 800).to(ImageType.PNG).writeTo(out);
-		byte[] qrcode = out.toByteArray();
+		byte[] qrcode = userService.getQRCode(userId);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);
 		return new ResponseEntity<byte[]>(qrcode, httpHeaders, HttpStatus.CREATED);

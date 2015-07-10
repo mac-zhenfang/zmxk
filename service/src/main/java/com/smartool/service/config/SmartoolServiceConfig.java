@@ -15,13 +15,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.smartool.service.Encrypter;
 import com.smartool.service.controller.AuthenticationInterceptor;
+import com.smartool.service.controller.AuthorizationInterceptor;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.AttendeeDaoImpl;
 import com.smartool.service.dao.EventDao;
@@ -32,6 +32,8 @@ import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
+import com.smartool.service.service.UserService;
+import com.smartool.service.service.UserServiceImpl;
 
 @Configuration
 @ComponentScan(basePackages = { "com.smartool.service.*" })
@@ -47,6 +49,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new Encrypter(env.getProperty("secure_algorithm"), env.getProperty("secure_key", defaultKey));
 	}
 	
+	@Bean
+	public UserService getUserService(){
+		return new UserServiceImpl();
+	}
 
 	@Bean
 	public UserDao getUserDao() {
@@ -78,9 +84,15 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new AuthenticationInterceptor();
 	}
 
+	@Bean
+	public AuthorizationInterceptor getAuthorizationInterceptor() {
+		return new AuthorizationInterceptor();
+	}
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(getAuthenticationInterceptor());
+		registry.addInterceptor(getAuthorizationInterceptor());
 	}
 
 	@Bean

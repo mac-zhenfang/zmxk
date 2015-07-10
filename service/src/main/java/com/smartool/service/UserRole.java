@@ -1,7 +1,7 @@
 package com.smartool.service;
 
 public enum UserRole {
-	NORMAL_USER("0"), ADMIN("1");
+	NORMAL_USER("0"), INTERNAL_USER("1"), ADMIN("9");
 	private String value;
 
 	UserRole(String roleId) {
