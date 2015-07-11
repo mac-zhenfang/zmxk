@@ -31,7 +31,7 @@ zmxk
 					user_logout_uri : "/service/api/v1/users/logout",
 					user_rest_uri : "/service/smartool/api/v1/users/:userId",
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
-					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/attendees",
+					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
 					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
 				});
 

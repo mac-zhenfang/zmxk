@@ -58,7 +58,6 @@ zmxk.controller('MainController', [ '$scope', '$location', 'userService',
 				console.log(" jump " + uri);
 				window.location.href = uri;
 				window.location.reload();
-				// window.location = uri;
 			}
 
 			$scope.launch = function(which, title, message, yesFun, noFun) {

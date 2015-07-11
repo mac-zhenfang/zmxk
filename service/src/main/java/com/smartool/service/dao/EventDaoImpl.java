@@ -16,6 +16,8 @@ public class EventDaoImpl implements EventDao {
 	public List<Event> listAllEvent() {
 		return sqlSession.selectList("EVENT.listAll");
 	}
+	
+	
 
 	@Override
 	public Event createEvent(Event event) {
@@ -37,5 +39,10 @@ public class EventDaoImpl implements EventDao {
 	@Override
 	public Event getEvent(String eventId) {
 		return getEventInternal(eventId);
+	}
+
+	@Override
+	public Event getFullEvent(String eventId) {
+		return sqlSession.selectOne("EVENT.getFullById", eventId);
 	}
 }

@@ -12,6 +12,7 @@ public class User extends BaseDateTrackingBean {
 	private String roleId;
 	private List<Kid> kids;
 	private int status;
+	private int points;
 
 	public int getStatus() {
 		return status;
@@ -86,5 +87,13 @@ public class User extends BaseDateTrackingBean {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
 	}
 }

@@ -13,4 +13,6 @@ public interface EventDao {
 	Event updateEvent(Event event);
 	
 	Event getEvent(String eventId);
+	
+	Event getFullEvent(String eventId);
 }

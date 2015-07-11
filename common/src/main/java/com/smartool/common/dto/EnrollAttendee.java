@@ -10,6 +10,8 @@ public class EnrollAttendee extends BaseDateTrackingBean {
 	private String eventId;
 	
 	private Kid kid;
+	
+	
 
 	public String getId() {
 		return id;
