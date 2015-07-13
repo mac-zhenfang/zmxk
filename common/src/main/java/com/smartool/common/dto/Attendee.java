@@ -15,6 +15,10 @@ public class Attendee extends BaseDateTrackingBean {
 	private float score;
 	
 	private int rank;
+	
+	private int seq;
+	
+	private int status; //0 (prepared when create event) / 1 (enrolled) / 2 (complete event)
 
 	public Attendee() {
 	}
@@ -73,5 +77,21 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setKidName(String kidName) {
 		this.kidName = kidName;
+	}
+
+	public int getSeq() {
+		return seq;
+	}
+
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }

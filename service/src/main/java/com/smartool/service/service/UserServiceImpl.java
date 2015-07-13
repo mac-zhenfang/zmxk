@@ -198,4 +198,10 @@ public class UserServiceImpl implements UserService {
 		return out.toByteArray();
 	}
 
+	@Override
+	public List<User> search(String query) {
+		List<User> users = userDao.search(query);
+		return users;
+	}
+
 }

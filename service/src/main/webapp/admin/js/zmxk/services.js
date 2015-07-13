@@ -42,11 +42,12 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					console.log(body.data);
 					defer.resolve(body);
 				}, function(body, headers) {
-					console.log(body.data);
+					console.log(body);
 					defer.reject(body);
 				})
 				return defer.promise;
 			}
+
 		} ]);
 // User Service
 zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
@@ -64,6 +65,12 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 				logout : {
 					url : zmxkConfig.user_logout_uri,
 					method : 'Post'
+				},
+				search : {
+					url : zmxkConfig.user_search_uri,
+					query : "@id",
+					method : "GET",
+					isArray : true
 				}
 			})
 			this.login = function() {
@@ -89,6 +96,20 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 				}, function(user, headers) {
 					defer.reject(user);
 				});
+				return defer.promise;
+			}
+
+			this.search = function(query) {
+				var defer = $q.defer();
+				usersResource.search({
+					query : query
+				}, function(body, headers) {
+					console.log(body);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body);
+					defer.reject(body);
+				})
 				return defer.promise;
 			}
 

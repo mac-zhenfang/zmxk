@@ -14,4 +14,6 @@ public interface UserDao {
 	User updateUser(User user);
 
 	List<User> listAllUser();
+	
+	List<User> search(String query);
 }

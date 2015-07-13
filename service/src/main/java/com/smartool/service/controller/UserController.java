@@ -10,20 +10,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
-import com.smartool.service.ErrorMessages;
-import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
-import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.service.UserService;
 
@@ -38,7 +37,15 @@ public class UserController extends BaseController {
 	private HttpServletRequest httpServletRequest;
 	@Autowired
 	private HttpServletResponse httpServletResponse;
-
+	
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	List<User> search(@RequestParam(value = "query", required = false) String query,
+			@CookieValue(Constants.KEY_FOR_USER_TOKEN) String fooCookie) {
+		return userService.search(query);
+	}
+	
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {

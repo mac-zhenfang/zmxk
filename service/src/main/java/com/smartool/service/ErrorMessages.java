@@ -18,4 +18,8 @@ public class ErrorMessages {
 	public static final String PLEASE_LOGIN_FIRST_ERROR_MESSAGE="请先登录";
 	public static final String WRONG_EVENT_FORMAT = "错误的Event格式";
 	public static final String FORBIDEN_ERROR_MESSAGE="您的账号没有权限访问该资源";
+	public static final String ERROR_ENROLL_MESSAGE = "录入选手错误";
+	public static final String DUPLICATE_ENROLL_MESSAGE = "您已经录入了该选手";
+	public static final String EXCEED_QUOTA_ENROLL_MESSAGE = "已经超过赛事名额上线";
+	
 }

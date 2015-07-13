@@ -6,7 +6,15 @@ import com.smartool.common.dto.Attendee;
 
 public interface AttendeeDao {
 	
-	Attendee enroll(Attendee attendee);
+	Attendee create(Attendee attendee);
 	
 	List<Attendee> getAttendeeFromEvent(String eventId);
+	
+	Attendee update(Attendee attendee);
+	
+	Attendee enroll(Attendee attendee);
+	
+	Attendee getAttendee(String attendeeId);
+	
+	List<Attendee> getAllPendingAttendees(String eventId);
 }

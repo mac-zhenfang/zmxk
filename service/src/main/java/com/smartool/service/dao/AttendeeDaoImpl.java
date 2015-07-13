@@ -14,7 +14,7 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	private SqlSession sqlSession;
 	
 	@Override
-	public Attendee enroll(Attendee attendee) {
+	public Attendee create(Attendee attendee) {
 		sqlSession.selectOne("ATTENDEE.create", attendee);
 		return getAttendeeInternal(attendee.getId());
 	}
@@ -30,5 +30,22 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	@Override
 	public List<Attendee> getAttendeeFromEvent(String eventId) {
 		return sqlSession.selectList("ATTENDEE.getByEventId", eventId);
+	}
+
+	@Override
+	public Attendee update(Attendee attendee) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Attendee enroll(Attendee attendee) {
+		sqlSession.selectOne("ATTENDEE.enroll", attendee);
+		return getAttendeeInternal(attendee.getId());
+	}
+
+	@Override
+	public List<Attendee> getAllPendingAttendees(String eventId) {
+		return sqlSession.selectList("ATTENDEE.getPendingAttendees", eventId);
 	}
 }

@@ -8,7 +8,11 @@
 		userId,eventId, createdTime,lastModifiedTime) values
 		(#{id},#{kidId},#{userId},#{eventId},now(),now())
 	</select>
-		<select id="listAll" resultType="com.smartool.common.dto.Attendee">
+	<select id="enroll" parameterType="com.smartool.common.dto.Attendee">
+		update attendees set kidId=#{kidId}, userId=#{userId}, status=#{status} where lastModifiedTime = #{lastModifiedTime} and status = 0 and id = #{id} 
+	</select>
+	
+	<select id="listAll" resultType="com.smartool.common.dto.Attendee">
 		select * from attendees
 	</select>
 	<select id="getById" parameterType="String"
@@ -18,8 +22,11 @@
 	
 	<select id="getByEventId" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
-		select * from attendees where eventId = #{eventId}
+		select * from attendees where eventId = #{eventId} and status > 0
 	</select>
 	
-	
+	<select id="getPendingAttendees" parameterType="String"
+		resultType="com.smartool.common.dto.Attendee">
+		select * from attendees where eventId = #{eventId} and status = 0
+	</select>
 </mapper>

@@ -1,3 +1,4 @@
+-- pending (0) / active (1) / deleted (2)
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` varchar(36) NOT NULL,
@@ -6,7 +7,8 @@ CREATE TABLE `users` (
   `location` varchar(36) CHARACTER SET utf8 NOT NULL,
   `mobileNum` varchar(255) NOT NULL,
   `wcId` varchar(36),
-  `status` int,
+  `points` int NOT NULL DEFAULT 0,
+  `status` int NOT NULL DEFAULT 0, 
   `roleId` varchar (36) NOT NULL,
   `createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -53,22 +55,55 @@ CREATE TABLE `events` (
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`eventTypeId` varchar(36) NOT NULL,
 	`siteId` varchar(36) NOT NULL,
+	`seriesId` varchar(36),
 	`quota` int,
-	`status` int,--0: prepare, 1: start, 2:complete
+	`stage` int, -- Preliminary(0)/contest(1)/semi final(2)/final(3)
+	`status` int,-- prepare(0) / start (1) / complete (2)
 	`eventTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `series`;
+CREATE TABLE `series` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(36) NOT NULL,
+	`series_starttime` timestamp NOT NULL,
+	`series_endtime` timestamp NOT NULL,
+	`stages` int,
+	`rank_upgrade_qualification` int,-- which rank can upgrade to next stage
+	`siteId` varchar(36) NOT NULL,
+	`eventTypeId` varchar(36) NOT NULL,
+	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `credit_rules`;
+CREATE TABLE `points_rules` (
+	`id` varchar(36) NOT NULL,
+	`action` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`credit` int,
+	`status` int NOT NULL DEFAULT 0,
+	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+ -- pending(0) / joined(1) / complete (2)
 DROP TABLE IF EXISTS `attendees`;
 CREATE TABLE `attendees` (
 	`id` varchar(36) NOT NULL,
-	`kidId` varchar(36) NOT NULL,
-	`userId` varchar(36) NOT NULL,
+	`kidId` varchar(36),
+	`userId` varchar(36),
 	`eventId` varchar(36) NOT NULL,
 	`score` float,
 	`rank` int,
+ 	`seq` int,
+ 	`status` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)

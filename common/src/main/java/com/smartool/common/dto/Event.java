@@ -20,6 +20,12 @@ public class Event extends BaseDateTrackingBean {
 	private String eventType;
 	
 	private String siteId; //enum
+	
+	private String seriesId;
+	
+	private int status;
+	
+	private int stage;
 
 	public String getId() {
 		return id;
@@ -83,5 +89,29 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setEventTime(Date eventTime) {
 		this.eventTime = eventTime;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public int getStage() {
+		return stage;
+	}
+
+	public void setStage(int stage) {
+		this.stage = stage;
+	}
+
+	public String getSeriesId() {
+		return seriesId;
+	}
+
+	public void setSeriesId(String seriesId) {
+		this.seriesId = seriesId;
 	}
 }

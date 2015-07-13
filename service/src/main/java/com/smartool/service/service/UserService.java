@@ -15,4 +15,6 @@ public interface UserService {
 	User getUserById(String userId);
 
 	byte[] getQRCode(String userId);
+	
+	List<User> search(String query);
 }
