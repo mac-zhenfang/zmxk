@@ -78,7 +78,7 @@ public class UserController extends BaseController {
 
 	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-	public User getUser(@PathVariable String userId) {
+	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
 	}
 
@@ -87,7 +87,7 @@ public class UserController extends BaseController {
 	 */
 	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
 	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getQRCode(@PathVariable String userId) {
+	public ResponseEntity<byte[]> getQRCode(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		byte[] qrcode = userService.getQRCode(userId);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);

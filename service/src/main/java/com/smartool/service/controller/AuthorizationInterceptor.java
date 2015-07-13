@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +39,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 						ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
 			}
 			UserRole requestedScope = apiScope.userScope();
+			String requestedUserId = getRequestedUserId(handlerMethod);
 			boolean selfOnly = apiScope.selfOnly();
 			String userRoleId = sessionUser.getRoleId();
 			String userId = sessionUser.getId();
@@ -45,14 +48,32 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			} else if (requestedScope.getValue().compareTo(userRoleId) < 0) {
 				return true;
 			} else {
-				if (UserRole.INTERNAL_USER.equals(requestedScope) && selfOnly) {
-
+				if (UserRole.NORMAL_USER.equals(requestedScope) && selfOnly) {
+					if (request.getPathInfo().contains(userId)) {
+						return true;
+					} else {
+						throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+					}
+					// return requestedUserId == null || userId != null &&
+					// userId.equals(requestedUserId);
 				}
 				return true;
 			}
 		}
 		// What to return here?
 		return false;
+	}
+
+	private String getRequestedUserId(HandlerMethod handlerMethod) {
+		// TODO
+		MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
+		if (methodParameters == null) {
+			return null;
+		}
+		for (MethodParameter methodParameter : methodParameters) {
+			methodParameter.getParameterAnnotation(PathVariable.class);
+		}
+		return null;
 	}
 
 	@Override
