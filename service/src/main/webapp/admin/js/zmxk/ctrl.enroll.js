@@ -136,7 +136,7 @@ zmxk
 																	}, 5000)
 															// var url =
 															// $scope.$location.$$host;
-
+															$scope.enroll_form_data.kids = [];
 														}
 													},
 													function(error) {
@@ -150,6 +150,7 @@ zmxk
 																		},
 																		function() {
 																		});
+														$scope.enroll_form_data.kids = [];
 													})
 
 								}
@@ -165,22 +166,49 @@ zmxk
 												$scope.enroll_form_data.userQueryString)
 										.then(
 												function(users) {
-													console
-															.log($scope.enroll_form_data.userQueryString)
-													// TODO from user API
-													$scope.found_user.id = "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc";
-													$scope.found_user.name = "Mac Fang";
-													$scope.found_user.mobileNum = "13706516916";
-													$scope.found_user.wcId = "testWcId";
-													console.log(users);
-												}, function(error) {
+													
+													if(users.length > 1 || users.length == 0) {
+														$scope
+														.launch(
+																"error",
+																"",
+																"搜索到"+ users.length + "个用户，请到用户页面检查用户",
+																function() {
 
+																},
+																function() {
+																});
+													} else {
+														console
+														.log(" found users ---- ")
+														$scope.found_user = users[0];
+														console
+														.log(users);
+													}
+												}, function(error) {
+													$scope
+													.launch(
+															"error",
+															"",
+															error.data.message,
+															function() {
+
+															},
+															function() {
+															});
 												});
 
 							}
 
 							$scope.chooseUser = function() {
 								$scope.enroll_form_data.user = $scope.found_user;
+								$scope.kidsToShow = [];
+								for (var i = 0; i < $scope.found_user.kids.length; i++) {
+									var kid = angular.copy($scope.found_user.kids[i]);
+									kid["existed"] = true;
+									$scope.kidsToShow
+											.push(kid);
+								}
 								/*
 								 * $scope.enroll_form_data.name =
 								 * $scope.found_user.name;

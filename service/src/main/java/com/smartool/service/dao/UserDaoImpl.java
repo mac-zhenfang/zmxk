@@ -74,6 +74,13 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> search(String query) {
 		List<User> users = sqlSession.selectList("USER.search", query);
+		for (User user : users) {
+			String userId = user.getId();
+			if (user != null) {
+				List<Kid> kids = kidDao.listByUserId(userId);
+				user.setKids(kids);
+			}
+		}
 		return users;
 	}
 }
