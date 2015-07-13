@@ -12,14 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartool.common.dto.User;
+import com.smartool.service.CommonUtils;
 import com.smartool.service.Constants;
 import com.smartool.service.Encrypter;
 import com.smartool.service.ErrorMessages;
@@ -51,12 +50,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		UserSessionManager.setSessionUser(null);
-		System.out.println("Pre-handle: " + request.getContextPath() + ", handler: " + handler);
-		if (handler instanceof HandlerMethod) {
-			HandlerMethod handlerMethod = (HandlerMethod) handler;
-			if (isSaveMethod(handlerMethod)) {
-				return true;
-			}
+		logger.debug("AuthenticationInterceptor Pre-handle: " + request.getContextPath() + ", handler: " + handler);
+		if (CommonUtils.isSaveMethod(handler)) {
+			return true;
 		}
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
@@ -80,8 +76,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	public void addCookieIntoResponse(HttpServletResponse response, User user) {
 		String cookieValue = userToCookie(user);
 		Cookie newCookie = new Cookie(Constants.KEY_FOR_USER_TOKEN, cookieValue);
-		newCookie.setMaxAge(Constants.SESSION_AGE);
-		newCookie.setPath("/");
+		newCookie.setMaxAge(Constants.COOKIE_AGE);
+		newCookie.setPath(Constants.COOKIE_PATH);
 		response.addCookie(newCookie);
 	}
 
@@ -108,31 +104,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 		}
 	}
 
-	private static boolean isSaveMethod(HandlerMethod handlerMethod) {
-		if (handlerMethod.getBean() instanceof UserController) {
-			RequestMapping requestMapping = handlerMethod.getMethod().getAnnotation(RequestMapping.class);
-			String[] values = requestMapping.value();
-			if (values != null && values.length >= 1) {
-				String value = values[0];
-				if (safeMethod.contains(value)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 		UserSessionManager.clearSessionUser();
-		System.out.println("Post-handle: " + handler);
+		logger.debug("AuthenticationInterceptor Post-handle: " + handler);
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		System.out.println("After-completion: " + handler);
+		logger.debug("AuthenticationInterceptor After-completion: " + handler);
 		if (ex != null) {
 			Map<String, String> map = new HashMap<String, String>();
 			if (ex instanceof SmartoolException) {
