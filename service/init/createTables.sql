@@ -81,7 +81,7 @@ CREATE TABLE `series` (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `credit_rules`;
-CREATE TABLE `points_rules` (
+CREATE TABLE `credit_rules` (
 	`id` varchar(36) NOT NULL,
 	`action` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`credit` int,
