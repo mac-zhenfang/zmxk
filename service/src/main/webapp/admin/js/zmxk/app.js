@@ -1,6 +1,6 @@
 var currentModule;
 var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap', 'dialogs',
-		'ngRoute','ngGrid' ], function($httpProvider) {
+		'ngRoute', 'ngGrid' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
 			'responseError' : function(response) {

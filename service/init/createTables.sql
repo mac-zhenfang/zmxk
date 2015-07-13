@@ -7,7 +7,7 @@ CREATE TABLE `users` (
   `location` varchar(36) CHARACTER SET utf8 NOT NULL,
   `mobileNum` varchar(255) NOT NULL,
   `wcId` varchar(36),
-  `points` int NOT NULL DEFAULT 0,
+  `credit` int NOT NULL DEFAULT 0,
   `status` int NOT NULL DEFAULT 0, 
   `roleId` varchar (36) NOT NULL,
   `createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',

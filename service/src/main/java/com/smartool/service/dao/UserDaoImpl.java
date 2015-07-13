@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public User updateUser(User user) {
-		sqlSession.insert("USER.update", user);
+		sqlSession.selectOne("USER.update", user);
 		return getUserInternal(user.getId());
 	}
 

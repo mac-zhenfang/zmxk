@@ -19,12 +19,14 @@ import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.UserDao;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -38,7 +40,11 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private KidDao kidDao;
-
+	
+	@Autowired
+	private UserDao userDao;
+	
+	
 	private static Random r = new Random();
 
 	/**
@@ -73,6 +79,39 @@ public class EventController extends BaseController {
 			attendeeDao.create(att);
 		}
 		return retEvent;
+	}
+	
+	
+	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
+		List<Attendee> retAttendees = new ArrayList<>();
+		//event.预赛 : {"attendee.rank == 1" : "1"}
+		//event.复赛 : {"attendee.rank == 1" : "1"}
+		//充值.首次: 10
+		//充值.多次: {"times == 10" : 10}
+		//赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}
+		for(Attendee attendee : attendees) {
+			int credit = 0;
+			switch (attendee.getRank()) {
+			case 1: 
+				credit = 100;
+				break;
+			case 2:
+				credit = 50;
+				break;
+			default:
+				credit = 10;
+			}
+			//update attendee
+			retAttendees.add(attendeeDao.update(attendee));
+			String userId = attendee.getUserId();
+			User user = new User();
+			user.setCredit(credit);
+			user.setId(userId);
+			userDao.updateUser(user);
+		}
+		return retAttendees;
 	}
 
 	/**
