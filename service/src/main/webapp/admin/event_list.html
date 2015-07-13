@@ -20,18 +20,15 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="event in listEvents">
-						<td class="center"><a
-							href="#/events/{{event.id}}">{{event.name}}</a></td>
+						<td class="center"><a href="#/events/{{event.id}}">{{event.name}}</a></td>
 						<td class="center">{{event.eventType}}</td>
 						<td class="center">{{formatDate(event.eventTime) |
 							date:"MM/dd/yyyy, HH:mm" }}</td>
 						<td class="center">{{event.attendees.length}}</td>
 						<td class="center">{{event.quota - event.attendees.length}}</td>
-						<td class="center"><label class="radio"> <input
-								type="radio" name="optionsRadios" id="optionsRadios1" checked=""
-								value="{{event.id}}" ng-model="value"
-								ng-click='selectEvent(value)' />
-						</label></td>
+						<td class="center"><a class="btn btn-info" href="#"> <i
+								class="icon-edit "></i>
+						</a></td>
 					</tr>
 				</tbody>
 			</table>
