@@ -58,6 +58,21 @@ public class UserController extends BaseController {
 		return user;
 	}
 
+	@RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	List<User> search(@RequestParam(value = "query", required = false) String query,
+			@CookieValue(Constants.KEY_FOR_USER_TOKEN) String fooCookie) {
+		User sessionUser = UserSessionManager.getSessionUser();
+		if (sessionUser == null) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
+		} else if (!UserRole.ADMIN.getValue().equals(sessionUser.getRoleId())) {
+			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+		}
+		List<User> users = userDao.search(query);
+		return users;
+	}
+
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
 		User sessionUser = UserSessionManager.getSessionUser();
@@ -263,8 +278,8 @@ public class UserController extends BaseController {
 			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId)
-				.withSize(800, 800).to(ImageType.PNG).writeTo(out);
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId).withSize(800, 800)
+				.to(ImageType.PNG).writeTo(out);
 		byte[] qrcode = out.toByteArray();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);

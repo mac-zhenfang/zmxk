@@ -106,7 +106,8 @@ public class EventController extends BaseController {
 		if(isDupliatedEnrolled(enrolledAttendees, givenKidId)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_ENROLL_MESSAGE); 
 		}
-		return internalEnroll(enrollAttendee, attendees, returnKid, eventId, quota, quota);
+		int rt = quota >= attendees.size() ? attendees.size() : quota;
+		return internalEnroll(enrollAttendee, attendees, returnKid, eventId, rt, rt);
 	}
 	
 	private boolean exceedQuota(int quota, List<Attendee> enrolledAttendees){

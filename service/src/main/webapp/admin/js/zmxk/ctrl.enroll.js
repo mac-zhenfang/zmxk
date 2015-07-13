@@ -49,8 +49,10 @@ zmxk
 
 							$scope.addChild = function() {
 								$scope.addKid["existed"] = false;
+								$scope.addKid["selected"] = true;
 								$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
-								$scope.kidsToShow.push($scope.addKid);
+								var kid = angular.copy($scope.addKid);
+								$scope.kidsToShow.push(kid);
 								$scope.showAddChildForm = 0;
 							}
 
@@ -136,8 +138,18 @@ zmxk
 															// $scope.$location.$$host;
 
 														}
-													}, function(error) {
-														// TODO
+													},
+													function(error) {
+														$scope
+																.launch(
+																		"error",
+																		"",
+																		error.data.message,
+																		function() {
+
+																		},
+																		function() {
+																		});
 													})
 
 								}
@@ -147,13 +159,24 @@ zmxk
 							}
 
 							$scope.searchUser = function() {
-								console
-										.log($scope.enroll_form_data.userQueryString)
-								// TODO from user API
-								$scope.found_user.id = "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc";
-								$scope.found_user.name = "Mac Fang";
-								$scope.found_user.mobileNum = "13706516916";
-								$scope.found_user.wcId = "testWcId";
+
+								userService
+										.search(
+												$scope.enroll_form_data.userQueryString)
+										.then(
+												function(users) {
+													console
+															.log($scope.enroll_form_data.userQueryString)
+													// TODO from user API
+													$scope.found_user.id = "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc";
+													$scope.found_user.name = "Mac Fang";
+													$scope.found_user.mobileNum = "13706516916";
+													$scope.found_user.wcId = "testWcId";
+													console.log(users);
+												}, function(error) {
+
+												});
+
 							}
 
 							$scope.chooseUser = function() {

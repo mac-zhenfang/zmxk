@@ -70,4 +70,10 @@ public class UserDaoImpl implements UserDao {
 		}
 		return user;
 	}
+
+	@Override
+	public List<User> search(String query) {
+		List<User> users = sqlSession.selectList("USER.search", query);
+		return users;
+	}
 }

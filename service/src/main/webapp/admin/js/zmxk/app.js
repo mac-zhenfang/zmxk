@@ -8,10 +8,12 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap', 'dialogs',
 					window.location = "login.html";
 					return;
 				}
-
-				if (response.data.error.message[0]) {
-					alert(response.data.error.message[0]);
-				}
+				/*
+				 * if (response.status == "400") {
+				 * 
+				 * alert(response.data.error); } if (response.data.error) {
+				 * alert(response.data.error); }
+				 */
 				return $q.reject(response);
 			}
 		};
@@ -23,17 +25,15 @@ zmxk.constant('zmxkConstant', {
 
 });
 
-zmxk
-		.value(
-				'zmxkConfig',
-				{
-					user_login_uri : "/service/api/v1/users/login",
-					user_logout_uri : "/service/api/v1/users/logout",
-					user_rest_uri : "/service/smartool/api/v1/users/:userId",
-					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
-					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
-					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
-				});
+zmxk.value('zmxkConfig', {
+	user_login_uri : "/service/smartool/api/v1/users/login",
+	user_logout_uri : "/service/smartool/api/v1/users/logout",
+	user_search_uri : "/service/smartool/api/v1/users/search?query=:query",
+	user_rest_uri : "/service/smartool/api/v1/users/:userId",
+	event_rest_uri : "/service/smartool/api/v1/events/:eventId",
+	event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
+	kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
+});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {
 	// Don't strip trailing slashes from calculated URLs

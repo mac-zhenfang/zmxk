@@ -80,11 +80,11 @@ CREATE TABLE `series` (
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `points_rules`;
+DROP TABLE IF EXISTS `credit_rules`;
 CREATE TABLE `points_rules` (
 	`id` varchar(36) NOT NULL,
 	`action` varchar(255) CHARACTER SET utf8 NOT NULL,
-	`points` int,
+	`credit` int,
 	`status` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
