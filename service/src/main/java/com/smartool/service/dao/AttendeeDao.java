@@ -14,6 +14,8 @@ public interface AttendeeDao {
 	
 	Attendee enroll(Attendee attendee);
 	
+	Attendee complete(Attendee attendee);
+	
 	Attendee getAttendee(String attendeeId);
 	
 	List<Attendee> getAllPendingAttendees(String eventId);

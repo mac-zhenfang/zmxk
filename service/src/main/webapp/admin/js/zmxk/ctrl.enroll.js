@@ -22,21 +22,9 @@ zmxk
 							$scope.addKid = {};
 							$scope.previous_label = "上一步";
 							$scope.next_label = "下一步";
-							$scope.events = [ {
-								eventTime : "2015/07/04",
-								currentAttendeeNum : 15,
-								eventId : "12345"
-							}, {
-								eventTime : "2015/07/05",
-								currentAttendeeNum : 16,
-								eventId : "67890"
-							}, {
-								eventTime : "2015/07/06",
-								currentAttendeeNum : 17,
-								eventId : "24680"
-							} ];
+							$scope.events = [];
 							// FIXME
-							$scope.kids_school_options = [ {
+							/*$scope.kids_school_options = [ {
 								value : 0,
 								label : "幼儿园"
 							}, {
@@ -45,7 +33,7 @@ zmxk
 							}, {
 								value : 2,
 								label : "未上幼儿园"
-							} ]
+							} ]*/
 
 							$scope.addChild = function() {
 								$scope.addKid["existed"] = false;
@@ -103,6 +91,7 @@ zmxk
 										attendee["kidId"] = kid.id;
 
 									}
+									var msg = "";
 									eventService
 											.addAttendee(
 													$scope.enroll_form_data.id,
@@ -111,13 +100,18 @@ zmxk
 													function(data) {
 														returnAttendees
 																.push(data);
+														msg += "姓名: "
+														msg += data.kidName;
+														msg += ", 车次 ";
+														msg += data.seq
+														msg += " "
 														if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
-
+															
 															$scope
 																	.launch(
 																			"notify",
 																			"赛事录入成功",
-																			"请记住您的车次:1, 5秒钟后跳转",
+																			msg,
 																			function() {
 																				$scope
 																						.hoopPage(
@@ -270,10 +264,26 @@ zmxk
 									$scope.steps = [ 1, 2, 3 ];
 								}
 
-								// TODO : call eventServie to list events
-								eventService.list().then(function(data) {
+								// FIXME, we dont need to have status
+								eventService.list(0).then(function(data) {
+									
 									$scope.events = data;
-
+									angular.forEach($scope.events, function(event, index) {
+										
+										var enrolledCount = 0;
+										angular.forEach(event.attendees, function(attendee, index2){
+											var attStatus = attendee.status;
+											//console.log(attStatus);
+											if(attStatus >= 1) {
+												enrolledCount+=1;
+											}
+										});
+										//console.log(enrolledCount);
+										var leftCount = event.quota - enrolledCount;
+										//console.log(leftCount);
+										event.leftCount= leftCount;
+										event.enrolledCount = enrolledCount;
+									});
 									// console.log($scope.events);
 
 								}, function(error) {

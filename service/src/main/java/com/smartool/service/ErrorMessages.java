@@ -17,6 +17,7 @@ public class ErrorMessages {
 	public static final String INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE="错误的手机号码或验证码";
 	public static final String PLEASE_LOGIN_FIRST_ERROR_MESSAGE="请先登录";
 	public static final String WRONG_EVENT_FORMAT = "错误的Event格式";
+	public static final String WRONG_EVENT_STATUS= "错误的status格式";
 	public static final String FORBIDEN_ERROR_MESSAGE="您的账号没有权限访问该资源";
 	public static final String ERROR_ENROLL_MESSAGE = "录入选手错误";
 	public static final String DUPLICATE_ENROLL_MESSAGE = "您已经录入了该选手";

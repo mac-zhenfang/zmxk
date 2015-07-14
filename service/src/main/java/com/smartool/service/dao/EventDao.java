@@ -7,6 +7,10 @@ import com.smartool.common.dto.Event;
 public interface EventDao {
 
 	List<Event> listAllEvent();
+	
+	List<Event> listAllEvent (int status);
+	
+	List<Event> listFullEvent();
 
 	Event createEvent(Event event);
 

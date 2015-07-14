@@ -31,7 +31,7 @@
 		name=#{name},
 		mobileNum=#{mobileNum},
 		location=#{location},
-		roleId=#{roleId}, status=#{status}
+		roleId=#{roleId}, status=#{status}, credit=#{credit}
 		where id =
 		#{id};
 	</select>

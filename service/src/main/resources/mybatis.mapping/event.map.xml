@@ -36,6 +36,8 @@
 			<result property="userId" column="userId" />
 			<result property="score" column="score" />
 			<result property="rank" column="rank" />
+			<result property="seq" column="seq" />
+			<result property="status" column="status" />
 		</collection>
 	</resultMap>
 	<select id="listAll" resultMap="event">
@@ -46,18 +48,62 @@
 		e.lastModifiedTime as
 		lastModifiedTime,
 		a.id as attendeeId,
+		a.score as score,
+		a.rank as rank,
+		a.userId as userId,
+		a.seq as seq,
+		a.status as status
+		from events e,
+		attendees a,
+		eventTypes t where e.eventTypeId = t.id and a.eventId = e.id
+	</select>
+
+	<select id="listAllStatus" parameterType="int" resultMap="event">
+		select
+		e.eventTime as eventTime,
+		e.name as eventName, t.name as eventType,
+		e.id as eventId, t.id as
+		eventTypeId, e.quota as quota, e.siteId as
+		siteId, e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		a.id as attendeeId,
+		a.score as score,
+		a.rank as rank,
+		a.userId as userId,
+		a.seq as seq,
+		a.status as status
+		from events e, attendees a,
+		eventTypes t where
+		e.eventTypeId = t.id and a.eventId = e.id and e.status = #{status};
+	</select>
+
+	<select id="listFullAll" resultMap="event">
+		select e.eventTime as
+		eventTime,
+		e.name as eventName, t.name as eventType, e.id as eventId,
+		t.id as
+		eventTypeId, e.quota as quota, e.siteId as siteId,
+		e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		a.id as attendeeId,
 		k.id as kidId,
 		a.score as score,
 		a.rank as rank,
 		k.name as kidName,
-		a.userId as userId
+		a.userId as userId,
+		a.seq as seq,
+		a.status as status
 		from events e,
 		eventTypes t, attendees a, kids k
 		where
-		e.id = a.eventId and
+		e.id = a.eventId
+		and
 		e.eventTypeId = t.id and k.id = a.kidId
 	</select>
-
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
@@ -70,9 +116,11 @@
 	<select id="getFullById" parameterType="String" resultMap="event">
 		select
 		e.eventTime as eventTime,
-		e.name as eventName, t.name as eventType,
+		e.name as eventName, t.name as
+		eventType,
 		e.id as eventId, t.id as
-		eventTypeId, e.quota as quota, e.siteId as
+		eventTypeId, e.quota as quota,
+		e.siteId as
 		siteId, e.createdTime as
 		createdTime,
 		e.lastModifiedTime as
@@ -82,8 +130,10 @@
 		a.score as score,
 		a.rank as rank,
 		k.name as kidName,
-		a.userId as userId
-		from events e,
+		a.userId as userId,
+		a.seq as seq
+		from
+		events e,
 		eventTypes t, attendees a, kids k
 		where
 		e.id = a.eventId and

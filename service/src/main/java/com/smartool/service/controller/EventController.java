@@ -1,7 +1,10 @@
 package com.smartool.service.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
@@ -23,6 +27,8 @@ import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
+import com.smartool.service.UserRole;
+import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
@@ -40,11 +46,10 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private KidDao kidDao;
-	
+
 	@Autowired
 	private UserDao userDao;
-	
-	
+
 	private static Random r = new Random();
 
 	/**
@@ -52,16 +57,40 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events")
 	 */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events", method = RequestMethod.GET)
-	public List<Event> getEvents() {
+	public List<Event> getEvents(@RequestParam (value = "status", required = false) String status) {
 		List<Event> returnList = new ArrayList<Event>();
-		returnList = eventDao.listAllEvent();
+		if (Strings.isNullOrEmpty(status)) {
+			returnList = eventDao.listAllEvent();
+		} else {
+			int s;
+			try {
+				s = Integer.parseInt(status);
+			} catch (Exception e) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_EVENT_STATUS);
+			}
+			returnList = eventDao.listAllEvent(s);
+		}
+		
+		/*for(Event event : returnList) {
+			List<Attendee> attendees = event.getAttendees();
+			List<Attendee> newAttendees = new ArrayList<>();
+			for(Attendee att : attendees) {
+				if(att.getStatus() > 0) {
+					newAttendees.add(att);
+				}
+			}
+			event.setAttendees(newAttendees);
+		}*/
+
 		return returnList;
 	}
 
 	/**
 	 * Create Event 1. create attendees with seq 2. create event
 	 */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Event createEvent(@RequestBody Event event) {
@@ -71,30 +100,34 @@ public class EventController extends BaseController {
 		String eventId = retEvent.getId();
 		int quota = retEvent.getQuota();
 		int p = 1;
-		while (p++ <= quota) {
+		while (p <= quota) {
 			Attendee att = new Attendee();
 			att.setId(CommonUtils.getRandomUUID());
 			att.setEventId(eventId);
 			att.setSeq(p);
 			attendeeDao.create(att);
+			p++;
 		}
 		return retEvent;
 	}
-	
-	
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
 		List<Attendee> retAttendees = new ArrayList<>();
-		//event.预赛 : {"attendee.rank == 1" : "1"}
-		//event.复赛 : {"attendee.rank == 1" : "1"}
-		//充值.首次: 10
-		//充值.多次: {"times == 10" : 10}
-		//赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}
-		for(Attendee attendee : attendees) {
+		// event.预赛 : {"attendee.rank == 1" : "1"}
+		// event.复赛 : {"attendee.rank == 1" : "1"}
+		// 充值.首次: 10
+		// 充值.多次: {"times == 10" : 10}
+		// 赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}.
+		Map<String, Integer> creditMap = new HashMap<>();
+		for (Attendee attendee : attendees) {
+			attendee.setStatus(2);
+			//FIXME: sort by score
 			int credit = 0;
 			switch (attendee.getRank()) {
-			case 1: 
+			case 1:
 				credit = 100;
 				break;
 			case 2:
@@ -103,14 +136,25 @@ public class EventController extends BaseController {
 			default:
 				credit = 10;
 			}
-			//update attendee
-			retAttendees.add(attendeeDao.update(attendee));
+			// update attendee
+			retAttendees.add(attendeeDao.complete(attendee));
 			String userId = attendee.getUserId();
-			User user = new User();
+			int value = 0; 
+			if(creditMap.containsKey(userId)) {
+				value = creditMap.get(userId);
+			}
+			value+=credit;
+			creditMap.put(userId, value);
+		}
+		
+		for(Entry<String, Integer> entry : creditMap.entrySet()) {
+			String userId = entry.getKey();
+			int credit = entry.getValue();
+			User user = userDao.getUserById(userId);
 			user.setCredit(credit);
-			user.setId(userId);
 			userDao.updateUser(user);
 		}
+		
 		return retAttendees;
 	}
 
@@ -120,6 +164,7 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events/{eventId}/enroll")
 	 */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/enroll", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public Attendee enroll(@PathVariable String eventId, @RequestBody EnrollAttendee enrollAttendee) {
@@ -137,34 +182,35 @@ public class EventController extends BaseController {
 
 		int quota = event.getQuota();
 		List<Attendee> enrolledAttendees = attendeeDao.getAttendeeFromEvent(eventId);
-		
-		if(exceedQuota(quota, enrolledAttendees)) {
+
+		if (exceedQuota(quota, enrolledAttendees)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_QUOTA_ENROLL_MESSAGE);
 		}
-		
-		if(isDupliatedEnrolled(enrolledAttendees, givenKidId)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_ENROLL_MESSAGE); 
+
+		if (isDupliatedEnrolled(enrolledAttendees, givenKidId)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_ENROLL_MESSAGE);
 		}
 		int rt = quota >= attendees.size() ? attendees.size() : quota;
 		return internalEnroll(enrollAttendee, attendees, returnKid, eventId, rt, rt);
 	}
-	
-	private boolean exceedQuota(int quota, List<Attendee> enrolledAttendees){
+
+	private boolean exceedQuota(int quota, List<Attendee> enrolledAttendees) {
 		return quota == enrolledAttendees.size();
 	}
-	
+
 	private boolean isDupliatedEnrolled(List<Attendee> attendees, String inputKidId) {
-		
-		for(Attendee attendee : attendees) {
+
+		for (Attendee attendee : attendees) {
 			String kidId = attendee.getKidId();
-			if(!Strings.isNullOrEmpty(kidId) && kidId.equals(inputKidId)) {
+			if (!Strings.isNullOrEmpty(kidId) && kidId.equals(inputKidId)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private Attendee internalEnroll(EnrollAttendee enrollAttendee, List<Attendee> attendees, Kid returnKid, String eventId, int retryTimes, int quota) {
+	private Attendee internalEnroll(EnrollAttendee enrollAttendee, List<Attendee> attendees, Kid returnKid,
+			String eventId, int retryTimes, int quota) {
 
 		for (int i = 0; i < retryTimes; i++) {
 			int num = r.nextInt(quota);
@@ -173,19 +219,25 @@ public class EventController extends BaseController {
 			// FIXME: check Kid/User/Event if valid
 			attendee.setEventId(eventId);
 			attendee.setUserId(enrollAttendee.getUserId());
-			if (!Strings.isNullOrEmpty(enrollAttendee.getKidId())) {
-				attendee.setKidId(enrollAttendee.getKidId());
-			} else if (returnKid != null) {
-				attendee.setKidId(returnKid.getId());
-			} else {
+			String kidId = enrollAttendee.getKidId();
+			if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
+				kidId = returnKid.getId();
+			}
+			if(null == kidId) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_SELECTION);
 			}
+			attendee.setKidId(kidId);
 			Attendee createdAttendee = attendeeDao.enroll(attendee);
+			
+			Kid kid  = kidDao.get(kidId);
+			createdAttendee.setKidName(kid.getName());
 			if (null != createdAttendee) {
 				return createdAttendee;
 			}
+			
+			
 		}
-		
+
 		throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessages.WRONG_KID_SELECTION);
 	}
 
@@ -195,6 +247,7 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events/{eventId}")
 	 */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@Transactional
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })

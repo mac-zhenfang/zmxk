@@ -21,20 +21,79 @@ zmxk.controller('EventManageCtrl', [
 					"eventId" : eventId
 				})
 			}
-			$scope.init = function() {
+			
+			$scope.formatDate = function(time) {
+				  var date = new Date(time);
+				  var hours = date.getHours();
+				  var minutes = date.getMinutes();
+				  var ampm = hours >= 12 ? 'pm' : 'am';
+				  hours = hours % 12;
+				  hours = hours ? hours : 12; // the hour '0' should be '12'
+				  minutes = minutes < 10 ? '0'+minutes : minutes;
+				  var strTime = hours + ':' + minutes + ' ' + ampm;
+				  return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+				}
+			
+			var init = function() {
 				if (angular.isUndefined($scope.eventId)) {
 					eventService.list().then(function(data) {
 						$scope.listEvents = data;
-						// console.log("~~~~");
-						// console.log($scope.listEvents);
+						angular.forEach($scope.listEvents, function(event, index) {
+							
+							var enrolledCount = 0;
+							var applyScoreCount = 0;
+							var leftCount = 0;
+							angular.forEach(event.attendees, function(attendee, index2){
+								var attStatus = attendee.status;
+								//console.log(attStatus);
+								if(attStatus == 1) {
+									enrolledCount+=1;
+								} else if (attStatus == 2) {
+									applyScoreCount+=1;
+								}
+								
+							});
+							event.leftCount = event.quota - enrolledCount - applyScoreCount;
+							event.applyScoreCount= applyScoreCount;
+							event.enrolledCount = enrolledCount;
+						});
+						 console.log("~~~~");
+						 console.log($scope.listEvents);
 					}, function(data) {
 					});
 				}
 			}
 
-			$scope.init();
+			init();
 		} ]);
+zmxk
+.controller(
+		'EventCreateCtrl',
+		[
+				'$scope',
+				'userService',
+				'eventService',
+				'$interval',
+				'$timeout',
+				'$routeParams',
+				function($scope, userService, eventService, $interval,
+						$timeout, $routeParams) {
+					$scope.totalSteps  = 3;
+					$scope.selectStep = function(step) {
 
+						if ($scope.currentStep > 0
+								&& $scope.currentStep + step <= $scope.totalSteps) {
+							$scope.currentStep = $scope.currentStep
+									+ step;
+						}
+						// change label
+						if ($scope.currentStep == $scope.totalSteps) {
+							$scope.next_label = "提交";
+						} else {
+							$scope.next_label = "下一步";
+						}
+					}
+				}]);
 zmxk
 		.controller(
 				'EventDetailCtrl',
@@ -52,79 +111,35 @@ zmxk
 							$scope.eventInit = {};
 							$scope.eventInit.attendees = [];
 							$scope.init = function() {
-								// FIXME, we should not allow edit the event 3
-								// days after the eventtime or less than event
-								// time.
-								/*
-								 * { field : 'status', displayName : '状态',
-								 * enableCellEdit : false, cellTemplate : '<div
-								 * class="ngCellText" ng-class="col.colIndex()"><span
-								 * ng-class="{true:\'label label-success\',
-								 * false:\'label label-warning\'}[score >
-								 * 0]">{{{true:\'已完成比赛\', false:\'未完成比赛\'}[score >
-								 * 0]}}</span></div>' },
-								 */
-								$scope.gridOptions = {
-									data : 'eventInit.attendees',
-									enableCellSelection : true,
-									enableCellEdit : true,
-									enableRowSelection : false,
-									sortInfo : {
-										fields : [ "score" ],
-										directions : [ "asc", "desc" ]
-									},
-									columnDefs : [
-											{
-												field : 'kidName',
-												displayName : '选手名',
-												enableCellEdit : false
-											},
-											{
-												field : 'status',
-												displayName : '状态',
-												enableCellEdit : false,
-												cellTemplate : '<div  class="ngCellText" ng-class="col.colIndex()"><span ng-class="{true:\'label label-success\', false:\'label label-warning\'}[row.getProperty(\'score\') > 0]">{{{true:\'已完成比赛\', false:\'未完成比赛\'}[row.getProperty(\'score\') > 0]}}</span></div>'
-											},
-											{
-												field : 'score',
-												displayName : '分数',
-												enableCellEdit : true,
-												editableCellTemplate : '<input ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-change="editScore()"/>'
-											}, {
-												field : 'rank',
-												displayName : '排名',
-												enableCellEdit : false
-											} ]
-								};
-
+							
 								if (!angular.isUndefined($scope.eventId)) {
 									eventService
 											.getEvent($scope.eventId)
 											.then(
 													function(data) {
 														$scope.eventInit = data;
-														for (var i = 0; i < $scope.eventInit.attendees.length; i++) {
-															// init credit
-															$scope.eventInit.attendees[i]["credit"] = 0;
-
-														}
-														console
-																.log($scope.eventInit);
+														
+														var enrolledCount = 0;
+														var applyScoreCount = 0;
+														var leftCount = 0;
+														angular.forEach($scope.eventInit.attendees, function(attendee, index2){
+															var attStatus = attendee.status;
+															//console.log(attStatus);
+															if(attStatus == 1) {
+																enrolledCount+=1;
+															} else if (attStatus == 2) {
+																applyScoreCount+=1;
+															}
+															
+														});
+														$scope.eventInit.leftCount = event.quota - enrolledCount - applyScoreCount;
+														$scope.eventInit.applyScoreCount= applyScoreCount;
+														$scope.eventInit.enrolledCount = enrolledCount;
+														
 													}, function(data) {
 														console.log(data);
 													});
 								}
-
-								$scope.$on('ngGridEventEndCellEdit', function(
-										data) {
-									/*
-									 * $scope.eventInit.attendees.sort(function(a,
-									 * b){ var key = "score"; var x = a[key];
-									 * var y = b[key]; return ((x < y) ? -1 :
-									 * ((x > y) ? 1 : 0)); });
-									 */
-
-								});
 							}
 
 							$scope.editScore = function() {
@@ -134,14 +149,16 @@ zmxk
 									var y = b[key];
 									return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 								});
-								//console.log($scope.eventInit.attendees);
+								// console.log($scope.eventInit.attendees);
 								var i = 0;
-								angular.forEach($scope.eventInit.attendees, function(attendee, index) {
-									if(attendee.score != 0 ) {
-										i+=1;
-										attendee.rank = i;
-									}
-								})
+								angular.forEach($scope.eventInit.attendees,
+										function(attendee, index) {
+											if (attendee.score != 0) {
+												i += 1;
+												attendee.rank = i;
+											}
+										})
+								console.log($scope.eventInit.attendees);
 							}
 
 							$scope.applyAttendeeChanges = function() {
@@ -165,7 +182,37 @@ zmxk
 											}, function() {
 											});
 								} else {
+									// going to save data
+									$scope
+											.launch(
+													"confirm",
+													"确定保存",
+													"确保您已经检查选手成绩，点击确定保存",
+													function() {
+														eventService
+																.saveAttendee(
+																		$scope.eventInit.id,
+																		$scope.eventInit.attendees)
+																.then(
+																		function(
+																				data) {
+																			$scope
+																			.launch(
+																					"notify",
+																					"成绩修改成功",
+																					"成绩修改成功",
+																					function() {
+																						
+																					},
+																					function() {
+																					});
+																		},
+																		function(
+																				error) {
 
+																		})
+													}, function() {
+													});
 								}
 								console.log($scope.eventInit.attendees);
 							}

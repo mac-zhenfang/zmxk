@@ -31,6 +31,8 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public List<Attendee> getAttendeeFromEvent(String eventId) {
 		return sqlSession.selectList("ATTENDEE.getByEventId", eventId);
 	}
+	
+	
 
 	@Override
 	public Attendee update(Attendee attendee) {
@@ -47,5 +49,11 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	@Override
 	public List<Attendee> getAllPendingAttendees(String eventId) {
 		return sqlSession.selectList("ATTENDEE.getPendingAttendees", eventId);
+	}
+
+	@Override
+	public Attendee complete(Attendee attendee) {
+		sqlSession.selectOne("ATTENDEE.complete", attendee);
+		return getAttendeeInternal(attendee.getId());
 	}
 }

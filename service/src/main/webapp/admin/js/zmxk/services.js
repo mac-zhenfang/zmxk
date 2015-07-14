@@ -5,6 +5,14 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				eventId : '@id'
 			}, {
 				saveAttendee : {
+					url : zmxkConfig.event_update_attendee_uri,
+					method : "POST",
+					isArray: true,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				addAttendee : {
 					url : zmxkConfig.event_add_attendee_uri,
 					method : "POST",
 					headers : {
@@ -12,13 +20,23 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					}
 				}
 			})
-			this.list = function() {
+			this.list = function(s) {
 				var defer = $q.defer();
-				eventResource.query(function(data, headers) {
-					defer.resolve(data);
-				}, function(data, headers) {
-					defer.reject(data);
-				});
+				if (!angular.isUndefined(s)) {
+					eventResource.query({
+						status : s
+					}, function(data, headers) {
+						defer.resolve(data);
+					}, function(data, headers) {
+						defer.reject(data);
+					});
+				} else {
+					eventResource.query(function(data, headers) {
+						defer.resolve(data);
+					}, function(data, headers) {
+						defer.reject(data);
+					});
+				}
 				return defer.promise;
 			}
 
@@ -35,6 +53,20 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 			}
 
 			this.addAttendee = function(eventId, attendeeData) {
+				var defer = $q.defer();
+				eventResource.addAttendee({
+					eventId : eventId
+				}, attendeeData, function(body, headers) {
+					console.log(body.data);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body);
+					defer.reject(body);
+				})
+				return defer.promise;
+			}
+			// event_update_attendee_uri
+			this.saveAttendee = function(eventId, attendeeData) {
 				var defer = $q.defer();
 				eventResource.saveAttendee({
 					eventId : eventId
