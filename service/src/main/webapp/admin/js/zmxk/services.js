@@ -71,7 +71,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				eventResource.saveAttendee({
 					eventId : eventId
 				}, attendeeData, function(body, headers) {
-					console.log(body.data);
+					console.log(body);
 					defer.resolve(body);
 				}, function(body, headers) {
 					console.log(body);
