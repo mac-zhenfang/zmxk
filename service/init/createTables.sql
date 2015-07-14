@@ -69,10 +69,10 @@ DROP TABLE IF EXISTS `series`;
 CREATE TABLE `series` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(36) NOT NULL,
-	`series_starttime` timestamp NOT NULL,
-	`series_endtime` timestamp NOT NULL,
+	`startTime` timestamp NOT NULL,
+	`endTime` timestamp NOT NULL,
 	`stages` int,
-	`rank_upgrade_qualification` int,-- which rank can upgrade to next stage
+	`rankUpgradeQualification` int,-- which rank can upgrade to next stage
 	`siteId` varchar(36) NOT NULL,
 	`eventTypeId` varchar(36) NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -80,18 +80,28 @@ CREATE TABLE `series` (
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `credit_rules`;
-CREATE TABLE `credit_rules` (
+DROP TABLE IF EXISTS `creditRules`;
+CREATE TABLE `creditRules` (
 	`id` varchar(36) NOT NULL,
-	`action` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`credit` int,
-	`status` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `eventCreditRules`;
+CREATE TABLE `eventCreditRules` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`eventTypeId` varchar(36) NOT NULL,
+	`seriesId` varchar(36) NOT NULL,
+	`rank` int,
+	`credit` int,
+	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
  -- pending(0) / joined(1) / complete (2)
 DROP TABLE IF EXISTS `attendees`;

@@ -24,6 +24,8 @@ import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.controller.AuthorizationInterceptor;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.AttendeeDaoImpl;
+import com.smartool.service.dao.CreditRuleDao;
+import com.smartool.service.dao.CreditRuleDaoImpl;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
 import com.smartool.service.dao.KidDao;
@@ -48,9 +50,9 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public Encrypter getEncrypter() {
 		return new Encrypter(env.getProperty("secure_algorithm"), env.getProperty("secure_key", defaultKey));
 	}
-	
+
 	@Bean
-	public UserService getUserService(){
+	public UserService getUserService() {
 		return new UserServiceImpl();
 	}
 
@@ -72,6 +74,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public AttendeeDao getAttendeeDao() {
 		return new AttendeeDaoImpl();
+	}
+
+	@Bean
+	public CreditRuleDao getCreditRuleDao() {
+		return new CreditRuleDaoImpl();
 	}
 
 	@Bean
