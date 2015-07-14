@@ -15,5 +15,7 @@
 		<mapper resource="mybatis.mapping/attendee.map.xml" />
 		<mapper resource="mybatis.mapping/kid.map.xml" />
 		<mapper resource="mybatis.mapping/securityCode.map.xml" />
+		<mapper resource="mybatis.mapping/creditRule.map.xml" />
+		<mapper resource="mybatis.mapping/eventCreditRule.map.xml" />
 	</mappers>
 </configuration>

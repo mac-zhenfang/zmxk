@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CREDIT_RULE">
+	<select id="create" parameterType="EventCreditRule">
+		insert eventCreditRules (id,
+		name,
+		reward,eventTypeId,seriesId,rank, createdTime,
+		lastModifiedTime)
+		values
+		(#{id},#{name},#{reward},#{eventTypeId},#{seriesId},#{rank},now(),now())
+	</select>
+	<select id="update" parameterType="EventCreditRule">
+		update eventCreditRules
+		set
+		name=#{name},
+		reward=#{reward},
+		eventTypeId=#{eventTypeId},
+		seriesId=#{seriesId},
+		rank=#{rank}
+		where id =
+		#{id};
+	</select>
+
+	<select id="listAll" resultType="EventCreditRule">
+		select * from eventCreditRules
+	</select>
+
+	<select id="remove" parameterType="String">
+		delete from eventCreditRules
+		where
+		id = #{id}
+	</select>
+
+	<select id="getById" parameterType="String" resultType="EventCreditRule">
+		select *
+		from users eventCreditRules id = #{id}
+	</select>
+</mapper>

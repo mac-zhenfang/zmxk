@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="SECURITYCODE">
+<mapper namespace="SECURITY_CODE">
 	<select id="getByMobileNumber" resultType="com.smartool.common.dto.SecurityCode">
 		select * from
 		securityCodes where mobileNumber = #{mobileNumber}
