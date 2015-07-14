@@ -26,7 +26,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 	}
 
 	public CreditRule getCreditRuleByIdInternal(String creditRuleId) {
-		return sqlSession.selectOne("CREDIT_RULE.get", creditRuleId);
+		return sqlSession.selectOne("CREDIT_RULE.getById", creditRuleId);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 	}
 
 	@Override
-	public void removeEventCreditRule(EventCreditRule eventCreditRule) {
+	public void removeEventCreditRule(String eventCreditRuleId) {
 		// TODO Auto-generated method stub
 
 	}

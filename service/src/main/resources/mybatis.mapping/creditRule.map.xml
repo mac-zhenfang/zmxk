@@ -5,16 +5,16 @@
 <mapper namespace="CREDIT_RULE">
 	<select id="create" parameterType="com.smartool.common.dto.CreditRule">
 		insert creditRules (id, name,
-		reward, createdTime,
+		credit, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{reward},now(),now())
+		(#{id},#{name},#{credit},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.CreditRule">
 		update creditRules
 		set
 		name=#{name},
-		reward=#{reward}
+		credit=#{credit}
 		where id =
 		#{id};
 	</select>
@@ -30,6 +30,6 @@
 
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.CreditRule">
-		select * from users creditRules id = #{id}
+		select * from creditRules where id = #{id}
 	</select>
 </mapper>

@@ -3,7 +3,7 @@ package com.smartool.common.dto;
 public class CreditRule extends BaseDateTrackingBean {
 	private String id;
 	private String name;
-	private String reward;
+	private int credit;
 
 	public String getId() {
 		return id;
@@ -21,11 +21,11 @@ public class CreditRule extends BaseDateTrackingBean {
 		this.name = name;
 	}
 
-	public String getReward() {
-		return reward;
+	public int getCredit() {
+		return credit;
 	}
 
-	public void setReward(String reward) {
-		this.reward = reward;
+	public void setCredit(int credit) {
+		this.credit = credit;
 	}
 }

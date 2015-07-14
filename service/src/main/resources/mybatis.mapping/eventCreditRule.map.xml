@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="CREDIT_RULE">
-	<select id="create" parameterType="EventCreditRule">
+<mapper namespace="EVENT_CREDIT_RULE">
+	<select id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		reward,eventTypeId,seriesId,rank, createdTime,
+		credit,eventTypeId,seriesId,rank, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{reward},#{eventTypeId},#{seriesId},#{rank},now(),now())
+		(#{id},#{name},#{credit},#{eventTypeId},#{seriesId},#{rank},now(),now())
 	</select>
-	<select id="update" parameterType="EventCreditRule">
+	<select id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
 		set
 		name=#{name},
-		reward=#{reward},
+		credit=#{credit},
 		eventTypeId=#{eventTypeId},
 		seriesId=#{seriesId},
 		rank=#{rank}
@@ -23,7 +23,7 @@
 		#{id};
 	</select>
 
-	<select id="listAll" resultType="EventCreditRule">
+	<select id="listAll" resultType="com.smartool.common.dto.EventCreditRule">
 		select * from eventCreditRules
 	</select>
 
@@ -33,8 +33,9 @@
 		id = #{id}
 	</select>
 
-	<select id="getById" parameterType="String" resultType="EventCreditRule">
+	<select id="getById" parameterType="String"
+		resultType="com.smartool.common.dto.EventCreditRule">
 		select *
-		from users eventCreditRules id = #{id}
+		from eventCreditRules where id = #{id}
 	</select>
 </mapper>

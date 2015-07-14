@@ -4,15 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.smartool.common.dto.User;
-import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
@@ -39,7 +36,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 						ErrorMessages.PLEASE_LOGIN_FIRST_ERROR_MESSAGE);
 			}
 			UserRole requestedScope = apiScope.userScope();
-			String requestedUserId = getRequestedUserId(handlerMethod);
+			// String requestedUserId = getRequestedUserId(handlerMethod);
 			boolean selfOnly = apiScope.selfOnly();
 			String userRoleId = sessionUser.getRoleId();
 			String userId = sessionUser.getId();
@@ -64,17 +61,17 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 		return false;
 	}
 
-	private String getRequestedUserId(HandlerMethod handlerMethod) {
-		// TODO
-		MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
-		if (methodParameters == null) {
-			return null;
-		}
-		for (MethodParameter methodParameter : methodParameters) {
-			methodParameter.getParameterAnnotation(PathVariable.class);
-		}
-		return null;
-	}
+	// private String getRequestedUserId(HandlerMethod handlerMethod) {
+	// // TODO
+	// MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
+	// if (methodParameters == null) {
+	// return null;
+	// }
+	// for (MethodParameter methodParameter : methodParameters) {
+	// methodParameter.getParameterAnnotation(PathVariable.class);
+	// }
+	// return null;
+	// }
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
