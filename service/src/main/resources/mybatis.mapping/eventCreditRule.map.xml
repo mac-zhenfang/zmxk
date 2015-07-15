@@ -67,5 +67,8 @@
 		<if test="name != null">
 			AND name = #{name}
 		</if>
+		<if test="searchNonrankingRules != null">
+			AND searchNonrankingRules = #{searchNonrankingRules}
+		</if>
 	</select>
 </mapper>

@@ -98,8 +98,9 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 	}
 
 	@Override
-	public List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name) {
-		Map<String, String> param = new HashMap<String, String>();
+	public List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name,
+			Integer rank) {
+		Map<String, Object> param = new HashMap<String, Object>();
 		if (eventTypeId != null) {
 			param.put("eventTypeId", eventTypeId);
 		}
@@ -108,6 +109,9 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 		}
 		if (name != null) {
 			param.put("name", name);
+		}
+		if (rank != null) {
+			param.put("rank", rank);
 		}
 		return sqlSession.selectList("EVENT_CREDIT_RULE.searchNonrankingRules");
 	}
