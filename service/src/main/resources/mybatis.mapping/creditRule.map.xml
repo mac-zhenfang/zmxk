@@ -32,4 +32,9 @@
 		resultType="com.smartool.common.dto.CreditRule">
 		select * from creditRules where id = #{id}
 	</select>
+	
+	<select id="getByName" parameterType="String"
+		resultType="com.smartool.common.dto.CreditRule">
+		select * from creditRules where name = #{name}
+	</select>
 </mapper>

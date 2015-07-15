@@ -1,6 +1,8 @@
 package com.smartool.service.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 		return getCreditRuleByIdInternal(creditRule.getId());
 	}
 
-	public CreditRule getCreditRuleByIdInternal(String creditRuleId) {
+	private CreditRule getCreditRuleByIdInternal(String creditRuleId) {
 		return sqlSession.selectOne("CREDIT_RULE.getById", creditRuleId);
 	}
 
@@ -35,62 +37,78 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 	}
 
 	@Override
+	public CreditRule getCreditRuleByName(String creditRuleName) {
+		return sqlSession.selectOne("CREDIT_RULE.getByName", creditRuleName);
+	}
+
+	@Override
 	public void removeCreditRule(String creditRuleId) {
 		sqlSession.delete("CREDIT_RULE.remove", creditRuleId);
 	}
 
 	@Override
 	public List<CreditRule> listAllCreditRules() {
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectList("CREDIT_RULE.listAll");
 	}
 
 	@Override
 	public EventCreditRule createEventCreditRule(EventCreditRule eventCreditRule) {
-		// TODO Auto-generated method stub
-		return null;
+		sqlSession.insert("EVENT_CREDIT_RULE.create", eventCreditRule);
+		return getEventCreditRuleByIdInternal(eventCreditRule.getId());
 	}
 
 	@Override
 	public EventCreditRule updateEventCreditRule(EventCreditRule eventCreditRule) {
-		// TODO Auto-generated method stub
-		return null;
+		sqlSession.update("EVENT_CREDIT_RULE.update", eventCreditRule);
+		return getEventCreditRuleByIdInternal(eventCreditRule.getId());
 	}
 
 	@Override
 	public EventCreditRule getEventCreditRuleById(String eventCreditRuleId) {
-		// TODO Auto-generated method stub
-		return null;
+		return getEventCreditRuleByIdInternal(eventCreditRuleId);
+	}
+
+	private EventCreditRule getEventCreditRuleByIdInternal(String eventCreditRuleId) {
+		return sqlSession.selectOne("EVENT_CREDIT_RULE.getById", eventCreditRuleId);
 	}
 
 	@Override
 	public void removeEventCreditRule(String eventCreditRuleId) {
-		// TODO Auto-generated method stub
-
+		sqlSession.delete("EVENT_CREDIT_RULE.delete", eventCreditRuleId);
 	}
 
 	@Override
 	public List<EventCreditRule> listAllEventCreditRules() {
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectList("EVENT_CREDIT_RULE.listAll");
 	}
 
 	@Override
-	public List<String> listEventCreditName(String eventId, String seriesId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, String seriesId, String name) {
+		Map<String, String> param = new HashMap<String, String>();
+		if (eventTypeId != null) {
+			param.put("eventTypeId", eventTypeId);
+		}
+		if (seriesId != null) {
+			param.put("seriesId", seriesId);
+		}
+		if (name != null) {
+			param.put("name", name);
+		}
+		return sqlSession.selectList("EVENT_CREDIT_RULE.searchRankingRules");
 	}
 
 	@Override
-	public List<EventCreditRule> listEventCreditRules(String eventId, String seriesId, String name) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name) {
+		Map<String, String> param = new HashMap<String, String>();
+		if (eventTypeId != null) {
+			param.put("eventTypeId", eventTypeId);
+		}
+		if (seriesId != null) {
+			param.put("seriesId", seriesId);
+		}
+		if (name != null) {
+			param.put("name", name);
+		}
+		return sqlSession.selectList("EVENT_CREDIT_RULE.searchNonrankingRules");
 	}
-
-	@Override
-	public EventCreditRule getEventCreditRule(String eventId, String seriesId, String name, Integer rank) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -3,15 +3,15 @@
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="EVENT_CREDIT_RULE">
-	<select id="create" parameterType="com.smartool.common.dto.EventCreditRule">
+	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
 		credit,eventTypeId,seriesId,rank, createdTime,
 		lastModifiedTime)
 		values
 		(#{id},#{name},#{credit},#{eventTypeId},#{seriesId},#{rank},now(),now())
-	</select>
-	<select id="update" parameterType="com.smartool.common.dto.EventCreditRule">
+	</insert>
+	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
 		set
 		name=#{name},
@@ -21,21 +21,51 @@
 		rank=#{rank}
 		where id =
 		#{id};
-	</select>
+	</update>
 
 	<select id="listAll" resultType="com.smartool.common.dto.EventCreditRule">
 		select * from eventCreditRules
 	</select>
 
-	<select id="remove" parameterType="String">
+	<delete id="remove" parameterType="String">
 		delete from eventCreditRules
 		where
 		id = #{id}
-	</select>
+	</delete>
 
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		select *
 		from eventCreditRules where id = #{id}
+	</select>
+
+	<select id="searchRankingRules" parameterType="Map"
+		resultType="com.smartool.common.dto.EventCreditRule">
+		SELECT * FROM eventCreditRules
+		where rank rank IS NOT NULL
+		<if test="eventTypeId != null">
+			AND eventTypeId = #{eventTypeId}
+		</if>
+		<if test="seriesId != null">
+			AND seriesId = #{seriesId}
+		</if>
+		<if test="name != null">
+			AND name = #{name}
+		</if>
+	</select>
+
+	<select id="searchNonrankingRules" parameterType="Map"
+		resultType="com.smartool.common.dto.EventCreditRule">
+		SELECT * FROM eventCreditRules
+		where rank IS NULL
+		<if test="eventTypeId != null">
+			AND eventTypeId = #{eventTypeId}
+		</if>
+		<if test="seriesId != null">
+			AND seriesId = #{seriesId}
+		</if>
+		<if test="name != null">
+			AND name = #{name}
+		</if>
 	</select>
 </mapper>

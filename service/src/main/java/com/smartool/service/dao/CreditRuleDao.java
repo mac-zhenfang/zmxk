@@ -12,6 +12,8 @@ public interface CreditRuleDao {
 
 	CreditRule getCreditRuleById(String creditRuleId);
 
+	CreditRule getCreditRuleByName(String creditRuleName);
+
 	void removeCreditRule(String creditRuleId);
 
 	List<CreditRule> listAllCreditRules();
@@ -26,9 +28,7 @@ public interface CreditRuleDao {
 
 	List<EventCreditRule> listAllEventCreditRules();
 
-	List<String> listEventCreditName(String eventId, String seriesId);
+	List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, String seriesId, String name);
 
-	List<EventCreditRule> listEventCreditRules(String eventId, String seriesId, String name);
-
-	EventCreditRule getEventCreditRule(String eventId, String seriesId, String name, Integer rank);
+	List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name);
 }
