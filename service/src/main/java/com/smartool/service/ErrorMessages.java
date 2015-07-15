@@ -22,5 +22,6 @@ public class ErrorMessages {
 	public static final String ERROR_ENROLL_MESSAGE = "录入选手错误";
 	public static final String DUPLICATE_ENROLL_MESSAGE = "您已经录入了该选手";
 	public static final String EXCEED_QUOTA_ENROLL_MESSAGE = "已经超过赛事名额上线";
-	
+	public static final String EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE = "积分奖励规则名称重复";
+	public static final String DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE = "积分奖励规则名称重复";
 }
