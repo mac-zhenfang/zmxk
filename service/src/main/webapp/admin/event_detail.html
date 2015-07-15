@@ -18,6 +18,7 @@
 						<th>状态</th>
 						<th>分数</th>
 						<th>排名</th>
+						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,19 +29,22 @@
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
 								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
 						<td class="center"><span ng-click="editing = true"
-							ng-hide="editing" ng-bind="attendee.score"></span> <input
-							ng-model="attendee.score" ng-show="editing"
+							ng-hide="editing" ng-bind="attendee.score" class="btn btn-info"></span>
+							<input ng-model="attendee.score" ng-show="editing"
 							class="form-control gridInput" />
 							<button class="btn btn-info" ng-show="editing"
 								ng-click="editScore();editing = false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>
+						<td class="center"><span class="btn btn-danger"
+							ng-click="giveCredit(attendee)"
+							ng-disabled="canGiveCredit(attendee)">授予积分</span></td>
 					</tr>
 				</tbody>
 			</table>
 			<div class="control-group">
 				<div class="controls">
 					<button type="button" class="btn btn-info"
-						ng-click="applyAttendeeChanges()">确定</button>
+						ng-click="applyAttendeeChanges()">保存</button>
 				</div>
 			</div>
 		</div>

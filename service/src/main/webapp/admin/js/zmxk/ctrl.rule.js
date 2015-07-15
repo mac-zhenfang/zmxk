@@ -19,13 +19,13 @@ zmxk.controller('EventRuleCtrl', [
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
-			},{
+			}, {
 				value : 2,
 				label : "2"
-			},{
+			}, {
 				value : 3,
 				label : ">3"
-			},{
+			}, {
 				value : 0,
 				label : "单次事件"
 			} ]
@@ -57,7 +57,7 @@ zmxk.controller('EventRuleCtrl', [
 					name : "脚踏拉力赛规则",
 					eventType : "脚踏拉力赛",
 					serieName : "预赛",
-					rank : 3,
+					rank : 0,
 					rankName : ">3",
 					credit : 10,
 					existed : true,
@@ -90,7 +90,7 @@ zmxk.controller('EventRuleCtrl', [
 					name : "脚踏拉力赛规则",
 					eventType : "脚踏拉力赛",
 					serieName : "季度复赛",
-					rank : 3,
+					rank : 0,
 					rankName : ">3",
 					credit : 200,
 					existed : true,
@@ -101,7 +101,6 @@ zmxk.controller('EventRuleCtrl', [
 					name : "最有活力小选手",
 					eventType : "脚踏拉力赛",
 					serieName : "季度复赛",
-					rank : 0,
 					rankName : "单次事件",
 					credit : 300,
 					existed : true,
@@ -112,7 +111,6 @@ zmxk.controller('EventRuleCtrl', [
 					name : "单圈最快",
 					eventType : "脚踏拉力赛",
 					serieName : "季度复赛",
-					rank : 0,
 					rankName : "单次事件",
 					credit : 200,
 					existed : true,
@@ -173,7 +171,7 @@ zmxk.controller('EventRuleCtrl', [
 			}
 
 			$scope.saveRules = function() {
-				
+
 				// create all existed == false
 				// update all changed == true
 			}
@@ -288,4 +286,16 @@ zmxk.controller('GeneralRuleCtrl', [
 				// create all existed == false
 				// update all changed == true
 			}
+		} ]);
+
+zmxk.controller('CreditRecordCtrl', [
+		'$scope',
+		'userService',
+		'eventService',
+		'$interval',
+		'$timeout',
+		'$routeParams',
+		function($scope, userService, eventService, $interval, $timeout,
+				$routeParams) {
+
 		} ]);

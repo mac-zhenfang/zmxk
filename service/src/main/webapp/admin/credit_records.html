@@ -1,0 +1,55 @@
+<div class="box span12" ng-controller="UserController">
+	<div class="box-header" data-original-title="">
+		<h2>
+			<i class="icon-user"></i><span class="break"></span>用户列表
+		</h2>
+
+	</div>
+	<div class="box-content">
+		<table
+			class="table table-striped table-bordered bootstrap-datatable datatable">
+			<thead>
+				<tr>
+					<th>用户名</th>
+					<th>手机号</th>
+					<th>注册时间</th>
+					<th>角色</th>
+					<th>积分</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="user in userList">
+					<td>{{user.name}}</td>
+					<td>{{user.mobileNum}}</td>
+					<td class="center">{{formatDate(user.createdTime)}}</td>
+					<td class="center"><span ng-hide="{{user.showInput}} == true"
+						ng-class="{0:'label label-success', 1:'label label-warning', 2:'label label-important'}[user.roleId]">{{{0:'用户',
+							1:'操作人员',2:'管理员'}[user.roleId]}}</span><select
+						ng-show="{{user.showInput}} == true"
+						class="selectpicker gridInput2" data-style="btn-info"
+						ng-model="user.roleId"
+						ng-options="option.value as option.label for option in roles_option">
+					</select></td>
+					<td class="center"><span ng-hide="{{user.showInput}} == true"
+						ng-bind="user.credit"></span> <select
+						ng-show="{{user.showInput}} == true"
+						class="selectpicker gridInput2" data-style="btn-info"
+						ng-model="user.credit"
+						ng-options="option.value as option.label for option in credit_option">
+					</select></td>
+					<td class="center"><a class="btn btn-info" href="#/users"
+						ng-click="updateUser($index)"> {{updateLabel}}</i>
+					</a><a class="btn btn-danger" href="#/users"
+						ng-click="deleteUser($index)"> {{deleteLabel}} </a></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="control-group">
+			<div class="controls">
+				<button type="button" class="btn btn-info" ng-click="saveRules()">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/span-->

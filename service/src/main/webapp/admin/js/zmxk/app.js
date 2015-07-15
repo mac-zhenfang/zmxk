@@ -71,5 +71,8 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 		controller : "EnrollController"
 	}).otherwise({
 		redirectTo : '/users'
+	}).when('/credit_records', {
+		templateUrl : 'credit_records.html',
+		controller : "CreditRecordCtrl"
 	});
 } ]);
