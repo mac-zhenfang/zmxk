@@ -39,9 +39,21 @@ public class CreditController extends BaseController {
 	@RequestMapping(value = "/creditrules", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	CreditRule create(@RequestBody CreditRule creditRule) {
-		creditRuleValidToUpdate(creditRule);
+		creditRuleValidToCreate(creditRule);
 		creditRule.setId(CommonUtils.getRandomUUID());
 		return creditRuleDao.createCreditRule(creditRule);
+	}
+
+	private boolean creditRuleValidToCreate(CreditRule creditRule) {
+		if (CommonUtils.isEmptyString(creditRule.getName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE);
+		}
+		if (creditRuleDao.getCreditRuleByName(creditRule.getName()) != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
+		}
+		return true;
 	}
 
 	private boolean creditRuleValidToUpdate(CreditRule creditRule) {
@@ -49,7 +61,8 @@ public class CreditController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
-		if (creditRuleDao.getCreditRuleByName(creditRule.getName()) != null) {
+		CreditRule existedCreditRule = creditRuleDao.getCreditRuleByName(creditRule.getName());
+		if (existedCreditRule != null && !existedCreditRule.getId().equals(creditRule.getId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
@@ -70,6 +83,13 @@ public class CreditController extends BaseController {
 		creditRuleValidToUpdate(creditRule);
 		creditRule.setId(creditRuleId);
 		return creditRuleDao.updateCreditRule(creditRule);
+	}
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/creditrules/{creditRuleId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	void remove(@PathVariable("creditRuleId") String creditRuleId) {
+		creditRuleDao.removeCreditRule(creditRuleId);
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

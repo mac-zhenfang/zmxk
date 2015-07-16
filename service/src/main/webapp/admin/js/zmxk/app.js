@@ -36,6 +36,11 @@ zmxk
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
 					event_update_attendee_uri : "/service/smartool/api/v1/events/:eventId/complete",
+					rule_create_uri : "/service/smartool/api/v1/creditrules",
+					rule_update_uri : "/service/smartool/api/v1/creditrules/:creditRuleId",
+					rule_get_uri : "/service/smartool/api/v1/creditrules/:creditRuleId",
+					rule_search_uri : "/service/smartool/api/v1/creditrules",
+					rule_remove_uri : "/service/smartool/api/v1/creditrules/:creditRuleId",
 					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
 				});
 

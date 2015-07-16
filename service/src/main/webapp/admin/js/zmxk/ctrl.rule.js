@@ -2,10 +2,11 @@ zmxk.controller('EventRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'ruleService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
+		function($scope, userService, eventService, ruleService, $interval, $timeout,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
@@ -182,109 +183,104 @@ zmxk.controller('GeneralRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'ruleService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
+		function($scope, userService, eventService, ruleService, $interval, $timeout,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
 			$scope.generalRules = [];
 			var init = function() {
-				$scope.generalRules = [ {
-					id : "mac-test-general-rule-1",
-					name : "首次充值-多次体验(10次)",
-					credit : 1000,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-2",
-					name : "首次充值-单次体验",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-3",
-					name : "首次充值-VIP",
-					credit : 1050000,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-4",
-					name : "日常充值",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-5",
-					name : "活动充值",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				} ]
+				ruleService.listAll().then(function(data) {
+					$scope.generalRules = data;
+				});
 			};
 			init();
 
 			$scope.createNewRule = function() {
 				var newRule = {
-					existed : false,
-					changed : false,
 					showInput : true
 				};
 				$scope.generalRules.push(newRule);
 			}
 
-			// FIXME can not use id, need to use index
-			$scope.updateRule = function(ruleIndex) {
-				console.log(ruleIndex)
+			$scope.updateRule = function(ruleIndex, rule) {
 				var updateRule;
 				$scope.newRules = [];
 				angular.forEach($scope.generalRules, function(rule, index) {
-					// console.log(index + "~~~" + ruleIndex);
 					if (index == ruleIndex) {
 						updateRule = angular.copy(rule);
-						console.log(updateRule);
 						$scope.newRules.push(updateRule);
 					} else {
 						$scope.newRules.push(angular.copy(rule));
 					}
 				});
-				if (updateRule.existed) {
-					updateRule.changed = !updateRule.changed;
-				}
 
-				if (updateRule.changed) {
-					$scope.updateLabel = "确定";
+				updateRule.showInput = true;
+				$scope.generalRules = $scope.newRules;
+			}
+
+			$scope.deleteRule = function(ruleIndex, rule) {
+				if(confirm("确定要删除吗？")){
+					ruleService.remove(rule.id).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index != ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							}
+						});
+						$scope.generalRules = $scope.newRules;
+					}, function(data) {
+						alert(data.data.message);
+						return;
+					});
+				}
+			}
+
+			$scope.saveRule = function(ruleIndex, rule) {
+				if(rule.id){
+					ruleService.update(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
+
+						updateRule.showInput = false;
+						$scope.generalRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
 				} else {
-					$scope.updateLabel = "修改";
+					ruleService.create(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
+
+						updateRule.showInput = false;
+						$scope.generalRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
 				}
-				updateRule.showInput = !updateRule.showInput;
-				$scope.generalRules = $scope.newRules;
-				console.log($scope.generalRules);
-				// console.log($scope.eventRules);
-			}
-
-			$scope.deleteRule = function(ruleIndex) {
-				var updateRule;
-				$scope.newRules = [];
-				angular.forEach($scope.generalRules, function(rule, index) {
-					if (index != ruleIndex) {
-						updateRule = angular.copy(rule);
-						$scope.newRules.push(updateRule);
-					}
-				});
-				$scope.generalRules = $scope.newRules;
-			}
-
-			$scope.saveRules = function() {
-
-				// create all existed == false
-				// update all changed == true
 			}
 		} ]);
 

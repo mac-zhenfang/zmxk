@@ -17,19 +17,19 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="rule in generalRules">
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
+						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.name"></span> <input ng-model="rule.name"
-							ng-show="{{rule.showInput}} == true"
+							ng-show="{{rule.showInput}}"
 							class="form-control gridInput2" /></td>
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
+						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.credit"></span> <input ng-model="rule.credit"
-							ng-show="{{rule.showInput}} == true"
+							ng-show="{{rule.showInput}}"
 							class="form-control gridInput2" /></td>
 						<td class="center"><a class="btn btn-info"
-							href="#/general_rules" ng-click="updateRule($index)">
-								{{updateLabel}}</i>
+							href="#/general_rules" ng-click="rule.showInput?saveRule($index, rule):updateRule($index, rule)">
+								{{rule.showInput?"确定":"修改"}}</i>
 						</a><a class="btn btn-danger" href="#/general_rules"
-							ng-click="deleteRule($index)"> {{deleteLabel}} </a></td>
+							ng-click="deleteRule($index, rule)"> {{deleteLabel}} </a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -37,7 +37,6 @@
 				<div class="controls">
 					<button type="button" class="btn btn-info"
 						ng-click="createNewRule()">创建</button>
-					<button type="button" class="btn btn-info" ng-click="saveRules()">保存</button>
 				</div>
 			</div>
 		</div>
