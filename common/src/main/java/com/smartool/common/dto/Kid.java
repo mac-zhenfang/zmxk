@@ -1,6 +1,6 @@
 package com.smartool.common.dto;
 
-public class Kid {
+public class Kid extends BaseDateTrackingBean {
 	private String id;
 	private String name;
 	private int schoolType;

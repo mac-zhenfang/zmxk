@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TAG">
+	<select id="create" parameterType="com.smartool.common.dto.Tag">
+		insert events (id,
+		name,type,createdTime,lastModifiedTime)
+		values
+		(#{id},#{name},#{type},now(),now())
+	</select>
+	<select id="list" resultType="com.smartool.common.dto.Tag">
+		select * from tags
+	</select>
+	<select id="listByType" parameterType="String" resultType="com.smartool.common.dto.Tag">
+		select * from tags where
+		type = #{type}
+	</select>
+	<select id="getById" parameterType="String" resultType="com.smartool.common.dto.Tag">
+		select *
+		from tags where id = #{id}
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.Tag">
+		update tags set
+		name=#{name}, type=#{type}, status=#{status} where id = #{id}
+	</select>
+</mapper>

@@ -32,6 +32,8 @@ import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.KidDaoImpl;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
+import com.smartool.service.dao.TagDao;
+import com.smartool.service.dao.TagDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
 import com.smartool.service.service.UserService;
@@ -59,6 +61,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public UserDao getUserDao() {
 		return new UserDaoImpl();
+	}
+	
+	@Bean
+	public TagDao getTagDao() {
+		return new TagDaoImpl();
 	}
 
 	@Bean

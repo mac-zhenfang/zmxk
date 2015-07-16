@@ -47,6 +47,7 @@ CREATE TABLE `events` (
 	`eventTypeId` varchar(36) NOT NULL,
 	`siteId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
+	`tagId` varchar(36),
 	`quota` int,
 	`stage` int, -- Preliminary(0)/contest(1)/semi final(2)/final(3)
 	`status` int NOT NULL DEFAULT 0,-- prepare(0) / start (1) / complete (2)
@@ -54,6 +55,17 @@ CREATE TABLE `events` (
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `tags`;
+CREATE TABLE `tags` (
+	`id` varchar(36) NOT NULL,
+	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`type` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (`id`),
+  	UNIQUE KEY `tags_type` (`type`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `series`;
