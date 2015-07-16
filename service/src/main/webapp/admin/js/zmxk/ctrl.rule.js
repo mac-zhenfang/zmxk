@@ -17,7 +17,13 @@ zmxk.controller('EventRuleCtrl', [
 			// 4. make series select box and searchable
 			// 5. add one default - 单次事件into series select box
 			$scope.eventRules = [];
-			$scope.eventTypeList = [];
+			$scope.eventTypeList = [ {
+				id : "eventTypeId1",
+				name : "脚踏拉力赛"
+			}, {
+				id : "eventTypeId2",
+				name : "手摇拉力赛"
+			} ];
 			$scope.seriesList= [];
 			$scope.rank_option = [ {
 				value : 1,
@@ -39,10 +45,9 @@ zmxk.controller('EventRuleCtrl', [
 				$scope.eventRules = [ {
 					id : "mac-test-event-rule-1",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 1,
-					rankName : "1",
 					credit : 100,
 					existed : true,
 					changed : false,
@@ -50,10 +55,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-2",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 2,
-					rankName : "2",
 					credit : 50,
 					existed : true,
 					changed : false,
@@ -61,10 +65,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-3",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 0,
-					rankName : ">3",
 					credit : 10,
 					existed : true,
 					changed : false,
@@ -72,10 +75,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-4",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 1,
-					rankName : "1",
 					credit : 400,
 					existed : true,
 					changed : false,
@@ -83,10 +85,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-5",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 2,
-					rankName : "2",
 					credit : 200,
 					existed : true,
 					changed : false,
@@ -94,10 +95,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-6",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 0,
-					rankName : ">3",
 					credit : 200,
 					existed : true,
 					changed : false,
@@ -105,10 +105,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-7",
 					name : "最有活力小选手",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : null,
-					rankName : "单次事件",
 					credit : 300,
 					existed : true,
 					changed : false,
@@ -116,9 +115,8 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-8",
 					name : "单圈最快",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId2",
 					serieName : "季度复赛",
-					rankName : "单次事件",
 					credit : 200,
 					existed : true,
 					changed : false,

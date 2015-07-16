@@ -115,4 +115,9 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 		}
 		return sqlSession.selectList("EVENT_CREDIT_RULE.searchNonrankingRules");
 	}
+
+	@Override
+	public EventCreditRule getEventCreditRuleByName(String name) {
+		return sqlSession.selectOne("EVENT_CREDIT_RULE.getByName", name);
+	}
 }
