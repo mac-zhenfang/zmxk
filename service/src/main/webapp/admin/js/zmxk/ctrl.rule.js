@@ -2,11 +2,11 @@ zmxk.controller('EventRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
-		'ruleService',
+		'eventRuleService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, ruleService, $interval, $timeout,
+		function($scope, userService, eventService, eventRuleService, $interval, $timeout,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
@@ -17,6 +17,8 @@ zmxk.controller('EventRuleCtrl', [
 			// 4. make series select box and searchable
 			// 5. add one default - 单次事件into series select box
 			$scope.eventRules = [];
+			$scope.eventTypeList = [];
+			$scope.seriesList= [];
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
@@ -25,9 +27,12 @@ zmxk.controller('EventRuleCtrl', [
 				label : "2"
 			}, {
 				value : 3,
-				label : ">3"
+				label : "3"
 			}, {
 				value : 0,
+				label : "其他"
+			}, {
+				value : null,
 				label : "单次事件"
 			} ]
 			var init = function() {
@@ -102,6 +107,7 @@ zmxk.controller('EventRuleCtrl', [
 					name : "最有活力小选手",
 					eventType : "脚踏拉力赛",
 					serieName : "季度复赛",
+					rank : null,
 					rankName : "单次事件",
 					credit : 300,
 					existed : true,

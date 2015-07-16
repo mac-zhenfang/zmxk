@@ -32,10 +32,9 @@
 							ng-bind="rule.serieName"></span> <input ng-model="rule.serieName"
 							ng-show="{{rule.showInput}} == true"
 							class="form-control gridInput2" /></td>
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
-							ng-bind="rule.rankName"></span> 
-							<select ng-show="{{rule.showInput}} == true" class="selectpicker gridInput2" data-style="btn-info"
-								ng-model="rule.rankName"
+						<td class="center"> 
+							<select ng-disabled={{!rule.showInput}} class="selectpicker gridInput2" data-style="btn-info"
+								ng-model="rule.rank!=null?rule.rank:null"
 								ng-options="option.value as option.label for option in rank_option" ng-init="rule.rank==option.value">
 							</select>
 							
