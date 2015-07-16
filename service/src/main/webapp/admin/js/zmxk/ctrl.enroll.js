@@ -91,6 +91,8 @@ zmxk
 										attendee["kidId"] = kid.id;
 
 									}
+									console.log("~~~~~ input ~~~~~~");
+									console.log(attendee);
 									var msg = "";
 									eventService
 											.addAttendee(
@@ -120,14 +122,14 @@ zmxk
 																			},
 																			function() {
 																			});
-															/**/
+															/*
 															$timeout(
 																	function() {
 																		$scope
 																				.hoopPage(
 																						"events",
 																						[ $scope.enroll_form_data.id ])
-																	}, 5000)
+																	}, 5000)*/
 															// var url =
 															// $scope.$location.$$host;
 															$scope.enroll_form_data.kids = [];

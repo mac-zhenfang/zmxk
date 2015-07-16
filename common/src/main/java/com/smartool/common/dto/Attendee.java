@@ -12,6 +12,10 @@ public class Attendee extends BaseDateTrackingBean {
 	
 	private String eventId;
 	
+	private String tagId;
+	
+	private String tag;
+	
 	private float score;
 	
 	private int rank;
@@ -93,5 +97,21 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getTagId() {
+		return tagId;
+	}
+
+	public void setTagId(String tagId) {
+		this.tagId = tagId;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
 }

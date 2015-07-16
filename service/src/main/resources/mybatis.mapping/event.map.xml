@@ -23,7 +23,6 @@
 		<result property="name" column="eventName" />
 		<result property="siteId" column="siteId" />
 		<result property="eventType" column="eventType" />
-		<result property="tag" column="tag" />
 		<result property="eventTypeId" column="eventTypeId" />
 		<result property="quota" column="quota" />
 		<result property="createdTime" column="createdTime" />
@@ -52,12 +51,10 @@
 		a.rank as rank,
 		a.userId as userId,
 		a.seq as seq,
-		g.name as tag,
 		a.status as status
 		from events e,
 		attendees a,
-		tags g,
-		eventTypes t where e.eventTypeId = t.id and e.tagId = g.id and a.eventId = e.id
+		eventTypes t where e.eventTypeId = t.id and a.eventId = e.id
 	</select>
 
 	<select id="listAllStatus" parameterType="int" resultMap="event">
@@ -75,12 +72,10 @@
 		a.rank as rank,
 		a.userId as userId,
 		a.seq as seq,
-		g.name as tag,
 		a.status as status
 		from events e, attendees a,
-		tags g,
 		eventTypes t where
-		e.eventTypeId = t.id and a.eventId = e.id and e.tagId = g.id and e.status = #{status};
+		e.eventTypeId = t.id and a.eventId = e.id and e.status = #{status};
 	</select>
 
 	<select id="listFullAll" resultMap="event">
@@ -100,21 +95,20 @@
 		k.name as kidName,
 		a.userId as userId,
 		a.seq as seq,
-		g.name as tag,
 		a.status as status
 		from events e,
-		eventTypes t, attendees a, kids k, tags g
+		eventTypes t, attendees a, kids k
 		where
 		e.id = a.eventId
 		and
-		e.eventTypeId = t.id and e.tagId = g.id and k.id = a.kidId
+		e.eventTypeId = t.id and k.id = a.kidId
 	</select>
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
-		eventTypeId,siteId, quota, tag, eventTime, createdTime,lastModifiedTime)
+		eventTypeId,siteId, quota, eventTime, createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{tag},#{eventTime},now(),now())
+		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{eventTime},now(),now())
 	</select>
 
 
@@ -132,7 +126,6 @@
 		lastModifiedTime,
 		a.id as attendeeId,
 		k.id as kidId,
-		g.name as tag,
 		a.score as score,
 		a.status as status,
 		a.rank as rank,
@@ -141,10 +134,10 @@
 		a.seq as seq
 		from
 		events e,
-		eventTypes t, attendees a, kids k, tags g
+		eventTypes t, attendees a, kids k
 		where
 		e.id = a.eventId and
-		e.eventTypeId = t.id and k.id = a.kidId and e.tagId = g.id and e.id = #{id};
+		e.eventTypeId = t.id and k.id = a.kidId and e.id = #{id};
 	</select>
 
 	<select id="getById" parameterType="String"
@@ -158,7 +151,6 @@
 		set
 		name=#{name},
 		quota=#{quota},
-		tagId=#{tagId},
 		eventTypeId=#{eventTypeId},
 		siteId=#{siteId},
 		eventTime=#{eventTime}

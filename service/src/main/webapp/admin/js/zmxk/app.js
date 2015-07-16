@@ -36,7 +36,9 @@ zmxk
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
 					event_update_attendee_uri : "/service/smartool/api/v1/events/:eventId/complete",
-					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId"
+					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId",
+					tag_search_uri : "/service/smartool/api/v1/tags/search?type=:type",
+					tag_rest_uri : "/service/smartool/api/v1/tags/:tagId"
 				});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {

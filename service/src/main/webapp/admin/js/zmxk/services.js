@@ -7,7 +7,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				saveAttendee : {
 					url : zmxkConfig.event_update_attendee_uri,
 					method : "POST",
-					isArray: true,
+					isArray : true,
 					headers : {
 						'Content-Type' : 'application/json'
 					}
@@ -80,6 +80,34 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 
+		} ]);
+// Tag service
+zmxk.service('tagService', [ '$resource', 'zmxkConfig', '$q',
+		function($resource, zmxkConfig, $q) {
+			var tagResource = $resource(zmxkConfig.tag_rest_uri, {
+				tagId : '@id'
+			}, {
+				search : {
+					url : zmxkConfig.tag_search_uri,
+					type : "@type",
+					method : "GET",
+					isArray : true
+				}
+			});
+
+			this.search = function(type) {
+				var defer = $q.defer();
+				tagResource.search({
+					type : type
+				}, function(body, headers) {
+					console.log(body);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body);
+					defer.reject(body);
+				})
+				return defer.promise;
+			}
 		} ]);
 // User Service
 zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',

@@ -32,6 +32,7 @@ import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.UserDao;
 
 @RestController
@@ -50,6 +51,9 @@ public class EventController extends BaseController {
 	@Autowired
 	private UserDao userDao;
 
+	@Autowired
+	private TagDao tagDao;
+
 	private static Random r = new Random();
 
 	/**
@@ -59,7 +63,7 @@ public class EventController extends BaseController {
 	 */
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events", method = RequestMethod.GET)
-	public List<Event> getEvents(@RequestParam (value = "status", required = false) String status) {
+	public List<Event> getEvents(@RequestParam(value = "status", required = false) String status) {
 		List<Event> returnList = new ArrayList<Event>();
 		if (Strings.isNullOrEmpty(status)) {
 			returnList = eventDao.listAllEvent();
@@ -72,17 +76,14 @@ public class EventController extends BaseController {
 			}
 			returnList = eventDao.listAllEvent(s);
 		}
-		
-		/*for(Event event : returnList) {
-			List<Attendee> attendees = event.getAttendees();
-			List<Attendee> newAttendees = new ArrayList<>();
-			for(Attendee att : attendees) {
-				if(att.getStatus() > 0) {
-					newAttendees.add(att);
-				}
-			}
-			event.setAttendees(newAttendees);
-		}*/
+
+		/*
+		 * for(Event event : returnList) { List<Attendee> attendees =
+		 * attendeeDao.getAllPendingAttendees(event.getId()); for(Attendee att :
+		 * attendees) { Kid kid = kidDao.get(att.getKidId()); if(null != kid) {
+		 * att.setKidId(kid.getId()); att.setKidName(kid.getName()); } }
+		 * event.setAttendees(attendees); }
+		 */
 
 		return returnList;
 	}
@@ -124,7 +125,8 @@ public class EventController extends BaseController {
 		Map<String, Integer> creditMap = new HashMap<>();
 		for (Attendee attendee : attendees) {
 			attendee.setStatus(2);
-			//FIXME: sort by score
+			// FIXME: sort by score
+			// FIXME: get credit from db
 			int credit = 0;
 			switch (attendee.getRank()) {
 			case 1:
@@ -139,22 +141,22 @@ public class EventController extends BaseController {
 			// update attendee
 			retAttendees.add(attendeeDao.complete(attendee));
 			String userId = attendee.getUserId();
-			int value = 0; 
-			if(creditMap.containsKey(userId)) {
+			int value = 0;
+			if (creditMap.containsKey(userId)) {
 				value = creditMap.get(userId);
 			}
-			value+=credit;
+			value += credit;
 			creditMap.put(userId, value);
 		}
-		
-		for(Entry<String, Integer> entry : creditMap.entrySet()) {
+
+		for (Entry<String, Integer> entry : creditMap.entrySet()) {
 			String userId = entry.getKey();
 			int credit = entry.getValue();
 			User user = userDao.getUserById(userId);
 			user.setCredit(credit);
 			userDao.updateUser(user);
 		}
-		
+
 		return retAttendees;
 	}
 
@@ -170,6 +172,7 @@ public class EventController extends BaseController {
 	public Attendee enroll(@PathVariable String eventId, @RequestBody EnrollAttendee enrollAttendee) {
 
 		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
+		
 		Event event = eventDao.getEvent(eventId);
 		Kid returnKid = null;
 		String givenKidId = enrollAttendee.getKidId();
@@ -186,7 +189,7 @@ public class EventController extends BaseController {
 		if (exceedQuota(quota, enrolledAttendees)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_QUOTA_ENROLL_MESSAGE);
 		}
-
+		// FIXME return Kid ID
 		if (isDupliatedEnrolled(enrolledAttendees, givenKidId)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_ENROLL_MESSAGE);
 		}
@@ -223,19 +226,18 @@ public class EventController extends BaseController {
 			if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
 				kidId = returnKid.getId();
 			}
-			if(null == kidId) {
+			if (null == kidId) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_SELECTION);
 			}
 			attendee.setKidId(kidId);
 			Attendee createdAttendee = attendeeDao.enroll(attendee);
-			
-			Kid kid  = kidDao.get(kidId);
+
+			Kid kid = kidDao.get(kidId);
 			createdAttendee.setKidName(kid.getName());
 			if (null != createdAttendee) {
 				return createdAttendee;
 			}
-			
-			
+
 		}
 
 		throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessages.WRONG_KID_SELECTION);
@@ -255,6 +257,11 @@ public class EventController extends BaseController {
 		isEventValid(event);
 		Event retEvent = eventDao.updateEvent(event);
 		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		for (Attendee attendee : attendees) {
+			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
+				attendee.setTag(tagDao.getTag(attendee.getTagId()).getName());
+			}
+		}
 		retEvent.setAttendees(attendees);
 		return retEvent;
 	}
@@ -269,6 +276,17 @@ public class EventController extends BaseController {
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
 	public Event getEvent(@PathVariable String eventId) {
 		Event retEvent = eventDao.getFullEvent(eventId);
+		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		for (Attendee attendee : attendees) {
+			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
+				attendee.setTag(tagDao.getTag(attendee.getTagId()).getName());
+			}
+			
+			if (!Strings.isNullOrEmpty(attendee.getKidId())) {
+				attendee.setKidName(kidDao.get(attendee.getKidId()).getName());
+			}
+		}
+		retEvent.setAttendees(attendees);
 		/*
 		 * List<Attendee> attendees =
 		 * attendeeDao.getAttendeeFromEvent(retEvent.getId()); for(Attendee

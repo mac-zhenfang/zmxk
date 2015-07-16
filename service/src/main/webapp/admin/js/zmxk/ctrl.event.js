@@ -94,14 +94,16 @@ zmxk
 						'$timeout',
 						'$routeParams',
 						'$dialogs',
+						'tagService',
 						function($scope, userService, eventService, $interval,
-								$timeout, $routeParams, $dialogs) {
+								$timeout, $routeParams, $dialogs, tagService) {
 							$scope.eventId = $routeParams.eventId;
 							// console.log("~~~~~" + $scope.eventId);
 							$scope.eventInit = {};
 							$scope.selectedRule
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
+							$scope.eventTags = [];
 							$scope.init = function() {
 
 								if (!angular.isUndefined($scope.eventId)) {
@@ -139,6 +141,13 @@ zmxk
 														console.log(data);
 													});
 								}
+								
+								// get tags
+								tagService.search("event").then(function(data){
+									$scope.eventTags = data;
+								},function(data){
+									
+								});
 							}
 							$scope.canGiveCredit = function(attendee) {
 								return attendee.existed == false || attendee.status<2;
@@ -259,7 +268,7 @@ zmxk
 								console.log($scope.eventInit.attendees);
 							}
 
-							$scope.init();
+							
 						} ]);
 
 zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {

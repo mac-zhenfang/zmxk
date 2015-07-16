@@ -27,8 +27,6 @@ public class Event extends BaseDateTrackingBean {
 	
 	private int stage;
 	
-	private String tag;
-
 	public String getId() {
 		return id;
 	}
@@ -115,13 +113,5 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setSeriesId(String seriesId) {
 		this.seriesId = seriesId;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
 	}
 }

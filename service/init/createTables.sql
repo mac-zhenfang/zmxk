@@ -47,7 +47,6 @@ CREATE TABLE `events` (
 	`eventTypeId` varchar(36) NOT NULL,
 	`siteId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
-	`tagId` varchar(36),
 	`quota` int,
 	`stage` int, -- Preliminary(0)/contest(1)/semi final(2)/final(3)
 	`status` int NOT NULL DEFAULT 0,-- prepare(0) / start (1) / complete (2)
@@ -113,6 +112,7 @@ CREATE TABLE `attendees` (
 	`kidId` varchar(36),
 	`userId` varchar(36),
 	`eventId` varchar(36) NOT NULL,
+	`tagId` varchar(36),
 	`score` float,
 	`rank` int,
  	`seq` int,

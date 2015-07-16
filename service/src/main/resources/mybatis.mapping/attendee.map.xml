@@ -5,14 +5,15 @@
 <mapper namespace="ATTENDEE">
 	<select id="create" parameterType="com.smartool.common.dto.Attendee">
 		insert attendees (id, kidId,
-		userId,eventId, seq, createdTime,lastModifiedTime) values
-		(#{id},#{kidId},#{userId},#{eventId}, #{seq}, now(),now())
+		userId,eventId, tagId, seq, createdTime,lastModifiedTime) values
+		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},now(),now())
 	</select>
 	<select id="complete" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
 		rank=#{rank},
 		score=#{score},
+		tagId=#{tagId},
 		status=#{status}
 		where id =
 		#{id};
@@ -20,11 +21,12 @@
 	<select id="update" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
-		name=#{name},
 		seq=#{seq},
 		kidId=#{kidId},
 		userId=#{userId},
 		eventId=#{eventId},
+		tagId =
+		#{tagId},
 		rank=#{rank},
 		score=#{score},
 		status=#{status}
@@ -38,11 +40,21 @@
 	</select>
 
 	<select id="listAll" resultType="com.smartool.common.dto.Attendee">
-		select * from attendees
+		select a.id as
+		id, a.kidId as
+		kidId, a.createdTime as createdTime, a.lastModifiedTime
+		as
+		lastModifiedTime, a.status as status, a.score as score, a.tagId as tagId,
+		a.seq as seq from attendees a
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
-		select * from attendees where id = #{id}
+		select a.id as
+		id, a.kidId as kidId, a.createdTime as
+		createdTime, a.lastModifiedTime
+		as lastModifiedTime, a.status as
+		status, a.score as score, a.seq as seq, a.tagId as tagId  from attendees
+		a where a.id = #{id}
 	</select>
 
 	<select id="getByEventId" parameterType="String"
@@ -53,7 +65,12 @@
 
 	<select id="getPendingAttendees" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
-		select * from attendees where eventId = #{eventId} and
-		status = 0
+		select a.id as
+		id, a.kidId as kidId, a.createdTime as
+		createdTime, a.lastModifiedTime
+		as lastModifiedTime, a.status as
+		status, a.score as score, a.seq as seq, a.tagId as tagId  from attendees a where
+		a.eventId = #{eventId} and
+		a.status = 0
 	</select>
 </mapper>
