@@ -49,8 +49,6 @@ zmxk.controller('EventManageCtrl', [
 									event.applyScoreCount = applyScoreCount;
 									event.enrolledCount = enrolledCount;
 								});
-								console.log("~~~~");
-								console.log($scope.listEvents);
 							}, function(data) {
 							});
 				}
