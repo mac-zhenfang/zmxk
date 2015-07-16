@@ -2,10 +2,11 @@ zmxk.controller('EventRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'eventRuleService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
+		function($scope, userService, eventService, eventRuleService, $interval, $timeout,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
@@ -16,6 +17,14 @@ zmxk.controller('EventRuleCtrl', [
 			// 4. make series select box and searchable
 			// 5. add one default - 单次事件into series select box
 			$scope.eventRules = [];
+			$scope.eventTypeList = [ {
+				id : "eventTypeId1",
+				name : "脚踏拉力赛"
+			}, {
+				id : "eventTypeId2",
+				name : "手摇拉力赛"
+			} ];
+			$scope.seriesList= [];
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
@@ -24,19 +33,21 @@ zmxk.controller('EventRuleCtrl', [
 				label : "2"
 			}, {
 				value : 3,
-				label : ">3"
+				label : "3"
 			}, {
 				value : 0,
+				label : "其他"
+			}, {
+				value : null,
 				label : "单次事件"
 			} ]
 			var init = function() {
 				$scope.eventRules = [ {
 					id : "mac-test-event-rule-1",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 1,
-					rankName : "1",
 					credit : 100,
 					existed : true,
 					changed : false,
@@ -44,10 +55,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-2",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 2,
-					rankName : "2",
 					credit : 50,
 					existed : true,
 					changed : false,
@@ -55,10 +65,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-3",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "预赛",
 					rank : 0,
-					rankName : ">3",
 					credit : 10,
 					existed : true,
 					changed : false,
@@ -66,10 +75,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-4",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 1,
-					rankName : "1",
 					credit : 400,
 					existed : true,
 					changed : false,
@@ -77,10 +85,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-5",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 2,
-					rankName : "2",
 					credit : 200,
 					existed : true,
 					changed : false,
@@ -88,10 +95,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-6",
 					name : "脚踏拉力赛规则",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
 					rank : 0,
-					rankName : ">3",
 					credit : 200,
 					existed : true,
 					changed : false,
@@ -99,9 +105,9 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-7",
 					name : "最有活力小选手",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId1",
 					serieName : "季度复赛",
-					rankName : "单次事件",
+					rank : null,
 					credit : 300,
 					existed : true,
 					changed : false,
@@ -109,9 +115,8 @@ zmxk.controller('EventRuleCtrl', [
 				}, {
 					id : "mac-test-event-rule-8",
 					name : "单圈最快",
-					eventType : "脚踏拉力赛",
+					eventTypeId : "eventTypeId2",
 					serieName : "季度复赛",
-					rankName : "单次事件",
 					credit : 200,
 					existed : true,
 					changed : false,
@@ -182,109 +187,104 @@ zmxk.controller('GeneralRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'ruleService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
+		function($scope, userService, eventService, ruleService, $interval, $timeout,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
 			$scope.generalRules = [];
 			var init = function() {
-				$scope.generalRules = [ {
-					id : "mac-test-general-rule-1",
-					name : "首次充值-多次体验(10次)",
-					credit : 1000,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-2",
-					name : "首次充值-单次体验",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-3",
-					name : "首次充值-VIP",
-					credit : 1050000,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-4",
-					name : "日常充值",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-general-rule-5",
-					name : "活动充值",
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				} ]
+				ruleService.listAll().then(function(data) {
+					$scope.generalRules = data;
+				});
 			};
 			init();
 
 			$scope.createNewRule = function() {
 				var newRule = {
-					existed : false,
-					changed : false,
 					showInput : true
 				};
 				$scope.generalRules.push(newRule);
 			}
 
-			// FIXME can not use id, need to use index
-			$scope.updateRule = function(ruleIndex) {
-				console.log(ruleIndex)
+			$scope.updateRule = function(ruleIndex, rule) {
 				var updateRule;
 				$scope.newRules = [];
 				angular.forEach($scope.generalRules, function(rule, index) {
-					// console.log(index + "~~~" + ruleIndex);
 					if (index == ruleIndex) {
 						updateRule = angular.copy(rule);
-						console.log(updateRule);
 						$scope.newRules.push(updateRule);
 					} else {
 						$scope.newRules.push(angular.copy(rule));
 					}
 				});
-				if (updateRule.existed) {
-					updateRule.changed = !updateRule.changed;
-				}
 
-				if (updateRule.changed) {
-					$scope.updateLabel = "确定";
+				updateRule.showInput = true;
+				$scope.generalRules = $scope.newRules;
+			}
+
+			$scope.deleteRule = function(ruleIndex, rule) {
+				if(confirm("确定要删除吗？")){
+					ruleService.remove(rule.id).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index != ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							}
+						});
+						$scope.generalRules = $scope.newRules;
+					}, function(data) {
+						alert(data.data.message);
+						return;
+					});
+				}
+			}
+
+			$scope.saveRule = function(ruleIndex, rule) {
+				if(rule.id){
+					ruleService.update(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
+
+						updateRule.showInput = false;
+						$scope.generalRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
 				} else {
-					$scope.updateLabel = "修改";
+					ruleService.create(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.generalRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(rule);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
+
+						updateRule.showInput = false;
+						$scope.generalRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
 				}
-				updateRule.showInput = !updateRule.showInput;
-				$scope.generalRules = $scope.newRules;
-				console.log($scope.generalRules);
-				// console.log($scope.eventRules);
-			}
-
-			$scope.deleteRule = function(ruleIndex) {
-				var updateRule;
-				$scope.newRules = [];
-				angular.forEach($scope.generalRules, function(rule, index) {
-					if (index != ruleIndex) {
-						updateRule = angular.copy(rule);
-						$scope.newRules.push(updateRule);
-					}
-				});
-				$scope.generalRules = $scope.newRules;
-			}
-
-			$scope.saveRules = function() {
-
-				// create all existed == false
-				// update all changed == true
 			}
 		} ]);
 

@@ -39,6 +39,12 @@
 		from eventCreditRules where id = #{id}
 	</select>
 
+	<select id="getByName" parameterType="String"
+		resultType="com.smartool.common.dto.EventCreditRule">
+		select *
+		from eventCreditRules where name = #{name}
+	</select>
+	
 	<select id="searchRankingRules" parameterType="Map"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		SELECT * FROM eventCreditRules
