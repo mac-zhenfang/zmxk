@@ -6,6 +6,9 @@
 			</h2>
 		</div>
 		<div class="box-content">
+			<input ng-model="filterRule.name" class="form-control gridInput2" />
+		</div>
+		<div class="box-content">
 			<table
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
@@ -18,15 +21,9 @@
 						<th>操作</th>
 					</tr>
 				</thead>
+
 				<tbody>
-					<tr>
-						<td class="center"><input ng-model="filterRule.name" class="form-control gridInput2" /></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
+
 					<tr ng-repeat="rule in eventRules | filter:filterRule">
 						<td class="center"><span ng-hide="{{rule.showInput}} == true"
 							ng-bind="rule.name"></span> <input ng-model="rule.name"
@@ -42,13 +39,12 @@
 							ng-bind="rule.serieName"></span> <input ng-model="rule.serieName"
 							ng-show="{{rule.showInput}} == true"
 							class="form-control gridInput2" /></td>
-						<td class="center"> 
-							<select ng-disabled={{!rule.showInput}} class="selectpicker gridInput2" data-style="btn-info"
-								ng-model="{true: rule.rank, false:null}[rule.rank!=null]"
-								ng-options="option.value as option.label for option in rank_option" ng-init="rule.rank==option.value">
-							</select>
-							
-							<!-- <input ng-model="rule.rankName"
+						<td class="center"><select ng-disabled={{!rule.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="{true: rule.rank, false:null}[rule.rank!=null]"
+							ng-options="option.value as option.label for option in rank_option"
+							ng-init="rule.rank==option.value">
+						</select> <!-- <input ng-model="rule.rankName"
 							ng-show="{{rule.showInput}} == true"
 							class="form-control gridInput2" /> --></td>
 						<td class="center"><span ng-hide="{{rule.showInput}} == true"
