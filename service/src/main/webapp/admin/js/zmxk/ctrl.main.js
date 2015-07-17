@@ -61,7 +61,7 @@ zmxk
 								uri = uri + page + "/" + givenParams;
 								console.log(" jump " + uri);
 								window.location.href = uri;
-								window.location.reload();
+								//window.location.reload();
 							}
 
 							$scope.launch = function(which, title, message,
