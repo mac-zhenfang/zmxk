@@ -16,7 +16,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="rule in generalRules">
+					<tr>
+						<td class="center"><input ng-model="filterRule.name" class="form-control gridInput2" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr ng-repeat="rule in generalRules | filter:filterRule">
 						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.name"></span> <input ng-model="rule.name"
 							ng-show="{{rule.showInput}}"

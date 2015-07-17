@@ -127,8 +127,6 @@ zmxk.controller('EventRuleCtrl', [
 
 			$scope.createNewRule = function() {
 				var newRule = {
-					existed : false,
-					changed : false,
 					showInput : true
 				};
 				$scope.eventRules.push(newRule);
@@ -136,7 +134,6 @@ zmxk.controller('EventRuleCtrl', [
 
 			// FIXME can not use id, need to use index
 			$scope.updateRule = function(ruleIndex) {
-				console.log(ruleIndex)
 				var updateRule;
 				$scope.newRules = [];
 				angular.forEach($scope.eventRules, function(rule, index) {
@@ -154,13 +151,11 @@ zmxk.controller('EventRuleCtrl', [
 				}
 				updateRule.showInput = !updateRule.showInput;
 				$scope.eventRules = $scope.newRules;
-				console.log($scope.eventRules);
 				if (updateRule.changed) {
 					$scope.updateLabel = "确定";
 				} else {
 					$scope.updateLabel = "修改";
 				}
-				// console.log($scope.eventRules);
 			}
 
 			$scope.deleteRule = function(ruleIndex) {
@@ -177,8 +172,6 @@ zmxk.controller('EventRuleCtrl', [
 
 			$scope.saveRules = function() {
 
-				// create all existed == false
-				// update all changed == true
 			}
 
 		} ]);
@@ -227,21 +220,33 @@ zmxk.controller('GeneralRuleCtrl', [
 			}
 
 			$scope.deleteRule = function(ruleIndex, rule) {
-				if(confirm("确定要删除吗？")){
-					ruleService.remove(rule.id).then(function(data) {
-						var updateRule;
-						$scope.newRules = [];
-						angular.forEach($scope.generalRules, function(rule, index) {
-							if (index != ruleIndex) {
-								updateRule = angular.copy(rule);
-								$scope.newRules.push(updateRule);
-							}
+				if(rule.id){
+					if(confirm("确定要删除吗？")){
+						ruleService.remove(rule.id).then(function(data) {
+							var updateRule;
+							$scope.newRules = [];
+							angular.forEach($scope.generalRules, function(rule, index) {
+								if (index != ruleIndex) {
+									updateRule = angular.copy(rule);
+									$scope.newRules.push(updateRule);
+								}
+							});
+							$scope.generalRules = $scope.newRules;
+						}, function(data) {
+							alert(data.data.message);
+							return;
 						});
-						$scope.generalRules = $scope.newRules;
-					}, function(data) {
-						alert(data.data.message);
-						return;
+					}
+				} else {
+					var updateRule;
+					$scope.newRules = [];
+					angular.forEach($scope.generalRules, function(rule, index) {
+						if (index != ruleIndex) {
+							updateRule = angular.copy(rule);
+							$scope.newRules.push(updateRule);
+						}
 					});
+					$scope.generalRules = $scope.newRules;
 				}
 			}
 
