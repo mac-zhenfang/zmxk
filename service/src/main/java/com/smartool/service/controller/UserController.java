@@ -86,6 +86,19 @@ public class UserController extends BaseController {
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
 	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
+	public User updateUser(@RequestBody User user) {
+		//check if user existed
+		return userService.update(user);
+	}
+	
+	@ApiScope(userScope = UserRole.ADMIN, selfOnly = true)
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
+	public void deleteUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
+		userService.delete(userId);
+	}
 
 	/**
 	 * Return the qrcode with url+token

@@ -219,4 +219,14 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
+	@Override
+	public User update(User user) {
+		return 	userDao.updateUser(user);
+	}
+
+	@Override
+	public void delete(String userId) {
+		userDao.remove(userId);
+	}
+
 }

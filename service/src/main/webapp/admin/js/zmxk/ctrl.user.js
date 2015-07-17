@@ -40,20 +40,13 @@ zmxk.controller('UserCtrl', [
 			} ]
 
 			$scope.init = function() {
-				// FIXME FAKE data
-				/*
-				 * var user = { id : "mac-test-user-id-" + i, name : "Mac Test
-				 * User " + i, roleId : i % 3, mobileNum : "13706516651", credit :
-				 * 100 * i, createdTime : 1436339694000, existed : true, changed :
-				 * false, showInput : false }
-				 */
 
 				userService.list().then(function(data) {
-					angular.forEach(data, function(attendee, index) {
-						attendee["existed"] = true;
-						attendee["changed"] = false;
-						attendee["showInput"] = false;
-						$scope.userList.push(attendee);
+					angular.forEach(data, function(user, index) {
+						user["existed"] = true;
+						user["changed"] = false;
+						user["showInput"] = false;
+						$scope.userList.push(user);
 					})
 				}, function(data) {
 				});
@@ -62,54 +55,84 @@ zmxk.controller('UserCtrl', [
 			}
 
 			// FIXME can not use id, need to use index
-			$scope.updateUser = function(userIndex) {
-				console.log(userIndex)
-				var updateUser;
-				newUsers = [];
-				angular.forEach($scope.userList, function(user, index) {
-					// console.log(index + "~~~" + userIndex);
-					if (index == userIndex) {
-						updateUser = angular.copy(user);
-						console.log(updateUser);
-						newUsers.push(updateUser);
-					} else {
-						newUsers.push(angular.copy(user));
-					}
-				});
-				if (updateUser.existed) {
-					updateUser.changed = !updateUser.changed;
+			$scope.updateUser = function(user, idx) {
+				// save kid
+				if (!user.existed) {
+					userService.create(user).then(function(data) {
+						user = data;
+					}, function(data) {
+
+					})
+				} else if (user.changed) {
+					userService.update(user.id, user).then(function(data) {
+						user = data;
+					}, function(data) {
+
+					});
 				}
 
-				if (updateUser.changed) {
-					$scope.updateLabel = "确定";
+				$scope.$watch(user, function(oldValue, newValue) {
+					if (user.existed) {
+						user.changed = !user.changed;
+					}
+
+					user.showInput = !user.showInput;
+					// $scope.kids = kid;
+					var users = [];
+					angular.forEach($scope.userList, function(u, i) {
+
+						if (i == idx) {
+							console.log(i + "~~~" + idx);
+							users.push(user);
+						} else {
+							users.push(u);
+						}
+					})
+					$scope.userList = angular.copy(users);
+				})
+
+			}
+
+			$scope.deleteUser = function(toDeleteUser, idx) {
+
+				console.log(toDeleteUser);
+				if (!toDeleteUser.existed) {
+					toDeleteKid = null;
 				} else {
-					$scope.updateLabel = "修改";
+					userService.deleteUser(toDeleteUser.id).then(
+							function(data) {
+								toDeleteUser = null;
+							},
+							function(error) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+								toDeleteUser = toDeleteUser;
+							})
 				}
-				updateUser.showInput = !updateUser.showInput;
-				$scope.userList = newUsers;
-				console.log($scope.userList);
-				// console.log($scope.eventUsers);
-			}
-
-			$scope.deleteUser = function(userIndex) {
-				var updateUser;
-				console.log(userIndex)
-				var newUsers = [];
-				angular.forEach($scope.userList, function(user, index) {
-					if (index != userIndex) {
-						updateUser = angular.copy(user);
-						newUsers.push(updateUser);
+				$scope.$watch(toDeleteUser, function(oldValue, newValue) {
+					if (oldValue != newValue) {
+						var newUsers = [];
+						angular.forEach($scope.userList, function(user, i) {
+							if (idx != i) {
+								newUsers.push(angular.copy(user));
+							}
+						});
+						$scope.userList = newUsers;
+						console.log($scope.userList)
 					}
-				});
-				$scope.userList = newUsers;
-				console.log($scope.userList)
+				})
+
 			}
 
-			$scope.saveUser = function() {
-
-				// create all existed == false
-				// update all changed == true
-			}
+			/*
+			 * $scope.createUser = function() { var toCreateUser = { }
+			 * toCreateUser["existed"] = false; toCreateUser["changed"] = true;
+			 * toCreateUser["showInput"] = true;
+			 * $scope.userList.push(toCreateUser); }
+			 */
 
 		} ]);
 
@@ -174,12 +197,18 @@ zmxk.controller('UserDetailCtrl', [
 				} else if (updateKid.changed) {
 					kidService
 							.updateKid($scope.userId, updateKid.id, updateKid)
-							.then(function(data) {
-								updateKid = data;
+							.then(
+									function(data) {
+										updateKid = data;
 
-							}, function(data) {
+									},
+									function(data) {
+										$scope.launch("error", "",
+												error.data.message, function() {
 
-							});
+												}, function() {
+												});
+									});
 				}
 
 				$scope.$watch(updateKid, function() {
@@ -209,24 +238,31 @@ zmxk.controller('UserDetailCtrl', [
 				if (!toDeleteKid.existed) {
 					toDeleteKid = null;
 				} else {
-					kidService.deleteKid($scope.userId, toDeleteKid.id).then(function(data){
-						toDeleteKid = null;
-					}, function(data){
-						
-					})
+					kidService.deleteKid($scope.userId, toDeleteKid.id).then(
+							function(data) {
+								toDeleteKid = null;
+							},
+							function(data) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							})
 				}
-				$scope.$watch(toDeleteKid, function() {
-					var newUsers = [];
-					angular.forEach($scope.kids, function(kid, i) {
-						if (idx != i) {
-							newUsers.push(angular.copy(kid));
-						}
-					});
-					$scope.kids = newUsers;
-					console.log($scope.kids)
+				$scope.$watch(toDeleteKid, function(oldValue, newValue) {
+					if (oldValue != newValue) {
+						var newUsers = [];
+						angular.forEach($scope.kids, function(kid, i) {
+							if (idx != i) {
+								newUsers.push(angular.copy(kid));
+							}
+						});
+						$scope.kids = newUsers;
+						console.log($scope.kids)
+					}
 				})
-				
-				
+
 			}
 
 			$scope.createKid = function() {
@@ -236,7 +272,6 @@ zmxk.controller('UserDetailCtrl', [
 				toCreateKid["existed"] = false;
 				toCreateKid["changed"] = true;
 				toCreateKid["showInput"] = true;
-				toCreateKid["updateLabel"] = $scope.updateLabel;
 				toCreateKid["userId"] = $scope.userId;
 				$scope.kids.push(toCreateKid);
 				/*

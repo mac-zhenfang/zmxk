@@ -74,4 +74,9 @@ public class UserDaoImpl implements UserDao {
 		}
 		return users;
 	}
+
+	@Override
+	public void remove(String userId) {
+		sqlSession.selectOne("USER.remove", userId);
+	}
 }

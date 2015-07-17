@@ -16,4 +16,6 @@ public interface UserDao {
 	List<User> listAllUser();
 	
 	List<User> search(String query);
+	
+	void remove(String userId);
 }

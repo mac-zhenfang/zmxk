@@ -32,24 +32,25 @@
 						ng-options="option.value as option.label for option in roles_option">
 					</select></td>
 					<td class="center"><span ng-hide="{{user.showInput}} == true"
-						ng-bind="user.credit"></span> <select
-						ng-disabled="true" ng-show="{{user.showInput}} == true"
+						ng-bind="user.credit"></span> <select ng-disabled="true"
+						ng-show="{{user.showInput}} == true"
 						class="selectpicker gridInput2" data-style="btn-info"
 						ng-model="user.credit"
 						ng-options="option.value as option.label for option in credit_option">
 					</select></td>
-					<td class="center"><a class="btn btn-info" href="#/users"
-						ng-click="updateUser($index)"> {{updateLabel}}</i>
-					</a><a class="btn btn-danger" href="#/users"
-						ng-click="deleteUser($index)"> {{deleteLabel}} </a></td>
+					<td class="center"><span class="btn btn-info"
+						ng-click="updateUser(user, $index)"
+						ng-bind="{true:'保存', false:'修改'}[user.changed==true]"></span><span
+						class="btn btn-danger" href="#/users"
+						ng-click="deleteUser(user, $index)"> {{deleteLabel}} </span></td>
 				</tr>
 			</tbody>
 		</table>
-		<div class="control-group">
+		<!-- <div class="control-group">
 			<div class="controls">
-				<button type="button" class="btn btn-info" ng-click="saveRules()">保存</button>
+				<button type="button" class="btn btn-info" ng-click="createUser()">创建</button>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </div>
 <!--/span-->

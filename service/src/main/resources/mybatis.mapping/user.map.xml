@@ -6,8 +6,8 @@
 	<select id="listAll" resultType="com.smartool.common.dto.User">
 		select * from users
 	</select>
-	<select id="search" parameterType="String" resultType="com.smartool.common.dto.User" >
-		select * from users where mobileNum =  #{id} or wcId = #{id}
+	<select id="search" parameterType="String" resultType="com.smartool.common.dto.User">
+		select * from users where mobileNum = #{id} or wcId = #{id}
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.User">
@@ -31,8 +31,13 @@
 		name=#{name},
 		mobileNum=#{mobileNum},
 		location=#{location},
-		roleId=#{roleId}, status=#{status}, credit=#{credit}
+		roleId=#{roleId},
+		status=#{status}, credit=#{credit}
 		where id =
 		#{id};
+	</select>
+	<select id="remove" parameterType="String">
+		delete from users where id =
+		#{id}
 	</select>
 </mapper>

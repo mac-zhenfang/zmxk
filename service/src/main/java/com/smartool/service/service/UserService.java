@@ -17,4 +17,8 @@ public interface UserService {
 	byte[] getQRCode(String userId);
 	
 	List<User> search(String query);
+	
+	User update(User user);
+	
+	void delete(String userId);
 }

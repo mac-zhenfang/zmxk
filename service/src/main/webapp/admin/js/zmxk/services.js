@@ -109,87 +109,87 @@ zmxk.service('tagService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 		} ]);
-//Kid Service
+// Kid Service
 zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
-                      		function($resource, zmxkConfig, $q) {
-	var kidResource = $resource(zmxkConfig.kid_rest_uri, {
-		kidId : '@id'
-	}, {
-		create : {
-			url : zmxkConfig.kid_rest_uri,
-			method : 'POST',
-			headers : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		update : {
-			url : zmxkConfig.kid_rest_uri,
-			method : 'PUT',
-			headers : {
-				'Content-Type' : 'application/json'
-			}
-		},
-		get : {
-			url : zmxkConfig.kid_rest_uri,
-			method : 'GET'
-		},
-		remove : {
-			url : zmxkConfig.kid_rest_uri,
-			method : 'DELETE'
-		}
-	})
-	
-	this.getKid = function(giveUserId, giveKidId) {
+		function($resource, zmxkConfig, $q) {
+			var kidResource = $resource(zmxkConfig.kid_rest_uri, {
+				kidId : '@id'
+			}, {
+				create : {
+					url : zmxkConfig.kid_rest_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.kid_rest_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.kid_rest_uri,
+					method : 'GET'
+				},
+				remove : {
+					url : zmxkConfig.kid_rest_uri,
+					method : 'DELETE'
+				}
+			})
+
+			this.getKid = function(giveUserId, giveKidId) {
 				var defer = $q.defer();
 				kidResource.get({
 					kidId : giveKidId,
-					userId: giveUserId
+					userId : giveUserId
 				}, function(kid, headers) {
 					defer.resolve(kid);
 				}, function(kid, headers) {
 					defer.reject(kid);
 				});
 				return defer.promise;
-	}
-	this.createKid = function(giveUserId, kid) {
-		var defer = $q.defer();
-		kidResource.create({
-			userId: giveUserId
-		},kid, function(kid, headers) {
-			defer.resolve(kid);
-		}, function(kid, headers) {
-			defer.reject(kid);
-		});
-		return defer.promise;
-	}
-	
-	this.updateKid = function(giveUserId, giveKidId, kid) {
-		var defer = $q.defer();
-		kidResource.update({
-			userId: giveUserId,
-			kidId : giveKidId
-		},kid, function(kid, headers) {
-			defer.resolve(kid);
-		}, function(kid, headers) {
-			defer.reject(kid);
-		});
-		return defer.promise;
-	}
-	
-	this.deleteKid =  function(giveUserId, giveKidId) {
-		var defer = $q.defer();
-		kidResource.remove({
-			userId: giveUserId,
-			kidId : giveKidId
-		}, function(kid, headers) {
-			defer.resolve(kid);
-		}, function(kid, headers) {
-			defer.reject(kid);
-		});
-		return defer.promise;
-	}
-	
-}]);
+			}
+			this.createKid = function(giveUserId, kid) {
+				var defer = $q.defer();
+				kidResource.create({
+					userId : giveUserId
+				}, kid, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+			}
+
+			this.updateKid = function(giveUserId, giveKidId, kid) {
+				var defer = $q.defer();
+				kidResource.update({
+					userId : giveUserId,
+					kidId : giveKidId
+				}, kid, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+			}
+
+			this.deleteKid = function(giveUserId, giveKidId) {
+				var defer = $q.defer();
+				kidResource.remove({
+					userId : giveUserId,
+					kidId : giveKidId
+				}, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+			}
+
+		} ]);
 // User Service
 zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
@@ -212,6 +212,28 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 					query : "@id",
 					method : "GET",
 					isArray : true
+				},
+				create : {
+					url : zmxkConfig.user_rest_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.user_rest_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.user_rest_uri,
+					method : 'GET'
+				},
+				remove : {
+					url : zmxkConfig.user_rest_uri,
+					method : 'DELETE'
 				}
 			})
 			this.login = function() {
@@ -224,9 +246,10 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 
 			this.list = function() {
 				var defer = $q.defer();
-				var users = usersResource.query({},function(data) {
+				var users = usersResource.query({}, function(data) {
 					defer.resolve(data);
-				},function(data){});
+				}, function(data) {
+				});
 				return defer.promise;
 			}
 
@@ -253,6 +276,41 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 					console.log(body);
 					defer.reject(body);
 				})
+				return defer.promise;
+			}
+
+			this.create = function(user) {
+				var defer = $q.defer();
+				usersResource.create(user, function(body, headers) {
+					console.log(body);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body);
+					defer.reject(body);
+				})
+				return defer.promise;
+			}
+			this.update = function(giveUserId, user) {
+				var defer = $q.defer();
+				usersResource.update({
+					userId : giveUserId
+				}, user, function(u, headers) {
+					defer.resolve(u);
+				}, function(u, headers) {
+					defer.reject(u);
+				});
+				return defer.promise;
+			}
+
+			this.deleteUser = function(giveUserId) {
+				var defer = $q.defer();
+				usersResource.remove({
+					userId : giveUserId
+				}, function(u, headers) {
+					defer.resolve(u);
+				}, function(u, headers) {
+					defer.reject(u);
+				});
 				return defer.promise;
 			}
 
@@ -330,74 +388,74 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 			};
 		} ]);
 zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
-  		function($resource, zmxkConfig, $q) {
-  			var eventRuleService = $resource(zmxkConfig.event_rule_get_uri, {
-  				eventCreditRuleId : '@id'
-  			}, {
-  				create : {
-  					url : zmxkConfig.event_rule_create_uri,
-  					method : 'POST',
-  					headers : {
-  						'Content-Type' : 'application/json'
-  					}
-  				},
-  				update : {
-  					url : zmxkConfig.event_rule_update_uri,
-  					method : 'PUT',
-  					headers : {
-  						'Content-Type' : 'application/json'
-  					}
-  				},
-  				get : {
-  					url : zmxkConfig.event_rule_get_uri,
-  					method : 'GET'
-  				},
-  				remove : {
-  					url : zmxkConfig.event_rule_remove_uri,
-  					method : 'DELETE'
-  				},
-  				search : {
-  					url : zmxkConfig.event_rule_search_uri,
-  					method : "GET",
-  					isArray : true
-  				}
-  			});
-  			this.create = function(creditRule) {
-  				var defer = $q.defer();
-  				eventRuleService.create(creditRule, function(data, header) {
-  					defer.resolve(data);
-  				}, function(data, header) {
-  					defer.reject(data);
-  				});
-  				return defer.promise;
-  			};
-  			this.update = function(creditRule) {
-  				var defer = $q.defer();
-  				eventRuleService.update({}, creditRule, function(data, header) {
-  					defer.resolve(data);
-  				}, function(data, header) {
-  					defer.reject(data);
-  				});
-  				return defer.promise;
-  			};
-  			this.remove = function(creditRuleId) {
-  				var defer = $q.defer();
-  				eventRuleService.remove({}, {
-  					id : creditRuleId
-  				}, function(data, header) {
-  					defer.resolve(data);
-  				}, function(data, header) {
-  					defer.reject(data);
-  				});
-  				return defer.promise;
-  			};
-  			this.listAll = function() {
-  				var defer = $q.defer();
-  				eventRuleService.search({}, function(data, header) {
-  					defer.resolve(data);
-  				}, function(data, header) {
-  					defer.reject(data);
-  				});
-  				return defer.promise;
-  			};
-  		} ]);
+		function($resource, zmxkConfig, $q) {
+			var eventRuleService = $resource(zmxkConfig.event_rule_get_uri, {
+				eventCreditRuleId : '@id'
+			}, {
+				create : {
+					url : zmxkConfig.event_rule_create_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.event_rule_update_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.event_rule_get_uri,
+					method : 'GET'
+				},
+				remove : {
+					url : zmxkConfig.event_rule_remove_uri,
+					method : 'DELETE'
+				},
+				search : {
+					url : zmxkConfig.event_rule_search_uri,
+					method : "GET",
+					isArray : true
+				}
+			});
+			this.create = function(creditRule) {
+				var defer = $q.defer();
+				eventRuleService.create(creditRule, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.update = function(creditRule) {
+				var defer = $q.defer();
+				eventRuleService.update({}, creditRule, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.remove = function(creditRuleId) {
+				var defer = $q.defer();
+				eventRuleService.remove({}, {
+					id : creditRuleId
+				}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.listAll = function() {
+				var defer = $q.defer();
+				eventRuleService.search({}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+		} ]);
