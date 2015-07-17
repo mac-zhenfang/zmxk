@@ -37,7 +37,7 @@
 								ng-click="editScore();editing = false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>
 						<td class="center"><span ng-click="editingTag = true"
-							ng-hide="editingTag" ng-bind="attendee.tag" class="btn btn-info"></span>
+							ng-hide="editingTag" ng-bind="{true: '未授予组别', false : attendee.tag}[attendee.tag==null]" ng-class="showTagClass(attendee.tagType)"></span>
 							<select ng-show="editingTag" class="selectpicker gridInput2" data-style="btn-info"
 								ng-model="attendee.tagId"
 								ng-options="option.id as option.name for option in eventTags">

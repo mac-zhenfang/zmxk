@@ -1,4 +1,4 @@
-<div class="box span12" ng-controller="UserController">
+<div class="box span12" ng-controller="UserCtrl" ng-init="init()">
 	<div class="box-header" data-original-title="">
 		<h2>
 			<i class="icon-user"></i><span class="break"></span>用户列表
@@ -20,7 +20,7 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="user in userList">
-					<td>{{user.name}}</td>
+					<td><a href="#/users/{{user.id}}">{{user.name}}</a></td>
 					<td>{{user.mobileNum}}</td>
 					<td class="center">{{formatDate(user.createdTime)}}</td>
 					<td class="center"><span ng-hide="{{user.showInput}} == true"
@@ -33,7 +33,7 @@
 					</select></td>
 					<td class="center"><span ng-hide="{{user.showInput}} == true"
 						ng-bind="user.credit"></span> <select
-						ng-show="{{user.showInput}} == true"
+						ng-disabled="true" ng-show="{{user.showInput}} == true"
 						class="selectpicker gridInput2" data-style="btn-info"
 						ng-model="user.credit"
 						ng-options="option.value as option.label for option in credit_option">

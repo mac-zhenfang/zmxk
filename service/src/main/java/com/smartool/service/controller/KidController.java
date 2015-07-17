@@ -17,24 +17,39 @@ import com.smartool.service.dao.KidDao;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
-public class KidController  extends BaseController {
-	
+public class KidController extends BaseController {
+
 	@Autowired
 	private KidDao kidDao;
-	
+
 	@Transactional
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
-			MediaType.APPLICATION_JSON_VALUE }, produces = {MediaType.APPLICATION_JSON_VALUE})
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Kid create(@RequestBody Kid kid, @PathVariable String userId) {
-		//isUserValidForCreate(user);
+		// isUserValidForCreate(user);
 		kid.setId(CommonUtils.getRandomUUID());
 		return kidDao.create(kid);
 	}
-	
 
-	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public List<Kid> getUsers(@PathVariable String userId) {
 		List<Kid> kids = kidDao.listByUserId(userId);
 		return kids;
+	}
+
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.PUT, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Kid update(@PathVariable String userId, @PathVariable String kidId, @RequestBody Kid kid) {
+		//List<Kid> kids = kidDao.listByUserId(userId);
+		//Check userId/kidId;
+		Kid retKid = kidDao.update(kid);
+		return retKid;
+	}
+	
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable String userId, @PathVariable String kidId) {
+		//Check userId/kidId;
+		kidDao.remove(kidId);
 	}
 }

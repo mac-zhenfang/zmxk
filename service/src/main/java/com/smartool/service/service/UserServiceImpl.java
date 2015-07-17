@@ -14,6 +14,7 @@ import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
 
@@ -27,9 +28,18 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private SecurityCodeDao securityCodeDao;
 
+	@Autowired
+	private KidDao kidDao;
 	@Override
 	public List<User> listAllUser() {
-		return userDao.listAllUser();
+		List<User> users =  userDao.listAllUser();
+		if (users != null && !users.isEmpty()) {
+			for (User user : users) {
+				List<Kid> kids = kidDao.listByUserId(user.getId());
+				user.setKids(kids);
+			}
+		}
+		return users;
 	}
 
 	@Override
@@ -187,7 +197,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserById(String userId) {
-		return userDao.getUserById(userId);
+		User user = userDao.getUserById(userId);
+		if (user != null) {
+			List<Kid> kids = kidDao.listByUserId(userId);
+			user.setKids(kids);
+		}
+		return user;
 	}
 
 	@Override

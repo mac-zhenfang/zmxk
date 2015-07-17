@@ -109,6 +109,87 @@ zmxk.service('tagService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 		} ]);
+//Kid Service
+zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
+                      		function($resource, zmxkConfig, $q) {
+	var kidResource = $resource(zmxkConfig.kid_rest_uri, {
+		kidId : '@id'
+	}, {
+		create : {
+			url : zmxkConfig.kid_rest_uri,
+			method : 'POST',
+			headers : {
+				'Content-Type' : 'application/json'
+			}
+		},
+		update : {
+			url : zmxkConfig.kid_rest_uri,
+			method : 'PUT',
+			headers : {
+				'Content-Type' : 'application/json'
+			}
+		},
+		get : {
+			url : zmxkConfig.kid_rest_uri,
+			method : 'GET'
+		},
+		remove : {
+			url : zmxkConfig.kid_rest_uri,
+			method : 'DELETE'
+		}
+	})
+	
+	this.getKid = function(giveUserId, giveKidId) {
+				var defer = $q.defer();
+				kidResource.get({
+					kidId : giveKidId,
+					userId: giveUserId
+				}, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+	}
+	this.createKid = function(giveUserId, kid) {
+		var defer = $q.defer();
+		kidResource.create({
+			userId: giveUserId
+		},kid, function(kid, headers) {
+			defer.resolve(kid);
+		}, function(kid, headers) {
+			defer.reject(kid);
+		});
+		return defer.promise;
+	}
+	
+	this.updateKid = function(giveUserId, giveKidId, kid) {
+		var defer = $q.defer();
+		kidResource.update({
+			userId: giveUserId,
+			kidId : giveKidId
+		},kid, function(kid, headers) {
+			defer.resolve(kid);
+		}, function(kid, headers) {
+			defer.reject(kid);
+		});
+		return defer.promise;
+	}
+	
+	this.deleteKid =  function(giveUserId, giveKidId) {
+		var defer = $q.defer();
+		kidResource.remove({
+			userId: giveUserId,
+			kidId : giveKidId
+		}, function(kid, headers) {
+			defer.resolve(kid);
+		}, function(kid, headers) {
+			defer.reject(kid);
+		});
+		return defer.promise;
+	}
+	
+}]);
 // User Service
 zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
@@ -142,9 +223,11 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 			}
 
 			this.list = function() {
-				var users = usersResource.query(function(data) {
-					console.log(data);
-				});
+				var defer = $q.defer();
+				var users = usersResource.query({},function(data) {
+					defer.resolve(data);
+				},function(data){});
+				return defer.promise;
 			}
 
 			this.getUser = function(giveUserId) {

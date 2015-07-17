@@ -18,10 +18,7 @@ public class UserDaoImpl implements UserDao {
 
 	private User getUserInternal(String userId) {
 		User user = sqlSession.selectOne("USER.getById", userId);
-		if (user != null) {
-			List<Kid> kids = kidDao.listByUserId(userId);
-			user.setKids(kids);
-		}
+		
 		return user;
 	}
 
@@ -52,12 +49,6 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> listAllUser() {
 		List<User> users = sqlSession.selectList("USER.listAll");
-		if (users != null && !users.isEmpty()) {
-			for (User user : users) {
-				List<Kid> kids = kidDao.listByUserId(user.getId());
-				user.setKids(kids);
-			}
-		}
 		return users;
 	}
 

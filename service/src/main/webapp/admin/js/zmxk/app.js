@@ -22,7 +22,16 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap', 'dialogs',
 
 // put all labels / constants in
 zmxk.constant('zmxkConstant', {
-
+	kids_school_options : [ {
+		value : 0,
+		label : "幼儿园"
+	}, {
+		value : 1,
+		label : "小学"
+	}, {
+		value : 2,
+		label : "未上幼儿园"
+	} ]
 });
 
 zmxk
@@ -62,7 +71,10 @@ zmxk.config([ '$resourceProvider', function($resourceProvider) {
 zmxk.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/users', {
 		templateUrl : 'user_list.html',
-		controller : "EventDetailCtrl"
+		controller : "UserCtrl"
+	}).when('/users/:userId', {
+		templateUrl : 'user_detail.html',
+		controller : "UserDetailCtrl"
 	}).when('/events/:eventId', {
 		templateUrl : 'event_detail.html',
 		controller : "EventDetailCtrl"

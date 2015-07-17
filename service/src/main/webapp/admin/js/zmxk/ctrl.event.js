@@ -102,6 +102,7 @@ zmxk
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
 							$scope.eventTags = [];
+							var tagTypeClasss = ["btn btn-info", "btn btn-success", "btn btn-danger", "btn btn-active"]
 							$scope.init = function() {
 
 								if (!angular.isUndefined($scope.eventId)) {
@@ -114,21 +115,41 @@ zmxk
 														var enrolledCount = 0;
 														var applyScoreCount = 0;
 														var leftCount = 0;
+														var tagsMap = {};
+														var newAttendees = [];
 														angular
 																.forEach(
 																		$scope.eventInit.attendees,
 																		function(
 																				attendee,
 																				index2) {
-																			var attStatus = attendee.status;
-																			// console.log(attStatus);
-																			if (attStatus == 1) {
-																				enrolledCount += 1;
-																			} else if (attStatus == 2) {
-																				applyScoreCount += 1;
+																			if(angular.isUndefined(attendee.tagId) || !attendee.tagId) {
+																				if(angular.isUndefined(tagsMap["fake"])){
+																					tagsMap["fake"] = [];
+																				}
+																				tagsMap["fake"].push(attendee);
+																			} else {
+																				if(angular.isUndefined(tagsMap[attendee.tagId])){
+																					tagsMap[attendee.tagId] = [];
+																				}
+																				tagsMap[attendee.tagId].push(attendee);
 																			}
-
 																		});
+														var d = 0;
+														angular
+														.forEach(tagsMap, function(attendeeList, index){
+															d++;
+															angular
+															.forEach(attendeeList, function(attendee, index2){
+																attendee["tagType"] = d;
+																newAttendees.push(attendee);
+															});
+														});
+														
+														$scope.eventInit.attendees = angular.copy(newAttendees);
+														
+														console.log($scope.eventInit.attendees);
+														
 														$scope.eventInit.leftCount = event.quota
 																- enrolledCount
 																- applyScoreCount;
@@ -146,6 +167,10 @@ zmxk
 								},function(data){
 									
 								});
+							}
+							
+							$scope.showTagClass = function(tagType) {
+								return tagTypeClasss[tagType % tagTypeClasss.length];
 							}
 							$scope.canGiveCredit = function(attendee) {
 								return attendee.existed == false || attendee.status<2;
@@ -213,7 +238,7 @@ zmxk
 								var error_msg = "";
 								var error = false;
 								console.log($scope.applyCreditRuleAttendeeList);
-								angular
+								/*angular
 										.forEach(
 												$scope.eventInit.attendees,
 												function(attendee, index) {
@@ -223,7 +248,7 @@ zmxk
 														error = true;
 														return;
 													}
-												})
+												})*/
 								if (error) {
 									$scope.launch("error", "", error_msg,
 											function() {
@@ -245,6 +270,7 @@ zmxk
 																.then(
 																		function(
 																				data) {
+																			$scope.editingTag = false;
 																			$scope
 																					.launch(
 																							"notify",
