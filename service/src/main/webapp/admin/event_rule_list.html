@@ -36,7 +36,7 @@
 							class="form-control gridInput2" /></td>
 						<td class="center"> 
 							<select ng-disabled={{!rule.showInput}} class="selectpicker gridInput2" data-style="btn-info"
-								ng-model="rule.rank!=null?rule.rank:null"
+								ng-model="{true: rule.rank, false:null}[rule.rank!=null]"
 								ng-options="option.value as option.label for option in rank_option" ng-init="rule.rank==option.value">
 							</select>
 							
