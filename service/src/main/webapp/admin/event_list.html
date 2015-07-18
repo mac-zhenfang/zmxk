@@ -1,5 +1,6 @@
 <div class="row-fluid">
-	<div class="box span12" ng-controller="EventManageCtrl">
+	<div class="box span12" ng-controller="EventManageCtrl"
+		ng-init="init()">
 		<div class="box-header">
 			<h2>
 				<i class="icon-edit"></i>赛事管理
@@ -20,28 +21,42 @@
 						<th>已录入，未完成比分登记人数</th>
 						<th>完成比分登记人数</th>
 						<th>比赛人数上限</th>
-						<th>组别<th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="event in listEvents | filter:filterRule">
-						<td class="center"><a href="#/events/{{event.id}}">{{event.name}}</a></td>
-						<td class="center">{{event.eventType}}</td>
-						<td class="center">{{formatDate(event.eventTime) |
-							date:"MM/dd/yyyy, HH:mm" }}</td>
+						<td><span ng-hide="{{event.showInput}} == true"><a
+								href="#/events/{{event.id}}">{{event.name}}</a></span> <input
+							ng-model="event.name" ng-show="{{event.showInput}}" /></td>
+						<td><select ng-disabled="{{!event.showInput}}"
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="event.eventType"
+							ng-options="option.value as option.label for option in eventTypes"
+							ng-init="event.eventType==option.value">
+						</select></td>
+						<td class="center"><input type="text"
+							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
+							ng-model="event.eventTime" required="true" view="hours"></td>
 						<td class="center"><span class="label label-warning">{{event.leftCount}}</span></td>
 						<td class="center"><span class="label label-warning">{{event.enrolledCount}}</span></td>
 						<td class="center"><span class="label label-success">{{event.applyScoreCount}}</span></td>
-						<td class="center">{{event.quota}}</td>
-						<td class="center"><a class="btn btn-info" href="#/events">
-								<i class="icon-edit "></i>
-						</a><a class="btn btn-danger" href="#/events"> <i
-								class="icon-trash "></i>
-						</a></td>
+						<td class="center"><span
+							ng-hide="{{event.showInput}} == true" ng-bind="event.quota"></span>
+							<input ng-model="event.quota" ng-show="{{event.showInput}}" class="gridInput2"/></td>
+						<td class="center"><span class="btn btn-info"
+							ng-click="updateEvent(event, $index)"
+							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span
+							class="btn btn-danger" ng-click="deleteEvent(event, $index)">
+								删除 </span></td>
 					</tr>
 				</tbody>
 			</table>
+			<div class="control-group">
+				<div class="controls">
+					<button type="button" class="btn btn-info" ng-click="createEvent()">创建</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -1,5 +1,5 @@
 var currentModule;
-var zmxk = angular.module('zmxk', [ 'ngResource', 'ui.bootstrap', 'dialogs',
+var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap', 'dialogs',
 		'ngRoute' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {

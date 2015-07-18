@@ -22,7 +22,7 @@ zmxk.controller('EventManageCtrl', [
 				})
 			}
 
-			var init = function() {
+			$scope.init = function() {
 				if (angular.isUndefined($scope.eventId)) {
 					eventService.list().then(
 							function(data) {
@@ -48,13 +48,108 @@ zmxk.controller('EventManageCtrl', [
 											- enrolledCount - applyScoreCount;
 									event.applyScoreCount = applyScoreCount;
 									event.enrolledCount = enrolledCount;
+									event["existed"] = true;
+									event["changed"] = false;
+									event["showInput"] = false;
 								});
 							}, function(data) {
 							});
 				}
 			}
 
-			init();
+			$scope.updateEvent = function(updateEvent, idx) {
+				// save event
+				if (!updateEvent.existed) {
+					eventService.createEvent(updateEvent).then(function(data) {
+						updateEvent = data;
+					}, function(data) {
+
+					})
+				} else if (updateEvent.changed) {
+					eventService.updateEvent(updateEvent.id, updateEvent).then(
+							function(data) {
+								updateEvent = data;
+
+							},
+							function(data) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							});
+				}
+
+				$scope.$watch(updateEvent, function() {
+					if (updateEvent.existed) {
+						updateEvent.changed = !updateEvent.changed;
+					}
+
+					updateEvent.showInput = !updateEvent.showInput;
+					// $scope.kids = kid; $scope.listEvents
+					var events = [];
+					angular.forEach($scope.listEvents, function(event, i) {
+
+						if (i == idx) {
+							console.log(i + "~~~" + idx);
+							events.push(updateEvent);
+						} else {
+							events.push(event);
+						}
+					})
+					$scope.listEvents = angular.copy(events);
+				})
+			}
+
+			$scope.deleteEvent = function(deleteEvent, idx) {
+				console.log(deleteEvent);
+				if (!deleteEvent.existed) {
+					deleteEvent = null;
+				} else {
+					eventService.deleteEvent(deleteEvent.id).then(
+							function(data) {
+								deleteEvent = null;
+							},
+							function(data) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							})
+				}
+				$scope.$watch(deleteEvent, function(oldValue, newValue) {
+					if (oldValue != newValue) {
+						var events = [];
+						angular.forEach($scope.listEvents, function(event, i) {
+							if (idx != i) {
+								events.push(angular.copy(event));
+							}
+						});
+						$scope.listEvents = events;
+						console.log($scope.listEvents)
+					}
+				})
+
+			}
+
+			$scope.createEvent = function() {
+
+				var toCreateEvent = {
+
+				}
+				toCreateEvent["existed"] = false;
+				toCreateEvent["changed"] = true;
+				toCreateEvent["showInput"] = true;
+				$scope.listEvents.push(toCreateEvent);
+				/*
+				 * angular.forEach($scope.kids, function(kid, index){ })
+				 */
+				// create all existed == false
+				// update all changed == true
+			
+			}
+
 		} ]);
 zmxk.controller('EventCreateCtrl', [
 		'$scope',
@@ -102,7 +197,9 @@ zmxk
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
 							$scope.eventTags = [];
-							var tagTypeClasss = ["btn btn-info", "btn btn-success", "btn btn-danger", "btn btn-active"]
+							var tagTypeClasss = [ "btn btn-info",
+									"btn btn-success", "btn btn-danger",
+									"btn btn-active" ]
 							$scope.init = function() {
 
 								if (!angular.isUndefined($scope.eventId)) {
@@ -123,33 +220,50 @@ zmxk
 																		function(
 																				attendee,
 																				index2) {
-																			if(angular.isUndefined(attendee.tagId) || !attendee.tagId) {
-																				if(angular.isUndefined(tagsMap["fake"])){
+																			if (angular
+																					.isUndefined(attendee.tagId)
+																					|| !attendee.tagId) {
+																				if (angular
+																						.isUndefined(tagsMap["fake"])) {
 																					tagsMap["fake"] = [];
 																				}
-																				tagsMap["fake"].push(attendee);
+																				tagsMap["fake"]
+																						.push(attendee);
 																			} else {
-																				if(angular.isUndefined(tagsMap[attendee.tagId])){
+																				if (angular
+																						.isUndefined(tagsMap[attendee.tagId])) {
 																					tagsMap[attendee.tagId] = [];
 																				}
-																				tagsMap[attendee.tagId].push(attendee);
+																				tagsMap[attendee.tagId]
+																						.push(attendee);
 																			}
 																		});
 														var d = 0;
 														angular
-														.forEach(tagsMap, function(attendeeList, index){
-															d++;
-															angular
-															.forEach(attendeeList, function(attendee, index2){
-																attendee["tagType"] = d;
-																newAttendees.push(attendee);
-															});
-														});
-														
-														$scope.eventInit.attendees = angular.copy(newAttendees);
-														
-														console.log($scope.eventInit.attendees);
-														
+																.forEach(
+																		tagsMap,
+																		function(
+																				attendeeList,
+																				index) {
+																			d++;
+																			angular
+																					.forEach(
+																							attendeeList,
+																							function(
+																									attendee,
+																									index2) {
+																								attendee["tagType"] = d;
+																								newAttendees
+																										.push(attendee);
+																							});
+																		});
+
+														$scope.eventInit.attendees = angular
+																.copy(newAttendees);
+
+														console
+																.log($scope.eventInit.attendees);
+
 														$scope.eventInit.leftCount = event.quota
 																- enrolledCount
 																- applyScoreCount;
@@ -160,30 +274,31 @@ zmxk
 														console.log(data);
 													});
 								}
-								
+
 								// get tags
-								tagService.search("event").then(function(data){
+								tagService.search("event").then(function(data) {
 									$scope.eventTags = data;
-								},function(data){
-									
+								}, function(data) {
+
 								});
 							}
-							
+
 							$scope.showTagClass = function(tagType) {
-								return tagTypeClasss[tagType % tagTypeClasss.length];
+								return tagTypeClasss[tagType
+										% tagTypeClasss.length];
 							}
 							$scope.canGiveCredit = function(attendee) {
-								return attendee.existed == false || attendee.status<2;
+								return attendee.existed == false
+										|| attendee.status < 2;
 							}
 							$scope.giveCredit = function(attendee) {
 								var selectedAttendee = attendee;
-								/*angular.forEach($scope.eventInit.attendees,
-										function(attendee, index) {
-											if (attendee.id == attendeeId) {
-												selectedAttendee = attendee;
-												return;
-											}
-										});*/
+								/*
+								 * angular.forEach($scope.eventInit.attendees,
+								 * function(attendee, index) { if (attendee.id ==
+								 * attendeeId) { selectedAttendee = attendee;
+								 * return; } });
+								 */
 								// console.log(selectedAttendee);
 								if (selectedAttendee.status == 2) {
 									dlg = $dialogs
@@ -197,10 +312,11 @@ zmxk
 													}, 'lg');
 									dlg.result.then(function(selectedRule) {
 										$scope.selectedRule = selectedRule;
-										$scope.applyCreditRuleAttendeeList.push({
-											rule : selectedRule,
-											attendee : selectedAttendee
-										});
+										$scope.applyCreditRuleAttendeeList
+												.push({
+													rule : selectedRule,
+													attendee : selectedAttendee
+												});
 										console.log(selectedRule)
 									}, function() {
 										// $scope.name = 'You decided not to
@@ -238,17 +354,14 @@ zmxk
 								var error_msg = "";
 								var error = false;
 								console.log($scope.applyCreditRuleAttendeeList);
-								/*angular
-										.forEach(
-												$scope.eventInit.attendees,
-												function(attendee, index) {
-													if ((attendee.rank == 0 && attendee.score >= 0)
-															|| (attendee.score == 0 && attendee.rank >= 0)) {
-														error_msg = "请核对选手的成绩与排名";
-														error = true;
-														return;
-													}
-												})*/
+								/*
+								 * angular .forEach( $scope.eventInit.attendees,
+								 * function(attendee, index) { if
+								 * ((attendee.rank == 0 && attendee.score >= 0) ||
+								 * (attendee.score == 0 && attendee.rank >= 0)) {
+								 * error_msg = "请核对选手的成绩与排名"; error = true;
+								 * return; } })
+								 */
 								if (error) {
 									$scope.launch("error", "", error_msg,
 											function() {
@@ -292,7 +405,6 @@ zmxk
 								console.log($scope.eventInit.attendees);
 							}
 
-							
 						} ]);
 
 zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {

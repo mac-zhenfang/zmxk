@@ -4,6 +4,28 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 			var eventResource = $resource(zmxkConfig.event_rest_uri, {
 				eventId : '@id'
 			}, {
+				create : {
+					url : zmxkConfig.event_rest_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.event_rest_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.event_rest_uri,
+					method : 'GET'
+				},
+				remove : {
+					url : zmxkConfig.event_rest_uri,
+					method : 'DELETE'
+				},
 				saveAttendee : {
 					url : zmxkConfig.event_update_attendee_uri,
 					method : "POST",
@@ -20,6 +42,41 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					}
 				}
 			})
+
+			this.createEvent = function(event) {
+				var defer = $q.defer();
+				eventResource.create(event, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.updateEvent = function(giveEventId, event) {
+				var defer = $q.defer();
+				eventResource.update({
+					eventId : giveEventId
+				}, event, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.deleteEvent = function(giveEventId) {
+				var defer = $q.defer();
+				eventResource.remove({
+					eventId : giveEventId
+				}, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
 			this.list = function(s) {
 				var defer = $q.defer();
 				if (!angular.isUndefined(s)) {
