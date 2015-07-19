@@ -44,6 +44,7 @@ zmxk
 					user_rest_uri : "/service/smartool/api/v1/users/:userId",
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
 					site_rest_uri : "/service/smartool/api/v1/sites/:siteId",
+					serie_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId/series/:serieId",
 					event_type_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
 					event_update_attendee_uri : "/service/smartool/api/v1/events/:eventId/complete",
@@ -66,7 +67,7 @@ zmxk
 				});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {
-	// Don't strip trailing slashes from calculated URLs
+	// Don't strip trailing slashes from calculated URLs 
 	$resourceProvider.defaults.stripTrailingSlashes = false;
 } ]);
 
@@ -82,6 +83,12 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 		controller : "EventDetailCtrl"
 	}).when('/events', {
 		templateUrl : 'event_list.html',
+		controller : "EventManageCtrl"
+	}).when('/event_types', {
+		templateUrl : 'eventtype_list.html',
+		controller : "EventManageCtrl"
+	}).when('/event_types/:eventTypeId', {
+		templateUrl : 'eventtype_detail.html',
 		controller : "EventManageCtrl"
 	}).when('/event_rules', {
 		templateUrl : 'event_rule_list.html',

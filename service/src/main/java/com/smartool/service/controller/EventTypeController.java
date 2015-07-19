@@ -22,6 +22,7 @@ public class EventTypeController {
 
 	@Autowired
 	EventTypeDao eventTypeDao;
+	
 
 	/**
 	 * List
@@ -58,6 +59,8 @@ public class EventTypeController {
 	public EventType getEventTypes(@PathVariable String eventTypeId) {
 		return eventTypeDao.get(eventTypeId);
 	}
+	
+
 
 	/**
 	 * DELETE

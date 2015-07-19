@@ -1,3 +1,112 @@
+// Serie Service
+zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
+		function($resource, zmxkConfig, $q) {
+
+			var serieResource = $resource(zmxkConfig.serie_rest_uri, {
+
+				serieId : '@id'
+			}, {
+				create : {
+					url : zmxkConfig.site_rest_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.site_rest_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.site_rest_uri,
+					method : 'GET'
+				},
+				remove : {
+					url : zmxkConfig.site_rest_uri,
+					method : 'DELETE'
+				}
+			})
+
+			this.create = function(giveEventTypeId, serie) {
+				var defer = $q.defer();
+				serieResource.create({
+					eventTypeId : giveEventTypeId
+				}, site, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.update = function(giveEventTypeId, giveSerieId, serie) {
+				var defer = $q.defer();
+				serieResource.update({
+					eventTypeId : giveEventTypeId,
+					serieId : giveSerieId
+				}, serie, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.remove = function(giveEventTypeId, giveSerieId) {
+				var defer = $q.defer();
+				serieResource.remove({
+					eventTypeId : giveEventTypeId,
+					serieId : giveSerieId
+				}, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.removeAll = function(giveEventTypeId) {
+				var defer = $q.defer();
+				serieResource.remove({
+					eventTypeId : giveEventTypeId
+				}, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
+
+			this.list = function(giveEventTypeId) {
+				var defer = $q.defer();
+				serieResource.query({
+					eventTypeId : giveEventTypeId
+				}, function(data, headers) {
+					defer.resolve(data);
+				}, function(data, headers) {
+					defer.reject(data);
+				});
+
+				return defer.promise;
+			}
+
+			this.get = function(giveEventTypeId, giveSerieId) {
+				var defer = $q.defer();
+				serieResource.get({
+					eventTypeId : giveEventTypeId,
+					serieId : giveSerieId
+				},  function(data, headers) {
+					defer.resolve(data);
+				}, function(data, headers) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			}
+
+		} ]);
 // Site Service
 zmxk.service('siteService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {

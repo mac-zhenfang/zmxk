@@ -24,14 +24,14 @@ public class SerieController {
 	SerieDao serieDao;
 
 	/**
-	 * List
+	 * CREATE
 	 * 
 	 * @RequestMapping(value = "/series")
 	 */
 	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/series", method = RequestMethod.POST, consumes = {
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public Serie create(@RequestBody Serie serie) {
+	public Serie create(@PathVariable String eventTypeId, @RequestBody Serie serie) {
 		serie.setId(CommonUtils.getRandomUUID());
 		return serieDao.create(serie);
 	}
@@ -40,12 +40,12 @@ public class SerieController {
 	 * CREATE
 	 * 
 	 * @RequestMapping(value = "/series")
-	 */
+	 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/series", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<Serie> getSeries() {
 		return serieDao.list();
-	}
+	}*/
 
 	/**
 	 * GET
@@ -53,9 +53,9 @@ public class SerieController {
 	 * @RequestMapping(value = "/series/{SerieId}")
 	 */
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@RequestMapping(value = "/series/{serieId}", method = RequestMethod.GET, produces = {
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Serie getSeries(@PathVariable String serieId) {
+	public Serie getSeries(@PathVariable String eventTypeId, @PathVariable String serieId) {
 		return serieDao.get(serieId);
 	}
 
@@ -65,20 +65,41 @@ public class SerieController {
 	 * @RequestMapping(value = "/Series/{SerieId}")
 	 */
 	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/series/{serieId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable String serieId) {
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable String eventTypeId, @PathVariable String serieId) {
 		serieDao.delete(serieId);
+	}
+	/**
+	 * DELETE ALL
+	 * 
+	 * @RequestMapping(value = "/eventtypes/{eventTypeId}/series")
+	 */
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series", method = RequestMethod.DELETE)
+	public void deleteAll(@PathVariable String eventTypeId) {
+		serieDao.batchDeleteByEventType(eventTypeId);
+	}
+	/**
+	 * LIST
+	 * 
+	 * @RequestMapping(value = "/eventtypes/{eventTypeId}")
+	 */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public List<Serie> getSeriesByEventTypeId(@PathVariable String eventTypeId) {
+		return serieDao.list(eventTypeId);
 	}
 
 	/**
 	 * UPDATE
 	 * 
-	 * @RequestMapping(value = "/Series/{SerieId}")
+	 * @RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}")
 	 */
 	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/series/{serieId}", method = RequestMethod.PUT, consumes = {
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public Serie update(@PathVariable String serieId, @RequestBody Serie serie) {
+	public Serie update(@PathVariable String eventTypeId, @PathVariable String serieId, @RequestBody Serie serie) {
 		return serieDao.update(serie);
 	}
 
