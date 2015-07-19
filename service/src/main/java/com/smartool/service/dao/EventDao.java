@@ -19,4 +19,6 @@ public interface EventDao {
 	Event getEvent(String eventId);
 	
 	Event getFullEvent(String eventId);
+	
+	void delete(String eventId);
 }

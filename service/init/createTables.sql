@@ -75,7 +75,6 @@ CREATE TABLE `series` (
 	`endTime` timestamp NOT NULL,
 	`stages` int,
 	`rankUpgradeQualification` int,-- which rank can upgrade to next stage
-	`siteId` varchar(36) NOT NULL,
 	`eventTypeId` varchar(36) NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -126,7 +125,7 @@ DROP TABLE IF EXISTS `eventTypes`;
 CREATE TABLE `eventTypes` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
-	`siteId` varchar(36) NOT NULL,
+	`siteId` varchar(36),
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)

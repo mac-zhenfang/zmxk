@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SERIE">
+	<select id="create" parameterType="com.smartool.common.dto.Serie">
+		insert series (id,
+		name,startTime,
+		endTime, stages, rankUpgradeQualification, eventTypeId,
+		createdTime, lastModifiedTime)
+		values
+		(#{id},#{name},#{startTime},#{endTime},#{stages},#{rankUpgradeQualification},#{eventTypeId},now(),now())
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.Serie">
+		update series
+		set
+		name=#{name},
+		startTime=#{startTime},
+		endTime=#{endTime},
+		stages=#{stages},
+		rankUpgradeQualification=#{rankUpgradeQualification},
+		eventTypeId=#{eventTypeId}
+		where id =
+		#{id};
+	</select>
+	<select id="remove" parameterType="String">
+		delete from series where
+		id =
+		#{id}
+	</select>
+	<select id="removeByEventType" parameterType="String">
+		delete from series
+		where
+		eventTypeId =
+		#{eventTypeId}
+	</select>
+	<select id="listAll" resultType="com.smartool.common.dto.Serie">
+		select * from series
+	</select>
+	<select id="listByEventType" resultType="com.smartool.common.dto.Serie" parameterType="String">
+		select * from series where eventTypeId=#{eventTypeId}
+	</select>
+	<select id="get" parameterType="String" resultType="com.smartool.common.dto.Serie">
+		select *
+		from
+		series where id = #{id}
+	</select>
+
+</mapper>
+

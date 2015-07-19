@@ -12,6 +12,9 @@
 	<mappers>
 		<mapper resource="mybatis.mapping/user.map.xml" />
 		<mapper resource="mybatis.mapping/event.map.xml" />
+		<mapper resource="mybatis.mapping/eventtype.map.xml" />
+		<mapper resource="mybatis.mapping/site.map.xml" />
+		<mapper resource="mybatis.mapping/serie.map.xml" />
 		<mapper resource="mybatis.mapping/attendee.map.xml" />
 		<mapper resource="mybatis.mapping/tag.map.xml" />
 		<mapper resource="mybatis.mapping/kid.map.xml" />

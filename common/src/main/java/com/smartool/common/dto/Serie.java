@@ -1,13 +1,14 @@
 package com.smartool.common.dto;
 
+import java.util.Date;
+
 public class Serie {
 	private String id;
 	private String name;
-	private String startTime;
-	private String endTime;
-	private int stage;
+	private Date startTime;
+	private Date endTime;
+	private int stages;
 	private int rankUpgradeQualification;
-	private String siteId;
 	private String eventTypeId;
 
 	public String getId() {
@@ -26,28 +27,28 @@ public class Serie {
 		this.name = name;
 	}
 
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 
-	public int getStage() {
-		return stage;
+	public int getStages() {
+		return stages;
 	}
 
-	public void setStage(int stage) {
-		this.stage = stage;
+	public void setStages(int stages) {
+		this.stages = stages;
 	}
 
 	public int getRankUpgradeQualification() {
@@ -58,13 +59,6 @@ public class Serie {
 		this.rankUpgradeQualification = rankUpgradeQualification;
 	}
 
-	public String getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(String siteId) {
-		this.siteId = siteId;
-	}
 
 	public String getEventTypeId() {
 		return eventTypeId;

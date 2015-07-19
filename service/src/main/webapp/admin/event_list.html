@@ -15,6 +15,7 @@
 				<thead>
 					<tr>
 						<th>赛事名</th>
+						<th>赛道</th>
 						<th>赛事类型</th>
 						<th>时间</th>
 						<th>可录入人数</th>
@@ -31,9 +32,15 @@
 							ng-model="event.name" ng-show="{{event.showInput}}" /></td>
 						<td><select ng-disabled="{{!event.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"
-							ng-model="event.eventType"
-							ng-options="option.value as option.label for option in eventTypes"
-							ng-init="event.eventType==option.value">
+							ng-model="event.siteId"
+							ng-options="option.id as option.name for option in sites"
+							ng-init="event.siteId==option.id">
+						</select></td>
+						<td><select ng-disabled="{{!event.showInput}}"
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="event.eventTypeId"
+							ng-options="option.id as option.name for option in eventTypes"
+							ng-init="event.eventTypeId==option.id">
 						</select></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
@@ -43,7 +50,8 @@
 						<td class="center"><span class="label label-success">{{event.applyScoreCount}}</span></td>
 						<td class="center"><span
 							ng-hide="{{event.showInput}} == true" ng-bind="event.quota"></span>
-							<input ng-model="event.quota" ng-show="{{event.showInput}}" class="gridInput2"/></td>
+							<input ng-model="event.quota" ng-show="{{event.showInput}}"
+							class="gridInput2" /></td>
 						<td class="center"><span class="btn btn-info"
 							ng-click="updateEvent(event, $index)"
 							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span

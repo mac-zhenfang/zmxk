@@ -2,11 +2,13 @@ zmxk.controller('EventManageCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'eventTypeService',
+		'siteService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
-				$routeParams) {
+		function($scope, userService, eventService, eventTypeService,
+				siteService, $interval, $timeout, $routeParams) {
 
 			$scope.viewEventManagePage = function() {
 				if (angular.isUndefined($scope.eventId)) {
@@ -23,38 +25,50 @@ zmxk.controller('EventManageCtrl', [
 			}
 
 			$scope.init = function() {
-				if (angular.isUndefined($scope.eventId)) {
-					eventService.list().then(
-							function(data) {
-								$scope.listEvents = data;
-								angular.forEach($scope.listEvents, function(
-										event, index) {
+				eventService.list().then(
+						function(data) {
+							$scope.listEvents = data;
+							angular.forEach($scope.listEvents, function(event,
+									index) {
 
-									var enrolledCount = 0;
-									var applyScoreCount = 0;
-									var leftCount = 0;
-									angular.forEach(event.attendees, function(
-											attendee, index2) {
-										var attStatus = attendee.status;
-										// console.log(attStatus);
-										if (attStatus == 1) {
-											enrolledCount += 1;
-										} else if (attStatus == 2) {
-											applyScoreCount += 1;
-										}
+								var enrolledCount = 0;
+								var applyScoreCount = 0;
+								var leftCount = 0;
+								angular.forEach(event.attendees, function(
+										attendee, index2) {
+									var attStatus = attendee.status;
+									// console.log(attStatus);
+									if (attStatus == 1) {
+										enrolledCount += 1;
+									} else if (attStatus == 2) {
+										applyScoreCount += 1;
+									}
 
-									});
-									event.leftCount = event.quota
-											- enrolledCount - applyScoreCount;
-									event.applyScoreCount = applyScoreCount;
-									event.enrolledCount = enrolledCount;
-									event["existed"] = true;
-									event["changed"] = false;
-									event["showInput"] = false;
 								});
-							}, function(data) {
+								event.leftCount = event.quota - enrolledCount
+										- applyScoreCount;
+								event.applyScoreCount = applyScoreCount;
+								event.enrolledCount = enrolledCount;
+								event["existed"] = true;
+								event["changed"] = false;
+								event["showInput"] = false;
 							});
-				}
+						}, function(data) {
+						});
+
+				// get EventTypes
+				// eventTypes
+				eventTypeService.list().then(function(data) {
+					$scope.eventTypes = data;
+				}, function(data) {
+
+				})
+
+				siteService.list().then(function(data) {
+					$scope.sites = data;
+				}, function(data) {
+				})
+
 			}
 
 			$scope.updateEvent = function(updateEvent, idx) {
@@ -147,7 +161,6 @@ zmxk.controller('EventManageCtrl', [
 				 */
 				// create all existed == false
 				// update all changed == true
-			
 			}
 
 		} ]);
@@ -397,7 +410,16 @@ zmxk
 																		},
 																		function(
 																				error) {
+																			$scope
+																					.launch(
+																							"error",
+																							"",
+																							error.data.message,
+																							function() {
 
+																							},
+																							function() {
+																							});
 																		})
 													}, function() {
 													});

@@ -52,4 +52,9 @@ public class EventDaoImpl implements EventDao {
 	public List<Event> listFullEvent() {
 		return sqlSession.selectList("EVENT.listFullAll");
 	}
+
+	@Override
+	public void delete(String eventId) {
+		sqlSession.selectOne("EVENT.remove", eventId);
+	}
 }

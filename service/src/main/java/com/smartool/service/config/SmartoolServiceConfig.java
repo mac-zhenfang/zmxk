@@ -28,10 +28,16 @@ import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.CreditRuleDaoImpl;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
+import com.smartool.service.dao.EventTypeDao;
+import com.smartool.service.dao.EventTypeDaoImpl;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.KidDaoImpl;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
+import com.smartool.service.dao.SerieDao;
+import com.smartool.service.dao.SerieDaoImpl;
+import com.smartool.service.dao.SiteDao;
+import com.smartool.service.dao.SiteDaoImpl;
 import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.TagDaoImpl;
 import com.smartool.service.dao.UserDao;
@@ -61,6 +67,21 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public UserDao getUserDao() {
 		return new UserDaoImpl();
+	}
+	
+	@Bean
+	public EventTypeDao getEventTypeDao() {
+		return new EventTypeDaoImpl();
+	}
+	
+	@Bean
+	public SiteDao getSiteDao() {
+		return new SiteDaoImpl();
+	}
+	
+	@Bean
+	public SerieDao getSerieDao() {
+		return new SerieDaoImpl();
 	}
 	
 	@Bean

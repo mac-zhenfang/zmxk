@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SITE">
+	<select id="create" parameterType="com.smartool.common.dto.Site">
+		insert sites (id,
+		name,location,
+		createdTime, lastModifiedTime)
+		values
+		(#{id},#{name},#{location},now(),now())
+	</select>
+	<select id="update" parameterType="com.smartool.common.dto.Site">
+		update sites
+		set
+		name=#{name},
+		location=#{location}
+		where id =
+		#{id};
+	</select>
+	<select id="remove" parameterType="String">
+		delete from sites where
+		id =
+		#{id}
+	</select>
+	<select id="list" resultType="com.smartool.common.dto.Site">
+		select * from sites
+	</select>
+	<select id="get" parameterType="String" resultType="com.smartool.common.dto.Site">
+		select *
+		from
+		sites where id = #{id}
+	</select>
+
+</mapper>
+

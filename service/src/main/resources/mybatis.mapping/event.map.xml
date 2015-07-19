@@ -54,7 +54,8 @@
 		a.status as status
 		from events e,
 		attendees a,
-		eventTypes t where e.eventTypeId = t.id and a.eventId = e.id
+		eventTypes t where
+		e.eventTypeId = t.id and a.eventId = e.id
 	</select>
 
 	<select id="listAllStatus" parameterType="int" resultMap="event">
@@ -73,9 +74,16 @@
 		a.userId as userId,
 		a.seq as seq,
 		a.status as status
-		from events e, attendees a,
+		from events e,
+		attendees a,
 		eventTypes t where
-		e.eventTypeId = t.id and a.eventId = e.id and e.status = #{status};
+		e.eventTypeId = t.id and a.eventId =
+		e.id and e.status = #{status};
+	</select>
+
+	<select id="remove" parameterType="String">
+		delete from events where id =
+		#{id}
 	</select>
 
 	<select id="listFullAll" resultMap="event">
@@ -130,14 +138,16 @@
 		a.status as status,
 		a.rank as rank,
 		k.name as kidName,
-		a.userId as userId,
+		a.userId as
+		userId,
 		a.seq as seq
 		from
 		events e,
 		eventTypes t, attendees a, kids k
 		where
 		e.id = a.eventId and
-		e.eventTypeId = t.id and k.id = a.kidId and e.id = #{id};
+		e.eventTypeId = t.id and k.id = a.kidId and
+		e.id = #{id};
 	</select>
 
 	<select id="getById" parameterType="String"

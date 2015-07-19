@@ -124,7 +124,12 @@ public class EventController extends BaseController {
 		// 赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}.
 		Map<String, Integer> creditMap = new HashMap<>();
 		for (Attendee attendee : attendees) {
-			attendee.setStatus(2);
+			if(attendee.getScore() == 0) {
+				attendee.setStatus(1);
+			} else {
+				attendee.setStatus(2);
+			}
+			
 			// FIXME: sort by score
 			// FIXME: get credit from db
 			int credit = 0;
@@ -265,7 +270,15 @@ public class EventController extends BaseController {
 		retEvent.setAttendees(attendees);
 		return retEvent;
 	}
-
+	/**
+	 * Delete Event
+	 * */
+	@ApiScope(userScope = UserRole.ADMIN)
+	@Transactional
+	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
+	public void delete(@PathVariable String eventId) {
+		eventDao.delete(eventId);
+	}
 	/**
 	 * 
 	 * Get Event
