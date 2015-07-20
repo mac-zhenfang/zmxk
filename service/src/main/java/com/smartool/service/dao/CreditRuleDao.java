@@ -30,7 +30,8 @@ public interface CreditRuleDao {
 
 	List<EventCreditRule> listAllEventCreditRules();
 
-	List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, String seriesId, String name);
+	List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name);
 
-	List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name, Integer rank);
+	List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name, Integer rank);
 }

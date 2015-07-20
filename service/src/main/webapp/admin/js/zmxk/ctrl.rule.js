@@ -28,6 +28,20 @@ zmxk.controller('EventRuleCtrl', [
 				value : null,
 				label : "单次事件"
 			} ];
+			$scope.stages = [ {
+				value : 1,
+				label : "预赛"
+			}, {
+				value : 2,
+				label : "季度赛"
+			}, {
+				value : 3,
+				label : "年度赛"
+			}, {
+				value : null,
+				label : "------"
+			} ];
+			
 			var init = function() {
 				eventService.list().then(function(data) {
 					// TODO $scope.eventTypeList = data;

@@ -103,8 +103,9 @@ public class CreditController extends BaseController {
 	List<EventCreditRule> searchRankingEventCreditRules(
 			@RequestParam(value = "eventTypeId", required = false) String eventTypeId,
 			@RequestParam(value = "seriesId", required = false) String seriesId,
-			@RequestParam(value = "name", required = false) String name) {
-		return creditService.searchRankingEventCreditRules(eventTypeId, seriesId, name);
+			@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "stage", required = false) Integer stage) {
+		return creditService.searchRankingEventCreditRules(eventTypeId, stage, seriesId, name);
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
@@ -114,7 +115,8 @@ public class CreditController extends BaseController {
 			@RequestParam(value = "eventTypeId", required = false) String eventTypeId,
 			@RequestParam(value = "seriesId", required = false) String seriesId,
 			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "rank", required = false) Integer rank) {
-		return creditService.searchNonrankingEventCreditRules(eventTypeId, seriesId, name, rank);
+			@RequestParam(value = "rank", required = false) Integer rank,
+			@RequestParam(value = "stage", required = false) Integer stage) {
+		return creditService.searchNonrankingEventCreditRules(eventTypeId, stage, seriesId, name, rank);
 	}
 }

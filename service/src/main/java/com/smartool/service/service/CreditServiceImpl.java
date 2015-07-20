@@ -12,10 +12,33 @@ import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.CreditRuleDao;
+import com.smartool.service.dao.EventDao;
+import com.smartool.service.dao.SerieDao;
 
 public class CreditServiceImpl implements CreditService {
 	@Autowired
 	private CreditRuleDao creditRuleDao;
+	@Autowired
+	private EventDao eventDao;
+	@Autowired
+	private SerieDao serieDao;
+
+	@Override
+	public String getDisplayName(CreditRule creditRule) {
+		if (creditRule == null) {
+			return null;
+		}
+		if (creditRule instanceof EventCreditRule) {
+			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
+			StringBuilder sb = new StringBuilder();
+			if (eventCreditRule.getSeriesId() != null) {
+
+			}
+			sb.append(creditRule.getName());
+			return sb.toString();
+		}
+		return creditRule.getName();
+	}
 
 	@Override
 	public List<CreditRule> listAllCreditRules() {
@@ -134,13 +157,13 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, String seriesId, String name) {
-		return creditRuleDao.listRankingEventCreditRules(eventTypeId, seriesId, name);
+	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name) {
+		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, seriesId, name);
 	}
 
 	@Override
-	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, String seriesId, String name,
+	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name,
 			Integer rank) {
-		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, seriesId, name, rank);
+		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name, rank);
 	}
 }

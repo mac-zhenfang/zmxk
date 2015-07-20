@@ -26,8 +26,11 @@ public interface CreditService {
 
 	void removeEventCreditRule(String eventCreditRuleId);
 
-	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, String seriesId, String name);
+	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name);
 
-	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, String seriesId, String name,
-			Integer rank);
+	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name, Integer rank);
+
+	String getDisplayName(CreditRule creditRule);
 }

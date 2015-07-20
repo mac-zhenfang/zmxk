@@ -97,6 +97,7 @@ CREATE TABLE `eventCreditRules` (
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`eventTypeId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
+	`stage` int,
 	`rank` int,
 	`credit` int,
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

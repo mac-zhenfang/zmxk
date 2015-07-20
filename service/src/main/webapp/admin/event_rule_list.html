@@ -15,6 +15,7 @@
 					<tr>
 						<th>规则名</th>
 						<th>赛事类型名</th>
+						<th>赛事阶段</th>
 						<th>赛事系列类型</th>
 						<th>排名</th>
 						<th>给予积分</th>
@@ -34,13 +35,17 @@
 							ng-options="eventType.id as eventType.name for eventType in eventTypeList"
 							ng-init="rule.eventTypeId==eventType.id">
 						</select></td>
-<!-- 							ng-model="{true: rule.serieId, false:null}[rule.serieId!=null]" -->
+						<td class="center"><select ng-disabled={{!rule.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="rule.stage"
+							ng-options="stage.value as stage.label for stage in stages"
+							ng-init="rule.stage==stage.value">
+						</select></td>
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.seriesId"
 							ng-options="series.id as series.name for series in seriesMap.get(rule.eventTypeId)"
 							ng-init="rule.seriesId==series.id"></select></td>
-<!-- 							ng-model="{true: rule.rank, false:null}[rule.rank!=null]" -->
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.rank"
