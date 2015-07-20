@@ -103,6 +103,7 @@ public class CreditController extends BaseController {
 	@RequestMapping(value = "/eventcreditrules", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	EventCreditRule createEventCreditRule(@RequestBody EventCreditRule eventCreditRule) {
+		eventCreditRuleValidToCreate(eventCreditRule);
 		eventCreditRule.setId(CommonUtils.getRandomUUID());
 		return creditRuleDao.createEventCreditRule(eventCreditRule);
 	}
@@ -119,7 +120,8 @@ public class CreditController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
-		if (creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName()) != null) {
+		EventCreditRule existedCreditRule = creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName());
+		if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
@@ -131,8 +133,9 @@ public class CreditController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
-		CreditRule existedCreditRule = creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName());
-		if (existedCreditRule != null && !existedCreditRule.getId().equals(eventCreditRule.getId())) {
+		EventCreditRule existedCreditRule = creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName());
+		if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
+				&& !existedCreditRule.getId().equals(eventCreditRule.getId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
 		}
@@ -144,8 +147,16 @@ public class CreditController extends BaseController {
 	@ResponseBody
 	EventCreditRule updateEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId,
 			@RequestBody EventCreditRule eventCreditRule) {
+		eventCreditRuleValidToUpdate(eventCreditRule);
 		eventCreditRule.setId(eventCreditRuleId);
 		return creditRuleDao.updateEventCreditRule(eventCreditRule);
+	}
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/eventcreditrules/{eventCreditRuleId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	void removeEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId) {
+		creditRuleDao.removeEventCreditRule(eventCreditRuleId);
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

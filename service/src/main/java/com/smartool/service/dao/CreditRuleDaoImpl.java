@@ -74,7 +74,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 
 	@Override
 	public void removeEventCreditRule(String eventCreditRuleId) {
-		sqlSession.delete("EVENT_CREDIT_RULE.delete", eventCreditRuleId);
+		sqlSession.delete("EVENT_CREDIT_RULE.remove", eventCreditRuleId);
 	}
 
 	@Override

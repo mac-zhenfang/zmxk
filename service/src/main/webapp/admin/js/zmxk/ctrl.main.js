@@ -10,7 +10,6 @@ zmxk
 						'$routeParams',
 						function($scope, $location, userService, $window,
 								$dialogs, $routeParams) {
-							console.log(userService);
 							currentModule = "userList";
 							$scope.$location = $location;
 
