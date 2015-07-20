@@ -117,7 +117,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 	}
 
 	@Override
-	public EventCreditRule getEventCreditRuleByName(String name) {
-		return sqlSession.selectOne("EVENT_CREDIT_RULE.getByName", name);
+	public List<EventCreditRule> getEventCreditRuleByName(String name) {
+		return sqlSession.selectList("EVENT_CREDIT_RULE.getByName", name);
 	}
 }

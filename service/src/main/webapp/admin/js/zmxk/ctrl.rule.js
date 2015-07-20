@@ -139,7 +139,7 @@ zmxk.controller('EventRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.eventRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -158,7 +158,7 @@ zmxk.controller('EventRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.eventRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -257,7 +257,7 @@ zmxk.controller('GeneralRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.generalRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -276,7 +276,7 @@ zmxk.controller('GeneralRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.generalRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));

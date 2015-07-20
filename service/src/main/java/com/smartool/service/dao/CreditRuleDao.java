@@ -24,7 +24,7 @@ public interface CreditRuleDao {
 
 	EventCreditRule getEventCreditRuleById(String eventCreditRuleId);
 
-	EventCreditRule getEventCreditRuleByName(String name);
+	List<EventCreditRule> getEventCreditRuleByName(String name);
 
 	void removeEventCreditRule(String eventCreditRuleId);
 
