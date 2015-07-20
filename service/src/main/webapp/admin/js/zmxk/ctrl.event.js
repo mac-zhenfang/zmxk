@@ -1,139 +1,239 @@
 //Event Typs Start
-zmxk.controller('EventTypeManageCtrl', [
-		'$scope',
-		'userService',
-		'eventService',
-		'eventTypeService',
-		'siteService',
-		'serieService',
-		'$interval',
-		'$timeout',
-		'$routeParams',
-		function($scope, userService, eventService, eventTypeService,
-				siteService, serieService, $interval, $timeout, $routeParams) {
-			
-			$scope.sites = [{id:null, name:"公共"}];
-			
-			$scope.init = function() {
-				eventTypeService.list().then(
-						function(data) {
-							$scope.listEventTypes = data;
-							angular.forEach($scope.listEventTypes, function(eventType,
-									index) {
-								eventType["existed"] = true;
-								eventType["changed"] = false;
-								eventType["showInput"] = false;
-							});
-						}, function(data) {
-						});
+zmxk
+		.controller(
+				'EventTypeManageCtrl',
+				[
+						'$scope',
+						'userService',
+						'eventService',
+						'eventTypeService',
+						'siteService',
+						'serieService',
+						'$interval',
+						'$timeout',
+						'$routeParams',
+						function($scope, userService, eventService,
+								eventTypeService, siteService, serieService,
+								$interval, $timeout, $routeParams) {
 
-				siteService.list().then(function(data) {
-					angular.forEach(data, function(site, index){
-						$scope.sites.push(site);
-					})
-					
-				}, function(data) {
-				})
+							$scope.sites = [ {
+								id : null,
+								name : "公共"
+							} ];
+							$scope.giveUpdateEventType = {};
+							$scope.toDeleteEventType = {};
+							$scope.init = function() {
+								eventTypeService
+										.list()
+										.then(
+												function(data) {
+													$scope.listEventTypes = data;
+													angular
+															.forEach(
+																	$scope.listEventTypes,
+																	function(
+																			eventType,
+																			index) {
+																		eventType["existed"] = true;
+																		eventType["changed"] = false;
+																		eventType["showInput"] = false;
+																	});
+												}, function(data) {
+												});
 
-			}
+								siteService.list().then(
+										function(data) {
+											angular.forEach(data, function(
+													site, index) {
+												$scope.sites.push(site);
+											})
 
-			
+										}, function(data) {
+										})
 
-			$scope.updateEventType = function(giveUpdateEventType, idx) {
-				// save event
-				if (!giveUpdateEventType.existed) {
-					eventTypeService.createEventType(giveUpdateEventType).then(function(data) {
-						giveUpdateEventType = data;
-					}, function(data) {
-
-					})
-				} else if (giveUpdateEventType.changed) {
-					eventTypeService.updateEventType(giveUpdateEventType.id, giveUpdateEventType).then(
-							function(data) {
-								giveUpdateEventType = data;
-
-							},
-							function(data) {
-								$scope.launch("error", "", error.data.message,
-										function() {
-
-										}, function() {
-										});
-							});
-				}
-
-				$scope.$watch(giveUpdateEventType, function() {
-					if (giveUpdateEventType.existed) {
-						giveUpdateEventType.changed = !giveUpdateEventType.changed;
-					}
-
-					giveUpdateEventType.showInput = !giveUpdateEventType.showInput;
-					// $scope.kids = kid; $scope.listEvents
-					var eventTypes = [];
-					angular.forEach($scope.listEventTypes, function(eventType, i) {
-
-						if (i == idx) {
-							console.log(i + "~~~" + idx);
-							eventTypes.push(giveUpdateEventType);
-						} else {
-							eventTypes.push(eventType);
-						}
-					})
-					$scope.listEventTypes = angular.copy(eventTypes);
-				})
-			}
-
-			$scope.deleteEventType = function(toDeleteEventType, idx) {
-				console.log(toDeleteEventType);
-				if (!toDeleteEventType.existed) {
-					toDeleteEventType = null;
-				} else {
-					eventTypeService.deleteEventType(toDeleteEventType.id).then(
-							function(data) {
-								toDeleteEventType = null;
-							},
-							function(data) {
-								$scope.launch("error", "", error.data.message,
-										function() {
-
-										}, function() {
-										});
-							})
-				}
-				$scope.$watch(toDeleteEventType, function(oldValue, newValue) {
-					if (oldValue != newValue) {
-						var eventTypes = [];
-						angular.forEach($scope.listEventTypes, function(eventType, i) {
-							if (idx != i) {
-								eventTypes.push(angular.copy(eventType));
 							}
-						});
-						$scope.listEventTypes = eventTypes;
-						console.log($scope.listEventTypes)
-					}
-				})
 
-			}
+							/*
+							 * $scope.$watch("giveUpdateEventType",
+							 * function(newValue, oldValue, scope) { var
+							 * giveUpdateEventType = newValue;
+							 * //if(oldValue!=newValue){ //giveUpdateEventType =
+							 * newValue; console.log("changed");
+							 * 
+							 * //}
+							 * 
+							 * 
+							 * 
+							 * if (giveUpdateEventType.existed) {
+							 * giveUpdateEventType.changed =
+							 * !giveUpdateEventType.changed; } else {
+							 * giveUpdateEventType.existed =
+							 * !giveUpdateEventType.existed; }
+							 * 
+							 * 
+							 * 
+							 * giveUpdateEventType.showInput =
+							 * !giveUpdateEventType.showInput;
+							 * 
+							 * 
+							 * console.log(giveUpdateEventType); // $scope.kids =
+							 * kid; $scope.listEvents var eventTypes = [];
+							 * console.log($scope.listEventTypes);
+							 * angular.forEach($scope.listEventTypes,
+							 * function(eventType, i) { console.log(eventType);
+							 * //if (i == giveUpdateEventType.idx) {
+							 * //console.log(i + "~" + giveUpdateEventType.idx);
+							 * //eventTypes.push(giveUpdateEventType); //} else {
+							 * eventTypes.push(angular.copy(eventType)); //} });
+							 * $scope.listEventTypes = angular.copy(eventTypes);
+							 * console.log($scope.listEventTypes); })
+							 * 
+							 * $scope.$watch("toDeleteEventType",
+							 * function(newValue, oldValue) {
+							 * console.log(oldValue); console.log(newValue); var
+							 * idx = oldValue["idx"]; //if (oldValue !=
+							 * newValue) { var eventTypes = [];
+							 * angular.forEach($scope.listEventTypes,
+							 * function(eventType, i) { if (idx != i) {
+							 * eventTypes.push(angular.copy(eventType)); } });
+							 * $scope.listEventTypes = eventTypes;
+							 * console.log($scope.listEventTypes) //} })
+							 */
 
-			$scope.createEventType = function() {
+							$scope.updateEventType = function(
+									giveUpdateEventType, idx) {
+								var assinGiveUpdateEventType = function(data) {
+									giveUpdateEventType['id'] = data.id;
+									//console.log("returned");
+									// giveUpdateEventType["id"] = data.id;
+									// giveUpdateEventType["idx"] = idx;
 
-				var toCreateEventType = {
+									if (giveUpdateEventType.existed) {
+										giveUpdateEventType.changed = !giveUpdateEventType.changed;
+									} else {
+										giveUpdateEventType.existed = !giveUpdateEventType.existed;
+									}
 
-				}
-				toCreateEventType["existed"] = false;
-				toCreateEventType["changed"] = true;
-				toCreateEventType["showInput"] = true;
-				$scope.listEventTypes.push(toCreateEventType);
-				/*
-				 * angular.forEach($scope.kids, function(kid, index){ })
-				 */
-				// create all existed == false
-				// update all changed == true
-			}
+									giveUpdateEventType.showInput = !giveUpdateEventType.showInput;
 
-		} ]);
+									//console.log(giveUpdateEventType);
 
-//Event Start
+									// $scope.kids = kid; $scope.listEvents
+									var eventTypes = [];
+									// console.log($scope.listEventTypes);
+									angular
+											.forEach(
+													$scope.listEventTypes,
+													function(eventType, i) {
+														// console.log(eventType);
+														if (i == idx) {
+															console.log(i + "~"
+																	+ idx);
+															eventTypes
+																	.push(giveUpdateEventType);
+														} else {
+															eventTypes
+																	.push(angular
+																			.copy(eventType));
+														}
+													});
+									$scope.listEventTypes = angular
+											.copy(eventTypes);
+									//console.log($scope.listEventTypes);
+
+								}
+								//console.log(giveUpdateEventType);
+								// $scope.giveUpdateEventType =
+								// giveUpdateEventType;
+								// save event
+								if (!giveUpdateEventType.existed) {
+									eventTypeService.createEventType(
+											giveUpdateEventType).then(
+											function(data) {
+												assinGiveUpdateEventType(data);
+											}, function(data) {
+
+											})
+								} else if (giveUpdateEventType.changed) {
+									eventTypeService.updateEventType(
+											giveUpdateEventType.id,
+											giveUpdateEventType).then(
+											function(data) {
+												assinGiveUpdateEventType(data);
+											},
+											function(data) {
+												$scope.launch("error", "",
+														error.data.message,
+														function() {
+
+														}, function() {
+														});
+											});
+								} else {
+									//console.log("~~~~~");
+									assinGiveUpdateEventType(giveUpdateEventType);
+								}
+
+							}
+
+							$scope.deleteEventType = function(
+									toDeleteEventType, idx) {
+								var handleReturn = function(data) {
+									var eventTypes = [];
+									angular.forEach($scope.listEventTypes,
+											function(eventType, i) {
+												if (idx != i) {
+													eventTypes.push(angular
+															.copy(eventType));
+												}
+											});
+									$scope.listEventTypes = eventTypes;
+									console.log($scope.listEventTypes)
+								}
+								$scope.toDeleteEventType = toDeleteEventType;
+								console.log(toDeleteEventType);
+
+								if (!toDeleteEventType.existed) {
+									handleReturn(null);
+									// $scope.$digest();
+								} else {
+									eventTypeService.deleteEventType(
+											toDeleteEventType.id).then(
+											function(data) {
+												handleReturn(null);
+											},
+											function(error) {
+												$scope.launch("error", "",
+														error.data.message,
+														function() {
+
+														}, function() {
+														});
+											})
+								}
+
+							}
+
+							$scope.createEventType = function() {
+
+								var toCreateEventType = {
+
+								}
+								toCreateEventType["existed"] = false;
+								toCreateEventType["changed"] = true;
+								toCreateEventType["showInput"] = true;
+								$scope.listEventTypes.push(toCreateEventType);
+								/*
+								 * angular.forEach($scope.kids, function(kid,
+								 * index){ })
+								 */
+								// create all existed == false
+								// update all changed == true
+							}
+
+						} ]);
+
+// Event Start
 zmxk.controller('EventManageCtrl', [
 		'$scope',
 		'userService',
@@ -209,42 +309,24 @@ zmxk.controller('EventManageCtrl', [
 			}
 
 			$scope.initSeries = function(event) {
-				event.eventSeries = [{id : null, name : "单次比赛"}];
+				event.eventSeries = [ {
+					id : null,
+					name : "单次比赛"
+				} ];
 				serieService.list(event.eventTypeId).then(function(data) {
-					angular.forEach(data, function(serie, index){
+					angular.forEach(data, function(serie, index) {
 						event.eventSeries.push(serie);
 					})
-					
+
 				})
-				//event.eventSeries.push({id : null, name : "单次比赛"})
+				// event.eventSeries.push({id : null, name : "单次比赛"})
 				console.log(event.eventSeries);
-			
+
 			}
 
 			$scope.updateEvent = function(updateEvent, idx) {
-				// save event
-				if (!updateEvent.existed) {
-					eventService.createEvent(updateEvent).then(function(data) {
-						updateEvent = data;
-					}, function(data) {
-
-					})
-				} else if (updateEvent.changed) {
-					eventService.updateEvent(updateEvent.id, updateEvent).then(
-							function(data) {
-								updateEvent = data;
-
-							},
-							function(data) {
-								$scope.launch("error", "", error.data.message,
-										function() {
-
-										}, function() {
-										});
-							});
-				}
-
-				$scope.$watch(updateEvent, function() {
+				var handleReturn = function(data) {
+					
 					if (updateEvent.existed) {
 						updateEvent.changed = !updateEvent.changed;
 					}
@@ -262,17 +344,58 @@ zmxk.controller('EventManageCtrl', [
 						}
 					})
 					$scope.listEvents = angular.copy(events);
-				})
+				}
+				// save event
+				if (!updateEvent.existed) {
+					eventService.createEvent(updateEvent).then(function(data) {
+						//updateEvent = data;
+						//data.existed = true;
+						updateEvent["id"] = data.id;
+						updateEvent.existed = true;
+						handleReturn(updateEvent);
+					}, function(data) {
+
+					})
+				} else if (updateEvent.changed) {
+					eventService.updateEvent(updateEvent.id, updateEvent).then(
+							function(data) {
+								handleReturn(data);
+
+							},
+							function(data) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							});
+				} else {
+					handleReturn(updateEvent);
+				}
+				
+				
 			}
 
 			$scope.deleteEvent = function(deleteEvent, idx) {
 				console.log(deleteEvent);
+				var handleReturn = function() {
+					var events = [];
+					angular.forEach($scope.listEvents, function(event, i) {
+						if (idx != i) {
+							events.push(angular.copy(event));
+						}
+					});
+					$scope.listEvents = angular.copy(events);
+					console.log($scope.listEvents)
+				}
 				if (!deleteEvent.existed) {
 					deleteEvent = null;
+					handleReturn();
 				} else {
 					eventService.deleteEvent(deleteEvent.id).then(
 							function(data) {
 								deleteEvent = null;
+								handleReturn();
 							},
 							function(data) {
 								$scope.launch("error", "", error.data.message,
@@ -282,18 +405,8 @@ zmxk.controller('EventManageCtrl', [
 										});
 							})
 				}
-				$scope.$watch(deleteEvent, function(oldValue, newValue) {
-					if (oldValue != newValue) {
-						var events = [];
-						angular.forEach($scope.listEvents, function(event, i) {
-							if (idx != i) {
-								events.push(angular.copy(event));
-							}
-						});
-						$scope.listEvents = events;
-						console.log($scope.listEvents)
-					}
-				})
+				
+				
 
 			}
 
@@ -314,7 +427,6 @@ zmxk.controller('EventManageCtrl', [
 			}
 
 		} ]);
-
 
 zmxk.controller('EventCreateCtrl', [
 		'$scope',
