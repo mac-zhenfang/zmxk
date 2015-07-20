@@ -119,7 +119,8 @@ public class CreditServiceImpl implements CreditService {
 		for (EventCreditRule existedCreditRule : existedCreditRules) {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
 					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
-					&& Objects.equals(existedCreditRule.getRank(), eventCreditRule.getRank())) {
+					&& Objects.equals(existedCreditRule.getRank(), eventCreditRule.getRank())
+					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 						ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
 			}
@@ -137,6 +138,7 @@ public class CreditServiceImpl implements CreditService {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
 					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
 					&& Objects.equals(existedCreditRule.getRank(), eventCreditRule.getRank())
+					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())
 					&& !existedCreditRule.getId().equals(eventCreditRule.getId())) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 						ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
@@ -157,13 +159,14 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name) {
+	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name) {
 		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, seriesId, name);
 	}
 
 	@Override
-	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name,
-			Integer rank) {
+	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name, Integer rank) {
 		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name, rank);
 	}
 }
