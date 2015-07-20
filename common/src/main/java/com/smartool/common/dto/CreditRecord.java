@@ -3,7 +3,9 @@ package com.smartool.common.dto;
 public class CreditRecord extends BaseDateTrackingBean {
 	private String id;
 	private String userId;
+	private String operatorId;
 	private CreditRuleType creditRuleType;
+	private String creditRuleDisplayName;
 	private String creditRuleId;
 
 	public String getId() {
@@ -36,5 +38,21 @@ public class CreditRecord extends BaseDateTrackingBean {
 
 	public void setCreditRuleId(String creditRuleId) {
 		this.creditRuleId = creditRuleId;
+	}
+
+	public String getOperatorId() {
+		return operatorId;
+	}
+
+	public void setOperatorId(String operatorId) {
+		this.operatorId = operatorId;
+	}
+
+	public String getCreditRuleDisplayName() {
+		return creditRuleDisplayName;
+	}
+
+	public void setCreditRuleDisplayName(String creditRuleDisplayName) {
+		this.creditRuleDisplayName = creditRuleDisplayName;
 	}
 }

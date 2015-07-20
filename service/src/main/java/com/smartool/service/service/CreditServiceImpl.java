@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.EventCreditRule;
+import com.smartool.common.dto.EventStages;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
@@ -32,9 +33,20 @@ public class CreditServiceImpl implements CreditService {
 			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
 			StringBuilder sb = new StringBuilder();
 			if (eventCreditRule.getSeriesId() != null) {
-
+				String serieName = serieDao.get(eventCreditRule.getSeriesId()).getName();
+				sb.append(serieName).append(" - ");
+			}
+			if (eventCreditRule.getEventTypeId() != null) {
+				String eventName = eventDao.getEvent(eventCreditRule.getEventTypeId()).getName();
+				sb.append(eventName).append(" - ");
+			}
+			if (eventCreditRule.getStage() != null) {
+				sb.append(EventStages.getDisplayName(eventCreditRule.getStage())).append(" - ");
 			}
 			sb.append(creditRule.getName());
+			if (eventCreditRule.getRank() != null) {
+				sb.append(" - ").append(eventCreditRule.getRank());
+			}
 			return sb.toString();
 		}
 		return creditRule.getName();
