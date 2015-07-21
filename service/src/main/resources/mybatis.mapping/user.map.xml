@@ -18,17 +18,18 @@
 		select * from users where mobileNum = #{mobileNum}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.User">
-		insert users (id, name,
+		insert users (id, name, password,
 		mobileNum, location,
 		roleId,status,createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{mobileNum},#{location},#{roleId},#{status},now(),now())
+		(#{id},#{name},#{password},#{mobileNum},#{location},#{roleId},#{status},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.User">
 		update users
 		set
 		name=#{name},
+		password=#{password},
 		mobileNum=#{mobileNum},
 		location=#{location},
 		roleId=#{roleId},
@@ -40,7 +41,7 @@
 		#{id}
 	</select>
 	<update id="addCredit">
-		udpate users
+		update users
 		set credit=credit+#{credit}
 		where id = #{id};
 	</update>

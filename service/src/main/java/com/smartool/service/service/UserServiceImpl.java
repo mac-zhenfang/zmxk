@@ -23,12 +23,10 @@ import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
 
 public class UserServiceImpl implements UserService {
-
 	@Autowired
 	private UserDao userDao;
 	@Autowired
 	private SecurityCodeDao securityCodeDao;
-
 	@Autowired
 	private KidDao kidDao;
 
@@ -58,7 +56,12 @@ public class UserServiceImpl implements UserService {
 		}
 		User existUser = userDao.getUserByMobileNumber(user.getMobileNum());
 		if (existUser != null) {
-			return existUser;
+			if (CommonUtils.encryptBySha2(user.getPassword()).equals(existUser.getPassword())) {
+				return existUser;
+			} else {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+						ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
+			}
 		}
 		throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
 				ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
@@ -89,6 +92,9 @@ public class UserServiceImpl implements UserService {
 		// All string fields not empty
 		if (CommonUtils.isEmptyString(user.getName())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_USER_NAME_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(user.getPassword())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
 		if (CommonUtils.isEmptyString(user.getMobileNum())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
@@ -191,7 +197,7 @@ public class UserServiceImpl implements UserService {
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
-		// user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		User createdUser = userDao.createUser(user);
 		securityCodeDao.remove(user.getMobileNum());
 		return createdUser;
@@ -231,6 +237,7 @@ public class UserServiceImpl implements UserService {
 		if (userRoleChaned(existedUser, user) && UserRole.ADMIN.getValue().compareTo(sessionUser.getRoleId()) > 0) {
 			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
 		}
+		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		return userDao.updateUser(user);
 	}
 
