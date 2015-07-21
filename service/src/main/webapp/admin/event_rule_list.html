@@ -15,6 +15,7 @@
 					<tr>
 						<th>规则名</th>
 						<th>赛事类型名</th>
+						<th>赛事阶段</th>
 						<th>赛事系列类型</th>
 						<th>排名</th>
 						<th>给予积分</th>
@@ -25,38 +26,42 @@
 				<tbody>
 
 					<tr ng-repeat="rule in eventRules | filter:filterRule">
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
+						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.name"></span> <input ng-model="rule.name"
-							ng-show="{{rule.showInput}} == true"
-							class="form-control gridInput2" /></td>
+							ng-show="{{rule.showInput}}" class="form-control gridInput2" /></td>
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.eventTypeId"
 							ng-options="eventType.id as eventType.name for eventType in eventTypeList"
 							ng-init="rule.eventTypeId==eventType.id">
 						</select></td>
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
-							ng-bind="rule.serieName"></span> <input ng-model="rule.serieName"
-							ng-show="{{rule.showInput}} == true"
-							class="form-control gridInput2" /></td>
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
-							ng-model="{true: rule.rank, false:null}[rule.rank!=null]"
+							ng-model="rule.stage"
+							ng-options="stage.value as stage.label for stage in stages"
+							ng-init="rule.stage==stage.value">
+						</select></td>
+						<td class="center"><select ng-disabled={{!rule.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="rule.seriesId"
+							ng-options="series.id as series.name for series in seriesMap.get(rule.eventTypeId)"
+							ng-init="rule.seriesId==series.id"></select></td>
+						<td class="center"><select ng-disabled={{!rule.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="rule.rank"
 							ng-options="option.value as option.label for option in rank_option"
 							ng-init="rule.rank==option.value">
-						</select> <!-- <input ng-model="rule.rankName"
-							ng-show="{{rule.showInput}} == true"
-							class="form-control gridInput2" /> --></td>
-						<td class="center"><span ng-hide="{{rule.showInput}} == true"
+						</select></td>
+						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.credit"></span> <input ng-model="rule.credit"
-							ng-show="{{rule.showInput}} == true"
-							class="form-control gridInput2" /></td>
+							ng-show="{{rule.showInput}}" class="form-control gridInput2" /></td>
 
 						<td class="center"><a class="btn btn-info"
-							href="#/event_rules" ng-click="updateRule($index)">
-								{{updateLabel}}</i>
+							href="#/event_rules"
+							ng-click="rule.showInput?saveRule($index, rule):updateRule($index, rule)">
+								{{rule.showInput?"确定":"修改"}}</i>
 						</a><a class="btn btn-danger" href="#/event_rules"
-							ng-click="deleteRule($index)"> {{deleteLabel}} </a></td>
+							ng-click="deleteRule($index, rule)"> {{deleteLabel}} </a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -64,7 +69,6 @@
 				<div class="controls">
 					<button type="button" class="btn btn-info"
 						ng-click="createNewRule()">创建</button>
-					<button type="button" class="btn btn-info" ng-click="saveRules()">保存</button>
 				</div>
 			</div>
 		</div>

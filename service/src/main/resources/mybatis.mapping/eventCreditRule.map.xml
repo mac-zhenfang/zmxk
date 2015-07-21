@@ -6,10 +6,10 @@
 	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		credit,eventTypeId,seriesId,rank, createdTime,
+		credit,eventTypeId,seriesId,rank,stage, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},#{eventTypeId},#{seriesId},#{rank},now(),now())
+		(#{id},#{name},#{credit},#{eventTypeId},#{seriesId},#{rank},#{stage},now(),now())
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
@@ -18,6 +18,7 @@
 		credit=#{credit},
 		eventTypeId=#{eventTypeId},
 		seriesId=#{seriesId},
+		stage=#{stage},
 		rank=#{rank}
 		where id =
 		#{id};
@@ -58,6 +59,9 @@
 		<if test="name != null">
 			AND name = #{name}
 		</if>
+		<if test="stage != null">
+			AND stage = #{stage}
+		</if>
 	</select>
 
 	<select id="searchNonrankingRules" parameterType="Map"
@@ -72,6 +76,9 @@
 		</if>
 		<if test="name != null">
 			AND name = #{name}
+		</if>
+		<if test="stage != null">
+			AND stage = #{stage}
 		</if>
 		<if test="searchNonrankingRules != null">
 			AND searchNonrankingRules = #{searchNonrankingRules}

@@ -4,6 +4,7 @@ public class EventCreditRule extends CreditRule {
 	private String eventTypeId;
 	private String seriesId;
 	private Integer rank;
+	private Integer stage;
 
 	public String getEventTypeId() {
 		return eventTypeId;
@@ -27,5 +28,13 @@ public class EventCreditRule extends CreditRule {
 
 	public void setRank(Integer rank) {
 		this.rank = rank;
+	}
+
+	public Integer getStage() {
+		return stage;
+	}
+
+	public void setStage(Integer stage) {
+		this.stage = stage;
 	}
 }

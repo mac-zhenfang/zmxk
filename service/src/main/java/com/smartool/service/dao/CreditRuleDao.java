@@ -24,13 +24,14 @@ public interface CreditRuleDao {
 
 	EventCreditRule getEventCreditRuleById(String eventCreditRuleId);
 
-	EventCreditRule getEventCreditRuleByName(String name);
+	List<EventCreditRule> getEventCreditRuleByName(String name);
 
 	void removeEventCreditRule(String eventCreditRuleId);
 
 	List<EventCreditRule> listAllEventCreditRules();
 
-	List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, String seriesId, String name);
+	List<EventCreditRule> listRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId, String name);
 
-	List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, String seriesId, String name, Integer rank);
+	List<EventCreditRule> listNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
+			String name, Integer rank);
 }

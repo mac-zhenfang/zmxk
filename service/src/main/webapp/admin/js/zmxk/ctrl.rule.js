@@ -2,29 +2,16 @@ zmxk.controller('EventRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'serieService',
 		'eventRuleService',
 		'$interval',
 		'$timeout',
-		'$routeParams',
-		function($scope, userService, eventService, eventRuleService, $interval, $timeout,
-				$routeParams) {
-			$scope.updateLabel = "修改";
+		'$routeParams','$q',
+		function($scope, userService, eventService, serieService, eventRuleService, $interval, $timeout,
+				$routeParams,  $q) {
 			$scope.deleteLabel = "删除";
-			// FIXME FAKE DATA
-			// 1. get EventTypes
-			// 2. make EventTypes select box and searchable
-			// 3. get all series from the EventTypes
-			// 4. make series select box and searchable
-			// 5. add one default - 单次事件into series select box
 			$scope.eventRules = [];
-			$scope.eventTypeList = [ {
-				id : "eventTypeId1",
-				name : "脚踏拉力赛"
-			}, {
-				id : "eventTypeId2",
-				name : "手摇拉力赛"
-			} ];
-			$scope.seriesList= [];
+			$scope.seriesMap = new Map();
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
@@ -40,89 +27,69 @@ zmxk.controller('EventRuleCtrl', [
 			}, {
 				value : null,
 				label : "单次事件"
-			} ]
+			} ];
+			$scope.stages = [ {
+				value : 1,
+				label : "预赛"
+			}, {
+				value : 2,
+				label : "季度赛"
+			}, {
+				value : 3,
+				label : "年度赛"
+			}, {
+				value : null,
+				label : "------"
+			} ];
+			
 			var init = function() {
-				$scope.eventRules = [ {
-					id : "mac-test-event-rule-1",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "预赛",
-					rank : 1,
-					credit : 100,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-2",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "预赛",
-					rank : 2,
-					credit : 50,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-3",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "预赛",
-					rank : 0,
-					credit : 10,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-4",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "季度复赛",
-					rank : 1,
-					credit : 400,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-5",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "季度复赛",
-					rank : 2,
-					credit : 200,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-6",
-					name : "脚踏拉力赛规则",
-					eventTypeId : "eventTypeId1",
-					serieName : "季度复赛",
-					rank : 0,
-					credit : 200,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-7",
-					name : "最有活力小选手",
-					eventTypeId : "eventTypeId1",
-					serieName : "季度复赛",
-					rank : null,
-					credit : 300,
-					existed : true,
-					changed : false,
-					showInput : false
-				}, {
-					id : "mac-test-event-rule-8",
-					name : "单圈最快",
-					eventTypeId : "eventTypeId2",
-					serieName : "季度复赛",
-					credit : 200,
-					existed : true,
-					changed : false,
-					showInput : false
-				} ]
-			}
+				eventService.list().then(function(data) {
+					// TODO $scope.eventTypeList = data;
+					$scope.eventTypeList = [ {
+						id : "eventTypeId1",
+						name : "脚踏拉力赛"
+					}, {
+						id : "eventTypeId2",
+						name : "手摇拉力赛"
+					} ];
+					var getSeries = function() {
+						var defer = $q.defer(); 
+						var recievedSerieMaps = 0;
+						angular.forEach($scope.eventTypeList, function(eventType, index) {
+							serieService.list(eventType.id).then(function(data) {
+								// TODO data.push([{id: null, name: "---------"}]);$scope.seriesMap.set(eventType.id, data);
+								if(eventType.id=="eventTypeId1"){
+									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
+									data.unshift({id: null, name: "---------"});
+									$scope.seriesMap.set(eventType.id, data);
+								} else {
+									var data = [{id: "serieId21", name: "serieName21"},{id: "serieId22", name: "serieName22"}];
+									data.unshift({id: null, name: "---------"});
+									$scope.seriesMap.set(eventType.id, data);
+								}
+								recievedSerieMaps++;
+								if($scope.eventTypeList.length == recievedSerieMaps) {
+									defer.resolve(recievedSerieMaps);
+								}
+							});
+						});
+						return defer.promise;
+					};
+					
+					getSeries().then(function(returnList){
+
+						eventRuleService.listAll().then(function(data) {
+							$scope.eventRules = data;
+						}, function(data){
+							alert(data.data.message);
+							return;
+						});
+					});
+				}, function(data){
+					alert(data.data.message);
+					return;
+				});
+			};
 			init();
 
 			$scope.createNewRule = function() {
@@ -132,47 +99,94 @@ zmxk.controller('EventRuleCtrl', [
 				$scope.eventRules.push(newRule);
 			}
 
-			// FIXME can not use id, need to use index
-			$scope.updateRule = function(ruleIndex) {
+			$scope.updateRule = function(ruleIndex, rule) {
 				var updateRule;
 				$scope.newRules = [];
 				angular.forEach($scope.eventRules, function(rule, index) {
-					// console.log(index + "~~~" + ruleIndex);
 					if (index == ruleIndex) {
 						updateRule = angular.copy(rule);
-						console.log(updateRule);
+						updateRule.showInput = true;
 						$scope.newRules.push(updateRule);
 					} else {
 						$scope.newRules.push(angular.copy(rule));
 					}
 				});
-				if (updateRule.existed) {
-					updateRule.changed = !updateRule.changed;
-				}
-				updateRule.showInput = !updateRule.showInput;
+
 				$scope.eventRules = $scope.newRules;
-				if (updateRule.changed) {
-					$scope.updateLabel = "确定";
-				} else {
-					$scope.updateLabel = "修改";
-				}
 			}
 
-			$scope.deleteRule = function(ruleIndex) {
-				var updateRule;
-				$scope.newRules = [];
-				angular.forEach($scope.eventRules, function(rule, index) {
-					if (index != ruleIndex) {
-						updateRule = angular.copy(rule);
-						$scope.newRules.push(updateRule);
+			$scope.deleteRule = function(ruleIndex, rule) {
+				if(rule.id){
+					if(confirm("确定要删除吗？")){
+						eventRuleService.remove(rule.id).then(function(data) {
+							var updateRule;
+							$scope.newRules = [];
+							angular.forEach($scope.eventRules, function(rule, index) {
+								if (index != ruleIndex) {
+									updateRule = angular.copy(rule);
+									$scope.newRules.push(updateRule);
+								}
+							});
+							$scope.eventRules = $scope.newRules;
+						}, function(data) {
+							alert(data.data.message);
+							return;
+						});
 					}
-				});
-				$scope.eventRules = $scope.newRules;
-			}
+				} else {
+					var updateRule;
+					$scope.newRules = [];
+					angular.forEach($scope.eventRules, function(rule, index) {
+						if (index != ruleIndex) {
+							updateRule = angular.copy(rule);
+							$scope.newRules.push(updateRule);
+						}
+					});
+					$scope.eventRules = $scope.newRules;
+				}
+			};
 
-			$scope.saveRules = function() {
+			$scope.saveRule = function(ruleIndex, rule) {
+				if(rule.id){
+					eventRuleService.update(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.eventRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(data);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
 
-			}
+						updateRule.showInput = false;
+						$scope.eventRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
+				} else {
+					eventRuleService.create(rule).then(function(data) {
+						var updateRule;
+						$scope.newRules = [];
+						angular.forEach($scope.eventRules, function(rule, index) {
+							if (index == ruleIndex) {
+								updateRule = angular.copy(data);
+								$scope.newRules.push(updateRule);
+							} else {
+								$scope.newRules.push(angular.copy(rule));
+							}
+						});
+
+						updateRule.showInput = false;
+						$scope.eventRules = $scope.newRules;
+					}, function(data){
+						alert(data.data.message);
+						return;
+					});
+				}
+			};
 
 		} ]);
 
@@ -257,7 +271,7 @@ zmxk.controller('GeneralRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.generalRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -276,7 +290,7 @@ zmxk.controller('GeneralRuleCtrl', [
 						$scope.newRules = [];
 						angular.forEach($scope.generalRules, function(rule, index) {
 							if (index == ruleIndex) {
-								updateRule = angular.copy(rule);
+								updateRule = angular.copy(data);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -290,7 +304,7 @@ zmxk.controller('GeneralRuleCtrl', [
 						return;
 					});
 				}
-			}
+			};
 		} ]);
 
 zmxk.controller('CreditRecordCtrl', [
