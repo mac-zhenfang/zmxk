@@ -39,6 +39,8 @@
 		<core.version>1.0.109</core.version>
 		<tomcat.version>7.0.34</tomcat.version>
 		<testng.version>6.1.1</testng.version>
+		<joda.time>2.2</joda.time>
+		<httpclient.version>4.3.3</httpclient.version>
 	</properties>
 
 	<modules>
@@ -397,4 +399,11 @@
 			</build>
 		</profile>
 	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.7</version>
+		</dependency>
+	</dependencies>
 </project>
