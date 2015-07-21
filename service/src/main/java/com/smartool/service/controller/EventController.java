@@ -2,9 +2,9 @@ package com.smartool.service.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,18 +22,22 @@ import com.google.common.base.Strings;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
+import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
+import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.UserDao;
+import com.smartool.service.service.CreditService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -53,6 +57,12 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private TagDao tagDao;
+
+	@Autowired
+	private CreditService creditService;
+
+	@Autowired
+	private CreditRuleDao creditRuleDao;
 
 	private static Random r = new Random();
 
@@ -116,53 +126,53 @@ public class EventController extends BaseController {
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
+		User sessionUser = UserSessionManager.getSessionUser();
 		List<Attendee> retAttendees = new ArrayList<>();
 		// event.预赛 : {"attendee.rank == 1" : "1"}
 		// event.复赛 : {"attendee.rank == 1" : "1"}
 		// 充值.首次: 10
 		// 充值.多次: {"times == 10" : 10}
 		// 赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}.
-		Map<String, Integer> creditMap = new HashMap<>();
+		Event event = eventDao.getEvent(eventId);
+		List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
+				event.getStage(), event.getSeriesId(), null);
+		Map<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
 		for (Attendee attendee : attendees) {
-			if(attendee.getScore() == 0) {
+			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
 			} else {
 				attendee.setStatus(2);
 			}
-			
-			// FIXME: sort by score
-			// FIXME: get credit from db
-			int credit = 0;
-			switch (attendee.getRank()) {
-			case 1:
-				credit = 100;
-				break;
-			case 2:
-				credit = 50;
-				break;
-			default:
-				credit = 10;
+			List<EventCreditRule> rulesToApply = getRuleToApply(attendee.getRank(), creditRuleMap);
+			if (rulesToApply != null && !rulesToApply.isEmpty()) {
+				for (EventCreditRule ruleToApply : rulesToApply) {
+					creditService.applyCreditRull(attendee.getUserId(), ruleToApply, sessionUser.getId());
+				}
 			}
 			// update attendee
 			retAttendees.add(attendeeDao.complete(attendee));
-			String userId = attendee.getUserId();
-			int value = 0;
-			if (creditMap.containsKey(userId)) {
-				value = creditMap.get(userId);
-			}
-			value += credit;
-			creditMap.put(userId, value);
-		}
-
-		for (Entry<String, Integer> entry : creditMap.entrySet()) {
-			String userId = entry.getKey();
-			int credit = entry.getValue();
-			User user = userDao.getUserById(userId);
-			user.setCredit(credit);
-			userDao.updateUser(user);
 		}
 
 		return retAttendees;
+	}
+
+	private Map<Integer, List<EventCreditRule>> toCreditRuleMap(List<EventCreditRule> eventCreditRules) {
+		Map<Integer, List<EventCreditRule>> creditRuleMap = new HashMap<Integer, List<EventCreditRule>>();
+		for (EventCreditRule eventCreditRule : eventCreditRules) {
+			Integer rank = eventCreditRule.getRank();
+			if (!creditRuleMap.containsKey(rank)) {
+				creditRuleMap.put(rank, new LinkedList<EventCreditRule>());
+			}
+			creditRuleMap.get(rank).add(eventCreditRule);
+		}
+		return creditRuleMap;
+	}
+
+	private List<EventCreditRule> getRuleToApply(int attendeeRank, Map<Integer, List<EventCreditRule>> creditRuleMap) {
+		if (creditRuleMap.containsKey(attendeeRank)) {
+			return creditRuleMap.get(attendeeRank);
+		}
+		return creditRuleMap.get(0);
 	}
 
 	/**
@@ -177,7 +187,7 @@ public class EventController extends BaseController {
 	public Attendee enroll(@PathVariable String eventId, @RequestBody EnrollAttendee enrollAttendee) {
 
 		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
-		
+
 		Event event = eventDao.getEvent(eventId);
 		Kid returnKid = null;
 		String givenKidId = enrollAttendee.getKidId();
@@ -270,15 +280,17 @@ public class EventController extends BaseController {
 		retEvent.setAttendees(attendees);
 		return retEvent;
 	}
+
 	/**
 	 * Delete Event
-	 * */
+	 */
 	@ApiScope(userScope = UserRole.ADMIN)
 	@Transactional
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String eventId) {
 		eventDao.delete(eventId);
 	}
+
 	/**
 	 * 
 	 * Get Event
@@ -294,7 +306,7 @@ public class EventController extends BaseController {
 			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
 				attendee.setTag(tagDao.getTag(attendee.getTagId()).getName());
 			}
-			
+
 			if (!Strings.isNullOrEmpty(attendee.getKidId())) {
 				attendee.setKidName(kidDao.get(attendee.getKidId()).getName());
 			}
