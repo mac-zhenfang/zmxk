@@ -2,6 +2,7 @@ package com.smartool.service.service;
 
 import java.util.List;
 
+import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.EventCreditRule;
 
@@ -33,4 +34,8 @@ public interface CreditService {
 			String name, Integer rank);
 
 	String getDisplayName(CreditRule creditRule);
+
+	CreditRecord applyCreditRull(String userId, CreditRule creditRule, String operatorUserId);
+
+	List<CreditRecord> listCreditRecords(String userId, Long start, Long end);
 }

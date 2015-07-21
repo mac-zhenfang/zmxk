@@ -37,41 +37,16 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 			}
 			UserRole requestedScope = apiScope.userScope();
 			// String requestedUserId = getRequestedUserId(handlerMethod);
-			boolean selfOnly = apiScope.selfOnly();
 			String userRoleId = sessionUser.getRoleId();
-			String userId = sessionUser.getId();
 			if (requestedScope.getValue().compareTo(userRoleId) > 0) {
 				throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-			} else if (requestedScope.getValue().compareTo(userRoleId) < 0) {
-				return true;
 			} else {
-				if (UserRole.NORMAL_USER.equals(requestedScope) && selfOnly) {
-					if (request.getPathInfo().contains(userId)) {
-						return true;
-					} else {
-						throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
-					}
-					// return requestedUserId == null || userId != null &&
-					// userId.equals(requestedUserId);
-				}
 				return true;
 			}
 		}
 		// What to return here?
 		return false;
 	}
-
-	// private String getRequestedUserId(HandlerMethod handlerMethod) {
-	// // TODO
-	// MethodParameter[] methodParameters = handlerMethod.getMethodParameters();
-	// if (methodParameters == null) {
-	// return null;
-	// }
-	// for (MethodParameter methodParameter : methodParameters) {
-	// methodParameter.getParameterAnnotation(PathVariable.class);
-	// }
-	// return null;
-	// }
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,

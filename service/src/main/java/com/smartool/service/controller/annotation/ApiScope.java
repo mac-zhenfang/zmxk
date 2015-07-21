@@ -12,6 +12,4 @@ import com.smartool.service.UserRole;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface ApiScope {
 	UserRole userScope() default UserRole.NORMAL_USER;
-
-	boolean selfOnly() default true;
 }

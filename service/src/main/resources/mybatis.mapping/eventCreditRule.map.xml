@@ -49,7 +49,7 @@
 	<select id="searchRankingRules" parameterType="Map"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		SELECT * FROM eventCreditRules
-		where rank rank IS NOT NULL
+		where rank IS NOT NULL
 		<if test="eventTypeId != null">
 			AND eventTypeId = #{eventTypeId}
 		</if>

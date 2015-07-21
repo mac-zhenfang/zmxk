@@ -20,8 +20,7 @@ import com.smartool.service.service.CreditService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
-public class CreditController extends BaseController {
-	@Autowired
+public class CreditController extends BaseController {@Autowired
 	private CreditService creditService;
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

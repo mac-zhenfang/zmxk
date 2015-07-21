@@ -14,6 +14,7 @@ import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
@@ -30,9 +31,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private KidDao kidDao;
+
 	@Override
 	public List<User> listAllUser() {
-		List<User> users =  userDao.listAllUser();
+		List<User> users = userDao.listAllUser();
 		if (users != null && !users.isEmpty()) {
 			for (User user : users) {
 				List<Kid> kids = kidDao.listByUserId(user.getId());
@@ -221,7 +223,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User update(User user) {
-		return 	userDao.updateUser(user);
+		User sessionUser = UserSessionManager.getSessionUser();
+		User existedUser = userDao.getUserById(user.getId());
+		if (existedUser == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.NOT_FOUND_ERROR_MESSAGE);
+		}
+		if (userRoleChaned(existedUser, user) && UserRole.ADMIN.getValue().compareTo(sessionUser.getRoleId()) > 0) {
+			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
+		}
+		return userDao.updateUser(user);
+	}
+
+	private boolean userRoleChaned(User existedUser, User user) {
+		return !existedUser.getRoleId().equals(user.getRoleId());
 	}
 
 	@Override

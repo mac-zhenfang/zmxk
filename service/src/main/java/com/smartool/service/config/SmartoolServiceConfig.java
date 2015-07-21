@@ -24,6 +24,8 @@ import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.controller.AuthorizationInterceptor;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.AttendeeDaoImpl;
+import com.smartool.service.dao.CreditRecordDao;
+import com.smartool.service.dao.CreditRecordDaoImpl;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.CreditRuleDaoImpl;
 import com.smartool.service.dao.EventDao;
@@ -59,6 +61,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public Encrypter getEncrypter() {
 		return new Encrypter(env.getProperty("secure_algorithm"), env.getProperty("secure_key", defaultKey));
+	}
+
+	@Bean
+	public CreditRecordDao getCreditRecordDao() {
+		return new CreditRecordDaoImpl();
 	}
 
 	@Bean
@@ -144,7 +151,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		comboPooledDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
 		comboPooledDataSource.setUser(env.getProperty("jdbc.username"));
 		comboPooledDataSource.setPassword(env.getProperty("jdbc.password"));
-		comboPooledDataSource.setAutoCommitOnClose(true);
+		comboPooledDataSource.setAutoCommitOnClose(false);
 		comboPooledDataSource.setCheckoutTimeout(env.getProperty("cpool.checkoutTimeout", Integer.class));
 		comboPooledDataSource.setInitialPoolSize(env.getProperty("cpool.minPoolSize", Integer.class));
 		comboPooledDataSource.setMinPoolSize(env.getProperty("cpool.minPoolSize", Integer.class));

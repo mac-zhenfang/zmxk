@@ -144,6 +144,19 @@ CREATE TABLE `securityCodes` (
   	UNIQUE KEY `securityCode_mobileNumber` (`mobileNumber`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `creditRecords`;
+CREATE TABLE `creditRecords` (
+	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
+	`operatorId` varchar(36) NOT NULL,
+	`creditRuleType` varchar(255) NOT NULL,
+	`creditRuleDisplayName` varchar(255) NOT NULL,
+	`creditRuleId` varchar(36) NOT NULL,
+	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 SET GLOBAL event_scheduler = ON;
 DROP EVENT IF EXISTS `cleanSecurityCodes`;
 CREATE EVENT `cleanSecurityCodes`

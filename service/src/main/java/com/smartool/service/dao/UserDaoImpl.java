@@ -1,6 +1,8 @@
 package com.smartool.service.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class UserDaoImpl implements UserDao {
 
 	private User getUserInternal(String userId) {
 		User user = sqlSession.selectOne("USER.getById", userId);
-		
+
 		return user;
 	}
 
@@ -78,5 +80,13 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public void remove(String userId) {
 		sqlSession.selectOne("USER.remove", userId);
+	}
+
+	@Override
+	public void addCredit(String userId, int credit) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", userId);
+		map.put("credit", credit);
+		sqlSession.update("USER.addCredit", map);
 	}
 }

@@ -22,6 +22,7 @@ import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.service.UserService;
 
@@ -81,20 +82,34 @@ public class UserController extends BaseController {
 		return createdUser;
 	}
 
-	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
 	}
-	
-	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
+
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/me", method = RequestMethod.GET)
+	public User getMe() {
+		User sessionUser = UserSessionManager.getSessionUser();
+		return userService.getUserById(sessionUser.getId());
+	}
+
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
 	public User updateUser(@RequestBody User user) {
-		//check if user existed
 		return userService.update(user);
 	}
-	
-	@ApiScope(userScope = UserRole.ADMIN, selfOnly = true)
+
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/me", method = RequestMethod.PUT)
+	public User updateMe(@RequestBody User user) {
+		User sessionUser = UserSessionManager.getSessionUser();
+		user.setId(sessionUser.getId());
+		return userService.update(user);
+	}
+
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		userService.delete(userId);
@@ -103,9 +118,11 @@ public class UserController extends BaseController {
 	/**
 	 * Return the qrcode with url+token
 	 */
-	@ApiScope(userScope = UserRole.NORMAL_USER, selfOnly = true)
-	@RequestMapping(value = "/users/{userId}/qrcode", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getQRCode(@PathVariable(Constants.USER_ID_KEY) String userId) {
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/me/qrcode", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getQRCode() {
+		User sessionUser = UserSessionManager.getSessionUser();
+		String userId = sessionUser.getId();
 		byte[] qrcode = userService.getQRCode(userId);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);

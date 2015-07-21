@@ -6,23 +6,31 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
+import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.EventStages;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
+import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.SerieDao;
+import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {
 	@Autowired
 	private CreditRuleDao creditRuleDao;
 	@Autowired
+	private CreditRecordDao creditRecordDao;
+	@Autowired
 	private EventDao eventDao;
 	@Autowired
 	private SerieDao serieDao;
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	public String getDisplayName(CreditRule creditRule) {
@@ -180,5 +188,28 @@ public class CreditServiceImpl implements CreditService {
 	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
 			String name, Integer rank) {
 		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name, rank);
+	}
+
+	@Override
+	public CreditRecord applyCreditRull(String userId, CreditRule creditRule, String operatorUserId) {
+		userDao.addCredit(userId, creditRule.getCredit());
+		CreditRecord creditRecord = new CreditRecord();
+		creditRecord.setId(CommonUtils.getRandomUUID());
+		creditRecord.setUserId(userId);
+		creditRecord.setOperatorId(operatorUserId);
+		creditRecord.setCreditRuleId(creditRule.getId());
+		if (creditRule instanceof EventCreditRule) {
+			creditRecord.setCreditRuleType(CreditRuleType.EVENT);
+		} else {
+			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
+		}
+		creditRecord.setCreditRuleDisplayName(getDisplayName(creditRule));
+		CreditRecord createdCreditRecord = creditRecordDao.createCreditRecord(creditRecord);
+		return createdCreditRecord;
+	}
+
+	@Override
+	public List<CreditRecord> listCreditRecords(String userId, Long start, Long end) {
+		return creditRecordDao.listCreditRecords(userId, start, end);
 	}
 }

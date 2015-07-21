@@ -18,4 +18,6 @@ public interface UserDao {
 	List<User> search(String query);
 	
 	void remove(String userId);
+	
+	void addCredit(String userId, int credit);
 }

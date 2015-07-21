@@ -33,11 +33,15 @@
 		location=#{location},
 		roleId=#{roleId},
 		status=#{status}, credit=#{credit}
-		where id =
-		#{id};
+		where id = #{id};
 	</select>
 	<select id="remove" parameterType="String">
 		delete from users where id =
 		#{id}
 	</select>
+	<update id="addCredit">
+		udpate users
+		set credit=credit+#{credit}
+		where id = #{id};
+	</update>
 </mapper>
