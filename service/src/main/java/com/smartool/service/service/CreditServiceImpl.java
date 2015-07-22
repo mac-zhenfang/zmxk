@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
@@ -16,7 +17,6 @@ import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
-import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.SerieDao;
 import com.smartool.service.dao.UserDao;
@@ -26,8 +26,6 @@ public class CreditServiceImpl implements CreditService {
 	private CreditRuleDao creditRuleDao;
 	@Autowired
 	private CreditRecordDao creditRecordDao;
-	@Autowired
-	private EventDao eventDao;
 	@Autowired
 	private EventTypeDao eventTypeDao;
 	@Autowired
@@ -60,7 +58,7 @@ public class CreditServiceImpl implements CreditService {
 			}
 			return sb.toString();
 		}
-		
+
 		return creditRule.getName();
 	}
 
@@ -202,6 +200,7 @@ public class CreditServiceImpl implements CreditService {
 		creditRecord.setUserId(userId);
 		creditRecord.setOperatorId(operatorUserId);
 		creditRecord.setCreditRuleId(creditRule.getId());
+		creditRecord.setCredit(creditRule.getCredit());
 		if (creditRule instanceof EventCreditRule) {
 			creditRecord.setCreditRuleType(CreditRuleType.EVENT);
 		} else {

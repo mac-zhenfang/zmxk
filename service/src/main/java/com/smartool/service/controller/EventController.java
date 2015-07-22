@@ -125,6 +125,7 @@ public class EventController extends BaseController {
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
+	@Transactional
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
 		User sessionUser = UserSessionManager.getSessionUser();
 		List<Attendee> retAttendees = new ArrayList<>();
