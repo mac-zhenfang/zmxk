@@ -54,6 +54,10 @@ public class UserServiceImpl implements UserService {
 		if (!isValidSecurityCode(securityCode)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
+
+		if (CommonUtils.isEmptyString(user.getPassword())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
+		}
 		User existUser = userDao.getUserByMobileNumber(user.getMobileNum());
 		if (existUser != null) {
 			if (CommonUtils.encryptBySha2(user.getPassword()).equals(existUser.getPassword())) {

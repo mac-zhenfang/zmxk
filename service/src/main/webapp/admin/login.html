@@ -36,6 +36,10 @@
 							<span class="input-group-addon">验证码</span> <input type="text"
 								class="form-control" ng-model="formData.code" placeholder="验证码" />
 						</div>
+						<div class="form-group input-group" ng-show="currentStep == 2">
+							<span class="input-group-addon">密码</span> <input type="text"
+								class="form-control" ng-model="formData.password" placeholder="密码" />
+						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
 						<div ng-show="currentStep == 3">
@@ -48,12 +52,15 @@
 	</div>
 	<!-- ANGULAR -->
 	<script src="js/jquery-1.10.2.min.js"></script>
+	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
 
 	<script src="js/angular.js"></script>
 	<script src="js/angular-route.min.js"></script>
 	<script src="js/angular-resource.min.js"></script>
 	<script src="js/dialogs.min.js"></script>
 	<script src="js/ui-bootstrap-tpls-0.6.0.js"></script>
+	<script src="js/index.min.js"></script>
+	<script src="js/custom.min.js"></script>
 	<script src="js/zmxk/app.js"></script>
 	<script src="js/zmxk/services.js"></script>
 	<script src="js/zmxk/ctrl.main.js"></script>

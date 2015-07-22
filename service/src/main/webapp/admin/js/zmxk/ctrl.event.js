@@ -609,21 +609,24 @@ zmxk
 								}
 							}
 							$scope.editScore = function() {
-								$scope.eventInit.attendees.sort(function(a, b) {
-									var key = "score";
-									var x = a[key];
-									var y = b[key];
-									return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+								var m = new Map();
+								angular.forEach($scope.eventInit.attendees, function(attendee, index) {
+								  if(!m.get(attendee.group)){
+								    m.set(attendee.group, []);
+								  }
+								  m.get(attendee.group).push(attendee);
 								});
-								// console.log($scope.eventInit.attendees);
-								var i = 0;
-								angular.forEach($scope.eventInit.attendees,
-										function(attendee, index) {
-											if (attendee.score != 0) {
-												i += 1;
-												attendee.rank = i;
-											}
-										})
+								m.forEach(function(attendees, gourp){
+								  attendees.sort(function(a, b) {
+								    var key = "score";
+								    var x = a[key];
+								    var y = b[key];
+								    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+								  });
+								  attendees.forEach(function(attendee, index){
+								    attendee.rank = index +1;
+								  })
+								});
 								console.log($scope.eventInit.attendees);
 							}
 
