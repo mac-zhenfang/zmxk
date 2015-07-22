@@ -17,6 +17,7 @@ import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
+import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.SerieDao;
 import com.smartool.service.dao.UserDao;
 
@@ -27,6 +28,8 @@ public class CreditServiceImpl implements CreditService {
 	private CreditRecordDao creditRecordDao;
 	@Autowired
 	private EventDao eventDao;
+	@Autowired
+	private EventTypeDao eventTypeDao;
 	@Autowired
 	private SerieDao serieDao;
 	@Autowired
@@ -45,8 +48,8 @@ public class CreditServiceImpl implements CreditService {
 				sb.append(serieName).append(" - ");
 			}
 			if (eventCreditRule.getEventTypeId() != null) {
-				String eventName = eventDao.getEvent(eventCreditRule.getEventTypeId()).getName();
-				sb.append(eventName).append(" - ");
+				String eventTypeName = eventTypeDao.get(eventCreditRule.getEventTypeId()).getName();
+				sb.append(eventTypeName).append(" - ");
 			}
 			if (eventCreditRule.getStage() != null) {
 				sb.append(EventStages.getDisplayName(eventCreditRule.getStage())).append(" - ");
@@ -57,6 +60,7 @@ public class CreditServiceImpl implements CreditService {
 			}
 			return sb.toString();
 		}
+		
 		return creditRule.getName();
 	}
 

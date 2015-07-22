@@ -142,11 +142,11 @@ public class EventController extends BaseController {
 				attendee.setStatus(1);
 			} else {
 				attendee.setStatus(2);
-			}
-			List<EventCreditRule> rulesToApply = getRuleToApply(attendee.getRank(), creditRuleMap);
-			if (rulesToApply != null && !rulesToApply.isEmpty()) {
-				for (EventCreditRule ruleToApply : rulesToApply) {
-					creditService.applyCreditRull(attendee.getUserId(), ruleToApply, sessionUser.getId());
+				List<EventCreditRule> rulesToApply = getRuleToApply(attendee.getRank(), creditRuleMap);
+				if (rulesToApply != null && !rulesToApply.isEmpty()) {
+					for (EventCreditRule ruleToApply : rulesToApply) {
+						creditService.applyCreditRull(attendee.getUserId(), ruleToApply, sessionUser.getId());
+					}
 				}
 			}
 			// update attendee

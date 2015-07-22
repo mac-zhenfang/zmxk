@@ -146,7 +146,7 @@ CREATE TABLE `securityCodes` (
 
 DROP TABLE IF EXISTS `creditRecords`;
 CREATE TABLE `creditRecords` (
-	`id` int(20) NOT NULL AUTO_INCREMENT,
+	`id` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`operatorId` varchar(36) NOT NULL,
 	`creditRuleType` varchar(255) NOT NULL,

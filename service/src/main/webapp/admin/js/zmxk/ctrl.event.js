@@ -611,12 +611,12 @@ zmxk
 							$scope.editScore = function() {
 								var m = new Map();
 								angular.forEach($scope.eventInit.attendees, function(attendee, index) {
-								  if(!m.get(attendee.group)){
-								    m.set(attendee.group, []);
+								  if(!m.get(attendee.tagId)){
+								    m.set(attendee.tagId, []);
 								  }
-								  m.get(attendee.group).push(attendee);
+								  m.get(attendee.tagId).push(attendee);
 								});
-								m.forEach(function(attendees, gourp){
+								m.forEach(function(attendees, tagId){
 								  attendees.sort(function(a, b) {
 								    var key = "score";
 								    var x = a[key];

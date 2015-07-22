@@ -1,11 +1,19 @@
 var currentModule;
-var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap', 'dialogs',
-		'ngRoute' ], function($httpProvider) {
+var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
+		'dialogs', 'ngRoute' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
 			'responseError' : function(response) {
 				if (response.status == "401") {
 					window.location = "login.html";
+					return;
+				}
+				if (response.status == "403") {
+					window.location = "err403.html";
+					return;
+				}
+				if (response.status == "500") {
+					window.location = "err500.html";
 					return;
 				}
 				/*
@@ -67,7 +75,7 @@ zmxk
 				});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {
-	// Don't strip trailing slashes from calculated URLs 
+	// Don't strip trailing slashes from calculated URLs
 	$resourceProvider.defaults.stripTrailingSlashes = false;
 } ]);
 

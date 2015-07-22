@@ -2,12 +2,13 @@ zmxk.controller('EventRuleCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'eventTypeService',
 		'serieService',
 		'eventRuleService',
 		'$interval',
 		'$timeout',
 		'$routeParams','$q',
-		function($scope, userService, eventService, serieService, eventRuleService, $interval, $timeout,
+		function($scope, userService, eventService, eventTypeService, serieService, eventRuleService, $interval, $timeout,
 				$routeParams,  $q) {
 			$scope.deleteLabel = "删除";
 			$scope.eventRules = [];
@@ -43,30 +44,32 @@ zmxk.controller('EventRuleCtrl', [
 			} ];
 			
 			var init = function() {
-				eventService.list().then(function(data) {
-					// TODO $scope.eventTypeList = data;
-					$scope.eventTypeList = [ {
-						id : "eventTypeId1",
-						name : "脚踏拉力赛"
-					}, {
-						id : "eventTypeId2",
-						name : "手摇拉力赛"
-					} ];
+				eventTypeService.list().then(function(data) {
+					$scope.eventTypeList = data;
+//					$scope.eventTypeList = [ {
+//						id : "eventTypeId1",
+//						name : "脚踏拉力赛"
+//					}, {
+//						id : "eventTypeId2",
+//						name : "手摇拉力赛"
+//					} ];
 					var getSeries = function() {
 						var defer = $q.defer(); 
 						var recievedSerieMaps = 0;
 						angular.forEach($scope.eventTypeList, function(eventType, index) {
 							serieService.list(eventType.id).then(function(data) {
-								// TODO data.push([{id: null, name: "---------"}]);$scope.seriesMap.set(eventType.id, data);
-								if(eventType.id=="eventTypeId1"){
-									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
-									data.unshift({id: null, name: "---------"});
-									$scope.seriesMap.set(eventType.id, data);
-								} else {
-									var data = [{id: "serieId21", name: "serieName21"},{id: "serieId22", name: "serieName22"}];
-									data.unshift({id: null, name: "---------"});
-									$scope.seriesMap.set(eventType.id, data);
-								}
+								data.unshift({id: null, name: "---------"});
+								console.log(data);
+								$scope.seriesMap.set(eventType.id, data);
+//								if(eventType.id=="eventTypeId1"){
+//									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
+//									data.unshift({id: null, name: "---------"});
+//									$scope.seriesMap.set(eventType.id, data);
+//								} else {
+//									var data = [{id: "serieId21", name: "serieName21"},{id: "serieId22", name: "serieName22"}];
+//									data.unshift({id: null, name: "---------"});
+//									$scope.seriesMap.set(eventType.id, data);
+//								}
 								recievedSerieMaps++;
 								if($scope.eventTypeList.length == recievedSerieMaps) {
 									defer.resolve(recievedSerieMaps);
