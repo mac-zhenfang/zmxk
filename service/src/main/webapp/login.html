@@ -37,11 +37,7 @@
 									class="fa fa-circle-o-notch"></i> -->
 							<span class="input-group-addon">#</span> <input type="text"
 								class="form-control" placeholder="{{const.mobile}}"
-								ng-model="formData.mobileNum" ng-readonly="currentStep == 2" />
-						</div>
-						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon">验证码</span> <input type="text"
-								class="form-control" ng-model="formData.code" placeholder="验证码" />
+								ng-model="formData.mobileNum" />
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2">
 							<span class="input-group-addon">密码</span> <input type="password"
@@ -117,7 +113,7 @@
 			$scope.mobileVerifySent = false;
 			$scope.mobileVerified = false;
 			$scope.TotalStep = 3;
-			$scope.currentStep = 1;
+			$scope.currentStep = 2;
 		} ]);
 		var send_code_uri;
 

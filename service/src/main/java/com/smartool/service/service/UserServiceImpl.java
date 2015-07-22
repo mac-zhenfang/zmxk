@@ -43,18 +43,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User login(SecurityCode securityCode, User user) {
-		if (securityCode.getSecurityCode() == null) {
-			validateMobileNumberForLogin(securityCode.getMobileNumber());
-			String securityCodeString = createCodeForLogin(securityCode);
-			// TODO Temporary solution before implement send code though SMS
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
-		}
-
-		if (!isValidSecurityCode(securityCode)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
-		}
-
+	public User login(User user) {
 		if (CommonUtils.isEmptyString(user.getPassword())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
@@ -72,7 +61,7 @@ public class UserServiceImpl implements UserService {
 				ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
 	}
 
-	private String createCodeForLogin(SecurityCode securityCode) {
+	private String createCodeInternal(SecurityCode securityCode) {
 		SecurityCode existSecurityCode = getExistedSecurityCode(securityCode);
 		if (existSecurityCode != null) {
 			Date lastModifiedTime = existSecurityCode.getLastModifiedTime();
@@ -162,7 +151,7 @@ public class UserServiceImpl implements UserService {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE);
 		}
-		return createCodeForLogin(securityCode);
+		return createCodeInternal(securityCode);
 	}
 
 	private SecurityCode getExistedSecurityCode(SecurityCode securityCode) {
