@@ -114,9 +114,9 @@
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
-		eventTypeId,siteId, quota, eventTime, createdTime,lastModifiedTime)
+		eventTypeId,siteId, quota, stage, eventTime, createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{eventTime},now(),now())
+		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},now(),now())
 	</select>
 
 

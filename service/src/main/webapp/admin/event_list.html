@@ -18,6 +18,7 @@
 						<th>赛道</th>
 						<th>赛事类型</th>
 						<th>赛事系列</th>
+						<th>赛事阶段</th>
 						<th>时间</th>
 						<th>可录入人数</th>
 						<th>已录入，未完成比分登记人数</th>
@@ -41,13 +42,20 @@
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.eventTypeId"
 							ng-options="option.id as option.name for option in eventTypes"
-							ng-init="event.eventTypeId==option.id" ng-change="initSeries(event)">
+							ng-init="event.eventTypeId==option.id"
+							ng-change="initSeries(event)">
 						</select></td>
 						<td><select ng-disabled="{{!event.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.serieId"
 							ng-options="option.id as option.name for option in event.eventSeries"
 							ng-init="initSeries(event);angular.isUndefined(event.serieId)?option.id=null:option.id==event.serieId">
+						</select></td>
+						<td class="center"><select ng-disabled={{!event.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="event.stage"
+							ng-options="stage.value as stage.label for stage in stages"
+							ng-init="event.stage==event.value">
 						</select></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
