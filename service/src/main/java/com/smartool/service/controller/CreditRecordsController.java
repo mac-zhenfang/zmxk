@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.CreditRecord;
@@ -25,8 +24,7 @@ public class CreditRecordsController extends BaseController {
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/eventcreditrecords/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	List<CreditRecord> searchCreditRecord(@RequestParam(value = "userId", required = false) String userId,
+	public List<CreditRecord> searchCreditRecord(@RequestParam(value = "userId", required = false) String userId,
 			@RequestParam(value = "start", required = false) Long start,
 			@RequestParam(value = "end", required = false) Long end) {
 		return creditService.listCreditRecords(userId, start, end);
@@ -34,8 +32,7 @@ public class CreditRecordsController extends BaseController {
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/eventcreditrecords/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	List<CreditRecord> searchMyCreditRecord(@RequestParam(value = "start", required = false) Long start,
+	public List<CreditRecord> searchMyCreditRecord(@RequestParam(value = "start", required = false) Long start,
 			@RequestParam(value = "end", required = false) Long end) {
 		User sessionUser = UserSessionManager.getSessionUser();
 		return creditService.listCreditRecords(sessionUser.getId(), start, end);

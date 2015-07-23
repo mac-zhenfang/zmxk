@@ -5,6 +5,7 @@ import java.beans.PropertyVetoException;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
@@ -51,6 +53,7 @@ import com.smartool.service.service.UserServiceImpl;
 
 @Configuration
 @ComponentScan(basePackages = { "com.smartool.service.*" })
+@EnableTransactionManagement(proxyTargetClass = true)
 @PropertySource("classpath:zmxk.properties")
 @PropertySource("classpath:jdbc.properties")
 public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
@@ -145,7 +148,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean
-	public DataSource getComboPooledDataSource() throws PropertyVetoException {
+	public DataSource getDataSource() throws PropertyVetoException {
 		ComboPooledDataSource comboPooledDataSource = new ComboPooledDataSource();
 		comboPooledDataSource.setDriverClass(env.getProperty("jdbc.driverClassName"));
 		comboPooledDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
@@ -166,7 +169,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public SqlSessionFactoryBean getSqlSessionFactoryBean() throws PropertyVetoException {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-		sqlSessionFactoryBean.setDataSource(getComboPooledDataSource());
+		sqlSessionFactoryBean.setDataSource(getDataSource());
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("spring/mybatis-config.xml"));
 		return sqlSessionFactoryBean;
 	}
@@ -174,7 +177,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public DataSourceTransactionManager getDataSourceTransactionManager() throws PropertyVetoException {
 		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
-		dataSourceTransactionManager.setDataSource(getComboPooledDataSource());
+		dataSourceTransactionManager.setDataSource(getDataSource());
+
 		return dataSourceTransactionManager;
 	}
 

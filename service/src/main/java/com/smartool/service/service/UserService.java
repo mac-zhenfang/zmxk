@@ -9,7 +9,7 @@ import com.smartool.common.dto.User;
 public interface UserService {
 	List<User> listAllUser();
 
-	User login(SecurityCode securityCode, User user);
+	User login(User user);
 
 	User register(SecurityCode securityCode, User user);
 

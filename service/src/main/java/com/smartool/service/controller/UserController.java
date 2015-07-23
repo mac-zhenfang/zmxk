@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.Grade;
@@ -41,8 +40,7 @@ public class UserController extends BaseController {
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	List<User> search(@RequestParam(value = "query", required = false) String query) {
+	public List<User> search(@RequestParam(value = "query", required = false) String query) {
 		return userService.search(query);
 	}
 
@@ -54,12 +52,8 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User login(@RequestParam(value = "code", required = false) String code, @RequestBody User user) {
-		SecurityCode securityCode = new SecurityCode();
-		securityCode.setSecurityCode(code);
-		securityCode.setMobileNumber(user.getMobileNum());
-		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-		User existUser = userService.login(securityCode, user);
+	public User login(@RequestBody User user) {
+		User existUser = userService.login(user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
 		return existUser;
 	}
