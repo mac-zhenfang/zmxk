@@ -260,12 +260,15 @@ zmxk.controller('EventManageCtrl', [
 					"eventId" : eventId
 				})
 			}
+			
+			$scope.listEvents = [];
 
 			$scope.init = function() {
 				eventService.list().then(
 						function(data) {
-							$scope.listEvents = data;
-							angular.forEach($scope.listEvents, function(event,
+							//$scope.listEvents = data;
+							var listEvents = data;
+							angular.forEach(listEvents, function(event,
 									index) {
 
 								var enrolledCount = 0;
@@ -289,6 +292,21 @@ zmxk.controller('EventManageCtrl', [
 								event["existed"] = true;
 								event["changed"] = false;
 								event["showInput"] = false;
+								event.eventSeries = [ {
+									id : null,
+									name : "单次比赛"
+								} ];
+								serieService.list(event.eventTypeId).then(function(data) {
+									angular.forEach(data, function(serie, index) {
+										event.eventSeries.push(serie);
+										/*console.log("<<<<<<<<<<<<<<<")
+										console.log(serie.id)
+										console.log(serie.name)
+										console.log(event.seriesId)
+										console.log(">>>>>>>>>>>>>>>")*/
+										$scope.listEvents.push(event);
+									})
+								})
 							});
 						}, function(data) {
 						});

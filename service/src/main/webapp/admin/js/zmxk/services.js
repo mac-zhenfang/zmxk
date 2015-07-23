@@ -93,12 +93,23 @@ zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 
+			this.listAll = function() {
+				var defer = $q.defer();
+				serieResource.query(function(data, headers) {
+					defer.resolve(data);
+				}, function(data, headers) {
+					defer.reject(data);
+				});
+
+				return defer.promise;
+			}
+
 			this.get = function(giveEventTypeId, giveSerieId) {
 				var defer = $q.defer();
 				serieResource.get({
 					eventTypeId : giveEventTypeId,
 					serieId : giveSerieId
-				},  function(data, headers) {
+				}, function(data, headers) {
 					defer.resolve(data);
 				}, function(data, headers) {
 					defer.reject(data);
