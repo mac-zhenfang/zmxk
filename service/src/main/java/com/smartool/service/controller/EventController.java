@@ -125,15 +125,9 @@ public class EventController extends BaseController {
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	@Transactional
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
 		User sessionUser = UserSessionManager.getSessionUser();
 		List<Attendee> retAttendees = new ArrayList<>();
-		// event.预赛 : {"attendee.rank == 1" : "1"}
-		// event.复赛 : {"attendee.rank == 1" : "1"}
-		// 充值.首次: 10
-		// 充值.多次: {"times == 10" : 10}
-		// 赛事.年度: {"最佳宝贝": 100} | 赛事.年度: {"最佳宝贝": 100}.
 		Event event = eventDao.getEvent(eventId);
 		List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
 				event.getStage(), event.getSeriesId(), null);

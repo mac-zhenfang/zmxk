@@ -53,7 +53,7 @@ import com.smartool.service.service.UserServiceImpl;
 
 @Configuration
 @ComponentScan(basePackages = { "com.smartool.service.*" })
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @PropertySource("classpath:zmxk.properties")
 @PropertySource("classpath:jdbc.properties")
 public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
@@ -171,21 +171,14 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(getDataSource());
 		sqlSessionFactoryBean.setConfigLocation(new ClassPathResource("spring/mybatis-config.xml"));
-		sqlSessionFactoryBean.setTransactionFactory(new ManagedTransactionFactory());
 		return sqlSessionFactoryBean;
-	}
-
-	@Bean
-	public DataSourceTransactionManager txManager() throws PropertyVetoException {
-		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(getDataSource());
-		transactionManager.setRollbackOnCommitFailure(true);
-		return transactionManager;
 	}
 
 	@Bean
 	public DataSourceTransactionManager getDataSourceTransactionManager() throws PropertyVetoException {
 		DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager();
 		dataSourceTransactionManager.setDataSource(getDataSource());
+
 		return dataSourceTransactionManager;
 	}
 
