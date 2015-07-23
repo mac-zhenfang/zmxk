@@ -54,7 +54,7 @@
 	<select id="searchRankingRules" parameterType="Map"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		SELECT * FROM eventCreditRules
-		where rank IS NOT NULL
+		where (upperRank IS NOT NULL OR lowerRank IS NOT NULL)
 		<if test="eventTypeId != null">
 			AND eventTypeId = #{eventTypeId}
 		</if>
@@ -72,7 +72,7 @@
 	<select id="searchNonrankingRules" parameterType="Map"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		SELECT * FROM eventCreditRules
-		where rank IS NULL
+		where (upperRank IS NULL AND lowerRank IS NULL)
 		<if test="eventTypeId != null">
 			AND eventTypeId = #{eventTypeId}
 		</if>

@@ -6,15 +6,19 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
+import com.smartool.common.dto.EventStages;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
+import com.smartool.service.dao.EventDao;
+import com.smartool.service.dao.SerieDao;
 import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {
@@ -22,12 +26,38 @@ public class CreditServiceImpl implements CreditService {
 	private CreditRuleDao creditRuleDao;
 	@Autowired
 	private CreditRecordDao creditRecordDao;
-	// @Autowired
-	// private EventTypeDao eventTypeDao;
-	// @Autowired
-	// private SerieDao serieDao;
+	@Autowired
+	private EventDao eventDao;
+	@Autowired
+	private SerieDao serieDao;
 	@Autowired
 	private UserDao userDao;
+
+	@Override
+	public String getCreditRecordDisplayName(Attendee attendee, CreditRule creditRule) {
+		if (creditRule == null) {
+			return null;
+		}
+		if (creditRule instanceof EventCreditRule) {
+			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
+			StringBuilder sb = new StringBuilder();
+			if (eventCreditRule.getSeriesId() != null) {
+				String serieName = serieDao.get(eventCreditRule.getSeriesId()).getName();
+				sb.append(serieName).append(" - ");
+			}
+			String eventName = eventDao.getEvent(attendee.getEventId()).getName();
+			sb.append(eventName);
+			if (eventCreditRule.getStage() != null) {
+				sb.append(" - ").append(EventStages.getDisplayName(eventCreditRule.getStage()));
+			}
+			if (eventCreditRule.getUpperRank() != null || eventCreditRule.getLowerRank() != null) {
+				sb.append(" - ").append(attendee.getRank());
+			}
+			return sb.toString();
+		}
+
+		return creditRule.getName();
+	}
 
 	@Override
 	public List<CreditRule> listAllCreditRules() {
@@ -162,16 +192,22 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public CreditRecord applyCreditRull(String userId, CreditRule creditRule, String operatorUserId) {
-		userDao.addCredit(userId, creditRule.getCredit());
+	public CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule, String operatorUserId) {
+		userDao.addCredit(attendee.getUserId(), creditRule);
 		CreditRecord creditRecord = new CreditRecord();
 		creditRecord.setId(CommonUtils.getRandomUUID());
-		creditRecord.setUserId(userId);
+		creditRecord.setEventId(attendee.getEventId());
+		creditRecord.setUserId(attendee.getUserId());
 		creditRecord.setOperatorId(operatorUserId);
 		creditRecord.setCreditRuleId(creditRule.getId());
 		creditRecord.setCredit(creditRule.getCredit());
+		creditRecord.setDisplayName(getCreditRecordDisplayName(attendee, creditRule));
 		if (creditRule instanceof EventCreditRule) {
 			creditRecord.setCreditRuleType(CreditRuleType.EVENT);
+			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
+			if (eventCreditRule.getUpperRank() != null || eventCreditRule.getLowerRank() != null) {
+				creditRecord.setRank(attendee.getRank());
+			}
 		} else {
 			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
 		}
