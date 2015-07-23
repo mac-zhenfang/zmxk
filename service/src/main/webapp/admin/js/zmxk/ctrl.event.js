@@ -104,7 +104,7 @@ zmxk
 									giveUpdateEventType, idx) {
 								var assinGiveUpdateEventType = function(data) {
 									giveUpdateEventType['id'] = data.id;
-									//console.log("returned");
+									// console.log("returned");
 									// giveUpdateEventType["id"] = data.id;
 									// giveUpdateEventType["idx"] = idx;
 
@@ -116,7 +116,7 @@ zmxk
 
 									giveUpdateEventType.showInput = !giveUpdateEventType.showInput;
 
-									//console.log(giveUpdateEventType);
+									// console.log(giveUpdateEventType);
 
 									// $scope.kids = kid; $scope.listEvents
 									var eventTypes = [];
@@ -139,10 +139,10 @@ zmxk
 													});
 									$scope.listEventTypes = angular
 											.copy(eventTypes);
-									//console.log($scope.listEventTypes);
+									// console.log($scope.listEventTypes);
 
 								}
-								//console.log(giveUpdateEventType);
+								// console.log(giveUpdateEventType);
 								// $scope.giveUpdateEventType =
 								// giveUpdateEventType;
 								// save event
@@ -170,7 +170,7 @@ zmxk
 														});
 											});
 								} else {
-									//console.log("~~~~~");
+									// console.log("~~~~~");
 									assinGiveUpdateEventType(giveUpdateEventType);
 								}
 
@@ -260,20 +260,26 @@ zmxk.controller('EventManageCtrl', [
 					"eventId" : eventId
 				})
 			}
-			
-			$scope.listEvents = [];
 
+			$scope.listEvents = [];
+			var dateNames = {};
+			$scope.$on('setDate1', function(e, date, idx) {
+				// console.log(idx);
+
+				 $scope.formEventName(idx);
+			});
 			$scope.init = function() {
+
 				eventService.list().then(
 						function(data) {
-							//$scope.listEvents = data;
+							$scope.listEvents = data;
 							var listEvents = data;
-							angular.forEach(listEvents, function(event,
-									index) {
+							angular.forEach(listEvents, function(event, index) {
 
 								var enrolledCount = 0;
 								var applyScoreCount = 0;
 								var leftCount = 0;
+								// $scope.formEventName(index);
 								angular.forEach(event.attendees, function(
 										attendee, index2) {
 									var attStatus = attendee.status;
@@ -283,7 +289,6 @@ zmxk.controller('EventManageCtrl', [
 									} else if (attStatus == 2) {
 										applyScoreCount += 1;
 									}
-
 								});
 								event.leftCount = event.quota - enrolledCount
 										- applyScoreCount;
@@ -292,21 +297,26 @@ zmxk.controller('EventManageCtrl', [
 								event["existed"] = true;
 								event["changed"] = false;
 								event["showInput"] = false;
+
 								event.eventSeries = [ {
 									id : null,
 									name : "单次比赛"
 								} ];
-								serieService.list(event.eventTypeId).then(function(data) {
-									angular.forEach(data, function(serie, index) {
-										event.eventSeries.push(serie);
-										/*console.log("<<<<<<<<<<<<<<<")
-										console.log(serie.id)
-										console.log(serie.name)
-										console.log(event.seriesId)
-										console.log(">>>>>>>>>>>>>>>")*/
-										$scope.listEvents.push(event);
-									})
-								})
+								serieService.list(event.eventTypeId).then(
+										function(data) {
+											angular.forEach(data, function(
+													serie, index) {
+												event.eventSeries.push(serie);
+												/*
+												 * console.log("<<<<<<<<<<<<<<<")
+												 * console.log(serie.id)
+												 * console.log(serie.name)
+												 * console.log(event.seriesId)
+												 * console.log(">>>>>>>>>>>>>>>")
+												 */
+												// $scope.listEvents.push(event);
+											})
+										})
 							});
 						}, function(data) {
 						});
@@ -326,6 +336,71 @@ zmxk.controller('EventManageCtrl', [
 
 			}
 
+			$scope.changeName = function(idx) {
+				var selectEvent = undefined;
+				angular.forEach($scope.listEvents, function(event, index2) {
+					if (index2 == idx) {
+						selectEvent = event;
+						console.log(selectEvent);
+						return;
+					}
+				});
+
+				if (angular.isUndefined(selectEvent)) {
+					return;
+				}
+
+				var name = selectEvent.name;
+				var nameArr = name.split(" ");
+				var prefix = nameArr[0];
+				var num = $scope.nameStageMap[prefix];
+				selectEvent.stage = num;
+			}
+
+			$scope.formEventName = function(idx) {
+				var selectEvent = undefined;
+				angular.forEach($scope.listEvents, function(event, index2) {
+					if (index2 == idx) {
+						selectEvent = event;
+						console.log(selectEvent);
+						return;
+					}
+				});
+
+				if (angular.isUndefined(selectEvent)) {
+					return;
+				}
+
+				var namePrefix = $scope.stageNameMap[selectEvent.stage];
+				console.log(selectEvent);
+				var name;
+				if (angular.isUndefined(selectEvent.eventTime)) {
+					name = namePrefix;
+				} else {
+					var date = new Date(selectEvent.eventTime);
+					var mon = date.getMonth() + 1;
+					mon = mon < 10 ? "0" + mon : mon;
+					var day = date.getDate();
+					day = day < 10 ? "0" + day : day;
+					name = mon + "-" + day + "-"
+							+ date.getFullYear();
+					name = namePrefix + " " + name;
+				}
+				if (!angular.isUndefined(selectEvent.name)) {
+					if (selectEvent.name.search(name) < 0) {
+						console.log(name);
+						selectEvent.name = name;
+					}
+				} else {
+					selectEvent.name = name;
+				}
+				/*
+				 * if(angular.isUndefined(dateNames[name])) { dateNames[name] =
+				 * 1; } else { dateNames[name]+=1; } var num = dateNames[name];
+				 * if(num < 10) { num = "0"+num; } name = name + " " + num;
+				 */
+
+			}
 			$scope.initSeries = function(event) {
 				event.eventSeries = [ {
 					id : null,
@@ -344,7 +419,7 @@ zmxk.controller('EventManageCtrl', [
 
 			$scope.updateEvent = function(updateEvent, idx) {
 				var handleReturn = function(data) {
-					
+
 					if (updateEvent.existed) {
 						updateEvent.changed = !updateEvent.changed;
 					}
@@ -366,8 +441,8 @@ zmxk.controller('EventManageCtrl', [
 				// save event
 				if (!updateEvent.existed) {
 					eventService.createEvent(updateEvent).then(function(data) {
-						//updateEvent = data;
-						//data.existed = true;
+						// updateEvent = data;
+						// data.existed = true;
 						updateEvent["id"] = data.id;
 						updateEvent.existed = true;
 						handleReturn(updateEvent);
@@ -390,8 +465,7 @@ zmxk.controller('EventManageCtrl', [
 				} else {
 					handleReturn(updateEvent);
 				}
-				
-				
+
 			}
 
 			$scope.deleteEvent = function(deleteEvent, idx) {
@@ -423,8 +497,6 @@ zmxk.controller('EventManageCtrl', [
 										});
 							})
 				}
-				
-				
 
 			}
 
@@ -628,22 +700,26 @@ zmxk
 							}
 							$scope.editScore = function() {
 								var m = new Map();
-								angular.forEach($scope.eventInit.attendees, function(attendee, index) {
-								  if(!m.get(attendee.tagId)){
-								    m.set(attendee.tagId, []);
-								  }
-								  m.get(attendee.tagId).push(attendee);
-								});
-								m.forEach(function(attendees, tagId){
-								  attendees.sort(function(a, b) {
-								    var key = "score";
-								    var x = a[key];
-								    var y = b[key];
-								    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-								  });
-								  attendees.forEach(function(attendee, index){
-								    attendee.rank = index +1;
-								  })
+								angular.forEach($scope.eventInit.attendees,
+										function(attendee, index) {
+											if (!m.get(attendee.tagId)) {
+												m.set(attendee.tagId, []);
+											}
+											m.get(attendee.tagId)
+													.push(attendee);
+										});
+								m.forEach(function(attendees, tagId) {
+									attendees.sort(function(a, b) {
+										var key = "score";
+										var x = a[key];
+										var y = b[key];
+										return ((x < y) ? -1
+												: ((x > y) ? 1 : 0));
+									});
+									attendees
+											.forEach(function(attendee, index) {
+												attendee.rank = index + 1;
+											})
 								});
 								console.log($scope.eventInit.attendees);
 							}

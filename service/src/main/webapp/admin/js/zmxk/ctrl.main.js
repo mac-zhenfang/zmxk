@@ -25,6 +25,18 @@ zmxk.controller('MainController', [
 				value : null,
 				label : "------"
 			} ];
+			
+			$scope.stageNameMap = {
+					"1" : "A",
+					"2" : "B",
+					"3" : "C"
+			}
+			
+			$scope.nameStageMap = {
+					"A" : 1,
+					"B" : 2,
+					"C" : 3
+			}
 			/*
 			 * $scope.includePage = function() { var returnPage =
 			 * "user_list.html"; switch (currentModule) { case "userList":

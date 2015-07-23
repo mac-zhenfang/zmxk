@@ -77,7 +77,7 @@
         <td colspan="7">
           <span ng-repeat="hour in hours"
                 ng-class="{'now':isNow(hour),'active':isSameHour(hour)}"
-                ng-click="setDate(hour)" ng-bind="hour|time"></span>
+                ng-click="setDate(hour);" ng-bind="hour|time"></span>
         </td>
       </tr>
       </tbody>
@@ -97,7 +97,7 @@
         <td colspan="7">
           <span ng-repeat="minute in minutes"
                 ng-class="{active:isSameMinutes(minute),'now':isNow(minute)}"
-                ng-click="setDate(minute)"
+                ng-click="setDate(minute);"
                 ng-bind="minute|time"></span>
         </td>
       </tr>

@@ -29,9 +29,13 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="event in listEvents | filter:filterRule">
-						<td><span ng-hide="{{event.showInput}} == true"><a
+						<td>
+							<!--<span ng-hide="{{event.showInput}} == true"><a
+								href="#/events/{{event.id}}">{{event.name}}</a></span>-->
+							<span ng-hide="{{event.showInput}} == true"><a
 								href="#/events/{{event.id}}">{{event.name}}</a></span> <input
-							ng-model="event.name" ng-show="{{event.showInput}}" /></td>
+							ng-model="event.name" ng-show="{{event.showInput}}" ng-change="changeName($index)"/>
+						</td>
 						<td><select ng-disabled="{{!event.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.siteId"
@@ -55,18 +59,19 @@
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.stage"
 							ng-options="stage.value as stage.label for stage in stages"
-							ng-init="event.stage==stage.value">
+							ng-init="event.stage==stage.value"
+							ng-change="formEventName($index)">
 						</select></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
-							ng-model="event.eventTime" required="true" view="hours"></td>
-						<td class="center"><span class="label label-warning">{{event.leftCount}}</span></td>
+							ng-model="event.eventTime" required="true" view="hours" itemModel="{{$index}}"></td>
+						<td class="center"><span class="label label-error">{{event.leftCount}}</span></td>
 						<td class="center"><span class="label label-warning">{{event.enrolledCount}}</span></td>
 						<td class="center"><span class="label label-success">{{event.applyScoreCount}}</span></td>
 						<td class="center"><span
 							ng-hide="{{event.showInput}} == true" ng-bind="event.quota"></span>
 							<input ng-model="event.quota" ng-show="{{event.showInput}}"
-							class="gridInput2" /></td>
+							class="gridInput" /></td>
 						<td class="center"><span class="btn btn-info"
 							ng-click="updateEvent(event, $index)"
 							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span
