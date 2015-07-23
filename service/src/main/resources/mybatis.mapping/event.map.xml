@@ -24,6 +24,8 @@
 		<result property="siteId" column="siteId" />
 		<result property="eventType" column="eventType" />
 		<result property="eventTypeId" column="eventTypeId" />
+		<result property="seriesId" column="seriesId" />
+		<result property="stage" column="stage" />
 		<result property="quota" column="quota" />
 		<result property="createdTime" column="createdTime" />
 		<result property="lastModifiedTime" column="lastModifiedTime" />
@@ -51,7 +53,9 @@
 		a.rank as rank,
 		a.userId as userId,
 		a.seq as seq,
-		a.status as status
+		a.status as status,
+		e.stage as stage,
+		e.seriesId as seriesId
 		from events e,
 		attendees a,
 		eventTypes t where
@@ -73,7 +77,9 @@
 		a.rank as rank,
 		a.userId as userId,
 		a.seq as seq,
-		a.status as status
+		a.status as status,
+		e.stage as stage,
+		e.seriesId as seriesId
 		from events e,
 		attendees a,
 		eventTypes t where
@@ -103,7 +109,9 @@
 		k.name as kidName,
 		a.userId as userId,
 		a.seq as seq,
-		a.status as status
+		a.status as status,
+		e.stage as stage,
+		e.seriesId as seriesId
 		from events e,
 		eventTypes t, attendees a, kids k
 		where
@@ -114,9 +122,9 @@
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
-		eventTypeId,siteId, quota, stage, eventTime, createdTime,lastModifiedTime)
+		eventTypeId,siteId, quota, stage, eventTime, seriesId, createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},now(),now())
+		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},#{seriesId},now(),now())
 	</select>
 
 
@@ -140,7 +148,9 @@
 		k.name as kidName,
 		a.userId as
 		userId,
-		a.seq as seq
+		a.seq as seq,
+		e.stage as stage,
+		e.seriesId as seriesId
 		from
 		events e,
 		eventTypes t, attendees a, kids k
@@ -163,6 +173,8 @@
 		quota=#{quota},
 		eventTypeId=#{eventTypeId},
 		siteId=#{siteId},
+		stage=#{stage},
+		seriesId=#{seriesId},
 		eventTime=#{eventTime}
 		where id =
 		#{id};

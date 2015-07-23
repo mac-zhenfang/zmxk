@@ -49,13 +49,13 @@
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.seriesId"
 							ng-options="option.id as option.name for option in event.eventSeries"
-							ng-init="initSeries(event);event.seriesId==option.id">
+							ng-init="event.seriesId==option.id">
 						</select></td>
 						<td class="center"><select ng-disabled={{!event.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="event.stage"
 							ng-options="stage.value as stage.label for stage in stages"
-							ng-init="event.stage==event.value">
+							ng-init="event.stage==stage.value">
 						</select></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
