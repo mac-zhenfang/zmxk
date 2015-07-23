@@ -1,7 +1,6 @@
 package com.smartool.service.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.TreeRangeMap;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
@@ -35,7 +37,6 @@ import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TagDao;
-import com.smartool.service.dao.UserDao;
 import com.smartool.service.service.CreditService;
 
 @RestController
@@ -51,8 +52,8 @@ public class EventController extends BaseController {
 	@Autowired
 	private KidDao kidDao;
 
-	@Autowired
-	private UserDao userDao;
+	// @Autowired
+	// private UserDao userDao;
 
 	@Autowired
 	private TagDao tagDao;
@@ -130,13 +131,13 @@ public class EventController extends BaseController {
 		Event event = eventDao.getEvent(eventId);
 		List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
 				event.getStage(), event.getSeriesId(), null);
-		Map<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
+		RangeMap<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
 		for (Attendee attendee : attendees) {
 			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
 			} else {
 				attendee.setStatus(2);
-				List<EventCreditRule> rulesToApply = getRuleToApply(attendee.getRank(), creditRuleMap);
+				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
 				if (rulesToApply != null && !rulesToApply.isEmpty()) {
 					for (EventCreditRule ruleToApply : rulesToApply) {
 						creditService.applyCreditRull(attendee.getUserId(), ruleToApply, sessionUser.getId());
@@ -150,23 +151,29 @@ public class EventController extends BaseController {
 		return retAttendees;
 	}
 
-	private Map<Integer, List<EventCreditRule>> toCreditRuleMap(List<EventCreditRule> eventCreditRules) {
-		Map<Integer, List<EventCreditRule>> creditRuleMap = new HashMap<Integer, List<EventCreditRule>>();
+	private RangeMap<Integer, List<EventCreditRule>> toCreditRuleMap(List<EventCreditRule> eventCreditRules) {
+		RangeMap<Integer, List<EventCreditRule>> creditRuleMap = TreeRangeMap.create();
 		for (EventCreditRule eventCreditRule : eventCreditRules) {
-			Integer rank = eventCreditRule.getRank();
-			if (!creditRuleMap.containsKey(rank)) {
-				creditRuleMap.put(rank, new LinkedList<EventCreditRule>());
+			Integer upperRank = eventCreditRule.getUpperRank();
+			Integer lowerRank = eventCreditRule.getUpperRank();
+			Range<Integer> range = getRange(upperRank, lowerRank);
+			Map<Range<Integer>, List<EventCreditRule>> mapOfRanges = creditRuleMap.asMapOfRanges();
+			if (!mapOfRanges.containsKey(range)) {
+				mapOfRanges.put(range, new LinkedList<EventCreditRule>());
 			}
-			creditRuleMap.get(rank).add(eventCreditRule);
+			mapOfRanges.get(range).add(eventCreditRule);
 		}
 		return creditRuleMap;
 	}
 
-	private List<EventCreditRule> getRuleToApply(int attendeeRank, Map<Integer, List<EventCreditRule>> creditRuleMap) {
-		if (creditRuleMap.containsKey(attendeeRank)) {
-			return creditRuleMap.get(attendeeRank);
+	private Range<Integer> getRange(Integer upper, Integer lower) {
+		if (upper != 0 && lower != 0) {
+			return Range.closed(upper, lower);
+		} else if (upper != 0) {
+			return Range.atLeast(upper);
+		} else {
+			return Range.atMost(lower);
 		}
-		return creditRuleMap.get(0);
 	}
 
 	/**

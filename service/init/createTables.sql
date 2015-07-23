@@ -1,20 +1,23 @@
 -- pending (0) / active (1) / deleted (2)
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` varchar(36) NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8,
-  `location` varchar(36) CHARACTER SET utf8 NOT NULL,
-  `mobileNum` varchar(255) NOT NULL,
-  `wcId` varchar(36),
-  `credit` int NOT NULL DEFAULT 0,
-  `status` int NOT NULL DEFAULT 0, 
-  `roleId` varchar (36) NOT NULL,
-  `createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `users_mobileNum` (`mobileNum`),
-  UNIQUE KEY `users_wcId` (`wcId`)
+	`id` varchar(36) NOT NULL,
+	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`password` varchar(255) CHARACTER SET utf8,
+	`location` varchar(36) CHARACTER SET utf8 NOT NULL,
+	`mobileNum` varchar(255) NOT NULL,
+	`wcId` varchar(36),
+	`credit` int NOT NULL DEFAULT 0,
+  	`goldenMedal` int NOT NULL DEFAULT 0,
+  	`silverMedal` int NOT NULL DEFAULT 0,
+  	`bronzeMedal` int NOT NULL DEFAULT 0,
+	`status` int NOT NULL DEFAULT 0, 
+	`roleId` varchar (36) NOT NULL,
+	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `users_mobileNum` (`mobileNum`),
+	UNIQUE KEY `users_wcId` (`wcId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -86,6 +89,9 @@ CREATE TABLE `creditRules` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`credit` int,
+  	`goldenMedal` int NOT NULL DEFAULT 0,
+  	`silverMedal` int NOT NULL DEFAULT 0,
+  	`bronzeMedal` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
@@ -98,8 +104,11 @@ CREATE TABLE `eventCreditRules` (
 	`eventTypeId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
 	`stage` int,
-	`rank` int,
-	`credit` int,
+	`upperRank` int,
+	`lowerRank` int,
+  	`goldenMedal` int NOT NULL DEFAULT 0,
+  	`silverMedal` int NOT NULL DEFAULT 0,
+  	`bronzeMedal` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
@@ -150,9 +159,11 @@ CREATE TABLE `creditRecords` (
 	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`operatorId` varchar(36) NOT NULL,
 	`creditRuleType` varchar(255) NOT NULL,
-	`creditRuleDisplayName` varchar(255) NOT NULL,
 	`creditRuleId` varchar(36) NOT NULL,
   	`credit` int NOT NULL DEFAULT 0,
+  	`goldenMedal` int NOT NULL DEFAULT 0,
+  	`silverMedal` int NOT NULL DEFAULT 0,
+  	`bronzeMedal` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)

@@ -6,20 +6,25 @@
 	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		credit,eventTypeId,seriesId,rank,stage, createdTime,
+		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,seriesId,upperRank,lowerRank,stage,
+		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},#{eventTypeId},#{seriesId},#{rank},#{stage},now(),now())
+		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{seriesId},#{upperRank},#{lowerRank},#{stage},now(),now())
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
 		set
 		name=#{name},
 		credit=#{credit},
+		goldenMedal=#{goldenMedal},
+		silverMedal=#{silverMedal},
+		bronzeMedal=#{bronzeMedal},
 		eventTypeId=#{eventTypeId},
 		seriesId=#{seriesId},
 		stage=#{stage},
-		rank=#{rank}
+		upperRank=#{upperRank},
+		lowerRank=#{lowerRank}
 		where id =
 		#{id};
 	</update>
@@ -45,7 +50,7 @@
 		select *
 		from eventCreditRules where name = #{name}
 	</select>
-	
+
 	<select id="searchRankingRules" parameterType="Map"
 		resultType="com.smartool.common.dto.EventCreditRule">
 		SELECT * FROM eventCreditRules
@@ -79,9 +84,6 @@
 		</if>
 		<if test="stage != null">
 			AND stage = #{stage}
-		</if>
-		<if test="searchNonrankingRules != null">
-			AND searchNonrankingRules = #{searchNonrankingRules}
 		</if>
 	</select>
 </mapper>

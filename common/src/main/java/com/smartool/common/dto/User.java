@@ -7,12 +7,39 @@ public class User extends BaseDateTrackingBean {
 	private String name;
 	
 	private String mobileNum;
-//	private String wcId;
+	// private String wcId;
 	private String location;
 	private String roleId;
 	private List<Kid> kids;
 	private int status;
 	private int credit;
+	private int goldenMedal;
+	private int silverMedal;
+	private int bronzeMedal;
+
+	public int getGoldenMedal() {
+		return goldenMedal;
+	}
+
+	public void setGoldenMedal(int goldenMedal) {
+		this.goldenMedal = goldenMedal;
+	}
+
+	public int getSilverMedal() {
+		return silverMedal;
+	}
+
+	public void setSilverMedal(int silverMedal) {
+		this.silverMedal = silverMedal;
+	}
+
+	public int getBronzeMedal() {
+		return bronzeMedal;
+	}
+
+	public void setBronzeMedal(int bronzeMedal) {
+		this.bronzeMedal = bronzeMedal;
+	}
 
 	public int getStatus() {
 		return status;

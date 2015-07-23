@@ -70,7 +70,8 @@
 	</select>
 	<update id="addCredit">
 		update users
-		set credit=credit+#{credit}
+		set
+		credit=credit+#{credit},goldenMedal=goldenMedal+#{goldenMedal},silverMedal=silverMedal+#{silverMedal},bronzeMedal=bronzeMedal+#{bronzeMedal}
 		where id =
 		#{id};
 	</update>
