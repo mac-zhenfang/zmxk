@@ -3,15 +3,16 @@ package com.smartool.service.service;
 import java.util.List;
 
 import com.smartool.common.dto.Grade;
+import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 
 public interface UserService {
 	List<User> listAllUser();
 
-	User login(User user);
+	User login(LoginUser user);
 
-	User register(SecurityCode securityCode, User user);
+	User register(SecurityCode securityCode, LoginUser user);
 
 	User getUserById(String userId);
 
@@ -24,5 +25,7 @@ public interface UserService {
 	void delete(String userId);
 	
 	List<Grade> getGrades(String userId);
+	
+	SecurityCode getSecurityCode(SecurityCode securityCode);
 	
 }

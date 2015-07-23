@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.Grade;
+import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
@@ -52,7 +53,7 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User login(@RequestBody User user) {
+	public User login(@RequestBody LoginUser user) {
 		User existUser = userService.login(user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
 		return existUser;
@@ -67,7 +68,7 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User register(@RequestParam(value = "code", required = false) String code, @RequestBody User user) {
+	public User register(@RequestParam(value = "code", required = false) String code, @RequestBody LoginUser user) {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setSecurityCode(code);
 		securityCode.setMobileNumber(user.getMobileNum());
@@ -75,6 +76,19 @@ public class UserController extends BaseController {
 		User createdUser = userService.register(securityCode, user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
+	}
+	
+	/**
+	 * Get code
+	 * */
+	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE } , produces = {
+					MediaType.APPLICATION_JSON_VALUE })
+	public SecurityCode getSecurityCode(@RequestBody LoginUser user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		return userService.getSecurityCode(securityCode);
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

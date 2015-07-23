@@ -18,6 +18,11 @@
 		resultType="com.smartool.common.dto.User">
 		select * from users where mobileNum = #{mobileNum}
 	</select>
+	
+	<select id="getLoginUserByMobileNumber" parameterType="String"
+		resultType="com.smartool.common.dto.LoginUser">
+		select * from users where mobileNum = #{mobileNum}
+	</select>
 
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
@@ -39,7 +44,7 @@
 		and e.eventTypeId = et.id and et.siteId=s.id and u.id=a.userId and a.rank<=3 and  u.id = #{id}
 		]]>
 	</select>
-	<select id="create" parameterType="com.smartool.common.dto.User">
+	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,
 		password,
 		mobileNum, location,

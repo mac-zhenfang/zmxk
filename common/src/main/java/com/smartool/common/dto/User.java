@@ -5,7 +5,7 @@ import java.util.List;
 public class User extends BaseDateTrackingBean {
 	private String id;
 	private String name;
-	private String password;
+	
 	private String mobileNum;
 //	private String wcId;
 	private String location;
@@ -81,13 +81,6 @@ public class User extends BaseDateTrackingBean {
 		return name;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	public int getCredit() {
 		return credit;
