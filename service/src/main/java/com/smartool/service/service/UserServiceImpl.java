@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
@@ -43,14 +45,25 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User login(User user) {
+	public User login(LoginUser user) {
 		if (CommonUtils.isEmptyString(user.getPassword())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
-		User existUser = userDao.getUserByMobileNumber(user.getMobileNum());
+		LoginUser existUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
 		if (existUser != null) {
 			if (CommonUtils.encryptBySha2(user.getPassword()).equals(existUser.getPassword())) {
 				securityCodeDao.remove(user.getMobileNum());
+				/*User retUser = new User();
+				retUser.setCreatedTime(existUser.getCreatedTime());
+				retUser.setCredit(existUser.getCredit());
+				retUser.setId(existUser.getId());
+				retUser.setKids(existUser.getKids());
+				retUser.setLastModifiedTime(existUser.getLastModifiedTime());
+				retUser.setLocation(existUser.getLocation());
+				retUser.setMobileNum(existUser.getMobileNum());
+				retUser.setName(existUser.getName());
+				retUser.setRoleId(existUser.getRoleId());
+				retUser.setStatus(existUser.getStatus());*/
 				return existUser;
 			} else {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
@@ -82,7 +95,7 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	private boolean isUserValidForCreate(User user) {
+	private boolean isUserValidForCreate(LoginUser user) {
 		// All string fields not empty
 		if (CommonUtils.isEmptyString(user.getName())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_USER_NAME_ERROR_MESSAGE);
@@ -177,14 +190,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User register(SecurityCode securityCode, User user) {
-		if (securityCode.getSecurityCode() == null) {
-			validateMobileNumberForRegister(securityCode.getMobileNumber());
-			String securityCodeString = createCodeForRegister(securityCode);
-			// TODO Temporary solution before implement send code though SMS
-			throw new SmartoolException(HttpStatus.NOT_ACCEPTABLE.value(), securityCodeString);
-		}
-
+	public User register(SecurityCode securityCode, LoginUser user) {
+		validateMobileNumberForRegister(securityCode.getMobileNumber());
 		if (!isValidSecurityCode(securityCode)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
@@ -231,7 +238,7 @@ public class UserServiceImpl implements UserService {
 		if (userRoleChaned(existedUser, user) && UserRole.ADMIN.getValue().compareTo(sessionUser.getRoleId()) > 0) {
 			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
 		}
-		user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		//user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		return userDao.updateUser(user);
 	}
 
@@ -242,6 +249,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(String userId) {
 		userDao.remove(userId);
+	}
+
+	@Override
+	public List<Grade> getGrades(String userId) {
+		return userDao.getGrades(userId);
+	}
+
+	@Override
+	public SecurityCode getSecurityCode(SecurityCode securityCode) {
+		validateMobileNumberForRegister(securityCode.getMobileNumber());
+		String securityCodeString = createCodeForRegister(securityCode);
+		securityCode.setSecurityCode(securityCodeString);
+		return securityCode;
 	}
 
 }

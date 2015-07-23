@@ -1,13 +1,50 @@
-﻿
-/* =============================================================
+﻿/* =============================================================
    GENERAL STYLES
  ============================================================ */
 body {
-    font-family: 'Open Sans', sans-serif;
-   
+	font-family: 'Open Sans', sans-serif;
 }
 
 .pad-top {
-    padding-top:40px;
+	padding-top: 40px;
 }
 
+.medals0 {
+	border: 0px;
+	width: 80px;
+	overflow: hidden
+}
+
+.medals1 {
+	background: url(../img/1.png);
+	background-size: contain;
+	border: 0px;
+	width: 70px;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	height: 60px;
+}
+
+.medals2 {
+	background: url(../img/2.png);
+	background-size: contain;
+	border: 0px;
+	width: 70px;
+	background-repeat: no-repeat;
+	overflow: hidden
+}
+
+.medals3 {
+	background: url(../img/3.png);
+	background-size: contain;
+	border: 0px;
+	width: 70px;
+	background-repeat: no-repeat;
+	overflow: hidden;
+	height: 60px;
+}
+
+.medals img {
+	max-width: 80px;
+	_width: expression(this.width > 80 ? "80px" : this.width);
+}

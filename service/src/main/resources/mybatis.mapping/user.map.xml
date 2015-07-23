@@ -18,7 +18,33 @@
 		resultType="com.smartool.common.dto.User">
 		select * from users where mobileNum = #{mobileNum}
 	</select>
-	<select id="create" parameterType="com.smartool.common.dto.User">
+	
+	<select id="getLoginUserByMobileNumber" parameterType="String"
+		resultType="com.smartool.common.dto.LoginUser">
+		select * from users where mobileNum = #{mobileNum}
+	</select>
+
+	<select id="getGrade" parameterType="String"
+		resultType="com.smartool.common.dto.Grade">
+		<![CDATA[select e.name as eventName, 
+		et.name as eventTypeName, 
+		et.siteId as siteId, 
+		s.name as siteName, 
+		e.eventTime as eventTime, 
+		a.rank as rank, 
+		ecr.credit as credit, 
+		e.stage as stage, 
+		e.seriesId as serieId, 
+		u.name as userName, 
+		u.id as userId, 
+		k.name as kidName, 
+		k.id as kidId 
+		from attendees a, users u, sites s, events e, eventCreditRules ecr, eventTypes et, kids k 
+		where k.userId = u.id and a.eventId=e.id and a.rank = ecr.rank
+		and e.eventTypeId = et.id and et.siteId=s.id and u.id=a.userId and a.rank<=3 and  u.id = #{id}
+		]]>
+	</select>
+	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,
 		password,
 		mobileNum, location,

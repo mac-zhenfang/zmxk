@@ -7,7 +7,9 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 
@@ -25,7 +27,7 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public User createUser(User user) {
+	public User createUser(LoginUser user) {
 		sqlSession.insert("USER.create", user);
 		if (user.getKids() != null && !user.getKids().isEmpty()) {
 			for (Kid kid : user.getKids()) {
@@ -88,5 +90,21 @@ public class UserDaoImpl implements UserDao {
 		map.put("id", userId);
 		map.put("credit", credit);
 		sqlSession.update("USER.addCredit", map);
+	}
+
+	@Override
+	public List<Grade> getGrades(String userId) {
+		List<Grade> grades = sqlSession.selectList("USER.getGrade", userId);
+		return grades;
+	}
+
+	@Override
+	public LoginUser getLoginUserByMobileNumber(String mobileNumber) {
+		LoginUser user = sqlSession.selectOne("USER.getLoginUserByMobileNumber", mobileNumber);
+		if (user != null) {
+			List<Kid> kids = kidDao.listByUserId(user.getId());
+			user.setKids(kids);
+		}
+		return user;
 	}
 }

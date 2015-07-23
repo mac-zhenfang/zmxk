@@ -151,38 +151,50 @@
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
-											$scope.send_code_uri = "service/smartool/api/v1/users/register";
+											$scope.register_uri = "service/smartool/api/v1/users/register";
+											$scope.send_code_uri = "service/smartool/api/v1/users/code";
 											if($scope.currentStep == 2){
-												$scope.send_code_uri = $scope.send_code_uri+"?code="+$scope.formData.code;
-											}
-											$http(
-													{
-														method : 'POST',
-														url : $scope.send_code_uri,
-														data : JSON.stringify($scope.formData), // pass in data as strings
-														headers : {
-															'Content-Type' : 'application/json'
-														}
-													// set the headers so angular passing info as form data (not request payload)
-													})
-													.success(
-															function(data) {
-																$scope.currentStep = 3;
-																$scope.submit_label = $scope.const.registerTitle;
-															})
-													.error(function(data, header){
-														console.log(data.message)
-														if(406 ==header && data.message){
-															$scope.currentStep = 2;
-															$scope.formData.code = data.message;
-															$scope.submit_label = $scope.const.registerTitle;
-														} else if(data.message) {
+												var url = $scope.register_uri+"?code="+$scope.formData.code;
+												$http(
+														{
+															method : 'POST',
+															url : url,
+															data : JSON.stringify($scope.formData), // pass in data as strings
+															headers : {
+																'Content-Type' : 'application/json'
+															}
+														// set the headers so angular passing info as form data (not request payload)
+														})
+														.success(
+																function(data) {
+																	$scope.currentStep = 3;
+																	$scope.submit_label = $scope.const.registerTitle;
+																})
+														.error(function(data, header){
+	 															alert(data.message)
+														});
+											} else {
+												url = $scope.send_code_uri;
+												$http(
+														{
+															method : 'POST',
+															url : url,
+															data : JSON.stringify($scope.formData), // pass in data as strings
+															headers : {
+																'Content-Type' : 'application/json'
+															}
+														// set the headers so angular passing info as form data (not request payload)
+														})
+														.success(
+																function(data) {
+																	$scope.currentStep = 2;
+																	$scope.formData.code = data.securityCode;
+																	$scope.submit_label = $scope.const.registerTitle;
+																})
+														.error(function(data, header){
 															alert(data.message)
-														}
-// 														else {
-// 															alert("")
-// 														}
-													});
+														});
+											}
 
 									};
 								} ]);

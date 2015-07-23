@@ -20,10 +20,10 @@
 						<th>赛事系列</th>
 						<th>赛事阶段</th>
 						<th>时间</th>
-						<th>可录入人数</th>
-						<th>已录入，未完成比分登记人数</th>
-						<th>完成比分登记人数</th>
-						<th>比赛人数上限</th>
+						<th>可录入</th>
+						<th>已录入</th>
+						<th>完成人数</th>
+						<th>上限</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -47,9 +47,9 @@
 						</select></td>
 						<td><select ng-disabled="{{!event.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"
-							ng-model="event.serieId"
+							ng-model="event.seriesId"
 							ng-options="option.id as option.name for option in event.eventSeries"
-							ng-init="initSeries(event);angular.isUndefined(event.serieId)?option.id=null:option.id==event.serieId">
+							ng-init="initSeries(event);event.seriesId==option.id">
 						</select></td>
 						<td class="center"><select ng-disabled={{!event.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"

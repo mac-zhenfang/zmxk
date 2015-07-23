@@ -1,9 +1,7 @@
 package com.smartool.service.controller;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -29,13 +27,7 @@ import com.smartool.service.dao.UserDao;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
 	private static Logger logger = Logger.getLogger(AuthenticationInterceptor.class);
-	private static Set<String> safeMethod = new HashSet<String>();
-
-	static {
-		safeMethod.add(Constants.GET_SECURITY_CODE_PATH);
-		safeMethod.add(Constants.USER_LOGIN_PATH);
-		safeMethod.add(Constants.USER_REGISTER_PATH);
-	}
+	
 
 	private static final String DEFAULT_ERROR_MESSAGE = "Unknown";
 	private static final ObjectMapper objectMapper = new ObjectMapper();
