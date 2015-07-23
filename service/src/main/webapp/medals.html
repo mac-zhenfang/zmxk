@@ -9,7 +9,7 @@
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico">
 
-<title>Dashboard Template for Bootstrap</title>
+<title>我的成绩单</title>
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
@@ -34,13 +34,17 @@
 		<div class="row-fluid">
 			<!-- <div class="col-sm-12 main" id="printableArea" ng-include="'assets/templates/grades_template_simple_1.html'"></div> -->
 			<div class="col-sm-12 main" id="printableArea">
-				<h1 class="page-header">{{const.grade_dashboard_title}}</h1>
+				<h1 class="page-header">我的成绩单</h1>
 
 				<div class="table-responsive">
 					<table class="table table-striped bootstrap-datatable datatable">
 						<thead>
 							<tr>
-								<th ng-repeat="x in table_headers">{{x}}</th>
+								<th>比赛时间</th>
+								<th>成绩</th>
+								<th>金牌</th>
+								<th>银牌</th>
+								<th>铜牌</th>
 							</tr>
 						</thead>
 						<tbody>

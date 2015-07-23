@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
@@ -88,5 +89,11 @@ public class UserDaoImpl implements UserDao {
 		map.put("id", userId);
 		map.put("credit", credit);
 		sqlSession.update("USER.addCredit", map);
+	}
+
+	@Override
+	public List<Grade> getGrades(String userId) {
+		List<Grade> grades = sqlSession.selectList("USER.getGrade", userId);
+		return grades;
 	}
 }

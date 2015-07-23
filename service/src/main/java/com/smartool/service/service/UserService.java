@@ -2,6 +2,7 @@ package com.smartool.service.service;
 
 import java.util.List;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 
@@ -21,4 +22,7 @@ public interface UserService {
 	User update(User user);
 	
 	void delete(String userId);
+	
+	List<Grade> getGrades(String userId);
+	
 }

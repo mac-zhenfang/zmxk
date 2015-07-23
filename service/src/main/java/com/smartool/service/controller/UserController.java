@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
@@ -86,6 +87,14 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
+	}
+	
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/users/me/grades", method = RequestMethod.GET)
+	public List<Grade> getMyGrades() {
+		User user = UserSessionManager.getSessionUser();
+		List<Grade> grades = userService.getGrades(user.getId());
+		return grades;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)

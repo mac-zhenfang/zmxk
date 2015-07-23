@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
@@ -253,6 +254,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(String userId) {
 		userDao.remove(userId);
+	}
+
+	@Override
+	public List<Grade> getGrades(String userId) {
+		return userDao.getGrades(userId);
 	}
 
 }
