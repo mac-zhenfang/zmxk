@@ -140,7 +140,7 @@ public class EventController extends BaseController {
 				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
 				if (rulesToApply != null && !rulesToApply.isEmpty()) {
 					for (EventCreditRule ruleToApply : rulesToApply) {
-						creditService.applyCreditRull(attendee.getUserId(), ruleToApply, sessionUser.getId());
+						creditService.applyCreditRull(attendee, ruleToApply, sessionUser.getId());
 					}
 				}
 			}
@@ -155,11 +155,11 @@ public class EventController extends BaseController {
 		RangeMap<Integer, List<EventCreditRule>> creditRuleMap = TreeRangeMap.create();
 		for (EventCreditRule eventCreditRule : eventCreditRules) {
 			Integer upperRank = eventCreditRule.getUpperRank();
-			Integer lowerRank = eventCreditRule.getUpperRank();
+			Integer lowerRank = eventCreditRule.getLowerRank();
 			Range<Integer> range = getRange(upperRank, lowerRank);
 			Map<Range<Integer>, List<EventCreditRule>> mapOfRanges = creditRuleMap.asMapOfRanges();
 			if (!mapOfRanges.containsKey(range)) {
-				mapOfRanges.put(range, new LinkedList<EventCreditRule>());
+				creditRuleMap.put(range, new LinkedList<EventCreditRule>());
 			}
 			mapOfRanges.get(range).add(eventCreditRule);
 		}
@@ -167,9 +167,9 @@ public class EventController extends BaseController {
 	}
 
 	private Range<Integer> getRange(Integer upper, Integer lower) {
-		if (upper != 0 && lower != 0) {
+		if (upper != null && lower != null) {
 			return Range.closed(upper, lower);
-		} else if (upper != 0) {
+		} else if (upper != null) {
 			return Range.atLeast(upper);
 		} else {
 			return Range.atMost(lower);

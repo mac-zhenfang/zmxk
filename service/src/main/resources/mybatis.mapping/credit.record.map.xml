@@ -5,12 +5,12 @@
 <mapper namespace="CREDIT_RECORD">
 	<select id="create" parameterType="com.smartool.common.dto.CreditRecord">
 		insert creditRecords (id,
-		userId,
-		operatorId,creditRuleType,creditRuleDisplayName,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
+		userId,eventId,
+		operatorId,creditRuleType,displayName,rank,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{userId},#{operatorId},#{creditRuleType},#{creditRuleDisplayName},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
+		(#{id},#{userId},#{eventId},#{operatorId},#{creditRuleType},#{displayName},#{rank},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
 	</select>
 
 	<select id="search" parameterType="Map"

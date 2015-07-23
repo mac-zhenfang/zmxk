@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
@@ -85,10 +86,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public void addCredit(String userId, int credit) {
+	public void addCredit(String userId, CreditRule creditRule) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", userId);
-		map.put("credit", credit);
+		map.put("credit", creditRule.getCredit());
+		map.put("goldenMedal", creditRule.getGoldenMedal());
+		map.put("silverMedal", creditRule.getSilverMedal());
+		map.put("bronzeMedal", creditRule.getBronzeMedal());
 		sqlSession.update("USER.addCredit", map);
 	}
 
