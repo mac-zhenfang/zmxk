@@ -5,9 +5,35 @@ public class CreditRecord extends BaseDateTrackingBean {
 	private String userId;
 	private String operatorId;
 	private CreditRuleType creditRuleType;
-	private String creditRuleDisplayName;
 	private String creditRuleId;
 	private Integer credit;
+	private int goldenMedal;
+	private int silverMedal;
+	private int bronzeMedal;
+
+	public int getGoldenMedal() {
+		return goldenMedal;
+	}
+
+	public void setGoldenMedal(int goldenMedal) {
+		this.goldenMedal = goldenMedal;
+	}
+
+	public int getSilverMedal() {
+		return silverMedal;
+	}
+
+	public void setSilverMedal(int silverMedal) {
+		this.silverMedal = silverMedal;
+	}
+
+	public int getBronzeMedal() {
+		return bronzeMedal;
+	}
+
+	public void setBronzeMedal(int bronzeMedal) {
+		this.bronzeMedal = bronzeMedal;
+	}
 
 	public String getId() {
 		return id;
@@ -47,14 +73,6 @@ public class CreditRecord extends BaseDateTrackingBean {
 
 	public void setOperatorId(String operatorId) {
 		this.operatorId = operatorId;
-	}
-
-	public String getCreditRuleDisplayName() {
-		return creditRuleDisplayName;
-	}
-
-	public void setCreditRuleDisplayName(String creditRuleDisplayName) {
-		this.creditRuleDisplayName = creditRuleDisplayName;
 	}
 
 	public Integer getCredit() {

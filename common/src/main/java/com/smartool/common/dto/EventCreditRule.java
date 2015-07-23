@@ -3,7 +3,8 @@ package com.smartool.common.dto;
 public class EventCreditRule extends CreditRule {
 	private String eventTypeId;
 	private String seriesId;
-	private Integer rank;
+	private Integer upperRank;
+	private Integer lowerRank;
 	private Integer stage;
 
 	public String getEventTypeId() {
@@ -22,19 +23,27 @@ public class EventCreditRule extends CreditRule {
 		this.seriesId = seriesId;
 	}
 
-	public Integer getRank() {
-		return rank;
-	}
-
-	public void setRank(Integer rank) {
-		this.rank = rank;
-	}
-
 	public Integer getStage() {
 		return stage;
 	}
 
 	public void setStage(Integer stage) {
 		this.stage = stage;
+	}
+
+	public Integer getUpperRank() {
+		return upperRank;
+	}
+
+	public void setUpperRank(Integer upperRank) {
+		this.upperRank = upperRank;
+	}
+
+	public Integer getLowerRank() {
+		return lowerRank;
+	}
+
+	public void setLowerRank(Integer lowerRank) {
+		this.lowerRank = lowerRank;
 	}
 }

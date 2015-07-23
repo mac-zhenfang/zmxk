@@ -207,17 +207,6 @@ public abstract class Client {
         });
     }
 
-    protected long execute(final HttpUriRequest request, final OutputSupplier<? extends OutputStream> out) {
-        checkNotNull(out, "out");
-        return execute(request, new ResponseHandler<Long>() {
-            @Override
-            public Long handleResponse(HttpResponse response) throws IOException {
-                checkResponse(request, response);
-                return ByteStreams.copy(response.getEntity().getContent(), out);
-            }
-        });
-    }
-
     protected <T> T execute(HttpUriRequest req, TypeReference<T> typeReference) {
         return execute(req, typeFactory().constructType(typeReference));
     }

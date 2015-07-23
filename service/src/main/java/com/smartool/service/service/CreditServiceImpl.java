@@ -5,20 +5,16 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
-import com.smartool.common.dto.EventStages;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
-import com.smartool.service.dao.EventTypeDao;
-import com.smartool.service.dao.SerieDao;
 import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {
@@ -26,41 +22,12 @@ public class CreditServiceImpl implements CreditService {
 	private CreditRuleDao creditRuleDao;
 	@Autowired
 	private CreditRecordDao creditRecordDao;
-	@Autowired
-	private EventTypeDao eventTypeDao;
-	@Autowired
-	private SerieDao serieDao;
+	// @Autowired
+	// private EventTypeDao eventTypeDao;
+	// @Autowired
+	// private SerieDao serieDao;
 	@Autowired
 	private UserDao userDao;
-
-	@Override
-	public String getDisplayName(CreditRule creditRule) {
-		if (creditRule == null) {
-			return null;
-		}
-		if (creditRule instanceof EventCreditRule) {
-			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
-			StringBuilder sb = new StringBuilder();
-			if (eventCreditRule.getSeriesId() != null) {
-				String serieName = serieDao.get(eventCreditRule.getSeriesId()).getName();
-				sb.append(serieName).append(" - ");
-			}
-			if (eventCreditRule.getEventTypeId() != null) {
-				String eventTypeName = eventTypeDao.get(eventCreditRule.getEventTypeId()).getName();
-				sb.append(eventTypeName).append(" - ");
-			}
-			if (eventCreditRule.getStage() != null) {
-				sb.append(EventStages.getDisplayName(eventCreditRule.getStage())).append(" - ");
-			}
-			sb.append(creditRule.getName());
-			if (eventCreditRule.getRank() != null) {
-				sb.append(" - ").append(eventCreditRule.getRank());
-			}
-			return sb.toString();
-		}
-
-		return creditRule.getName();
-	}
 
 	@Override
 	public List<CreditRule> listAllCreditRules() {
@@ -141,7 +108,8 @@ public class CreditServiceImpl implements CreditService {
 		for (EventCreditRule existedCreditRule : existedCreditRules) {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
 					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
-					&& Objects.equals(existedCreditRule.getRank(), eventCreditRule.getRank())
+					&& Objects.equals(existedCreditRule.getUpperRank(), eventCreditRule.getUpperRank())
+					&& Objects.equals(existedCreditRule.getLowerRank(), eventCreditRule.getLowerRank())
 					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 						ErrorMessages.DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE);
@@ -159,7 +127,8 @@ public class CreditServiceImpl implements CreditService {
 		for (EventCreditRule existedCreditRule : existedCreditRules) {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
 					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
-					&& Objects.equals(existedCreditRule.getRank(), eventCreditRule.getRank())
+					&& Objects.equals(existedCreditRule.getUpperRank(), eventCreditRule.getUpperRank())
+					&& Objects.equals(existedCreditRule.getLowerRank(), eventCreditRule.getLowerRank())
 					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())
 					&& !existedCreditRule.getId().equals(eventCreditRule.getId())) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
@@ -188,8 +157,8 @@ public class CreditServiceImpl implements CreditService {
 
 	@Override
 	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
-			String name, Integer rank) {
-		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name, rank);
+			String name) {
+		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name);
 	}
 
 	@Override
@@ -206,7 +175,6 @@ public class CreditServiceImpl implements CreditService {
 		} else {
 			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
 		}
-		creditRecord.setCreditRuleDisplayName(getDisplayName(creditRule));
 		CreditRecord createdCreditRecord = creditRecordDao.createCreditRecord(creditRecord);
 		return createdCreditRecord;
 	}

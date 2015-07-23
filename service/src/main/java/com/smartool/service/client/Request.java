@@ -103,10 +103,6 @@ public class Request<T extends HttpRequestBase> {
         return client.execute(httpRequest(), out);
     }
 
-    public long execute(OutputSupplier<? extends OutputStream> out) {
-        return client.execute(httpRequest(), out);
-    }
-
     public HttpResponse execute() {
         return client.execute(httpRequest());
     }

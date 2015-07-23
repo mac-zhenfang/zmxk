@@ -7,7 +7,8 @@
 		select * from users
 	</select>
 	<select id="search" parameterType="String" resultType="com.smartool.common.dto.User">
-		select * from users where mobileNum = #{id} or wcId = #{id}
+		select *
+		from users where mobileNum = #{id} or wcId = #{id}
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.User">
@@ -18,7 +19,8 @@
 		select * from users where mobileNum = #{mobileNum}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.User">
-		insert users (id, name, password,
+		insert users (id, name,
+		password,
 		mobileNum, location,
 		roleId,status,createdTime,
 		lastModifiedTime)
@@ -42,7 +44,9 @@
 	</select>
 	<update id="addCredit">
 		update users
-		set credit=credit+#{credit}
-		where id = #{id};
+		set
+		credit=credit+#{credit},goldenMedal=goldenMedal+#{goldenMedal},silverMedal=silverMedal+#{silverMedal},bronzeMedal=bronzeMedal+#{bronzeMedal}
+		where id =
+		#{id};
 	</update>
 </mapper>

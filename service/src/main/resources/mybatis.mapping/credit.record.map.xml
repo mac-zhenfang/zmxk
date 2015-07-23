@@ -6,11 +6,11 @@
 	<select id="create" parameterType="com.smartool.common.dto.CreditRecord">
 		insert creditRecords (id,
 		userId,
-		operatorId,creditRuleType,creditRuleDisplayName,creditRuleId,credit,
+		operatorId,creditRuleType,creditRuleDisplayName,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{userId},#{operatorId},#{creditRuleType},#{creditRuleDisplayName},#{creditRuleId},#{credit},now(),now())
+		(#{id},#{userId},#{operatorId},#{creditRuleType},#{creditRuleDisplayName},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
 	</select>
 
 	<select id="search" parameterType="Map"
