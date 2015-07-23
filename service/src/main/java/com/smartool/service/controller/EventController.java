@@ -10,7 +10,6 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -260,7 +259,6 @@ public class EventController extends BaseController {
 	 * @RequestMapping(value = "/events/{eventId}")
 	 */
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@Transactional
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Event updateEvent(@PathVariable String eventId, @RequestBody Event event) {
@@ -280,7 +278,6 @@ public class EventController extends BaseController {
 	 * Delete Event
 	 */
 	@ApiScope(userScope = UserRole.ADMIN)
-	@Transactional
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String eventId) {
 		eventDao.delete(eventId);
@@ -292,7 +289,6 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events/{eventId}")
 	 */
-	@Transactional
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
 	public Event getEvent(@PathVariable String eventId) {
 		Event retEvent = eventDao.getFullEvent(eventId);
