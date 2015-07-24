@@ -284,7 +284,7 @@ public class EventController extends BaseController {
 	/**
 	 * Delete Event
 	 */
-	@ApiScope(userScope = UserRole.ADMIN)
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String eventId) {
 		eventDao.delete(eventId);

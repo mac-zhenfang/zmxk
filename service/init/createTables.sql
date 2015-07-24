@@ -13,6 +13,7 @@ CREATE TABLE `users` (
   	`bronzeMedal` int NOT NULL DEFAULT 0,
 	`status` int NOT NULL DEFAULT 0, 
 	`roleId` varchar (36) NOT NULL,
+	`siteId`  varchar (36),
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),

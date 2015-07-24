@@ -23,56 +23,56 @@ public class CreditController extends BaseController {
 	@Autowired
 	private CreditService creditService;
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules", method = RequestMethod.GET)
 	public List<CreditRule> listAll() {
 		return creditService.listAllCreditRules();
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CreditRule create(@RequestBody CreditRule creditRule) {
 		return creditService.createCreditRule(creditRule);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules/{creditRuleId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CreditRule get(@PathVariable("creditRuleId") String creditRuleId) {
 		return creditService.getCreditRuleById(creditRuleId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules/{creditRuleId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CreditRule update(@PathVariable("creditRuleId") String creditRuleId, @RequestBody CreditRule creditRule) {
 		creditRule.setId(creditRuleId);
 		return creditService.updateCreditRule(creditRule);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules/{creditRuleId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void remove(@PathVariable("creditRuleId") String creditRuleId) {
 		creditService.removeCreditRule(creditRuleId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules", method = RequestMethod.GET)
 	public List<EventCreditRule> listAllEventCreditRules() {
 		return creditService.listAllEventCreditRules();
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public EventCreditRule createEventCreditRule(@RequestBody EventCreditRule eventCreditRule) {
 		return creditService.createEventCreditRule(eventCreditRule);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules/{eventCreditRuleId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public EventCreditRule getEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId) {
 		return creditService.getEventCreditRuleById(eventCreditRuleId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules/{eventCreditRuleId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public EventCreditRule updateEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId,
 			@RequestBody EventCreditRule eventCreditRule) {
@@ -80,13 +80,13 @@ public class CreditController extends BaseController {
 		return creditService.updateEventCreditRule(eventCreditRule);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules/{eventCreditRuleId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void removeEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId) {
 		creditService.removeEventCreditRule(eventCreditRuleId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules/ranking/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<EventCreditRule> searchRankingEventCreditRules(
 			@RequestParam(value = "eventTypeId", required = false) String eventTypeId,
@@ -96,7 +96,7 @@ public class CreditController extends BaseController {
 		return creditService.searchRankingEventCreditRules(eventTypeId, stage, seriesId, name);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules/nonranking/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<EventCreditRule> searchNonrankingEventCreditRules(
 			@RequestParam(value = "eventTypeId", required = false) String eventTypeId,
