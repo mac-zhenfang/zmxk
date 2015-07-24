@@ -1,25 +1,32 @@
 package com.smartool.service.config;
 
 import java.beans.PropertyVetoException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.google.common.io.Closeables;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.smartool.service.Encrypter;
 import com.smartool.service.controller.AuthenticationInterceptor;
@@ -46,6 +53,7 @@ import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.TagDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
+import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
 import com.smartool.service.service.UserService;
@@ -56,10 +64,18 @@ import com.smartool.service.service.UserServiceImpl;
 @EnableTransactionManagement(proxyTargetClass = true)
 @PropertySource("classpath:zmxk.properties")
 @PropertySource("classpath:jdbc.properties")
+@PropertySource("classpath:quartz.properties")
 public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	private String defaultKey = "JJ7kKLiXxkTWZFjl43+X9A==";
 	@Autowired
 	Environment env;
+	@Autowired
+	Properties properties;
+
+	@Bean
+	public CreditGenerator getCreditGenerator() {
+		return new CreditGenerator();
+	}
 
 	@Bean
 	public Encrypter getEncrypter() {
@@ -76,7 +92,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new UserServiceImpl();
 	}
 
-	@Bean
+	@Bean(initMethod = "iocInit")
 	public CreditService getCreditService() {
 		return new CreditServiceImpl();
 	}
@@ -186,5 +202,41 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public SqlSession getSqlSessionTemplate() throws Exception {
 		SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(getSqlSessionFactoryBean().getObject());
 		return sqlSessionTemplate;
+	}
+
+	public static PropertyPlaceholderConfigurer getQuartzProperties() {
+		PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+		Resource[] resources = new ClassPathResource[] { new ClassPathResource("quartz.properties") };
+		ppc.setLocations(resources);
+		ppc.setIgnoreUnresolvablePlaceholders(true);
+		return ppc;
+	}
+
+	public Properties getProperties() throws Exception {
+		Properties systemProperties = System.getProperties();
+		Resource[] resources = new ClassPathResource[] { new ClassPathResource("quartz.properties") };
+		for (final Resource resource : resources) {
+			final InputStream inputStream = resource.getInputStream();
+			try {
+				systemProperties.load(inputStream);
+			} finally {
+				Closeables.closeQuietly(inputStream);
+			}
+		}
+		return systemProperties;
+	}
+
+	@Bean
+	public SchedulerFactoryBean getSchedulerFactoryBean() throws Exception {
+		SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
+		schedulerFactoryBean.setDataSource(getDataSource());
+		schedulerFactoryBean.setTransactionManager(getDataSourceTransactionManager());
+		schedulerFactoryBean.setQuartzProperties(getProperties());
+		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
+		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
+		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
+		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
+		schedulerFactoryBean.start();
+		return schedulerFactoryBean;
 	}
 }

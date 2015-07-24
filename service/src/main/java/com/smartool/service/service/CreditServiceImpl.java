@@ -3,6 +3,15 @@ package com.smartool.service.service;
 import java.util.List;
 import java.util.Objects;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -32,6 +41,18 @@ public class CreditServiceImpl implements CreditService {
 	private SerieDao serieDao;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private Scheduler scheduler;
+
+	public void iocInit() throws SchedulerException {
+		if (scheduler.getTrigger(TriggerKey.triggerKey("CreditGeneratorTrigger")) == null) {
+			JobDetail jobDetail = JobBuilder.newJob(CreditGeneratingJob.class)
+					.withIdentity(JobKey.jobKey("CreditGeneratorJob")).build();
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("CreditGeneratorTrigger"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+			scheduler.scheduleJob(jobDetail, trigger);
+		}
+	}
 
 	@Override
 	public String getCreditRecordDisplayName(Attendee attendee, CreditRule creditRule) {
@@ -192,13 +213,12 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule, String operatorUserId) {
+	public CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule) {
 		userDao.addCredit(attendee.getUserId(), creditRule);
 		CreditRecord creditRecord = new CreditRecord();
 		creditRecord.setId(CommonUtils.getRandomUUID());
 		creditRecord.setEventId(attendee.getEventId());
 		creditRecord.setUserId(attendee.getUserId());
-		creditRecord.setOperatorId(operatorUserId);
 		creditRecord.setCreditRuleId(creditRule.getId());
 		creditRecord.setCredit(creditRule.getCredit());
 		creditRecord.setDisplayName(getCreditRecordDisplayName(attendee, creditRule));

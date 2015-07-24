@@ -4,7 +4,6 @@ public class CreditRecord extends BaseDateTrackingBean {
 	private String id;
 	private String userId;
 	private String eventId;
-	private String operatorId;
 	private CreditRuleType creditRuleType;
 	private String creditRuleId;
 	private String displayName;
@@ -68,14 +67,6 @@ public class CreditRecord extends BaseDateTrackingBean {
 
 	public void setCreditRuleId(String creditRuleId) {
 		this.creditRuleId = creditRuleId;
-	}
-
-	public String getOperatorId() {
-		return operatorId;
-	}
-
-	public void setOperatorId(String operatorId) {
-		this.operatorId = operatorId;
 	}
 
 	public Integer getCredit() {
