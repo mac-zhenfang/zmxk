@@ -26,6 +26,17 @@ zmxk.controller('MainController', [
 				label : "------"
 			} ];
 			
+			$scope.roles_option = [ {
+				value : 0,
+				label : "用户"
+			}, {
+				value : 1,
+				label : "操作人员"
+			}, {
+				value : 2,
+				label : "管理员"
+			} ];
+			
 			$scope.stageNameMap = {
 					"1" : "A",
 					"2" : "B",
@@ -44,11 +55,11 @@ zmxk.controller('MainController', [
 			 * returnPage = "event_list.html"; break; case "eventEnroll":
 			 * returnPage = "event_enroll.html"; break } return returnPage; }
 			 */
-
+			$scope.loginUser = {};
 			$scope.init = function() {
-				// TODO: init if no cookie token, return to
-				// login page
-				// userService.list();
+				userService.getUser("me").then(function(data){
+					$scope.loginUser = data;
+				},function(data){});
 
 				if (!angular.isUndefined($scope.$location.search().page)) {
 					// console.log($scope.$location);
@@ -122,7 +133,7 @@ zmxk.controller('MainController', [
 				return date.getMonth() + 1 + "/" + date.getDate() + "/"
 						+ date.getFullYear() + "  " + strTime;
 			}
-			$scope.init();
+			//$scope.init();
 		} ]);
 // MainController.$inject = ['$scope', 'userService'];
 
