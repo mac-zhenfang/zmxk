@@ -7,25 +7,25 @@ zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
 				serieId : '@id'
 			}, {
 				create : {
-					url : zmxkConfig.site_rest_uri,
+					url : zmxkConfig.serie_rest_uri,
 					method : 'POST',
 					headers : {
 						'Content-Type' : 'application/json'
 					}
 				},
 				update : {
-					url : zmxkConfig.site_rest_uri,
+					url : zmxkConfig.serie_rest_uri,
 					method : 'PUT',
 					headers : {
 						'Content-Type' : 'application/json'
 					}
 				},
 				get : {
-					url : zmxkConfig.site_rest_uri,
+					url : zmxkConfig.serie_rest_uri,
 					method : 'GET'
 				},
 				remove : {
-					url : zmxkConfig.site_rest_uri,
+					url : zmxkConfig.serie_rest_uri,
 					method : 'DELETE'
 				}
 			})
@@ -34,7 +34,7 @@ zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
 				var defer = $q.defer();
 				serieResource.create({
 					eventTypeId : giveEventTypeId
-				}, site, function(e, headers) {
+				}, serie, function(e, headers) {
 					defer.resolve(e);
 				}, function(e, headers) {
 					defer.reject(e);

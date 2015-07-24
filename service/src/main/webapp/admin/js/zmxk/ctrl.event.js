@@ -1,4 +1,154 @@
-//Event Typs Start
+//Serie Management
+
+zmxk.controller('SerieManageCtrl', [
+		'$scope',
+		'userService',
+		'eventService',
+		'eventTypeService',
+		'siteService',
+		'serieService',
+		'$interval',
+		'$timeout',
+		'$routeParams',
+		function($scope, userService, eventService, eventTypeService,
+				siteService, serieService, $interval, $timeout, $routeParams) {
+			$scope.eventTypeId = $routeParams.eventTypeId;
+			$scope.eventSeries = [];
+			$scope.eventTypes = [];
+			$scope.init = function() {
+				serieService.list($scope.eventTypeId).then(function(data) {
+					angular.forEach(data, function(serie, index) {
+						$scope.eventSeries.push(serie);
+						serie["existed"] = true;
+						serie["changed"] = false;
+						serie["showInput"] = false;
+					})
+				});
+
+				eventTypeService.list().then(function(data) {
+					$scope.eventTypes = data;
+				}, function(data) {
+
+				});
+			}
+
+			$scope.updateSerie = function(giveUpdateSerie, idx) {
+				var assinGiveUpdateSerie = function(data) {
+					giveUpdateSerie['id'] = data.id;
+					// console.log("returned");
+					// giveUpdateEventType["id"] = data.id;
+					// giveUpdateEventType["idx"] = idx;
+
+					if (giveUpdateSerie.existed) {
+						giveUpdateSerie.changed = !giveUpdateSerie.changed;
+					} else {
+						giveUpdateSerie.existed = !giveUpdateSerie.existed;
+					}
+
+					giveUpdateSerie.showInput = !giveUpdateSerie.showInput;
+
+					// console.log(giveUpdateEventType);
+
+					// $scope.kids = kid; $scope.listEvents
+					var eventSeries = [];
+					// console.log($scope.listEventTypes);
+					angular.forEach($scope.eventSeries, function(serie, i) {
+						// console.log(eventType);
+						if (i == idx) {
+							console.log(i + "~" + idx);
+							eventSeries.push(giveUpdateSerie);
+						} else {
+							eventSeries.push(angular.copy(serie));
+						}
+					});
+					$scope.eventSeries = angular.copy(eventSeries);
+					// console.log($scope.listEventTypes);
+
+				}
+				// console.log(giveUpdateEventType);
+				// $scope.giveUpdateEventType =
+				// giveUpdateEventType;
+				// save event
+				if (!giveUpdateSerie.existed) {
+					serieService.create(giveUpdateSerie.eventTypeId,
+							giveUpdateSerie).then(function(data) {
+						assinGiveUpdateSerie(data);
+					}, function(data) {
+
+					})
+				} else if (giveUpdateSerie.changed) {
+					serieService.update(giveUpdateSerie.eventTypeId,
+							giveUpdateSerie.id, giveUpdateSerie).then(
+							function(data) {
+								assinGiveUpdateSerie(data);
+							},
+							function(data) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							});
+				} else {
+					// console.log("~~~~~");
+					assinGiveUpdateSerie(giveUpdateSerie);
+				}
+
+			}
+
+			$scope.deleteSerie = function(toDeleteSerie, idx) {
+
+				var handleReturn = function(data) {
+					var eventSeries = [];
+					angular.forEach($scope.eventSeries, function(serie, i) {
+						if (idx != i) {
+							eventSeries.push(angular.copy(serie));
+						}
+					});
+					$scope.eventSeries = eventSeries;
+					console.log($scope.eventSeries)
+				}
+
+				$scope.toDeleteSerie = toDeleteSerie;
+				console.log(toDeleteSerie);
+
+				if (!toDeleteSerie.existed) {
+					handleReturn(null);
+					// $scope.$digest();
+				} else {
+					serieService.remove(toDeleteSerie.eventTypeId,
+							toDeleteSerie.id).then(
+							function(data) {
+								handleReturn(null);
+							},
+							function(error) {
+								$scope.launch("error", "", error.data.message,
+										function() {
+
+										}, function() {
+										});
+							})
+				}
+
+			}
+
+			$scope.createSerie = function() {
+
+				var toCreateSerie = {
+
+				}
+				toCreateSerie["existed"] = false;
+				toCreateSerie["changed"] = true;
+				toCreateSerie["showInput"] = true;
+				$scope.eventSeries.push(toCreateSerie);
+				/*
+				 * angular.forEach($scope.kids, function(kid, index){ })
+				 */
+				// create all existed == false
+				// update all changed == true
+			}
+		} ]);
+// Event Typs Start
 zmxk
 		.controller(
 				'EventTypeManageCtrl',
@@ -265,8 +415,9 @@ zmxk.controller('EventManageCtrl', [
 			var dateNames = {};
 			$scope.$on('setDate1', function(e, date, idx) {
 				// console.log(idx);
-
-				 $scope.formEventName(idx);
+				if (!angular.isUndefined(idx)) {
+					$scope.formEventName(idx);
+				}
 			});
 			$scope.init = function() {
 
@@ -322,7 +473,7 @@ zmxk.controller('EventManageCtrl', [
 						});
 
 				// get EventTypes
-				// eventTypes
+				// FIXME eventTypes
 				eventTypeService.list().then(function(data) {
 					$scope.eventTypes = data;
 				}, function(data) {
@@ -382,8 +533,7 @@ zmxk.controller('EventManageCtrl', [
 					mon = mon < 10 ? "0" + mon : mon;
 					var day = date.getDate();
 					day = day < 10 ? "0" + day : day;
-					name = mon + "-" + day + "-"
-							+ date.getFullYear();
+					name = mon + "-" + day + "-" + date.getFullYear();
 					name = namePrefix + " " + name;
 				}
 				if (!angular.isUndefined(selectEvent.name)) {
