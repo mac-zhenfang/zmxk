@@ -41,7 +41,7 @@ public class SiteController {
 	 * 
 	 * @RequestMapping(value = "/sites")
 	 */
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/sites", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<Site> getSites() {
 		return siteDao.list();

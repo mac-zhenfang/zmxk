@@ -10,35 +10,6 @@ zmxk.controller('UserCtrl', [
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
 			$scope.userList = [];
-
-			$scope.roles_option = [ {
-				value : 0,
-				label : "用户"
-			}, {
-				value : 1,
-				label : "操作人员"
-			}, {
-				value : 2,
-				label : "管理员"
-			} ];
-
-			$scope.credit_option = [ {
-				label : "首次充值-多次体验(10次)",
-				value : 1000
-			}, {
-				label : "首次充值-单次体验",
-				value : 100
-			}, {
-				label : "首次充值-VIP",
-				value : 1050000
-			}, {
-				label : "日常充值",
-				value : 100
-			}, {
-				label : "活动充值",
-				value : 100
-			} ]
-
 			$scope.init = function() {
 
 				userService.list().then(function(data) {

@@ -97,7 +97,7 @@ public class UserController extends BaseController {
 		return userService.getUserById(userId);
 	}
 	
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/grades", method = RequestMethod.GET)
 	public List<Grade> getMyGrades() {
 		User user = UserSessionManager.getSessionUser();

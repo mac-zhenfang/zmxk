@@ -32,7 +32,7 @@ public class TagController extends BaseController {
 		return tagDao.create(tag);
 	}
 
-	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/tags/{tagId}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public Tag get(@PathVariable String tagId) {
