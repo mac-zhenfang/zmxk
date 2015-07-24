@@ -49,16 +49,10 @@ zmxk.controller('MainController', [
 					"B" : 2,
 					"C" : 3
 			}
-			/*
-			 * $scope.includePage = function() { var returnPage =
-			 * "user_list.html"; switch (currentModule) { case "userList":
-			 * returnPage = "user_list.html"; break; case "eventList":
-			 * returnPage = "event_list.html"; break; case "eventEnroll":
-			 * returnPage = "event_enroll.html"; break } return returnPage; }
-			 */
-			console.log($cookies.get("loginUser"));
+
+			//console.log($cookies.get("loginUser"));
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
-			console.log($scope.loginUser);
+			//console.log($scope.loginUser);
 			$scope.init = function() {
 				
 

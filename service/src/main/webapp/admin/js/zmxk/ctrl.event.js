@@ -378,7 +378,7 @@ zmxk.controller('EventManageCtrl', [
 			$scope.init = function() {
 				//console.log($scope.loginUser);
 				var loginUserSiteId = $scope.loginUser.siteId;
-				
+				console.log(loginUserSiteId);
 				eventService.list(loginUserSiteId).then(
 						function(data) {
 							$scope.listEvents = data;
