@@ -815,49 +815,33 @@ zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 zmxk.service('creditRecordService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var creditRecordService = $resource(zmxkConfig.event_credit_records_search_uri, {
+				start : '@start',
+				end : '@end',
+				mobileNum : '@mobileNum'
 			}, {
-				remove : {
-					url : zmxkConfig.event_rule_remove_uri,
-					method : 'DELETE'
-				},
 				search : {
-					url : zmxkConfig.event_rule_search_uri,
+					url : zmxkConfig.event_credit_records_search_uri,
+					method : "GET",
+					isArray : true
+				},
+				searchMine : {
+					url : zmxkConfig.my_event_credit_records_search_uri,
 					method : "GET",
 					isArray : true
 				}
 			});
-			this.create = function(creditRule) {
+			this.listAll = function(mobileNum, start, end) {
 				var defer = $q.defer();
-				eventRuleService.create(creditRule, function(data, header) {
+				creditRecordService.search({mobileNum, start, end}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);
 				});
 				return defer.promise;
 			};
-			this.update = function(creditRule) {
+			this.listAllMine = function(start, end) {
 				var defer = $q.defer();
-				eventRuleService.update({}, creditRule, function(data, header) {
-					defer.resolve(data);
-				}, function(data, header) {
-					defer.reject(data);
-				});
-				return defer.promise;
-			};
-			this.remove = function(creditRuleId) {
-				var defer = $q.defer();
-				eventRuleService.remove({}, {
-					id : creditRuleId
-				}, function(data, header) {
-					defer.resolve(data);
-				}, function(data, header) {
-					defer.reject(data);
-				});
-				return defer.promise;
-			};
-			this.listAll = function() {
-				var defer = $q.defer();
-				eventRuleService.search({}, function(data, header) {
+				creditRecordService.searchMine({start, end}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);

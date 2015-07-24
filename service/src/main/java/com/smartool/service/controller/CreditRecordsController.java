@@ -24,10 +24,10 @@ public class CreditRecordsController extends BaseController {
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/eventcreditrecords/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CreditRecord> searchCreditRecord(@RequestParam(value = "userId", required = false) String userId,
+	public List<CreditRecord> searchCreditRecord(@RequestParam(value = "mobileNum", required = false) String mobileNum,
 			@RequestParam(value = "start", required = false) Long start,
 			@RequestParam(value = "end", required = false) Long end) {
-		return creditService.listCreditRecords(userId, start, end);
+		return creditService.listCreditRecordsByMobileNumber(mobileNum, start, end);
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)

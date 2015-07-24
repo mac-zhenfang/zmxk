@@ -228,6 +228,9 @@ public class CreditServiceImpl implements CreditService {
 			if (eventCreditRule.getUpperRank() != null || eventCreditRule.getLowerRank() != null) {
 				creditRecord.setRank(attendee.getRank());
 			}
+			creditRecord.setGoldenMedal(eventCreditRule.getGoldenMedal());
+			creditRecord.setSilverMedal(eventCreditRule.getSilverMedal());
+			creditRecord.setBronzeMedal(eventCreditRule.getBronzeMedal());
 		} else {
 			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
 		}
@@ -238,5 +241,10 @@ public class CreditServiceImpl implements CreditService {
 	@Override
 	public List<CreditRecord> listCreditRecords(String userId, Long start, Long end) {
 		return creditRecordDao.listCreditRecords(userId, start, end);
+	}
+
+	@Override
+	public List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end) {
+		return creditRecordDao.listCreditRecordsByMobileNumber(mobileNum, start, end);
 	}
 }

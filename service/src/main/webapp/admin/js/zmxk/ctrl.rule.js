@@ -314,10 +314,37 @@ zmxk.controller('CreditRecordCtrl', [
 		'$scope',
 		'userService',
 		'eventService',
+		'creditRecordService',
 		'$interval',
 		'$timeout',
 		'$routeParams',
-		function($scope, userService, eventService, $interval, $timeout,
+		function($scope, userService, eventService, creditRecordService, $interval, $timeout,
 				$routeParams) {
-
+			$scope.criteria = {};
+			$scope.criteria.mobileNum = null;
+			$scope.criteria.start = null;
+			$scope.criteria.end = null;
+			$scope.creditRecords = [];
+			$scope.search = function() {
+				var tmp = {}
+				tmp.mobileNum = $scope.criteria.mobileNum;
+				if ($scope.criteria.start) {
+					tmp.start = $scope.criteria.start.getTime();
+				} else {
+					tmp.start = null;
+				}
+				if ($scope.criteria.end) {
+					tmp.end = $scope.criteria.end.getTime();
+				} else {
+					tmp.end = null;
+				}
+				creditRecordService.listAll(tmp.mobileNum, tmp.start,
+						tmp.end).then(function(data) {
+					$scope.creditRecords = data;
+				});
+			}
+			var init = function() {
+				$scope.search();
+			};
+			init();
 		} ]);
