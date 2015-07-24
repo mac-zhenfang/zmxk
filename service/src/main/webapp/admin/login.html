@@ -81,6 +81,10 @@
 								'userService',
 								function($scope, $http, $timeout, $cookies,
 										userService) {
+									//clean data;
+									$cookies.remove("zmxk_user_token");
+									$cookies.remove("loginUser");
+									//return;
 									$scope.const = {};
 									$scope.const.registerTitle = '登录';
 									$scope.const.mobile = '手机号码';
