@@ -5,8 +5,9 @@ zmxk.controller('MainController', [
 		'$window',
 		'$dialogs',
 		'$routeParams',
+		'$cookies',
 		function($scope, $location, userService, $window, $dialogs,
-				$routeParams) {
+				$routeParams, $cookies) {
 			currentModule = "userList";
 			$scope.$location = $location;
 
@@ -48,23 +49,21 @@ zmxk.controller('MainController', [
 					"B" : 2,
 					"C" : 3
 			}
-			/*
-			 * $scope.includePage = function() { var returnPage =
-			 * "user_list.html"; switch (currentModule) { case "userList":
-			 * returnPage = "user_list.html"; break; case "eventList":
-			 * returnPage = "event_list.html"; break; case "eventEnroll":
-			 * returnPage = "event_enroll.html"; break } return returnPage; }
-			 */
-			$scope.loginUser = {};
+
+			//console.log($cookies.get("loginUser"));
+			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
+			//console.log($scope.loginUser);
 			$scope.init = function() {
-				userService.getUser("me").then(function(data){
-					$scope.loginUser = data;
-				},function(data){});
+				
 
 				if (!angular.isUndefined($scope.$location.search().page)) {
 					// console.log($scope.$location);
 					currentModule = $scope.$location.search().page;
 				}
+			}
+			
+			$scope.isAdmin = function() {
+				return $scope.loginUser.roleId==2;
 			}
 
 			$scope.hoopPage = function(page, params) {

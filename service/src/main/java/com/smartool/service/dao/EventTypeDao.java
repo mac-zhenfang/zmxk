@@ -6,6 +6,8 @@ import com.smartool.common.dto.EventType;
 
 public interface EventTypeDao {
 	
+	public List<EventType> listBySite(String siteId);
+	
 	public List<EventType> list();
 	
 	public EventType get(String id);

@@ -10,6 +10,7 @@ public class User extends BaseDateTrackingBean {
 	// private String wcId;
 	private String location;
 	private String roleId;
+	private String siteId;
 	private List<Kid> kids;
 	private int status;
 	private int credit;
@@ -115,5 +116,13 @@ public class User extends BaseDateTrackingBean {
 
 	public void setCredit(int credit) {
 		this.credit = credit;
+	}
+
+	public String getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(String siteId) {
+		this.siteId = siteId;
 	}
 }

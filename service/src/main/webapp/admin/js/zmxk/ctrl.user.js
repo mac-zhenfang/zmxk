@@ -2,14 +2,19 @@ zmxk.controller('UserCtrl', [
 		'$scope',
 		'$location',
 		'userService',
+		'siteService',
 		'$window',
 		'$dialogs',
 		'$routeParams',
-		function($scope, $location, userService, $window, $dialogs,
+		function($scope, $location, userService, siteService, $window, $dialogs,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
 			$scope.userList = [];
+			$scope.sites = [ {
+				id : null,
+				name : "N/A"
+			}];
 			$scope.init = function() {
 
 				userService.list().then(function(data) {
@@ -17,11 +22,18 @@ zmxk.controller('UserCtrl', [
 						user["existed"] = true;
 						user["changed"] = false;
 						user["showInput"] = false;
+						
 						$scope.userList.push(user);
 					})
 				}, function(data) {
 				});
-
+				
+				siteService.list().then(function(data){
+					angular.forEach(data, function(site, index){
+						$scope.sites.push(site);
+					})
+				}, function(data){});
+				
 				// console.log($scope.userList);
 			}
 

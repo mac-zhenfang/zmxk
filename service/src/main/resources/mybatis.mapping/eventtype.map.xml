@@ -31,5 +31,10 @@
 		from eventTypes where id = #{id}
 	</select>
 
+	<select id="listBySiteId" resultType="com.smartool.common.dto.EventType"
+		parameterType="String">
+		select * from eventTypes where siteId=#{siteId} or
+		siteId is null
+	</select>
 </mapper>
 

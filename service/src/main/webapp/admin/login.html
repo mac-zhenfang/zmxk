@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.31.css">
 
 <!---->
-<link href="css/zmxk.css" rel="stylesheet" /> 
+<link href="css/zmxk.css" rel="stylesheet" />
 
 
 </head>
@@ -34,7 +34,8 @@
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2">
 							<span class="input-group-addon">密码</span> <input type="password"
-								class="form-control" ng-model="formData.password" placeholder="密码" />
+								class="form-control" ng-model="formData.password"
+								placeholder="密码" />
 						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
@@ -53,6 +54,9 @@
 	<script src="js/angular.js"></script>
 	<script src="js/angular-route.min.js"></script>
 	<script src="js/angular-resource.min.js"></script>
+
+	<script src="js/angular-cookies.min.js"></script>
+
 	<script src="js/dialogs.min.js"></script>
 	<script src="js/ui-bootstrap-tpls-0.6.0.js"></script>
 	<script src="js/index.min.js"></script>
@@ -73,7 +77,14 @@
 								'$scope',
 								'$http',
 								'$timeout',
-								function($scope, $http, $timeout) {
+								'$cookies',
+								'userService',
+								function($scope, $http, $timeout, $cookies,
+										userService) {
+									//clean data;
+									$cookies.remove("zmxk_user_token");
+									$cookies.remove("loginUser");
+									//return;
 									$scope.const = {};
 									$scope.const.registerTitle = '登录';
 									$scope.const.mobile = '手机号码';
@@ -109,27 +120,40 @@
 														function(data) {
 															$scope.currentStep = 3;
 															$scope.submit_label = $scope.const.registerTitle;
-															$scope
-																	.launch(
-																			"notify",
-																			"登陆成功",
-																			"按确定或3秒钟后自动跳转",
-																			function() {
+															userService
+																	.getUser(
+																			"me")
+																	.then(
+																			function(
+																					data) {
+																				$cookies.put("loginUser", angular.toJson(data));
 																				$scope
-																						.hoopPage(
-																								"admin/index.html#/users",
-																								[])
+																						.launch(
+																								"notify",
+																								"登陆成功",
+																								"按确定或3秒钟后自动跳转",
+																								function() {
+																									$scope
+																											.hoopPage(
+																													"admin/index.html#/events",
+																													[])
+																								},
+																								function() {
+																								});
+																				/* */
+																				$timeout(
+																						function() {
+																							$scope
+																									.hoopPage(
+																											"admin/index.html#/events",
+																											[])
+																						},
+																						3000)
 																			},
-																			function() {
+																			function(
+																					data) {
 																			});
-															/* */
-															$timeout(
-																	function() {
-																		$scope
-																				.hoopPage(
-																						"admin/index.html#/users",
-																						[])
-																	}, 3000)
+
 														})
 												.error(
 														function(data, header) {

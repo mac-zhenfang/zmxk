@@ -38,14 +38,25 @@ public class EventTypeController {
 	}
 
 	/**
-	 * CREATE
+	 * LIST
+	 * 
+	 * @RequestMapping(value = "/eventtypes")
+	 */
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventtypes", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<EventType> getEventTypes() {
+		return eventTypeDao.list();
+	}
+	
+	/**
+	 * LIST
 	 * 
 	 * @RequestMapping(value = "/eventtypes")
 	 */
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@RequestMapping(value = "/eventtypes", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<EventType> getEventTypes() {
-		return eventTypeDao.list();
+	@RequestMapping(value = "/{siteId}/eventtypes", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<EventType> getEventTypesBySiteId(@PathVariable String siteId) {
+		return eventTypeDao.listBySite(siteId);
 	}
 
 	/**

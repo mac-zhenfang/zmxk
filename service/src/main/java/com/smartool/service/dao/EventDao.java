@@ -8,6 +8,8 @@ public interface EventDao {
 
 	List<Event> listAllEvent();
 	
+	List<Event> listAllEvent(String siteId);
+	
 	List<Event> listAllEvent (int status);
 	
 	List<Event> listFullEvent();

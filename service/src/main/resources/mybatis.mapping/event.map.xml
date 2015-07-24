@@ -61,7 +61,28 @@
 		eventTypes t where
 		e.eventTypeId = t.id and a.eventId = e.id
 	</select>
-
+	
+	<select id="listAllBySiteId" resultMap="event" parameterType="String">
+		select e.eventTime as eventTime,
+		e.name as eventName, t.name as eventType, e.id as eventId, t.id as
+		eventTypeId, e.quota as quota, e.siteId as siteId, e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		a.id as attendeeId,
+		a.score as score,
+		a.rank as rank,
+		a.userId as userId,
+		a.seq as seq,
+		a.status as status,
+		e.stage as stage,
+		e.seriesId as seriesId
+		from events e,
+		attendees a,
+		eventTypes t where
+		e.eventTypeId = t.id and a.eventId = e.id and e.siteId=#{siteId}
+	</select>
+	
 	<select id="listAllStatus" parameterType="int" resultMap="event">
 		select
 		e.eventTime as eventTime,

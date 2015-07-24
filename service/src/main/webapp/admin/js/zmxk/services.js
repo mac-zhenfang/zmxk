@@ -233,6 +233,14 @@ zmxk.service('eventTypeService', [ '$resource', 'zmxkConfig', '$q',
 				remove : {
 					url : zmxkConfig.event_type_rest_uri,
 					method : 'DELETE'
+				},
+				queryBySite : {
+					url : zmxkConfig.event_type_site_rest_uri,
+					method : "GET",
+					isArray : true,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
 				}
 			})
 
@@ -270,13 +278,23 @@ zmxk.service('eventTypeService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 
-			this.list = function() {
+			this.list = function(s) {
 				var defer = $q.defer();
-				eventTypeResource.query(function(data, headers) {
-					defer.resolve(data);
-				}, function(data, headers) {
-					defer.reject(data);
-				});
+				if (angular.isUndefined(s)) {
+					eventTypeResource.query(function(data, headers) {
+						defer.resolve(data);
+					}, function(data, headers) {
+						defer.reject(data);
+					});
+				} else {
+					eventTypeResource.queryBySite({
+						siteId : s
+					},function(data, headers) {
+						defer.resolve(data);
+					}, function(data, headers) {
+						defer.reject(data);
+					});
+				}
 
 				return defer.promise;
 			}
@@ -336,6 +354,14 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					headers : {
 						'Content-Type' : 'application/json'
 					}
+				},
+				queryBySite : {
+					url : zmxkConfig.event_site_uri,
+					method : "GET",
+					isArray : true,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
 				}
 			})
 
@@ -375,14 +401,24 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 
 			this.list = function(s) {
 				var defer = $q.defer();
-				if (!angular.isUndefined(s)) {
-					eventResource.query({
-						status : s
-					}, function(data, headers) {
-						defer.resolve(data);
-					}, function(data, headers) {
-						defer.reject(data);
-					});
+				if (!angular.isUndefined(s) && angular.isObject(s)) {
+					if (angular.isNumber(s)) {
+						eventResource.query({
+							status : s
+						}, function(data, headers) {
+							defer.resolve(data);
+						}, function(data, headers) {
+							defer.reject(data);
+						});
+					} else if (angular.isString(s)) {
+						eventResource.queryBySite({
+							siteId : s
+						}, function(data, headers) {
+							defer.resolve(data);
+						}, function(data, headers) {
+							defer.reject(data);
+						});
+					}
 				} else {
 					eventResource.query(function(data, headers) {
 						defer.resolve(data);
