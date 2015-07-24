@@ -49,10 +49,12 @@ zmxk.controller('MainController', [
 					"B" : 2,
 					"C" : 3
 			}
+			
+			
 
-			//console.log($cookies.get("loginUser"));
+			// console.log($cookies.get("loginUser"));
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
-			//console.log($scope.loginUser);
+			// console.log($scope.loginUser);
 			$scope.init = function() {
 				
 
@@ -132,7 +134,7 @@ zmxk.controller('MainController', [
 				return date.getMonth() + 1 + "/" + date.getDate() + "/"
 						+ date.getFullYear() + "  " + strTime;
 			}
-			//$scope.init();
+			// $scope.init();
 		} ]);
 // MainController.$inject = ['$scope', 'userService'];
 

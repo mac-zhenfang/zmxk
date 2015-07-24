@@ -26,22 +26,7 @@
 
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
-		<![CDATA[select e.name as eventName, 
-		et.name as eventTypeName, 
-		et.siteId as siteId, 
-		s.name as siteName, 
-		e.eventTime as eventTime, 
-		a.rank as rank, 
-		ecr.credit as credit, 
-		e.stage as stage, 
-		e.seriesId as serieId, 
-		u.name as userName, 
-		u.id as userId, 
-		k.name as kidName, 
-		k.id as kidId 
-		from attendees a, users u, sites s, events e, eventCreditRules ecr, eventTypes et, kids k 
-		where k.userId = u.id and a.eventId=e.id and a.rank = ecr.rank
-		and e.eventTypeId = et.id and et.siteId=s.id and u.id=a.userId and a.rank<=3 and  u.id = #{id}
+		<![CDATA[select cr.rank as rank, e.eventTime as eventTime, u.name as userName, k.name as kidName, e.name as eventName, cr.credit as credit, cr.goldenMedal as goldenMedal, cr.silverMedal as silverMedal, cr.bronzeMedal as bronzeMedal from creditRecords cr, users u, kids k, events e, attendees a where k.userId=cr.userId and e.id=a.eventId and e.id=cr.eventId and cr.userId=u.id and cr.userId = #{id}
 		]]>
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">

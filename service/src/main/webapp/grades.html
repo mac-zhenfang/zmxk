@@ -22,7 +22,7 @@
 <body ng-controller="MainController as main" ng-init="init()">
 	<div class="container-fluid-full">
 		<div class="row-fluid">
-			<div class="span7 box ">
+			<div class="span12 box ">
 				<div class="box-header">
 					<h2>我的成绩单</h2>
 				</div>
@@ -54,270 +54,103 @@
 					</table>
 				</div>
 			</div>
-			<div class="span5 graph">
-
-				<h1>Timeline</h1>
-
-				<div class="timeline">
-
-					<div class="timeslot">
-
-						<div class="task">
-							<span> <span class="type">appointment</span> <span
-								class="details"> Lukasz Holeczek at creativeLabs HQ </span> <span>
-									remaining time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-map-marker"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="clearfix"></div>
-
-					<div class="timeslot alt">
-
-						<div class="task">
-							<span> <span class="type">phone call</span> <span
-								class="details"> Lukasz Holeczek </span> <span> remaining
-									time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-phone"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot">
-
-						<div class="task">
-							<span> <span class="type">mail</span> <span
-								class="details"> Lukasz Holeczek </span> <span> remaining
-									time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-envelope"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot alt">
-
-						<div class="task">
-							<span> <span class="type">deadline</span> <span
-								class="details"> Fixed PayPal problems </span> <span>
-									remaining time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-calendar"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot">
-
-						<div class="task">
-							<span> <span class="type">appointment</span> <span
-								class="details"> Lukasz Holeczek at creativeLabs HQ </span> <span>
-									remaining time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-map-marker"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="clearfix"></div>
-
-					<div class="timeslot alt">
-
-						<div class="task">
-							<span> <span class="type">skype call</span> <span
-								class="details"> Lukasz Holeczek </span> <span> remaining
-									time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-phone"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot">
-
-						<div class="task">
-							<span> <span class="type">mail</span> <span
-								class="details"> Lukasz Holeczek </span> <span> remaining
-									time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-envelope"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot alt">
-
-						<div class="task">
-							<span> <span class="type">project deadline</span> <span
-								class="details"> Fixed PayPal problems </span> <span>
-									remaining time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-calendar"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-					<div class="timeslot">
-
-						<div class="task">
-							<span> <span class="type">mail</span> <span
-								class="details"> Lukasz Holeczek </span> <span> remaining
-									time <span class="remaining"> 3h 38m 15s </span>
-							</span>
-							</span>
-							<div class="arrow"></div>
-						</div>
-						<div class="icon">
-							<i class="icon-envelope"></i>
-						</div>
-						<div class="time">3:43 PM</div>
-
-					</div>
-
-				</div>
-
-			</div>
 		</div>
 
-	</div>
+		<script src="assets/js/jquery-1.10.2.min.js"></script>
 
-	<script src="assets/js/jquery-1.10.2.min.js"></script>
+		<script src="assets/js/angular.js"></script>
+		<!-- -->
+		<script src="assets/js/angular-route.min.js"></script>
+		<script src="assets/js/angular-resource.min.js"></script>
+		<script src="assets/js/angular-cookies.min.js"></script>
+		<script src="assets/js/dialogs.min.js"></script>
+		<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
 
-	<script src="assets/js/angular.js"></script>
-	<!-- -->
-	<script src="assets/js/angular-route.min.js"></script>
-	<script src="assets/js/angular-resource.min.js"></script>
-	<script src="assets/js/angular-cookies.min.js"></script>
-	<script src="assets/js/dialogs.min.js"></script>
-	<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/index.min.js"></script>
 
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/index.min.js"></script>
+		<script src="assets/js/jquery-1.10.2.min.js"></script>
+		<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/jquery.sparkline.min.js"></script>
+		<script src="assets/js/jquery.autosize.min.js"></script>
+		<script src="assets/js/retina.js"></script>
+		<script src="assets/js/jquery.placeholder.min.js"></script>
+		<script src="assets/js/core.min.js"></script>
+		<script src="assets/js/custom.min.js"></script>
+		<script>
+			var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+			zmxk.config([ '$resourceProvider', function($resourceProvider) {
+				// Don't strip trailing slashes from calculated URLs
+				$resourceProvider.defaults.stripTrailingSlashes = false;
+			} ]);
 
-	<script src="assets/js/jquery-1.10.2.min.js"></script>
-	<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/jquery.sparkline.min.js"></script>
-	<script src="assets/js/jquery.autosize.min.js"></script>
-	<script src="assets/js/retina.js"></script>
-	<script src="assets/js/jquery.placeholder.min.js"></script>
-	<script src="assets/js/core.min.js"></script>
-	<script src="assets/js/custom.min.js"></script>
-	<script>
-		var zmxk = angular.module('zmxk', [ 'ngResource' ]);
-		zmxk.config([ '$resourceProvider', function($resourceProvider) {
-			// Don't strip trailing slashes from calculated URLs
-			$resourceProvider.defaults.stripTrailingSlashes = false;
-		} ]);
-
-		zmxk
-				.controller(
-						'MainController',
-						[
-								'$resource',
-								'$scope',
-								'$q',
-								function($resource, $scope, $q) {
-									$scope.gold = "<div class=\"medals\"><img src=\"assets/img/1.png\"></img></div>";
-									var userResource = $resource(
-											"/service/smartool/api/v1/users/me",
-											{},
-											{
-												getGrades : {
-													url : "/service/smartool/api/v1/users/me/grades",
-													method : 'GET',
-													isArray : true,
-													headers : {
-														'Content-Type' : 'application/json'
+			zmxk
+					.controller(
+							'MainController',
+							[
+									'$resource',
+									'$scope',
+									'$q',
+									function($resource, $scope, $q) {
+										$scope.gold = "<div class=\"medals\"><img src=\"assets/img/1.png\"></img></div>";
+										var userResource = $resource(
+												"/service/smartool/api/v1/users/me",
+												{},
+												{
+													getGrades : {
+														url : "/service/smartool/api/v1/users/me/grades",
+														method : 'GET',
+														isArray : true,
+														headers : {
+															'Content-Type' : 'application/json'
+														}
 													}
-												}
+												});
+
+										var getGrades = function() {
+											var defer = $q.defer();
+											userResource.getGrades(function(e,
+													headers) {
+												defer.resolve(e);
+											}, function(e, headers) {
+												defer.reject(e);
 											});
+											return defer.promise;
+										}
 
-									var getGrades = function() {
-										var defer = $q.defer();
-										userResource.getGrades(function(e,
-												headers) {
-											defer.resolve(e);
-										}, function(e, headers) {
-											defer.reject(e);
-										});
-										return defer.promise;
-									}
+										$scope.grades = [];
 
-									$scope.grades = [];
+										$scope.formatDate = function(time) {
+											var date = new Date(time);
+											var hours = date.getHours();
+											var minutes = date.getMinutes();
+											var ampm = hours >= 12 ? 'pm'
+													: 'am';
+											hours = hours % 12;
+											hours = hours ? hours : 12; // the hour '0'
+											// should be '12'
+											minutes = minutes < 10 ? '0'
+													+ minutes : minutes;
+											var strTime = hours + ':' + minutes
+													+ ' ' + ampm;
+											return date.getMonth() + 1 + "/"
+													+ date.getDate() + "/"
+													+ date.getFullYear() + "  "
+													+ strTime;
+										}
 
-									$scope.formatDate = function(time) {
-										var date = new Date(time);
-										var hours = date.getHours();
-										var minutes = date.getMinutes();
-										var ampm = hours >= 12 ? 'pm' : 'am';
-										hours = hours % 12;
-										hours = hours ? hours : 12; // the hour '0'
-										// should be '12'
-										minutes = minutes < 10 ? '0' + minutes
-												: minutes;
-										var strTime = hours + ':' + minutes
-												+ ' ' + ampm;
-										return date.getMonth() + 1 + "/"
-												+ date.getDate() + "/"
-												+ date.getFullYear() + "  "
-												+ strTime;
-									}
+										$scope.init = function() {
+											getGrades().then(function(data) {
+												$scope.grades = data;
+											}, function(data) {
 
-									$scope.init = function() {
-										getGrades().then(function(data) {
-											$scope.grades = data;
-										}, function(data) {
+											});
+										}
 
-										});
-									}
+									} ]);
 
-								} ]);
-
-		angular.bootstrap(document, [ 'zmxk' ]);
-	</script>
+			angular.bootstrap(document, [ 'zmxk' ]);
+		</script>
 </body>
 </html>

@@ -15,11 +15,7 @@ public class Grade {
 	private Date eventTime;
 	
 	private String eventTypeId;
-	
-	private String siteId;
-	
-	private String siteName;
-	
+			
 	private String kidName;
 	
 	private String userName;
@@ -62,22 +58,6 @@ public class Grade {
 
 	public void setEventTypeId(String eventTypeId) {
 		this.eventTypeId = eventTypeId;
-	}
-
-	public String getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(String siteId) {
-		this.siteId = siteId;
-	}
-
-	public String getSiteName() {
-		return siteName;
-	}
-
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
 	}
 
 	public int getCredit() {

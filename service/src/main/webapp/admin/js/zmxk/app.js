@@ -30,16 +30,7 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 
 // put all labels / constants in
 zmxk.constant('zmxkConstant', {
-	kids_school_options : [ {
-		value : 0,
-		label : "幼儿园"
-	}, {
-		value : 1,
-		label : "小学"
-	}, {
-		value : 2,
-		label : "未上幼儿园"
-	} ]
+	
 });
 
 zmxk
@@ -122,6 +113,9 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 		redirectTo : '/events'
 	}).when('/credit_records', {
 		templateUrl : 'credit_records.html',
+		controller : "CreditRecordCtrl"
+	}).when('/sites', {
+		templateUrl : 'site_list.html',
 		controller : "CreditRecordCtrl"
 	});
 } ]);
