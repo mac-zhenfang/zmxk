@@ -34,7 +34,7 @@ public interface CreditService {
 	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
 			String name);
 
-	CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule, String operatorUserId);
+	CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule);
 
 	List<CreditRecord> listCreditRecords(String userId, Long start, Long end);
 

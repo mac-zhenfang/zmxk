@@ -160,7 +160,6 @@ CREATE TABLE `creditRecords` (
 	`id` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`eventId` varchar(36) CHARACTER SET utf8 NOT NULL,
-	`operatorId` varchar(36) NOT NULL,
 	`creditRuleType` varchar(255) NOT NULL,
 	`creditRuleId` varchar(36) NOT NULL,
     `displayName` varchar(255) NOT NULL,

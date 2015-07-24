@@ -1,9 +1,7 @@
 package com.smartool.service.controller;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +15,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import com.google.common.collect.TreeRangeMap;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
-import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.Kid;
-import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
-import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
-import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TagDao;
-import com.smartool.service.service.CreditService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -57,12 +47,6 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private TagDao tagDao;
-
-	@Autowired
-	private CreditService creditService;
-
-	@Autowired
-	private CreditRuleDao creditRuleDao;
 
 	private static Random r = new Random();
 	
@@ -134,54 +118,18 @@ public class EventController extends BaseController {
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
-		User sessionUser = UserSessionManager.getSessionUser();
 		List<Attendee> retAttendees = new ArrayList<>();
-		Event event = eventDao.getEvent(eventId);
-		List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
-				event.getStage(), event.getSeriesId(), null);
-		RangeMap<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
 		for (Attendee attendee : attendees) {
 			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
 			} else {
 				attendee.setStatus(2);
-				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
-				if (rulesToApply != null && !rulesToApply.isEmpty()) {
-					for (EventCreditRule ruleToApply : rulesToApply) {
-						creditService.applyCreditRull(attendee, ruleToApply, sessionUser.getId());
-					}
-				}
 			}
 			// update attendee
 			retAttendees.add(attendeeDao.complete(attendee));
 		}
 
 		return retAttendees;
-	}
-
-	private RangeMap<Integer, List<EventCreditRule>> toCreditRuleMap(List<EventCreditRule> eventCreditRules) {
-		RangeMap<Integer, List<EventCreditRule>> creditRuleMap = TreeRangeMap.create();
-		for (EventCreditRule eventCreditRule : eventCreditRules) {
-			Integer upperRank = eventCreditRule.getUpperRank();
-			Integer lowerRank = eventCreditRule.getLowerRank();
-			Range<Integer> range = getRange(upperRank, lowerRank);
-			Map<Range<Integer>, List<EventCreditRule>> mapOfRanges = creditRuleMap.asMapOfRanges();
-			if (!mapOfRanges.containsKey(range)) {
-				creditRuleMap.put(range, new LinkedList<EventCreditRule>());
-			}
-			mapOfRanges.get(range).add(eventCreditRule);
-		}
-		return creditRuleMap;
-	}
-
-	private Range<Integer> getRange(Integer upper, Integer lower) {
-		if (upper != null && lower != null) {
-			return Range.closed(upper, lower);
-		} else if (upper != null) {
-			return Range.atLeast(upper);
-		} else {
-			return Range.atMost(lower);
-		}
 	}
 
 	/**
