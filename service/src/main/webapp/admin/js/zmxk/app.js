@@ -72,8 +72,8 @@ zmxk
 					event_rule_remove_uri : "/service/smartool/api/v1/eventcreditrules/:eventCreditRuleId",
 					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId",
 					tag_search_uri : "/service/smartool/api/v1/tags/search?type=:type",
-					event_credit_records_search_uri : "/eventcreditrecords/search",
-					my_event_credit_records_search_uri : "/users/me/eventcreditrecords/search",
+					event_credit_records_search_uri : "/service/smartool/api/v1/eventcreditrecords/search",
+					my_event_credit_records_search_uri : "/service/smartool/api/v1/users/me/eventcreditrecords/search",
 					tag_rest_uri : "/service/smartool/api/v1/tags/:tagId"
 						
 

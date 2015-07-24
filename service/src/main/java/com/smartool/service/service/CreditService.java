@@ -36,7 +36,9 @@ public interface CreditService {
 
 	CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule);
 
-	List<CreditRecord> listCreditRecords(String userId, Long start, Long end);
+	List<CreditRecord> listCreditRecords(String mobileNum, Long start, Long end);
 
 	String getCreditRecordDisplayName(Attendee attendee, CreditRule creditRule);
+
+	List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end);
 }

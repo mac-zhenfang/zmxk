@@ -25,16 +25,32 @@ public class CreditRecordDaoImpl implements CreditRecordDao {
 	}
 
 	@Override
-	public List<CreditRecord> listCreditRecords(String userId, Long start, Long end) {
+	public List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		if (userId != null) {
-			map.put("userId", userId);
-		}
 		if (start != null) {
 			map.put("start", new Date(start));
 		}
 		if (end != null) {
 			map.put("end", new Date(end));
+		}
+		if (mobileNum != null) {
+			map.put("mobileNum", mobileNum);
+			return sqlSession.selectList("CREDIT_RECORD.searchByMobileNumber", map);
+		}
+		return sqlSession.selectList("CREDIT_RECORD.search", map);
+	}
+
+	@Override
+	public List<CreditRecord> listCreditRecords(String userId, Long start, Long end) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if (start != null) {
+			map.put("start", new Date(start));
+		}
+		if (end != null) {
+			map.put("end", new Date(end));
+		}
+		if (userId != null) {
+			map.put("userId", userId);
 		}
 		return sqlSession.selectList("CREDIT_RECORD.search", map);
 	}

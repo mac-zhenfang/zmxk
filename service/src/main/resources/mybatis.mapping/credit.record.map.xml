@@ -15,18 +15,48 @@
 
 	<select id="search" parameterType="Map"
 		resultType="com.smartool.common.dto.CreditRecord">
-		select * from creditRecords
-		<trim prefix="where" prefixOverrides="and | or">
-			<if test="userId != null">
-				and userId = #{userId}
-			</if>
-			<if test="start != null">
-				<![CDATA[and lastModifiedTime > #{start}]]>
-			</if>
-			<if test="end != null">
-				<![CDATA[and lastModifiedTime < #{end}]]>
-			</if>
-		</trim>
+		select r.id,
+		userId,eventId,
+		creditRuleType,displayName,rank,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
+		r.createdTime,
+		r.lastModifiedTime,mobileNum
+		from creditRecords as r,
+		users as u
+		where u.id =
+		r.userId
+		<if test="userId != null">
+			and r.userId = #{userId}
+		</if>
+		<if test="start != null">
+			<![CDATA[and r.lastModifiedTime > #{start}]]>
+		</if>
+		<if test="end != null">
+			<![CDATA[and r.lastModifiedTime < #{end}]]>
+		</if>
+		order by  r.lastModifiedTime desc
+	</select>
+
+	<select id="searchByMobileNumber" parameterType="Map"
+		resultType="com.smartool.common.dto.CreditRecord">
+		select r.id,
+		userId,eventId,
+		creditRuleType,displayName,rank,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
+		r.createdTime,
+		r.lastModifiedTime,mobileNum
+		from creditRecords as r,
+		users as u
+		where u.id =
+		r.userId
+		<if test="mobileNum != null">
+			and u.mobileNum = #{mobileNum}
+		</if>
+		<if test="start != null">
+			<![CDATA[and r.lastModifiedTime > #{start}]]>
+		</if>
+		<if test="end != null">
+			<![CDATA[and r.lastModifiedTime < #{end}]]>
+		</if>
+		order by  r.lastModifiedTime desc
 	</select>
 
 	<select id="getById" parameterType="String"
