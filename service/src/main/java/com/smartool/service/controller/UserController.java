@@ -45,7 +45,7 @@ public class UserController extends BaseController {
 		return userService.search(query);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public List<User> getUsers() {
 		return userService.listAllUser();

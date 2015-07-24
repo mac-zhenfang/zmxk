@@ -1,6 +1,6 @@
 var currentModule;
 var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
-		'dialogs', 'ngRoute' ], function($httpProvider) {
+		'dialogs', 'ngRoute', 'ngCookies' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
 			'responseError' : function(response) {
@@ -12,10 +12,10 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 					window.location = "err403.html";
 					return;
 				}
-				if (response.status == "500") {
+				/*if (response.status == "500") {
 					window.location = "err500.html";
 					return;
-				}
+				}*/
 				/*
 				 * if (response.status == "400") {
 				 * 
@@ -50,10 +50,12 @@ zmxk
 					user_logout_uri : "/service/smartool/api/v1/users/logout",
 					user_search_uri : "/service/smartool/api/v1/users/search?query=:query",
 					user_rest_uri : "/service/smartool/api/v1/users/:userId",
+					event_site_uri: "/service/smartool/api/v1/:siteId/events/",
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
 					site_rest_uri : "/service/smartool/api/v1/sites/:siteId",
 					serie_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId/series/:serieId",
 					event_type_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId",
+					event_type_site_rest_uri : "/service/smartool/api/v1/:siteId/eventtypes/",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
 					event_update_attendee_uri : "/service/smartool/api/v1/events/:eventId/complete",
 					rule_create_uri : "/service/smartool/api/v1/creditrules",
@@ -114,7 +116,7 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'event_enroll.html',
 		controller : "EnrollController"
 	}).otherwise({
-		redirectTo : '/users'
+		redirectTo : '/events'
 	}).when('/credit_records', {
 		templateUrl : 'credit_records.html',
 		controller : "CreditRecordCtrl"

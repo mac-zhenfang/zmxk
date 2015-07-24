@@ -65,7 +65,15 @@ public class EventController extends BaseController {
 	private CreditRuleDao creditRuleDao;
 
 	private static Random r = new Random();
-
+	
+	/**
+	 * List events by site
+	 * */
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/{siteId}/events", method = RequestMethod.GET)
+	public List<Event> getEventsBySite(@PathVariable String siteId) {
+		return eventDao.listAllEvent(siteId);
+	}
 	/**
 	 * List
 	 * 

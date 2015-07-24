@@ -18,7 +18,7 @@
 		resultType="com.smartool.common.dto.User">
 		select * from users where mobileNum = #{mobileNum}
 	</select>
-	
+
 	<select id="getLoginUserByMobileNumber" parameterType="String"
 		resultType="com.smartool.common.dto.LoginUser">
 		select * from users where mobileNum = #{mobileNum}
@@ -48,19 +48,19 @@
 		insert users (id, name,
 		password,
 		mobileNum, location,
-		roleId,status,createdTime,
+		roleId,status,siteId, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{password},#{mobileNum},#{location},#{roleId},#{status},now(),now())
+		(#{id},#{name},#{password},#{mobileNum},#{location},#{roleId},#{status},#{siteId},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.User">
 		update users
 		set
 		name=#{name},
-		password=#{password},
 		mobileNum=#{mobileNum},
 		location=#{location},
 		roleId=#{roleId},
+		siteId=#{siteId},
 		status=#{status}, credit=#{credit}
 		where id = #{id};
 	</select>

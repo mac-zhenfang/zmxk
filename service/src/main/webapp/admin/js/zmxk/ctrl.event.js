@@ -203,52 +203,7 @@ zmxk
 
 							}
 
-							/*
-							 * $scope.$watch("giveUpdateEventType",
-							 * function(newValue, oldValue, scope) { var
-							 * giveUpdateEventType = newValue;
-							 * //if(oldValue!=newValue){ //giveUpdateEventType =
-							 * newValue; console.log("changed");
-							 * 
-							 * //}
-							 * 
-							 * 
-							 * 
-							 * if (giveUpdateEventType.existed) {
-							 * giveUpdateEventType.changed =
-							 * !giveUpdateEventType.changed; } else {
-							 * giveUpdateEventType.existed =
-							 * !giveUpdateEventType.existed; }
-							 * 
-							 * 
-							 * 
-							 * giveUpdateEventType.showInput =
-							 * !giveUpdateEventType.showInput;
-							 * 
-							 * 
-							 * console.log(giveUpdateEventType); // $scope.kids =
-							 * kid; $scope.listEvents var eventTypes = [];
-							 * console.log($scope.listEventTypes);
-							 * angular.forEach($scope.listEventTypes,
-							 * function(eventType, i) { console.log(eventType);
-							 * //if (i == giveUpdateEventType.idx) {
-							 * //console.log(i + "~" + giveUpdateEventType.idx);
-							 * //eventTypes.push(giveUpdateEventType); //} else {
-							 * eventTypes.push(angular.copy(eventType)); //} });
-							 * $scope.listEventTypes = angular.copy(eventTypes);
-							 * console.log($scope.listEventTypes); })
-							 * 
-							 * $scope.$watch("toDeleteEventType",
-							 * function(newValue, oldValue) {
-							 * console.log(oldValue); console.log(newValue); var
-							 * idx = oldValue["idx"]; //if (oldValue !=
-							 * newValue) { var eventTypes = [];
-							 * angular.forEach($scope.listEventTypes,
-							 * function(eventType, i) { if (idx != i) {
-							 * eventTypes.push(angular.copy(eventType)); } });
-							 * $scope.listEventTypes = eventTypes;
-							 * console.log($scope.listEventTypes) //} })
-							 */
+							
 
 							$scope.updateEventType = function(
 									giveUpdateEventType, idx) {
@@ -419,9 +374,12 @@ zmxk.controller('EventManageCtrl', [
 					$scope.formEventName(idx);
 				}
 			});
+			$scope.sites = [];
 			$scope.init = function() {
-
-				eventService.list().then(
+				//console.log($scope.loginUser);
+				var loginUserSiteId = $scope.loginUser.siteId;
+				
+				eventService.list(loginUserSiteId).then(
 						function(data) {
 							$scope.listEvents = data;
 							var listEvents = data;
@@ -474,17 +432,43 @@ zmxk.controller('EventManageCtrl', [
 
 				// get EventTypes
 				// FIXME eventTypes
-				eventTypeService.list().then(function(data) {
-					$scope.eventTypes = data;
-				}, function(data) {
+				if($scope.isAdmin()) {
+					eventTypeService.list().then(function(data) {
+						$scope.eventTypes = data;
+					}, function(data) {
 
-				})
+					})
+					
+				} else {
+					console.log(loginUserSiteId);
+					eventTypeService.list(loginUserSiteId).then(function(data) {
+						$scope.eventTypes = data;
+					}, function(data) {
+						
+					})
+				}
+				
+				
+				
+				if($scope.isAdmin()) {
+					siteService.list().then(function(data) {
+						$scope.sites = data;
+					}, function(data) {
+					})
+				} else if ((!angular.isUndefined(loginUserSiteId) && loginUserSiteId!=null)){
+					siteService.get(loginUserSiteId).then(function(data) {
+						$scope.sites.push(data);
+						console.log($scope.sites);
+					}, function(data) {
+					})
+				} else {
+					//FIXME error
+					$scope.launch("error", "", "无法取得site信息，请重新登录或联系管理员",
+							function() {
 
-				siteService.list().then(function(data) {
-					$scope.sites = data;
-				}, function(data) {
-				})
-
+							}, function() {
+							});
+				}
 			}
 
 			$scope.changeName = function(idx) {

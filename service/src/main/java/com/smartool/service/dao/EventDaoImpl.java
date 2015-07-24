@@ -57,4 +57,9 @@ public class EventDaoImpl implements EventDao {
 	public void delete(String eventId) {
 		sqlSession.selectOne("EVENT.remove", eventId);
 	}
+
+	@Override
+	public List<Event> listAllEvent(String siteId) {
+		return sqlSession.selectList("EVENT.listAllBySiteId", siteId);
+	}
 }
