@@ -10,6 +10,8 @@ public class Grade {
 	
 	private int credit;
 	
+	private int stage;
+	
 	private String eventTypeName;
 	
 	private String eventName;
@@ -130,6 +132,14 @@ public class Grade {
 
 	public void setSerieName(String serieName) {
 		this.serieName = serieName;
+	}
+
+	public int getStage() {
+		return stage;
+	}
+
+	public void setStage(int stage) {
+		this.stage = stage;
 	}
 	
 }

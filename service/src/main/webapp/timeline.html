@@ -32,12 +32,14 @@
 					<div class="timeline">
 
 						<div ng-class="{0: 'timeslot', 1:'timeslot alt'}[$index % 2]"
-							ng-repeat="grade in grades" style="height: 96px;">
+							ng-repeat="grade in grades | orderBy:'eventTime':false"
+							style="height: 96px;">
 							<div class="task">
 								<span> <span class="type">参与了{{grade.eventTypeName}}
-										{{grade.serieName}}</span> <span class="details"
-									ng-bind="showGradeInfo({{grade}})"></span> <span> 成绩 <span
-										class="remaining"> {{grade.score}} 分钟 </span>
+										{{grade.serieName}}{{{1:'预赛', 2:'季度赛', 3:"决赛"}[grade.stage]}}</span>
+									<span class="details" ng-bind="showGradeInfo({{grade}})"></span>
+									<span> 成绩 <span class="remaining">
+											{{grade.score}} 分钟 </span>
 								</span>
 								</span>
 								<div class="arrow"></div>
@@ -85,7 +87,8 @@
 	<script src="assets/js/core.min.js"></script>
 	<script src="assets/js/custom.min.js"></script>
 	<script>
-		var zmxk = angular.module('zmxk', [ 'ngResource' ], function($httpProvider) {
+		var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
+				$httpProvider) {
 			$httpProvider.interceptors.push(function($q) {
 				return {
 					'responseError' : function(response) {
@@ -125,7 +128,7 @@
 								'$scope',
 								'$q',
 								function($resource, $scope, $q) {
-									$scope.gold = "<div class=\"medals\"><img src=\"assets/img/1.png\"></img></div>";
+
 									var userResource = $resource(
 											"/service/smartool/api/v1/users/me",
 											{},
@@ -155,21 +158,18 @@
 
 									$scope.showGradeInfo = function(grade) {
 										if (grade.goldenMedal > 0) {
-											return "获得了" + grade.credit
-													+ "积分, 取得了 "
-													+ grade.goldenMedal + "块金牌";
+											return "取得了 " + grade.goldenMedal
+													+ "块金牌";
 										}
 
 										if (grade.silverMedal > 0) {
-											return "获得了" + grade.credit
-													+ "积分, 取得了 "
-													+ grade.silverMedal + "块银牌";
+											return "取得了 " + grade.silverMedal
+													+ "块银牌";
 										}
 
 										if (grade.silverMedal > 0) {
-											return "获得了" + grade.credit
-													+ "积分, 取得了 "
-													+ grade.bronzeMedal + "块铜牌";
+											return "取得了 " + grade.bronzeMedal
+													+ "块铜牌";
 										}
 									}
 

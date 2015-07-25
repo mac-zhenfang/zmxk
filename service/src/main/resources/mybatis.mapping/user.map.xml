@@ -27,7 +27,7 @@
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
 		select u.name as userName, k.name as kidName, e.name as
-		eventName, et.name as eventTypeName, s.name as serieName, e.eventTime
+		eventName, e.stage as stage, et.name as eventTypeName, s.name as serieName, e.eventTime
 		as eventTime, a.rank as rank, a.score as score, cr.credit as credit,
 		cr.goldenMedal as goldenMedal, cr.silverMedal as silverMedal,
 		cr.bronzeMedal as bronzeMedal from creditRecords cr, users u, kids k,
