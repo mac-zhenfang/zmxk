@@ -13,6 +13,7 @@
 <!-- start: CSS -->
 <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="assets/css/style.css" rel="stylesheet" />
 <link href="assets/css/style.min.css" rel="stylesheet" />
 <link href="assets/css/style-responsive.min.css" rel="stylesheet" />
 <link href="assets/css/retina.css" rel="stylesheet" />
@@ -33,15 +34,22 @@
 						<div ng-class="{0: 'timeslot', 1:'timeslot alt'}[$index % 2]"
 							ng-repeat="grade in grades" style="height: 96px;">
 							<div class="task">
-								<span> <span class="type">参与了{{grade.eventTypeName}} {{grade.serieName}}</span> <span
-									class="details" ng-bind="showGradeInfo({{grade}})"></span> <span>
-										成绩 <span class="remaining"> {{grade.score}} 分钟 </span>
+								<span> <span class="type">参与了{{grade.eventTypeName}}
+										{{grade.serieName}}</span> <span class="details"
+									ng-bind="showGradeInfo({{grade}})"></span> <span> 成绩 <span
+										class="remaining"> {{grade.score}} 分钟 </span>
 								</span>
 								</span>
 								<div class="arrow"></div>
 							</div>
 							<div class="icon">
-								<i class="icon-map-marker"></i>
+								<img ng-show="{{grade.goldenMedal>0}}" src="assets/img/1.png"
+									style="height: 100px; width: 150px; margin-left: -66px; margin-top: -35px;"></img>
+								<img ng-show="{{grade.silverMedal>0}}" src="assets/img/2.png"
+									style="height: 100px; width: 150px; margin-left: -66px; margin-top: -35px;"></img>
+								<img ng-show="{{grade.bronzeMedal>0}}" src="assets/img/3.png"
+									style="height: 100px; width: 150px; margin-left: -66px; margin-top: -35px;"></img>
+
 							</div>
 							<div class="time">{{formatDate(grade.eventTime) |
 								date:"MM/dd/yyyy, HH:mm" }}</div>
@@ -77,7 +85,33 @@
 	<script src="assets/js/core.min.js"></script>
 	<script src="assets/js/custom.min.js"></script>
 	<script>
-		var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+		var zmxk = angular.module('zmxk', [ 'ngResource' ], function($httpProvider) {
+			$httpProvider.interceptors.push(function($q) {
+				return {
+					'responseError' : function(response) {
+						if (response.status == "401") {
+							window.location = "login.html";
+							return;
+						}
+						if (response.status == "403") {
+							window.location = "err403.html";
+							return;
+						}
+						/*if (response.status == "500") {
+							window.location = "err500.html";
+							return;
+						}*/
+						/*
+						 * if (response.status == "400") {
+						 * 
+						 * alert(response.data.error); } if (response.data.error) {
+						 * alert(response.data.error); }
+						 */
+						return $q.reject(response);
+					}
+				};
+			});
+		});
 		zmxk.config([ '$resourceProvider', function($resourceProvider) {
 			// Don't strip trailing slashes from calculated URLs
 			$resourceProvider.defaults.stripTrailingSlashes = false;
@@ -118,22 +152,26 @@
 									}
 
 									$scope.grades = [];
-									
+
 									$scope.showGradeInfo = function(grade) {
-										if(grade.goldenMedal > 0 ) {
-											return "获得了"+grade.credit+"积分, 取得了 " + grade.goldenMedal + "块金牌";
+										if (grade.goldenMedal > 0) {
+											return "获得了" + grade.credit
+													+ "积分, 取得了 "
+													+ grade.goldenMedal + "块金牌";
 										}
-										
-										if(grade.silverMedal > 0 ) {
-											return "获得了"+grade.credit+"积分, 取得了 " + grade.silverMedal + "块银牌";
+
+										if (grade.silverMedal > 0) {
+											return "获得了" + grade.credit
+													+ "积分, 取得了 "
+													+ grade.silverMedal + "块银牌";
 										}
-										
-										if(grade.silverMedal > 0 ) {
-											return "获得了"+grade.credit+"积分, 取得了 " + grade.bronzeMedal + "块铜牌";
+
+										if (grade.silverMedal > 0) {
+											return "获得了" + grade.credit
+													+ "积分, 取得了 "
+													+ grade.bronzeMedal + "块铜牌";
 										}
 									}
-									
-									
 
 									$scope.formatDate = function(time) {
 										var date = new Date(time);

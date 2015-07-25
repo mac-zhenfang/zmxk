@@ -81,7 +81,34 @@
 		<script src="assets/js/core.min.js"></script>
 		<script src="assets/js/custom.min.js"></script>
 		<script>
-			var zmxk = angular.module('zmxk', [ 'ngResource' ]);
+			var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
+					$httpProvider) {
+				$httpProvider.interceptors.push(function($q) {
+					return {
+						'responseError' : function(response) {
+							if (response.status == "401") {
+								window.location = "login.html";
+								return;
+							}
+							if (response.status == "403") {
+								window.location = "err403.html";
+								return;
+							}
+							/*if (response.status == "500") {
+								window.location = "err500.html";
+								return;
+							}*/
+							/*
+							 * if (response.status == "400") {
+							 * 
+							 * alert(response.data.error); } if (response.data.error) {
+							 * alert(response.data.error); }
+							 */
+							return $q.reject(response);
+						}
+					};
+				});
+			});
 			zmxk.config([ '$resourceProvider', function($resourceProvider) {
 				// Don't strip trailing slashes from calculated URLs
 				$resourceProvider.defaults.stripTrailingSlashes = false;
