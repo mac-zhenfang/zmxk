@@ -18,8 +18,9 @@ body {
 .medals1 {
 	background: url(../img/1.png);
 	background-size: contain;
+	background-position:left center;
 	border: 0px;
-	width: 70px;
+	width: 100px;
 	background-repeat: no-repeat;
 	overflow: hidden;
 	height: 60px;
@@ -29,16 +30,17 @@ body {
 	background: url(../img/2.png);
 	background-size: contain;
 	border: 0px;
-	width: 70px;
+	width: 100px;
 	background-repeat: no-repeat;
 	overflow: hidden
+	height: 60px;
 }
 
 .medals3 {
 	background: url(../img/3.png);
 	background-size: contain;
 	border: 0px;
-	width: 70px;
+	width: 100px;
 	background-repeat: no-repeat;
 	overflow: hidden;
 	height: 60px;

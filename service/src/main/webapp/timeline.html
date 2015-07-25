@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>我的成绩单</title>
+<title>我的轨迹</title>
 
 <!-- start: CSS -->
 <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -26,16 +26,16 @@
 				<div class="span3"></div>
 				<div class="span6">
 
-					<h1>Timeline</h1>
+					<h1>我的赛车手生涯</h1>
 
 					<div class="timeline">
 
-						<div class="timeslot">
-
+						<div ng-class="{0: 'timeslot', 1:'timeslot alt'}[$index % 2]"
+							ng-repeat="grade in grades" style="height: 96px;">
 							<div class="task">
-								<span> <span class="type">appointment</span> <span
-									class="details"> Lukasz Holeczek at creativeLabs HQ </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
+								<span> <span class="type">参与了{{grade.eventTypeName}} {{grade.serieName}}</span> <span
+									class="details" ng-bind="showGradeInfo({{grade}})"></span> <span>
+										成绩 <span class="remaining"> {{grade.score}} 分钟 </span>
 								</span>
 								</span>
 								<div class="arrow"></div>
@@ -43,150 +43,9 @@
 							<div class="icon">
 								<i class="icon-map-marker"></i>
 							</div>
-							<div class="time">3:43 PM</div>
-
+							<div class="time">{{formatDate(grade.eventTime) |
+								date:"MM/dd/yyyy, HH:mm" }}</div>
 						</div>
-
-						<div class="clearfix"></div>
-
-						<div class="timeslot alt">
-
-							<div class="task">
-								<span> <span class="type">phone call</span> <span
-									class="details"> Lukasz Holeczek </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-phone"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot">
-
-							<div class="task">
-								<span> <span class="type">mail</span> <span
-									class="details"> Lukasz Holeczek </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-envelope"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot alt">
-
-							<div class="task">
-								<span> <span class="type">deadline</span> <span
-									class="details"> Fixed PayPal problems </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-calendar"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot">
-
-							<div class="task">
-								<span> <span class="type">appointment</span> <span
-									class="details"> Lukasz Holeczek at creativeLabs HQ </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-map-marker"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="clearfix"></div>
-
-						<div class="timeslot alt">
-
-							<div class="task">
-								<span> <span class="type">skype call</span> <span
-									class="details"> Lukasz Holeczek </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-phone"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot">
-
-							<div class="task">
-								<span> <span class="type">mail</span> <span
-									class="details"> Lukasz Holeczek </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-envelope"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot alt">
-
-							<div class="task">
-								<span> <span class="type">project deadline</span> <span
-									class="details"> Fixed PayPal problems </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-calendar"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
-						<div class="timeslot">
-
-							<div class="task">
-								<span> <span class="type">mail</span> <span
-									class="details"> Lukasz Holeczek </span> <span>
-										remaining time <span class="remaining"> 3h 38m 15s </span>
-								</span>
-								</span>
-								<div class="arrow"></div>
-							</div>
-							<div class="icon">
-								<i class="icon-envelope"></i>
-							</div>
-							<div class="time">3:43 PM</div>
-
-						</div>
-
 					</div>
 
 				</div>
@@ -259,6 +118,22 @@
 									}
 
 									$scope.grades = [];
+									
+									$scope.showGradeInfo = function(grade) {
+										if(grade.goldenMedal > 0 ) {
+											return "获得了"+grade.credit+"积分, 取得了 " + grade.goldenMedal + "块金牌";
+										}
+										
+										if(grade.silverMedal > 0 ) {
+											return "获得了"+grade.credit+"积分, 取得了 " + grade.silverMedal + "块银牌";
+										}
+										
+										if(grade.silverMedal > 0 ) {
+											return "获得了"+grade.credit+"积分, 取得了 " + grade.bronzeMedal + "块铜牌";
+										}
+									}
+									
+									
 
 									$scope.formatDate = function(time) {
 										var date = new Date(time);

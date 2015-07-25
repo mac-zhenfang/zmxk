@@ -13,6 +13,8 @@
 <!-- start: CSS -->
 <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
+
+<link href="assets/css/style.css" rel="stylesheet" />
 <link href="assets/css/style.min.css" rel="stylesheet" />
 <link href="assets/css/style-responsive.min.css" rel="stylesheet" />
 <link href="assets/css/retina.css" rel="stylesheet" />
@@ -22,7 +24,7 @@
 <body ng-controller="MainController as main" ng-init="init()">
 	<div class="container-fluid-full">
 		<div class="row-fluid">
-			<div class="span12 box ">
+			<div class="span10 box ">
 				<div class="box-header">
 					<h2>我的成绩单</h2>
 				</div>
@@ -34,9 +36,9 @@
 							<tr>
 								<th>比赛时间</th>
 								<th>成绩</th>
-								<th>金牌</th>
-								<th>银牌</th>
-								<th>铜牌</th>
+								<th class="medals1"></th>
+								<th class="medals2"></th>
+								<th class="medals3"></th>
 								<th>积分</th>
 							</tr>
 						</thead>
@@ -45,9 +47,9 @@
 								<td>{{formatDate(grade.eventTime) | date:"MM/dd/yyyy,
 									HH:mm" }}</td>
 								<td>{{grade.score}}</td>
-								<td><div ng-class="{1:'medals1'}[grade.rank]"></div></td>
-								<td><div ng-class="{2:'medals2'}[grade.rank]"></div></td>
-								<td><div ng-class="{3:'medals3'}[grade.rank]"></div></td>
+								<td>{{grade.goldenMedal}}</td>
+								<td>{{grade.silverMedal}}</td>
+								<td>{{grade.bronzeMedal}}</td>
 								<td>{{grade.credit}}</td>
 							</tr>
 						</tbody>

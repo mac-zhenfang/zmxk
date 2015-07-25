@@ -12,6 +12,10 @@ public class Grade {
 	
 	private String eventTypeName;
 	
+	private String eventName;
+	
+	private String serieName;
+	
 	private Date eventTime;
 	
 	private String eventTypeId;
@@ -19,6 +23,34 @@ public class Grade {
 	private String kidName;
 	
 	private String userName;
+	
+	private String goldenMedal;
+	private String silverMedal;
+	private String bronzeMedal;
+
+	public String getGoldenMedal() {
+		return goldenMedal;
+	}
+
+	public void setGoldenMedal(String goldenMedal) {
+		this.goldenMedal = goldenMedal;
+	}
+
+	public String getSilverMedal() {
+		return silverMedal;
+	}
+
+	public void setSilverMedal(String silverMedal) {
+		this.silverMedal = silverMedal;
+	}
+
+	public String getBronzeMedal() {
+		return bronzeMedal;
+	}
+
+	public void setBronzeMedal(String bronzeMedal) {
+		this.bronzeMedal = bronzeMedal;
+	}
 
 	public int getScore() {
 		return score;
@@ -82,6 +114,22 @@ public class Grade {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getEventName() {
+		return eventName;
+	}
+
+	public void setEventName(String eventName) {
+		this.eventName = eventName;
+	}
+
+	public String getSerieName() {
+		return serieName;
+	}
+
+	public void setSerieName(String serieName) {
+		this.serieName = serieName;
 	}
 	
 }
