@@ -5,12 +5,12 @@
 <mapper namespace="CREDIT_RECORD">
 	<select id="create" parameterType="com.smartool.common.dto.CreditRecord">
 		insert creditRecords (id,
-		userId,eventId,
-		creditRuleType,displayName,rank,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
+		userId,attendeeId,eventId,
+		creditRuleType,displayName,rank,score,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{userId},#{eventId},#{creditRuleType},#{displayName},#{rank},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
+		(#{id},#{userId},#{attendeeId},#{eventId},#{creditRuleType},#{displayName},#{rank},#{score},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
 	</select>
 
 	<select id="search" parameterType="Map"
@@ -33,7 +33,7 @@
 		<if test="end != null">
 			<![CDATA[and r.lastModifiedTime < #{end}]]>
 		</if>
-		order by  r.lastModifiedTime desc
+		order by r.lastModifiedTime desc
 	</select>
 
 	<select id="searchByMobileNumber" parameterType="Map"
@@ -56,7 +56,7 @@
 		<if test="end != null">
 			<![CDATA[and r.lastModifiedTime < #{end}]]>
 		</if>
-		order by  r.lastModifiedTime desc
+		order by r.lastModifiedTime desc
 	</select>
 
 	<select id="getById" parameterType="String"

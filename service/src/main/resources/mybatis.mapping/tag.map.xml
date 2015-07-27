@@ -4,7 +4,7 @@
 
 <mapper namespace="TAG">
 	<select id="create" parameterType="com.smartool.common.dto.Tag">
-		insert events (id,
+		insert tags (id,
 		name,type,createdTime,lastModifiedTime)
 		values
 		(#{id},#{name},#{type},now(),now())

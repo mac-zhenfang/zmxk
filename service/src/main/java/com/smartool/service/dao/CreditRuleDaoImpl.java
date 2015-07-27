@@ -98,7 +98,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 		if (stage != null) {
 			param.put("stage", stage);
 		}
-		return sqlSession.selectList("EVENT_CREDIT_RULE.searchRankingRules");
+		return sqlSession.selectList("EVENT_CREDIT_RULE.searchRankingRules", param);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 		if (stage != null) {
 			param.put("stage", stage);
 		}
-		return sqlSession.selectList("EVENT_CREDIT_RULE.searchNonrankingRules");
+		return sqlSession.selectList("EVENT_CREDIT_RULE.searchNonrankingRules", param);
 	}
 
 	@Override
