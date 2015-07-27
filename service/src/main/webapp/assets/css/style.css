@@ -55,17 +55,18 @@ body {
 	text-shadow: none;
 	z-index: 2;
 }
-
-}
 .medals3 {
 	background: url(../img/3.png);
 	background-size: contain;
+	background-position: left center;
 	border: 0px;
 	width: 100px;
 	background-repeat: no-repeat;
 	overflow: hidden;
 	height: 60px;
+	border: 0px;
 }
+
 
 .medals img {
 	max-width: 10px;

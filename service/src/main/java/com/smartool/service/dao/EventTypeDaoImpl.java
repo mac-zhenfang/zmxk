@@ -48,4 +48,9 @@ public class EventTypeDaoImpl implements EventTypeDao {
 		return sqlSession.selectList("EVENT_TYPE.listBySiteId", siteId);
 	}
 
+	@Override
+	public List<EventType> getDistinctEventTypes(String userId) {
+		return sqlSession.selectList("EVENT_TYPE.listDistinctEventTypes", userId);
+	}
+
 }

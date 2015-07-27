@@ -43,7 +43,7 @@
 				return {
 					'responseError' : function(response) {
 						if (response.status == "401") {
-							window.location = "login.html?page=qrcode";
+							window.location = "login.html#?page=qrcode";
 							return;
 						}
 						if (response.status == "403") {

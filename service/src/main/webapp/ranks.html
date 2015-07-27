@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>我的成绩单</title>
+<title>我的排名</title>
 
 <!-- start: CSS -->
 <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
@@ -26,31 +26,27 @@
 		<div class="row-fluid">
 			<div class="span10 box ">
 				<div class="box-header">
-					<h2>我的成绩单</h2>
+					<h2>我的排名</h2>
 				</div>
 				<div class="box-content">
-					<table
-						class="table table-striped table-bordered bootstrap-datatable datatable">
+					<table class="table table-striped">
 						<thead>
 							<tr>
 							<tr>
-								<th>比赛时间</th>
-								<th>成绩</th>
+								<th></th>
+								<th></th>
 								<th class="medals1"></th>
 								<th class="medals2"></th>
 								<th class="medals3"></th>
-								<th>积分</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="grade in grades">
-								<td>{{formatDate(grade.eventTime) | date:"MM/dd/yyyy,
-									HH:mm" }}</td>
-								<td>{{grade.score}}</td>
-								<td>{{grade.goldenMedal}}</td>
-								<td>{{grade.silverMedal}}</td>
-								<td>{{grade.bronzeMedal}}</td>
-								<td>{{grade.credit}}</td>
+							<tr ng-repeat="rank in ranks">
+								<td>{{$index + 1}} </td>
+								<td>{{rank.kidName}}</td>
+								<td>{{rank.goldenMedal}}</td>
+								<td>{{rank.silverMedal}}</td>
+								<td>{{rank.bronzeMedal}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -87,23 +83,14 @@
 					return {
 						'responseError' : function(response) {
 							if (response.status == "401") {
-								window.location = "login.html#?page=grades";
+								window.location = "login.html#?page=ranks";
 								return;
 							}
 							if (response.status == "403") {
 								window.location = "err403.html";
 								return;
 							}
-							/*if (response.status == "500") {
-								window.location = "err500.html";
-								return;
-							}*/
-							/*
-							 * if (response.status == "400") {
-							 * 
-							 * alert(response.data.error); } if (response.data.error) {
-							 * alert(response.data.error); }
-							 */
+
 							return $q.reject(response);
 						}
 					};
@@ -122,13 +109,12 @@
 									'$scope',
 									'$q',
 									function($resource, $scope, $q) {
-										$scope.gold = "<div class=\"medals\"><img src=\"assets/img/1.png\"></img></div>";
 										var userResource = $resource(
 												"/service/smartool/api/v1/users/me",
 												{},
 												{
-													getGrades : {
-														url : "/service/smartool/api/v1/users/me/grades",
+													getRanks : {
+														url : "/service/smartool/api/v1/users/me/ranks",
 														method : 'GET',
 														isArray : true,
 														headers : {
@@ -137,9 +123,9 @@
 													}
 												});
 
-										var getGrades = function() {
+										var getRanks = function() {
 											var defer = $q.defer();
-											userResource.getGrades(function(e,
+											userResource.getRanks(function(e,
 													headers) {
 												defer.resolve(e);
 											}, function(e, headers) {
@@ -148,33 +134,51 @@
 											return defer.promise;
 										}
 
-										$scope.grades = [];
-
-										$scope.formatDate = function(time) {
-											var date = new Date(time);
-											var hours = date.getHours();
-											var minutes = date.getMinutes();
-											var ampm = hours >= 12 ? 'pm'
-													: 'am';
-											hours = hours % 12;
-											hours = hours ? hours : 12; // the hour '0'
-											// should be '12'
-											minutes = minutes < 10 ? '0'
-													+ minutes : minutes;
-											var strTime = hours + ':' + minutes
-													+ ' ' + ampm;
-											return date.getMonth() + 1 + "/"
-													+ date.getDate() + "/"
-													+ date.getFullYear() + "  "
-													+ strTime;
-										}
-
+										var ranks = [];
+										var tempRanks = {};
+										$scope.ranks = [];
 										$scope.init = function() {
-											getGrades().then(function(data) {
-												$scope.grades = data;
-											}, function(data) {
+											getRanks()
+													.then(
+															function(data) {
+																ranks = data;
+																angular.forEach(ranks, function(rank, idx1){
+																	if(angular.isUndefined(tempRanks[rank.kidId])){
+																		tempRanks[rank.kidId] = rank;
+																	} else {
+																		tempRanks[rank.kidId].goldenMedal = parseInt(tempRanks[rank.kidId].goldenMedal) + parseInt(rank.goldenMedal);
+																		tempRanks[rank.kidId].silverMedal = parseInt(tempRanks[rank.kidId].silverMedal) + parseInt(rank.silverMedal);
+																		tempRanks[rank.kidId].bronzeMedal = parseInt(tempRanks[rank.kidId].bronzeMedal) +  parseInt(rank.bronzeMedal);
+																	}
+																})
+																
+																angular.forEach(tempRanks, function(key, value, idx2){
+																	$scope.ranks.push(key);
+																})
+																$scope.ranks
+																		.sort(function(
+																				bgA,
+																				bgB) {
+																			var totalMedalsA = bgA.goldenMedal
+																					+ bgA.silverMedal
+																					+ bgA.bronzeMedal;
+																			var totalMedalsB = bgB.goldenMedal
+																					+ bgB.silverMedal
+																					+ bgB.bronzeMedal;
+																			if (bgA.goldenMedal == bgB.goldenMedal) {
+																				return totalMedalsB
+																						- totalMedalsA;
 
-											});
+																			} else {
+																				return bgB.goldenMedal
+																						- bgA.goldenMedal;
+																			}
+																		});
+																
+																console.log($scope.ranks);
+															}, function(data) {
+
+															});
 										}
 
 									} ]);

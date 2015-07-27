@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
@@ -110,5 +111,11 @@ public class UserDaoImpl implements UserDao {
 			user.setKids(kids);
 		}
 		return user;
+	}
+
+	@Override
+	public List<BaseGrade> getBaseGradesByEventType(String eventTypeId) {
+		List<BaseGrade> grades = sqlSession.selectList("USER.getBaseGrades", eventTypeId);
+		return grades;
 	}
 }

@@ -2,6 +2,7 @@ package com.smartool.service.service;
 
 import java.util.List;
 
+import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
@@ -17,6 +18,8 @@ public interface UserService {
 	User getUserById(String userId);
 
 	byte[] getQRCode(String userId);
+	
+	List<BaseGrade> getRanks(User user);
 	
 	List<User> search(String query);
 	

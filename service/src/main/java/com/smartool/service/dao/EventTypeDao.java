@@ -17,4 +17,6 @@ public interface EventTypeDao {
 	public void delete(String eventTypeId);
 	
 	public EventType create(EventType eventType);
+	
+	public List<EventType> getDistinctEventTypes(String userId);
 }

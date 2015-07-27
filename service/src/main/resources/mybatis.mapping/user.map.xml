@@ -27,14 +27,33 @@
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
 		select u.name as userName, k.name as kidName, e.name as
-		eventName, e.stage as stage, et.name as eventTypeName, s.name as serieName, e.eventTime
-		as eventTime, a.rank as rank, a.score as score, cr.credit as credit,
-		cr.goldenMedal as goldenMedal, cr.silverMedal as silverMedal,
-		cr.bronzeMedal as bronzeMedal from creditRecords cr, users u, kids k,
+		eventName, e.stage as stage, et.name as eventTypeName, s.name as
+		serieName, e.eventTime
+		as eventTime, a.rank as rank, a.score as score,
+		cr.credit as credit,
+		cr.goldenMedal as goldenMedal, cr.silverMedal as
+		silverMedal,
+		cr.bronzeMedal as bronzeMedal from creditRecords cr, users
+		u, kids k,
 		events e, eventTypes et, series s, attendees a where
 		e.eventTypeId=et.id and s.eventTypeId = et.id and a.eventId=cr.eventId
 		and a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
 		cr.userId=u.id and cr.userId = #{id}
+	</select>
+	<select id="getBaseGrades" parameterType="String"
+		resultType="com.smartool.common.dto.BaseGrade">
+		select et.id as eventTypeId, cr.`bronzeMedal` as
+		bronzeMedal, cr.`attendeeId` as attendeeId,
+		cr.`rank` as rank, cr.score
+		as score, cr.`silverMedal` as silverMedal,
+		cr.`goldenMedal` as
+		goldenMedal, et.name as eventTypeName,k.id as kidId, k.name as
+		kidName, e.stage as
+		stage, k.userId as userId from events e, creditRecords cr,attendees a,
+		eventTypes et, kids
+		k where k.id=a.kidId and et.id=e.eventTypeId and
+		cr.attendeeId=a.id and
+		e.id = cr.eventId and et.id = #{id}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,

@@ -36,5 +36,12 @@
 		select * from eventTypes where siteId=#{siteId} or
 		siteId is null
 	</select>
+
+	<select id="listDistinctEventTypes" resultType="com.smartool.common.dto.EventType"
+		parameterType="String">
+		select DISTINCT et.id as id, et.name as name, et.siteId as siteId from attendees a,
+		events e, eventTypes et where et.id=e.eventTypeId and e.id=a.eventId
+		and a.userId = #{id}
+	</select>
 </mapper>
 

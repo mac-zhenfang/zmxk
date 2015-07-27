@@ -10,7 +10,7 @@
 
 
 <!-- Latest compiled and minified CSS -->
-<link href="assets/css/bootstrap.css">
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
 <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
 <!-- Optional theme 
 <link rel="stylesheet"
@@ -47,9 +47,7 @@
 						</div>
 						<input type="submit" value="登录" class="btn btn-info btn-block"
 							ng-show="currentStep!=3">
-						<div ng-show="currentStep==3">
-							登录成功 <img src=""></img>
-						</div>
+						<div ng-show="currentStep==3">登录成功,3秒后跳转</div>
 					</form>
 				</div>
 			</div>
@@ -58,11 +56,9 @@
 	<!-- ANGULAR -->
 
 	<script src="assets/js/angular.js"></script>
-	<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
 	<script src="assets/js/angular-resource.min.js"></script>
 	<script src="assets/js/angular-route.min.js"></script>
 	<script src="assets/js/angular-cookies.min.js"></script>
-	<script src="assets/js/dialogs.min.js"></script>
 	<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
 	<!-- CORE JQUERY  -->
 	<script src="assets/plugins/jquery-1.10.2.js"></script>
@@ -70,7 +66,7 @@
 	<script src="assets/plugins/bootstrap.js"></script>
 	<script>
 		var zmxk = angular.module('zmxk', [ 'ngResource', 'ngRoute',
-				'ui.bootstrap', 'ngCookies', 'dialogs' ]);
+				'ngCookies' ]);
 		zmxk.config([ '$resourceProvider', function($resourceProvider) {
 			// Don't strip trailing slashes from calculated URLs
 			$resourceProvider.defaults.stripTrailingSlashes = false;
@@ -122,10 +118,9 @@
 				'$window',
 				'$route',
 				'$cookies',
-				'$dialogs',
 				'$routeParams',
 				function($scope, $location, $window, $route, $cookies,
-						$dialogs, $routeParams) {
+						$routeParams) {
 					$scope.const = {};
 					$scope.const.registerTitle = '登录';
 					$scope.const.mobile = '手机号码';
@@ -140,63 +135,16 @@
 
 					$scope.$location = $location;
 					var url = $scope.$location;
-					$scope.popTo = $location.search().page + ".html";
+					$scope.popTo = $location.search().page;
+
+					if (angular.isUndefined($scope.popTo)) {
+						$scope.popTo = "qrcode";
+					}
+
+					$scope.popTo = $scope.popTo + ".html";
 
 					$scope.popTo = window.location.origin + "/" + $scope.popTo;
 					console.log($scope.popTo);
-					$scope.launch = function(which, title, message, yesFun,
-							noFun) {
-						var dlg = null;
-						switch (which) {
-
-						// Error Dialog
-						case 'error':
-							dlg = $dialogs.error(message);
-							break;
-
-						/*
-						 * case 'wait': dlg = $dialogs.wait(msgs[i++], progress);
-						 * fakeProgress(); break;
-						 */
-						// Notify Dialog
-						case 'notify':
-							dlg = $dialogs.notify(title, message, yesFun);
-							break;
-
-						// Confirm Dialog
-						case 'confirm':
-							dlg = $dialogs.confirm(title, message);
-							dlg.result.then(yesFun, noFun);
-							break;
-						}
-						; // end switch
-					}; // end l
-					$scope.hoopPage = function(page, params) {
-						var givenParams = "";
-
-						angular.forEach(params, function(value) {
-							givenParams += value;
-							givenParams += "/";
-						});
-						/*
-						 * angular.forEach(params, function(value, key) { givenParams +=
-						 * key; givenParams += "="; givenParams += value; givenParams +=
-						 * "&"; });
-						 */
-						givenParams = givenParams.substring(0,
-								givenParams.length - 1);
-						var uri = $scope.$location.absUrl();
-						var url = $scope.$location.url();
-
-						uri = uri.substring(0, uri.indexOf(url));
-						console.log(uri);
-
-						uri = uri + "/";
-						uri = uri + page + "/" + givenParams;
-						console.log(" jump " + uri);
-						window.location.href = uri;
-						// window.location.reload();
-					}
 
 				} ]);
 		var send_code_uri;
@@ -208,9 +156,8 @@
 								'$scope',
 								'$http',
 								'$cookies',
-								'$dialogs',
 								'$timeout',
-								function($scope, $http, $cookies, $dialogs, $timeout) {
+								function($scope, $http, $cookies, $timeout) {
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
@@ -241,21 +188,11 @@
 																			"loginUser",
 																			angular
 																					.toJson(data));
-															$scope
-																	.launch(
-																			"notify",
-																			"登陆成功",
-																			"按确定或3秒钟后自动跳转",
-																			function() {
-																				window.location.href = $scope.popTo;
-																			},
-																			function() {
-																			});
-															/*
+
 															$timeout(
 																	function() {
 																		window.location.href = $scope.popTo;
-																	}, 3000) */
+																	}, 3000)
 														})
 												.error(
 														function(data, header) {

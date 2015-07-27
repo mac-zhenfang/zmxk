@@ -67,8 +67,7 @@ CREATE TABLE `tags` (
 	`type` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  	PRIMARY KEY (`id`),
-  	UNIQUE KEY `tags_type` (`type`)
+  	PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `series`;

@@ -2,6 +2,7 @@ package com.smartool.service.dao;
 
 import java.util.List;
 
+import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
@@ -27,4 +28,6 @@ public interface UserDao {
 	void addCredit(String userId, CreditRule creditRule);
 
 	List<Grade> getGrades(String userId);
+	//FIXME: urgly interface
+	List<BaseGrade> getBaseGradesByEventType(String eventTypeId);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
@@ -77,13 +78,12 @@ public class UserController extends BaseController {
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
 		return createdUser;
 	}
-	
+
 	/**
 	 * Get code
-	 * */
+	 */
 	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST, consumes = {
-			MediaType.APPLICATION_JSON_VALUE } , produces = {
-					MediaType.APPLICATION_JSON_VALUE })
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public SecurityCode getSecurityCode(@RequestBody LoginUser user) {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setMobileNumber(user.getMobileNum());
@@ -96,7 +96,7 @@ public class UserController extends BaseController {
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
 	}
-	
+
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/grades", method = RequestMethod.GET)
 	public List<Grade> getMyGrades() {
@@ -144,5 +144,16 @@ public class UserController extends BaseController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.IMAGE_PNG);
 		return new ResponseEntity<byte[]>(qrcode, httpHeaders, HttpStatus.CREATED);
+	}
+
+	/**
+	 * Return the qrcode with url+token
+	 */
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/me/ranks", method = RequestMethod.GET)
+	public List<BaseGrade> getRanks() {
+		User sessionUser = UserSessionManager.getSessionUser();
+		List<BaseGrade> baseGrades = userService.getRanks(sessionUser);
+		return baseGrades;
 	}
 }

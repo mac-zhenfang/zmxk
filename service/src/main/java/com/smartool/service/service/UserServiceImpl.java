@@ -1,12 +1,15 @@
 package com.smartool.service.service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.smartool.common.dto.BaseGrade;
+import com.smartool.common.dto.EventType;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
@@ -17,6 +20,7 @@ import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
+import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.UserDao;
@@ -31,6 +35,9 @@ public class UserServiceImpl implements UserService {
 	private SecurityCodeDao securityCodeDao;
 	@Autowired
 	private KidDao kidDao;
+	
+	@Autowired
+	private EventTypeDao eventTypeDao;
 
 	@Override
 	public List<User> listAllUser() {
@@ -217,7 +224,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public byte[] getQRCode(String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId).withSize(800, 800)
+		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId).withSize(400, 400)
 				.to(ImageType.PNG).writeTo(out);
 		return out.toByteArray();
 	}
@@ -262,6 +269,16 @@ public class UserServiceImpl implements UserService {
 		String securityCodeString = createCodeForRegister(securityCode);
 		securityCode.setSecurityCode(securityCodeString);
 		return securityCode;
+	}
+
+	@Override
+	public List<BaseGrade> getRanks(User user) {
+		List<BaseGrade> baseGrades = new ArrayList<>();
+		List<EventType> eventTypes = eventTypeDao.getDistinctEventTypes(user.getId());
+		for(EventType eventType : eventTypes) {
+			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId()));
+		}
+		return baseGrades;
 	}
 
 }
