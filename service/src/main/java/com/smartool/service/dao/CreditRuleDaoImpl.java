@@ -96,7 +96,7 @@ public class CreditRuleDaoImpl implements CreditRuleDao {
 			param.put("name", name);
 		}
 		if (stage != null) {
-			param.put("stage", stage);
+			param.put("stage", stage.intValue());
 		}
 		return sqlSession.selectList("EVENT_CREDIT_RULE.searchRankingRules");
 	}
