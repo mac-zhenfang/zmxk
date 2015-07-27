@@ -217,10 +217,12 @@ public class CreditServiceImpl implements CreditService {
 		userDao.addCredit(attendee.getUserId(), creditRule);
 		CreditRecord creditRecord = new CreditRecord();
 		creditRecord.setId(CommonUtils.getRandomUUID());
+		creditRecord.setAttendeeId(attendee.getId());
 		creditRecord.setEventId(attendee.getEventId());
 		creditRecord.setUserId(attendee.getUserId());
 		creditRecord.setCreditRuleId(creditRule.getId());
 		creditRecord.setCredit(creditRule.getCredit());
+		creditRecord.setScore(attendee.getScore());
 		creditRecord.setDisplayName(getCreditRecordDisplayName(attendee, creditRule));
 		if (creditRule instanceof EventCreditRule) {
 			creditRecord.setCreditRuleType(CreditRuleType.EVENT);

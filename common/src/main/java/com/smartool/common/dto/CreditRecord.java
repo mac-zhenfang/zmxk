@@ -3,12 +3,14 @@ package com.smartool.common.dto;
 public class CreditRecord extends BaseDateTrackingBean {
 	private String id;
 	private String userId;
+	private String attendeeId;
 	private String mobileNum;
 	private String eventId;
 	private CreditRuleType creditRuleType;
 	private String creditRuleId;
 	private String displayName;
 	private Integer rank;
+	private float score;
 	private Integer credit;
 	private int goldenMedal;
 	private int silverMedal;
@@ -108,5 +110,21 @@ public class CreditRecord extends BaseDateTrackingBean {
 
 	public void setMobileNum(String mobileNum) {
 		this.mobileNum = mobileNum;
+	}
+
+	public String getAttendeeId() {
+		return attendeeId;
+	}
+
+	public void setAttendeeId(String attendeeId) {
+		this.attendeeId = attendeeId;
+	}
+
+	public float getScore() {
+		return score;
+	}
+
+	public void setScore(float score) {
+		this.score = score;
 	}
 }

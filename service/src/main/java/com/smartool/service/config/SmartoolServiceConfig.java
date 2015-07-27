@@ -74,7 +74,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public CreditGenerator getCreditGenerator() {
-		return new CreditGenerator();
+		return new CreditGenerator(env.getProperty("credit.generate.interval.hour", Long.class));
 	}
 
 	@Bean

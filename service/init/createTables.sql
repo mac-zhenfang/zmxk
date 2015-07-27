@@ -159,11 +159,13 @@ DROP TABLE IF EXISTS `creditRecords`;
 CREATE TABLE `creditRecords` (
 	`id` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
+	`attendeeId` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`eventId` varchar(36) CHARACTER SET utf8 NOT NULL,
 	`creditRuleType` varchar(255) NOT NULL,
 	`creditRuleId` varchar(36) NOT NULL,
     `displayName` varchar(255) NOT NULL,
   	`rank` int,
+	`score` float,
   	`credit` int NOT NULL DEFAULT 0,
   	`goldenMedal` int NOT NULL DEFAULT 0,
   	`silverMedal` int NOT NULL DEFAULT 0,
@@ -179,3 +181,5 @@ CREATE EVENT `cleanSecurityCodes`
 ON SCHEDULE
     EVERY 1 HOUR
 DO DELETE FROM `securityCodes` WHERE `lastModifiedTime` < DATE_SUB(NOW(), INTERVAL 24 HOUR);
+
+COMMIT;
