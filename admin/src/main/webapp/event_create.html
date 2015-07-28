@@ -1,0 +1,33 @@
+<div class="box span12" ng-controller="EnrollController">
+	<div class="box-header">
+		<h2>
+			<i class="icon-edit"></i>创建赛事
+		</h2>
+	</div>
+	<div class="box-content">
+		<div id="MyWizard" class="wizard">
+			<ul class="steps">
+				<li data-target="#step1" class="active"><span class="badge badge-info">1</span></li>
+				<li data-target="#step2"><span class="badge badge-info">2</span></li>
+				<li data-target="#step3"><span class="badge badge-info">3</span></li>
+			</ul>
+			<div class="actions">
+				<button type="button" class="btn btn-prev" ng-click="selectStep(-1)">
+					{{previous_label}}</button>
+				<button type="button" class="btn btn-success btn-next"
+					ng-click="currentStep==totalSteps?processForm():selectStep(1)">
+					{{next_label}}</button>
+			</div>
+		</div>
+		<div class="step-content">
+			<!--  -->
+			<div class="step-pane active"
+				ng-include="'event_create_wizard_list_event_types.html'" id="step1"></div>
+			<div class="step-pane" 
+				ng-include="'event_create_wizard_list_event_series.html'" id="step2"></div>
+			<div class="step-pane"
+				ng-include="'event_create_wizard_create_event_form.html'"  id="step3"></div>
+		</div>
+	</div>
+</div>
+<!--/span-->

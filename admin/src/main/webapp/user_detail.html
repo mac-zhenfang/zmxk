@@ -1,0 +1,48 @@
+<div class="box span12" ng-controller="UserDetailCtrl" ng-init="init()">
+	<div class="box-header" data-original-title="">
+		<h2>
+			<i class="icon-user"></i><span class="break"></span>用户列表
+		</h2>
+
+	</div>
+	<div class="box-content">
+		<table
+			class="table table-striped table-bordered bootstrap-datatable datatable">
+			<thead>
+				<tr>
+					<th>小孩姓名</th>
+					<th>学校类型</th>
+					<th>学校</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="kid in kids">
+					<td><span ng-hide="{{kid.showInput}} == true"
+							ng-bind="kid.name"></span> <input ng-model="kid.name"
+							ng-show="{{kid.showInput}}"/></td>
+					<td><select ng-disabled="{{!kid.showInput}}"
+						class="selectpicker gridInput2" data-style="btn-info"
+						ng-model="kid.schoolType"
+						ng-options="option.value as option.label for option in schoolOptions"
+						ng-init="kid.schoolType==option.value">
+					</select></td>
+					<td><span ng-hide="{{kid.showInput}} == true"
+							ng-bind="kid.schoolName"></span><input ng-model="kid.schoolName"
+							ng-show="{{kid.showInput}}"/></td>
+
+					<td class="center"><span class="btn btn-info"
+						ng-click="updateKid(kid, $index)" ng-bind="{true:'保存', false:'修改'}[kid.changed==true]"></span> <span
+						class="btn btn-danger" href="#/users" ng-click="deleteKid(kid, $index)">
+							{{deleteLabel}} </span></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="control-group">
+			<div class="controls">
+				<button type="button" class="btn btn-info" ng-click="createKid()">创建</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/span-->

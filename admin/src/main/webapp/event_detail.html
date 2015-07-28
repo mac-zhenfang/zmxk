@@ -1,0 +1,61 @@
+<div class="row-fluid">
+	<div class="box span12" ng-controller="EventDetailCtrl" ng-init="init()">
+		<div class="box-header">
+			<h2>
+				<i class="icon-edit"></i>赛事管理
+			</h2>
+		</div>
+		<!-- <div class="gridStyle" ng-grid="gridOptions"></div> -->
+
+		<!---->
+		<div class="box-content">
+			<table
+				class="table table-striped table-bordered bootstrap-datatable datatable">
+				<thead>
+					<tr>
+						<th>选手名</th>
+						<th>车次</th>
+						<th>状态</th>
+						<th>分数</th>
+						<th>排名</th>
+						<th>组别</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="attendee in eventInit.attendees | orderBy:'rank'">
+						<td class="center">{{attendee.kidName}}</td>
+						<td class="center">{{attendee.seq}}</td>
+						<td class="center"><span
+							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
+								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
+						<td class="center"><span ng-click="editing = true"
+							ng-hide="editing" ng-bind="attendee.score" class="btn btn-info"></span>
+							<input ng-model="attendee.score" ng-show="editing"
+							class="form-control gridInput" />
+							<button class="btn btn-info" ng-show="editing"
+								ng-click="editScore();editing = false;">确定</button></td>
+						<td class="center">{{attendee.rank}}</td>
+						<td class="center"><span ng-click="editingTag = true"
+							ng-hide="editingTag"
+							ng-bind="{true: '未授予组别', false : attendee.tag}[attendee.tag==null]"
+							ng-class="showTagClass(attendee.tagType)"></span> <select ng-show="editingTag" class="selectpicker gridInput2" data-style="btn-info"
+								ng-model="attendee.tagId"
+								ng-options="option.id as option.name for option in eventTags">
+							</select>
+						<td class="center"><span class="btn btn-danger"
+							ng-click="giveCredit(attendee)"
+							ng-disabled="canGiveCredit(attendee)">授予积分</span></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="control-group">
+				<div class="controls">
+					<button type="button" class="btn btn-info"
+						ng-click="applyAttendeeChanges()">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--/row-->

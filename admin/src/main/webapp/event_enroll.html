@@ -1,10 +1,32 @@
 <div class="box span12" ng-controller="EnrollController">
 	<div class="box-header">
 		<h2>
-			<i class="icon-edit"></i>Wizard
+			<i class="icon-edit"></i>赛事录入
 		</h2>
 	</div>
-	<div class="box-content" ng-include="selectWizard()"></div>
-
+	<div class="box-content">
+		<div id="MyWizard" class="wizard">
+			<ul class="steps">
+				<li data-target="#step{{item}}" 
+					ng-repeat="item in steps" ng-class="{true:'active'}[item==1]"><span class="badge badge-info">{{item}}</span></li>
+			</ul>
+			<div class="actions">
+				<button type="button" class="btn btn-prev" ng-click="selectStep(-1)">
+					{{previous_label}}</button>
+				<button type="button" class="btn btn-success btn-next"
+					ng-click="currentStep==totalSteps?processForm():selectStep(1)">
+					{{next_label}}</button>
+			</div>
+		</div>
+		<div class="step-content">
+			<!--  -->
+			<div ng-if="noUserIdPassed()" class="step-pane active"
+				ng-include="'enroll_wizard_search_user.html'" id="{{noUserIdPassed() ? 'step1' : ' '}}"></div>
+			<div ng-class="{'step-pane active': noUserIdPassed() == false, 'step-pane': noUserIdPassed() == true}" 
+				ng-include="'enroll_wizard_show_user_info.html'" id="{{noUserIdPassed() ? 'step2' : 'step1'}}"></div>
+			<div class="step-pane"
+				ng-include="'enroll_wizard_list_events.html'"  id="{{noUserIdPassed() ? 'step3' : 'step2'}}"></div>
+		</div>
+	</div>
 </div>
 <!--/span-->
