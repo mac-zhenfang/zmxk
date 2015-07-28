@@ -46,8 +46,12 @@
 								placeholder="密码" />
 						</div>
 						<input type="submit" value="登录" class="btn btn-info btn-block"
-							ng-show="currentStep!=3">
-						<div ng-show="currentStep==3">登录成功,3秒后跳转</div>
+							ng-show="currentStep!=3"> <a href="register.html"
+							ng-show="currentStep!=3">注册</a>
+						<div ng-show="currentStep==3 && status==200">登陆成功，3秒后跳转</div>
+						<div ng-show="currentStep==3 && status==404">
+							用户不存在，点击<a href="register.html">注册</a>
+						</div>
 					</form>
 				</div>
 			</div>
@@ -133,6 +137,8 @@
 					$scope.TotalStep = 3;
 					$scope.currentStep = 2;
 
+					$scope.message = "";
+
 					$scope.$location = $location;
 					var url = $scope.$location;
 					$scope.popTo = $location.search().page;
@@ -181,6 +187,7 @@
 												.success(
 														function(data) {
 															$scope.currentStep = 3;
+															$scope.status = 200;
 															$scope.submit_label = $scope.const.registerTitle;
 
 															$cookies
@@ -203,6 +210,10 @@
 																$scope.currentStep = 2;
 																$scope.formData.code = data.message;
 																$scope.submit_label = $scope.const.registerTitle;
+															} else if (404 == header
+																	&& data.message) {
+																$scope.currentStep = 3;
+																$scope.status = 404;
 															} else if (data.message) {
 																alert(data.message)
 															}
