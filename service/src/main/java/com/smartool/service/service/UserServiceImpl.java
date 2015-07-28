@@ -224,7 +224,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public byte[] getQRCode(String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://123456wechat.ngrok.io/admin/index.html#/enroll/" + userId).withSize(400, 400)
+		QRCode.from("http://www.ismartool.com:1099/admin/index.html#/enroll/" + userId).withSize(400, 400)
 				.to(ImageType.PNG).writeTo(out);
 		return out.toByteArray();
 	}

@@ -205,22 +205,14 @@ zmxk
 									$scope.kidsToShow
 											.push(kid);
 								}
-								/*
-								 * $scope.enroll_form_data.name =
-								 * $scope.found_user.name;
-								 * $scope.enroll_form_data.mobileNum =
-								 * $scope.found_user.mobileNum;
-								 * $scope.enroll_form_data.id =
-								 * $scope.found_user.id;
-								 * $scope.enroll_form_data.wcId =
-								 * $scope.found_user.wcId;
-								 */
 							}
 
 							$scope.init = function() {
 								// TODO get from user api
-								$scope.userId = $routeParams.userId;
+								var loginUserSiteId = $scope.loginUser.siteId;
 
+								$scope.userId = $routeParams.userId;
+								
 								if (!angular.isUndefined($scope.userId)) {
 									// "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc" -
 									// Mac Fang
@@ -267,10 +259,10 @@ zmxk
 								}
 
 								// FIXME, we dont need to have status
-								eventService.list(0).then(function(data) {
-									
-									$scope.events = data;
-									angular.forEach($scope.events, function(event, index) {
+								eventService.list(loginUserSiteId).then(function(data) {
+									var events = [];
+									events = data;
+									angular.forEach(events, function(event, index) {
 										
 										var enrolledCount = 0;
 										angular.forEach(event.attendees, function(attendee, index2){
@@ -285,6 +277,9 @@ zmxk
 										//console.log(leftCount);
 										event.leftCount= leftCount;
 										event.enrolledCount = enrolledCount;
+										if(event.status == 0 ) {
+											$scope.events.push(event);
+										}
 									});
 									// console.log($scope.events);
 
