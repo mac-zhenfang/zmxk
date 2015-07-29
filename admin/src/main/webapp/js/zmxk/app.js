@@ -12,10 +12,10 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 					window.location = "err403.html";
 					return;
 				}
-				/*if (response.status == "500") {
+				if (response.status == "500" || response.status == "502") {
 					window.location = "err500.html";
 					return;
-				}*/
+				}
 				/*
 				 * if (response.status == "400") {
 				 * 
