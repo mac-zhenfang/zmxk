@@ -203,8 +203,6 @@ zmxk
 
 							}
 
-							
-
 							$scope.updateEventType = function(
 									giveUpdateEventType, idx) {
 								var assinGiveUpdateEventType = function(data) {
@@ -339,79 +337,242 @@ zmxk
 						} ]);
 
 // Event Start
-zmxk.controller('EventManageCtrl', [
-		'$scope',
-		'userService',
-		'eventService',
-		'eventTypeService',
-		'siteService',
-		'serieService',
-		'$interval',
-		'$timeout',
-		'$routeParams',
-		function($scope, userService, eventService, eventTypeService,
-				siteService, serieService, $interval, $timeout, $routeParams) {
+zmxk
+		.controller(
+				'EventManageCtrl',
+				[
+						'$scope',
+						'userService',
+						'eventService',
+						'eventTypeService',
+						'siteService',
+						'serieService',
+						'$interval',
+						'$timeout',
+						'$routeParams',
+						function($scope, userService, eventService,
+								eventTypeService, siteService, serieService,
+								$interval, $timeout, $routeParams) {
 
-			$scope.viewEventManagePage = function() {
-				if (angular.isUndefined($scope.eventId)) {
-					return "event_manage_show_list.html";
-				} else {
-					return "event_manage_show_detail.html";
-				}
-			}
+							$scope.viewEventManagePage = function() {
+								if (angular.isUndefined($scope.eventId)) {
+									return "event_manage_show_list.html";
+								} else {
+									return "event_manage_show_detail.html";
+								}
+							}
 
-			$scope.callToEvent = function(eventId) {
-				$scope.hoopPage("events.html", {
-					"eventId" : eventId
-				})
-			}
+							$scope.callToEvent = function(eventId) {
+								$scope.hoopPage("events.html", {
+									"eventId" : eventId
+								})
+							}
 
-			$scope.listEvents = [];
-			var dateNames = {};
-			$scope.$on('setDate1', function(e, date, idx) {
-				// console.log(idx);
-				if (!angular.isUndefined(idx)) {
-					$scope.formEventName(idx);
-				}
-			});
-			$scope.sites = [];
-			$scope.init = function() {
-				//console.log($scope.loginUser);
-				if(!$scope.isAdmin()) {
-					if(angular.isUndefined($scope.loginUser.siteId)) {
-						window.location.href="err403.html";
-					}
-					var loginUserSiteId = $scope.loginUser.siteId;
-				}
-				
-				eventService.list(loginUserSiteId).then(
-						function(data) {
-							$scope.listEvents = data;
-							var listEvents = data;
-							angular.forEach(listEvents, function(event, index) {
+							$scope.listEvents = [];
+							var dateNames = {};
+							$scope.$on('setDate1', function(e, date, idx) {
+								// console.log(idx);
+								if (!angular.isUndefined(idx)) {
+									$scope.formEventName(idx);
+								}
+							});
+							$scope.sites = [];
+							$scope.init = function() {
+								// console.log($scope.loginUser);
+								if (!$scope.isAdmin()) {
+									if (angular
+											.isUndefined($scope.loginUser.siteId)) {
+										window.location.href = "err403.html";
+									}
+									var loginUserSiteId = $scope.loginUser.siteId;
+								}
 
-								var enrolledCount = 0;
-								var applyScoreCount = 0;
-								var leftCount = 0;
-								// $scope.formEventName(index);
-								angular.forEach(event.attendees, function(
-										attendee, index2) {
-									var attStatus = attendee.status;
-									// console.log(attStatus);
-									if (attStatus == 1) {
-										enrolledCount += 1;
-									} else if (attStatus == 2) {
-										applyScoreCount += 1;
+								eventService
+										.list(loginUserSiteId)
+										.then(
+												function(data) {
+													$scope.listEvents = data;
+													var listEvents = data;
+													angular
+															.forEach(
+																	listEvents,
+																	function(
+																			event,
+																			index) {
+
+																		var enrolledCount = 0;
+																		var applyScoreCount = 0;
+																		var leftCount = 0;
+																		// $scope.formEventName(index);
+																		angular
+																				.forEach(
+																						event.attendees,
+																						function(
+																								attendee,
+																								index2) {
+																							var attStatus = attendee.status;
+																							// console.log(attStatus);
+																							if (attStatus == 1) {
+																								enrolledCount += 1;
+																							} else if (attStatus == 2) {
+																								applyScoreCount += 1;
+																							}
+																						});
+																		event.leftCount = event.quota
+																				- enrolledCount
+																				- applyScoreCount;
+																		event.applyScoreCount = applyScoreCount;
+																		event.enrolledCount = enrolledCount;
+																		event["existed"] = true;
+																		event["changed"] = false;
+																		event["showInput"] = false;
+
+																		event.eventSeries = [ {
+																			id : null,
+																			name : "单次比赛"
+																		} ];
+																		serieService
+																				.list(
+																						event.eventTypeId)
+																				.then(
+																						function(
+																								data) {
+																							angular
+																									.forEach(
+																											data,
+																											function(
+																													serie,
+																													index) {
+																												event.eventSeries
+																														.push(serie);
+																												/*
+																												 * console.log("<<<<<<<<<<<<<<<")
+																												 * console.log(serie.id)
+																												 * console.log(serie.name)
+																												 * console.log(event.seriesId)
+																												 * console.log(">>>>>>>>>>>>>>>")
+																												 */
+																												// $scope.listEvents.push(event);
+																											})
+																						})
+																	});
+												}, function(data) {
+												});
+
+								// get EventTypes
+								// FIXME eventTypes
+								if ($scope.isAdmin()) {
+									eventTypeService.list().then(
+											function(data) {
+												$scope.eventTypes = data;
+											}, function(data) {
+
+											})
+
+								} else {
+									console.log(loginUserSiteId);
+									eventTypeService.list(loginUserSiteId)
+											.then(function(data) {
+												$scope.eventTypes = data;
+											}, function(data) {
+
+											})
+								}
+
+								if ($scope.isAdmin()) {
+									siteService.list().then(function(data) {
+										$scope.sites = data;
+									}, function(data) {
+									})
+								} else if ((!angular
+										.isUndefined(loginUserSiteId) && loginUserSiteId != null)) {
+									siteService.get(loginUserSiteId).then(
+											function(data) {
+												$scope.sites.push(data);
+												console.log($scope.sites);
+											}, function(data) {
+											})
+								} else {
+									// FIXME error
+									$scope.launch("error", "",
+											"无法取得site信息，请重新登录或联系管理员",
+											function() {
+
+											}, function() {
+											});
+								}
+							}
+
+							$scope.changeName = function(idx) {
+								var selectEvent = undefined;
+								angular.forEach($scope.listEvents, function(
+										event, index2) {
+									if (index2 == idx) {
+										selectEvent = event;
+										console.log(selectEvent);
+										return;
 									}
 								});
-								event.leftCount = event.quota - enrolledCount
-										- applyScoreCount;
-								event.applyScoreCount = applyScoreCount;
-								event.enrolledCount = enrolledCount;
-								event["existed"] = true;
-								event["changed"] = false;
-								event["showInput"] = false;
 
+								if (angular.isUndefined(selectEvent)) {
+									return;
+								}
+
+								var name = selectEvent.name;
+								var nameArr = name.split(" ");
+								var prefix = nameArr[0];
+								var num = $scope.nameStageMap[prefix];
+								selectEvent.stage = num;
+							}
+
+							$scope.formEventName = function(idx) {
+								var selectEvent = undefined;
+								angular.forEach($scope.listEvents, function(
+										event, index2) {
+									if (index2 == idx) {
+										selectEvent = event;
+										console.log(selectEvent);
+										return;
+									}
+								});
+
+								if (angular.isUndefined(selectEvent)) {
+									return;
+								}
+
+								var namePrefix = $scope.stageNameMap[selectEvent.stage];
+								console.log(selectEvent);
+								var name;
+								if (angular.isUndefined(selectEvent.eventTime)) {
+									name = namePrefix;
+								} else {
+									var date = new Date(selectEvent.eventTime);
+									var mon = date.getMonth() + 1;
+									mon = mon < 10 ? "0" + mon : mon;
+									var day = date.getDate();
+									day = day < 10 ? "0" + day : day;
+									name = mon + "-" + day + "-"
+											+ date.getFullYear();
+									name = namePrefix + " " + name;
+								}
+								if (!angular.isUndefined(selectEvent.name)) {
+									if (selectEvent.name.search(name) < 0) {
+										console.log(name);
+										selectEvent.name = name;
+									}
+								} else {
+									selectEvent.name = name;
+								}
+								/*
+								 * if(angular.isUndefined(dateNames[name])) {
+								 * dateNames[name] = 1; } else {
+								 * dateNames[name]+=1; } var num =
+								 * dateNames[name]; if(num < 10) { num =
+								 * "0"+num; } name = name + " " + num;
+								 */
+
+							}
+							$scope.initSeries = function(event) {
 								event.eventSeries = [ {
 									id : null,
 									name : "单次比赛"
@@ -421,241 +582,131 @@ zmxk.controller('EventManageCtrl', [
 											angular.forEach(data, function(
 													serie, index) {
 												event.eventSeries.push(serie);
-												/*
-												 * console.log("<<<<<<<<<<<<<<<")
-												 * console.log(serie.id)
-												 * console.log(serie.name)
-												 * console.log(event.seriesId)
-												 * console.log(">>>>>>>>>>>>>>>")
-												 */
-												// $scope.listEvents.push(event);
 											})
+
 										})
-							});
-						}, function(data) {
-						});
+								// event.eventSeries.push({id : null, name :
+								// "单次比赛"})
+								console.log(event.eventSeries);
 
-				// get EventTypes
-				// FIXME eventTypes
-				if($scope.isAdmin()) {
-					eventTypeService.list().then(function(data) {
-						$scope.eventTypes = data;
-					}, function(data) {
+							}
 
-					})
-					
-				} else {
-					console.log(loginUserSiteId);
-					eventTypeService.list(loginUserSiteId).then(function(data) {
-						$scope.eventTypes = data;
-					}, function(data) {
-						
-					})
-				}
-				
-				
-				
-				if($scope.isAdmin()) {
-					siteService.list().then(function(data) {
-						$scope.sites = data;
-					}, function(data) {
-					})
-				} else if ((!angular.isUndefined(loginUserSiteId) && loginUserSiteId!=null)){
-					siteService.get(loginUserSiteId).then(function(data) {
-						$scope.sites.push(data);
-						console.log($scope.sites);
-					}, function(data) {
-					})
-				} else {
-					//FIXME error
-					$scope.launch("error", "", "无法取得site信息，请重新登录或联系管理员",
-							function() {
+							$scope.updateEvent = function(updateEvent, idx) {
+								var handleReturn = function(data) {
 
-							}, function() {
-							});
-				}
-			}
+									if (updateEvent.existed) {
+										updateEvent.changed = !updateEvent.changed;
+									}
 
-			$scope.changeName = function(idx) {
-				var selectEvent = undefined;
-				angular.forEach($scope.listEvents, function(event, index2) {
-					if (index2 == idx) {
-						selectEvent = event;
-						console.log(selectEvent);
-						return;
-					}
-				});
+									updateEvent.showInput = !updateEvent.showInput;
+									// $scope.kids = kid; $scope.listEvents
+									var events = [];
+									angular.forEach($scope.listEvents,
+											function(event, i) {
 
-				if (angular.isUndefined(selectEvent)) {
-					return;
-				}
+												if (i == idx) {
+													console
+															.log(i + "~~~"
+																	+ idx);
+													events.push(updateEvent);
+												} else {
+													events.push(event);
+												}
+											})
+									$scope.listEvents = angular.copy(events);
+								}
+								// save event
+								if (!updateEvent.existed) {
+									eventService.createEvent(updateEvent).then(
+											function(data) {
+												// updateEvent = data;
+												// data.existed = true;
+												updateEvent["id"] = data.id;
+												updateEvent.existed = true;
+												handleReturn(updateEvent);
+											}, function(data) {
 
-				var name = selectEvent.name;
-				var nameArr = name.split(" ");
-				var prefix = nameArr[0];
-				var num = $scope.nameStageMap[prefix];
-				selectEvent.stage = num;
-			}
+											})
+								} else if (updateEvent.changed) {
+									eventService.updateEvent(updateEvent.id,
+											updateEvent).then(
+											function(data) {
+												handleReturn(data);
 
-			$scope.formEventName = function(idx) {
-				var selectEvent = undefined;
-				angular.forEach($scope.listEvents, function(event, index2) {
-					if (index2 == idx) {
-						selectEvent = event;
-						console.log(selectEvent);
-						return;
-					}
-				});
+											},
+											function(data) {
+												$scope.launch("error", "",
+														error.data.message,
+														function() {
 
-				if (angular.isUndefined(selectEvent)) {
-					return;
-				}
+														}, function() {
+														});
+											});
+								} else {
+									handleReturn(updateEvent);
+								}
 
-				var namePrefix = $scope.stageNameMap[selectEvent.stage];
-				console.log(selectEvent);
-				var name;
-				if (angular.isUndefined(selectEvent.eventTime)) {
-					name = namePrefix;
-				} else {
-					var date = new Date(selectEvent.eventTime);
-					var mon = date.getMonth() + 1;
-					mon = mon < 10 ? "0" + mon : mon;
-					var day = date.getDate();
-					day = day < 10 ? "0" + day : day;
-					name = mon + "-" + day + "-" + date.getFullYear();
-					name = namePrefix + " " + name;
-				}
-				if (!angular.isUndefined(selectEvent.name)) {
-					if (selectEvent.name.search(name) < 0) {
-						console.log(name);
-						selectEvent.name = name;
-					}
-				} else {
-					selectEvent.name = name;
-				}
-				/*
-				 * if(angular.isUndefined(dateNames[name])) { dateNames[name] =
-				 * 1; } else { dateNames[name]+=1; } var num = dateNames[name];
-				 * if(num < 10) { num = "0"+num; } name = name + " " + num;
-				 */
+							}
 
-			}
-			$scope.initSeries = function(event) {
-				event.eventSeries = [ {
-					id : null,
-					name : "单次比赛"
-				} ];
-				serieService.list(event.eventTypeId).then(function(data) {
-					angular.forEach(data, function(serie, index) {
-						event.eventSeries.push(serie);
-					})
+							$scope.deleteEvent = function(deleteEvent, idx) {
+								console.log(deleteEvent);
+								var handleReturn = function() {
+									var events = [];
+									angular.forEach($scope.listEvents,
+											function(event, i) {
+												if (idx != i) {
+													events.push(angular
+															.copy(event));
+												}
+											});
+									$scope.listEvents = angular.copy(events);
+									console.log($scope.listEvents)
+								}
+								if (!deleteEvent.existed) {
+									deleteEvent = null;
+									handleReturn();
+								} else {
+									eventService
+											.deleteEvent(deleteEvent.id)
+											.then(
+													function(data) {
+														deleteEvent = null;
+														handleReturn();
+													},
+													function(data) {
+														$scope
+																.launch(
+																		"error",
+																		"",
+																		error.data.message,
+																		function() {
 
-				})
-				// event.eventSeries.push({id : null, name : "单次比赛"})
-				console.log(event.eventSeries);
+																		},
+																		function() {
+																		});
+													})
+								}
 
-			}
+							}
 
-			$scope.updateEvent = function(updateEvent, idx) {
-				var handleReturn = function(data) {
+							$scope.createEvent = function() {
 
-					if (updateEvent.existed) {
-						updateEvent.changed = !updateEvent.changed;
-					}
+								var toCreateEvent = {
 
-					updateEvent.showInput = !updateEvent.showInput;
-					// $scope.kids = kid; $scope.listEvents
-					var events = [];
-					angular.forEach($scope.listEvents, function(event, i) {
+								}
+								toCreateEvent["existed"] = false;
+								toCreateEvent["changed"] = true;
+								toCreateEvent["showInput"] = true;
+								$scope.listEvents.push(toCreateEvent);
+								/*
+								 * angular.forEach($scope.kids, function(kid,
+								 * index){ })
+								 */
+								// create all existed == false
+								// update all changed == true
+							}
 
-						if (i == idx) {
-							console.log(i + "~~~" + idx);
-							events.push(updateEvent);
-						} else {
-							events.push(event);
-						}
-					})
-					$scope.listEvents = angular.copy(events);
-				}
-				// save event
-				if (!updateEvent.existed) {
-					eventService.createEvent(updateEvent).then(function(data) {
-						// updateEvent = data;
-						// data.existed = true;
-						updateEvent["id"] = data.id;
-						updateEvent.existed = true;
-						handleReturn(updateEvent);
-					}, function(data) {
-
-					})
-				} else if (updateEvent.changed) {
-					eventService.updateEvent(updateEvent.id, updateEvent).then(
-							function(data) {
-								handleReturn(data);
-
-							},
-							function(data) {
-								$scope.launch("error", "", error.data.message,
-										function() {
-
-										}, function() {
-										});
-							});
-				} else {
-					handleReturn(updateEvent);
-				}
-
-			}
-
-			$scope.deleteEvent = function(deleteEvent, idx) {
-				console.log(deleteEvent);
-				var handleReturn = function() {
-					var events = [];
-					angular.forEach($scope.listEvents, function(event, i) {
-						if (idx != i) {
-							events.push(angular.copy(event));
-						}
-					});
-					$scope.listEvents = angular.copy(events);
-					console.log($scope.listEvents)
-				}
-				if (!deleteEvent.existed) {
-					deleteEvent = null;
-					handleReturn();
-				} else {
-					eventService.deleteEvent(deleteEvent.id).then(
-							function(data) {
-								deleteEvent = null;
-								handleReturn();
-							},
-							function(data) {
-								$scope.launch("error", "", error.data.message,
-										function() {
-
-										}, function() {
-										});
-							})
-				}
-
-			}
-
-			$scope.createEvent = function() {
-
-				var toCreateEvent = {
-
-				}
-				toCreateEvent["existed"] = false;
-				toCreateEvent["changed"] = true;
-				toCreateEvent["showInput"] = true;
-				$scope.listEvents.push(toCreateEvent);
-				/*
-				 * angular.forEach($scope.kids, function(kid, index){ })
-				 */
-				// create all existed == false
-				// update all changed == true
-			}
-
-		} ]);
+						} ]);
 
 zmxk.controller('EventCreateCtrl', [
 		'$scope',
@@ -767,10 +818,7 @@ zmxk
 														$scope.eventInit.attendees = angular
 																.copy(newAttendees);
 
-														console
-																.log($scope.eventInit.attendees);
-
-														$scope.eventInit.leftCount = event.quota
+														$scope.eventInit.leftCount = $scope.eventInit.quota
 																- enrolledCount
 																- applyScoreCount;
 														$scope.eventInit.applyScoreCount = applyScoreCount;
@@ -907,7 +955,8 @@ zmxk
 																							},
 																							function() {
 																							});
-																			$scope.init();
+																			$scope
+																					.init();
 																		},
 																		function(
 																				error) {

@@ -18,7 +18,7 @@ public class Main {
 	     * @param args
 	     */
 	    public static void main(String[] args) throws Exception {
-	        TimeUtil main = new TimeUtil();
+	    	Main main = new Main();
 
 	        main.startTomcat();
 	    }
