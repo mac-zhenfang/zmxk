@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>动态设置多边形区域的形状</title>
+<style type="text/css">
+*{
+    margin:0px;
+    padding:0px;
+}
+body, button, input, select, textarea {
+    font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+}
+#info {
+    margin-top: 10px;
+}
+</style>
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+<script>
+var init = function() {
+    var center = new qq.maps.LatLng(39.916527,116.397128);
+    var map = new qq.maps.Map(document.getElementById('container'),{
+        center: center,
+        zoom: 13
+    });
+    var polygon1 = new qq.maps.Polygon({
+        map: map,
+        strokeColor: new qq.maps.Color(0, 0, 0, 0.8),
+        strokeWeight: 0,
+        fillColor: qq.maps.Color.fromHex("#f30855", 0.5),
+        visible:true
+    });
+    
+    var polygon2 = new qq.maps.Polygon({
+        map: map
+    });
+    var polygon3 = new qq.maps.Polygon({
+        map: map
+    });
+	var path1=[
+        new qq.maps.LatLng(39.924320,116.396653),
+        new qq.maps.LatLng(39.913326,116.390557),
+        new qq.maps.LatLng(38.913323,116.390556),
+        new qq.maps.LatLng(39.913327,116.390554),
+		new qq.maps.LatLng(39.913590,116.403863)
+    ];
+    var path2=[
+        new qq.maps.LatLng(39.925307,116.389186),
+        new qq.maps.LatLng(39.925570,116.404893),
+		new qq.maps.LatLng(39.911549,116.405494),
+		new qq.maps.LatLng(39.912141,116.385667)
+    ];
+    var path3=[
+        new qq.maps.LatLng(39.926516,116.389366),
+        new qq.maps.LatLng(39.924870,116.403270),
+        new qq.maps.LatLng(39.918090,116.406274),
+        new qq.maps.LatLng(39.909466,116.397863),
+		new qq.maps.LatLng(39.913021,116.387134)
+    ];
+    var index=0;
+    
+    polygon1.setPath(path1);
+    polygon2.setPath(path2);
+    polygon3.setPath(path3);
+   /* setInterval(function(){
+        if(index==0){
+          polygon.setPath(path1);
+        };
+        if(index==1){
+          polygon.setPath(path2);
+        };
+        if(index==2){
+           polygon.setPath(path3);
+        };
+        index++;
+        if(index>2){
+            index=0;
+        }
+    },200);*/
+}
+</script>
+</head>
+<body onload="init()">
+<div style="width:603px;height:300px" id="container"></div>
+<div id="info">
+    <p>添加一个多边形区域，并动态改变多边形的形状。</p>
+</div>
+</body>
+</html>
