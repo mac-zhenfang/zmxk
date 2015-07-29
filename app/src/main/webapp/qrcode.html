@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="zmxk">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<title>我的二维码</title>
+
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+<!-- Optional theme 
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
+<!-- FONTAWESOME STYLE CSS -->
+<link href="assets/css/font-awesome.min.css" rel="stylesheet" />
+<!-- CUSTOM STYLE CSS -->
+<link href="assets/css/style.css" rel="stylesheet" />
+
+
+</head>
+<body ng-controller="MainController as main" ng-init="init()">
+	<div class="container">
+		<img ng-src="/service/smartool/api/v1/users/me/qrcode"></img>
+	</div>
+	<!-- ANGULAR -->
+	<script src="assets/plugins/angular.js"></script>
+
+	<script src="assets/js/angular-resource.min.js"></script>
+	<script src="assets/js/angular-cookies.min.js"></script>
+	<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+	<!-- CORE JQUERY  -->
+	<script src="assets/plugins/jquery-1.10.2.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="assets/plugins/bootstrap.js"></script>
+	<script>
+		var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
+				$httpProvider) {
+			$httpProvider.interceptors.push(function($q) {
+				return {
+					'responseError' : function(response) {
+						if (response.status == "401") {
+							window.location = "login.html#?page=qrcode";
+							return;
+						}
+						if (response.status == "403") {
+							window.location = "err403.html";
+							return;
+						}
+						/*if (response.status == "500") {
+							window.location = "err500.html";
+							return;
+						}*/
+						/*
+						 * if (response.status == "400") {
+						 * 
+						 * alert(response.data.error); } if (response.data.error) {
+						 * alert(response.data.error); }
+						 */
+						return $q.reject(response);
+					}
+				};
+			});
+		});
+		zmxk.config([ '$resourceProvider', function($resourceProvider) {
+			// Don't strip trailing slashes from calculated URLs
+			$resourceProvider.defaults.stripTrailingSlashes = false;
+		} ]);
+		zmxk.service('userService', [
+				'$resource',
+				'$q',
+				function($resource, $q) {
+					var userResource = $resource(
+							"/service/smartool/api/v1/users/me", {}, {
+								get : {
+									method : 'GET',
+									headers : {
+										'Content-Type' : 'application/json'
+									}
+								}
+							});
+					this.getMe = function() {
+						var defer = $q.defer();
+						userResource.get(function(body, headers) {
+							console.log(body.data);
+							defer.resolve(body);
+						}, function(body, headers) {
+							console.log(body.data);
+							defer.reject(body);
+						})
+						return defer.promise;
+					}
+				} ]);
+
+		zmxk.controller('MainController', [ '$scope', 'userService',
+				'$location', function($scope, userService, $location) {
+					/*$scope.$location = $location;
+					$scope.me = {};
+					$scope.init = function() {
+						userService.getMe().then(function(data) {
+							$scope.me = data;
+
+						}, function(data) {
+
+						});
+						
+
+					}*/
+					$scope.getQrCode = function() {
+						var url = window.location.origin;
+						url = url + "/service/smartool/api/v1/users/me/qrcode";
+						console.log(url);
+						return url;
+					}
+				} ]);
+	</script>
+</body>
+</html>

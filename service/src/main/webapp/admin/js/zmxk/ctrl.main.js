@@ -65,7 +65,7 @@ zmxk.controller('MainController', [
 			}
 			
 			$scope.isAdmin = function() {
-				return $scope.loginUser.roleId==2;
+				return !angular.isUndefined($scope.loginUser) && !angular.isUndefined($scope.loginUser.roleId) && $scope.loginUser.roleId==2;
 			}
 
 			$scope.hoopPage = function(page, params) {

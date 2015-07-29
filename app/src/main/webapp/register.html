@@ -19,8 +19,6 @@
 <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
 <!-- CUSTOM STYLE CSS -->
 <link href="assets/css/style.css" rel="stylesheet" />
-
-
 </head>
 <body ng-controller="MainController as main">
 	<div class="container">
@@ -29,43 +27,40 @@
 				<div class="panel-body">
 					<form role="form" ng-controller="RegisterController"
 						ng-submit="processForm()">
-						<div class="form-group input-group">
+						<div class="form-group input-group" ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
 									class="fa fa-circle-o-notch"></i> -->
-							<span class="input-group-addon">#</span> <input type="text"
+							<span class="input-group-addon"></span> <input type="text"
 								class="form-control" placeholder="{{const.mobile}}"
-								ng-model="formData.mobile" ng-readonly="mobileVerifySent" />
+								ng-model="formData.mobileNum" ng-readonly="currentStep == 2" />
 						</div>
-						<div class="form-group input-group" ng-show="mobileVerifySent">
-							<span class="input-group-addon">#</span> <input type="text"
-								class="form-control" placeholder="验证码" />
+						<div class="form-group input-group" ng-show="currentStep == 2">
+							<span class="input-group-addon">验证码</span> <input type="text"
+								class="form-control" ng-model="formData.code" placeholder="验证码" />
 						</div>
-						<div ng-show="mobileVerified">
+						<div ng-show="currentStep == 2">
 							<div class="form-group input-group">
 								<span class="input-group-addon"><i
 									class="fa fa-circle-o-notch"></i></span> <input type="text"
-									class="form-control" placeholder="小孩姓名" />
+									class="form-control" placeholder="用户名" ng-model="formData.name" />
 							</div>
 							<div class="form-group input-group">
 								<span class="input-group-addon"><i
+									class="fa fa-circle-o-notch"></i></span> <input type="password"
+									class="form-control" placeholder="密码" ng-model="formData.password" />
+							</div>
+							
+							<div class="form-group input-group">
+								<span class="input-group-addon"><i
 									class="fa fa-life-bouy"></i></span> <input type="text"
-									class="form-control" placeholder="年龄" />
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon"><i class="fa fa-tag"></i></span>
-								<select class="selectpicker form-control" data-style="btn-info"
-									data-live-search="true">
-									<option>幼儿园</option>
-									<option>小学</option>
-									<option>还未上幼儿园</option>
-								</select>
-							</div>
-							<div class="form-group input-group">
-								<span class="input-group-addon">@</span> <input type="text"
-									class="form-control" placeholder="Your Email" optional />
+									class="form-control" placeholder="所在城市"
+									ng-model="formData.location" />
 							</div>
 						</div>
-						<input type="submit" value="{{submit_label}}" class="btn btn-info btn-block">
+						<input type="submit" value="{{submit_label}}"
+							class="btn btn-info btn-block" ng-show="currentStep != 3">
+						<div ng-show="currentStep == 3">注册成功
+						<img src=""></img></div>
 					</form>
 				</div>
 			</div>
@@ -80,62 +75,119 @@
 	<script src="assets/plugins/bootstrap.js"></script>
 	<script>
 		var zmxk = angular.module('zmxk', []);
-
+		zmxk
+				.service(
+						'userService',
+						[
+								'$resource',
+								'$q',
+								function($resource, $q) {
+									var usersResource = $resource(
+											zmxkConfig.user_rest_uri,
+											{
+												userId : '@id'
+											},
+											{
+												register : {
+													url : zmxk.user_register_uri,
+													method : 'Post',
+													headers : {
+														'Content-Type' : 'application/x-www-form-urlencoded'
+													}
+												}
+											});
+									this.register = function(userData) {
+										var defer = $q.defer();
+										usersResource.save(
+												zmxkConfig.user_rest_uri,
+												userData, function(body,
+														headers) {
+													console.log(body.data);
+													defer.resolve(body);
+												}, function(body, headers) {
+													console.log(body.data);
+													defer.reject(body);
+												})
+									}
+								} ]);
+		zmxk.value('zmxkConfig', {
+			user_login_uri : "/service/api/v1/users/login",
+			user_register_uri : "/service/api/v1/users/register",
+			user_rest_uri : "/service/smartool/api/v1/users/:userId"
+		});
 		zmxk.controller('MainController', [ '$scope', function($scope) {
 			$scope.const = {};
 			$scope.const.registerTitle = '注册';
 			$scope.const.mobile = '手机号码';
 			$scope.const.submit_send_verification = "发送验证码";
-			$scope.const.submit_enter_verification = "输入验证码";
+			//$scope.const.submit_enter_verification = "输入验证码";
 			$scope.const.submit_register = "注册";
 			$scope.submit_label = $scope.const.submit_send_verification;
 
 			$scope.mobileVerifySent = false;
 			$scope.mobileVerified = false;
+			$scope.TotalStep = 3;
+			$scope.currentStep = 1;
 		} ]);
+		var send_code_uri;
 
-		zmxk.controller('RegisterController', [ '$scope', '$http',
-				function($scope, $http) {
-					$scope.formData = {};
-					$scope.processForm = function() {
-						console.log($scope.formData);
-						if($scope.mobileVerifySent) {
-							// submit verification code
-							$scope.submit_label = $scope.const.submit_register;
-							$scope.mobileVerified = true;
-							$scope.mobileVerifySent = true;
-						} else if($scope.mobileVerified) {
-							// register
-							$scope.submit_label = $scope.const.submit_send_verification;
-							$scope.mobileVerifySent = false;
-							$scope.mobileVerified = false;
-							
-						} else {
-							// send verification code
-							$scope.mobileVerifySent = true;
-							$scope.submit_label = $scope.const.submit_enter_verification;
-						}
-						/*$http({
-						    method  : 'POST',
-						    url     : 'process.php',
-						    data    : $.param($scope.formData),  // pass in data as strings
-						    headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-						}).success(function(data) {
-						    console.log(data);
-						    if (!data.success) {
-						    	// if not successful, bind errors to error variables
-						        $scope.errorName = data.errors.name;
-						        $scope.errorSuperhero = data.errors.superheroAlias;
-						    } else {
-						    	// if successful, bind success message to message
-						        $scope.message = data.message;
-						                    $scope.errorName = '';
-						        $scope.errorSuperhero = '';
-						    }
-						});*/
+		zmxk
+				.controller(
+						'RegisterController',
+						[
+								'$scope',
+								'$http',
+								function($scope, $http) {
+									$scope.formData = {};
+									$scope.formData.kids = [];
+									$scope.processForm = function() {
+											$scope.register_uri = "service/smartool/api/v1/users/register";
+											$scope.send_code_uri = "service/smartool/api/v1/users/code";
+											if($scope.currentStep == 2){
+												var url = $scope.register_uri+"?code="+$scope.formData.code;
+												$http(
+														{
+															method : 'POST',
+															url : url,
+															data : JSON.stringify($scope.formData), // pass in data as strings
+															headers : {
+																'Content-Type' : 'application/json'
+															}
+														// set the headers so angular passing info as form data (not request payload)
+														})
+														.success(
+																function(data) {
+																	$scope.currentStep = 3;
+																	$scope.submit_label = $scope.const.registerTitle;
+																})
+														.error(function(data, header){
+	 															alert(data.message)
+														});
+											} else {
+												url = $scope.send_code_uri;
+												$http(
+														{
+															method : 'POST',
+															url : url,
+															data : JSON.stringify($scope.formData), // pass in data as strings
+															headers : {
+																'Content-Type' : 'application/json'
+															}
+														// set the headers so angular passing info as form data (not request payload)
+														})
+														.success(
+																function(data) {
+																	$scope.currentStep = 2;
+																	$scope.formData.code = data.securityCode;
+																	$scope.submit_label = $scope.const.registerTitle;
+																})
+														.error(function(data, header){
+															alert(data.message)
+														});
+											}
 
-					};
-				} ]);
+									};
+								} ]);
 		angular.bootstrap(document, [ 'zmxk' ]);
 	</script>
 </body>

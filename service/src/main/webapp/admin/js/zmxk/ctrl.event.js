@@ -378,6 +378,9 @@ zmxk.controller('EventManageCtrl', [
 			$scope.init = function() {
 				//console.log($scope.loginUser);
 				if(!$scope.isAdmin()) {
+					if(angular.isUndefined($scope.loginUser.siteId)) {
+						window.location.href="err403.html";
+					}
 					var loginUserSiteId = $scope.loginUser.siteId;
 				}
 				
