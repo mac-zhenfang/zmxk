@@ -156,7 +156,7 @@ public class EventController extends BaseController {
 				attendee.setStatus(2);
 			}
 			if (existeAttendeeMap.get(attendee.getId()) != null
-					&& (existeAttendeeMap.get(attendee.getId()).getTagId() == null || !Objects
+					&& (existeAttendeeMap.get(attendee.getId()).getSeq() == null || !Objects
 							.equals(existeAttendeeMap.get(attendee.getId()).getTagId(), attendee.getTagId()))) {
 				String tagId = attendee.getTagId();
 				if (tagId == null) {
