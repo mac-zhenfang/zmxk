@@ -1,8 +1,13 @@
 package com.smartool.service.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +37,7 @@ import com.smartool.service.dao.TagDao;
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class EventController extends BaseController {
+	private final static String NULL_TAG_ID = "NULL_TAG_ID";
 
 	@Autowired
 	private EventDao eventDao;
@@ -48,16 +54,19 @@ public class EventController extends BaseController {
 	@Autowired
 	private TagDao tagDao;
 
+	private int attendeePerGourpLimitation = 100;
+
 	private static Random r = new Random();
-	
+
 	/**
 	 * List events by site
-	 * */
+	 */
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/{siteId}/events", method = RequestMethod.GET)
 	public List<Event> getEventsBySite(@PathVariable String siteId) {
 		return eventDao.listAllEvent(siteId);
 	}
+
 	/**
 	 * List
 	 * 
@@ -107,7 +116,7 @@ public class EventController extends BaseController {
 			Attendee att = new Attendee();
 			att.setId(CommonUtils.getRandomUUID());
 			att.setEventId(eventId);
-			att.setSeq(p);
+			// att.setSeq(p);
 			attendeeDao.create(att);
 			p++;
 		}
@@ -119,17 +128,69 @@ public class EventController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
 		List<Attendee> retAttendees = new ArrayList<>();
+		// TagId to seqs
+		Map<String, Set<Integer>> groupMap = new HashMap<String, Set<Integer>>();
+		List<Attendee> existeAttendees = attendeeDao.getAttendeeFromEvent(eventId);
+		// AttendeeId to Attendee
+		Map<String, Attendee> existeAttendeeMap = new HashMap<String, Attendee>();
+		for (Attendee existeAttendee : existeAttendees) {
+			if (existeAttendee.getKidId() != null) {
+				existeAttendeeMap.put(existeAttendee.getId(), existeAttendee);
+				// Update
+				String tagId = existeAttendee.getTagId();
+				if (tagId == null) {
+					tagId = NULL_TAG_ID;
+				}
+				if (!groupMap.containsKey(tagId)) {
+					groupMap.put(tagId, new TreeSet<Integer>());
+				}
+				if (existeAttendee.getSeq() != null) {
+					groupMap.get(tagId).add(existeAttendee.getSeq());
+				}
+			}
+		}
 		for (Attendee attendee : attendees) {
 			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
 			} else {
 				attendee.setStatus(2);
 			}
+			if (existeAttendeeMap.get(attendee.getId()) != null
+					&& (existeAttendeeMap.get(attendee.getId()).getSeq() == null || !Objects
+							.equals(existeAttendeeMap.get(attendee.getId()).getTagId(), attendee.getTagId()))) {
+				String tagId = attendee.getTagId();
+				if (tagId == null) {
+					tagId = NULL_TAG_ID;
+				}
+				String oldTagId = existeAttendeeMap.get(attendee.getId()).getTagId();
+				if (oldTagId == null) {
+					oldTagId = NULL_TAG_ID;
+				}
+				if (!groupMap.containsKey(tagId)) {
+					groupMap.put(tagId, new TreeSet<Integer>());
+				}
+				if (groupMap.containsKey(oldTagId) && existeAttendeeMap.get(attendee.getId()).getSeq() != null) {
+					groupMap.get(oldTagId).remove(existeAttendeeMap.get(attendee.getId()).getSeq());
+				}
+				Integer seq = getSeqNumber(groupMap, tagId);
+				attendee.setSeq(seq);
+				groupMap.get(tagId).add(seq);
+			}
 			// update attendee
 			retAttendees.add(attendeeDao.complete(attendee));
 		}
 
 		return retAttendees;
+	}
+
+	private Integer getSeqNumber(Map<String, Set<Integer>> groupMap, String tagId) {
+		Set<Integer> seqs = groupMap.get(tagId);
+		for (int i = 1; i <= attendeePerGourpLimitation; i++) {
+			if (!seqs.contains(i)) {
+				return i;
+			}
+		}
+		throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_GROUP_QUOTA_ERROR_MESSAGE);
 	}
 
 	/**

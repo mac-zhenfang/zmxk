@@ -12,6 +12,7 @@
 		update attendees
 		set
 		rank=#{rank},
+		seq=#{seq},
 		score=#{score},
 		tagId=#{tagId},
 		status=#{status}

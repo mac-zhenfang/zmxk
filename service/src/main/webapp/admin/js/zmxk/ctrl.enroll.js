@@ -104,9 +104,9 @@ zmxk
 																.push(data);
 														msg += "姓名: "
 														msg += data.kidName;
-														msg += ", 车次 ";
-														msg += data.seq
-														msg += " "
+														msg += " 录入成功。";
+														// msg += data.seq
+														// msg += " "
 														if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
 															
 															$scope
@@ -231,8 +231,7 @@ zmxk
 																		.push(kid);
 															}
 														}
-														console
-																.log($scope.userId);
+														
 														$scope.enroll_form_data.user = user;
 														console
 																.log($scope.enroll_form_data.user);
@@ -259,6 +258,7 @@ zmxk
 								}
 
 								// FIXME, we dont need to have status
+							
 								eventService.list(loginUserSiteId).then(function(data) {
 									var events = [];
 									events = data;
@@ -281,8 +281,6 @@ zmxk
 											$scope.events.push(event);
 										}
 									});
-									// console.log($scope.events);
-
 								}, function(error) {
 									// TODO
 								});

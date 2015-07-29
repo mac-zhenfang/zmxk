@@ -1,32 +1,33 @@
 package com.smartool.common.dto;
 
 public class Attendee extends BaseDateTrackingBean {
-	
+
 	private String id;
-	
+
 	private String kidName;
-	
+
 	private String kidId;
-	
+
 	private String userId;
-	
+
 	private String eventId;
-	
+
 	private String tagId;
-	
+
 	private String tag;
-	
+
 	private float score;
-	
+
 	private int rank;
-	
-	private int seq;
-	
-	private int status; //0 (prepared when create event) / 1 (enrolled) / 2 (complete event)
+
+	private Integer seq;
+
+	private int status; // 0 (prepared when create event) / 1 (enrolled) / 2
+						// (complete event)
 
 	public Attendee() {
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -83,11 +84,11 @@ public class Attendee extends BaseDateTrackingBean {
 		this.kidName = kidName;
 	}
 
-	public int getSeq() {
+	public Integer getSeq() {
 		return seq;
 	}
 
-	public void setSeq(int seq) {
+	public void setSeq(Integer seq) {
 		this.seq = seq;
 	}
 

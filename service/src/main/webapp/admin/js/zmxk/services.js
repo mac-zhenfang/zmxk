@@ -401,7 +401,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 
 			this.list = function(s) {
 				var defer = $q.defer();
-				if (!angular.isUndefined(s)) {
+				if (!angular.isUndefined(s) && s!=null) {
 					if (angular.isNumber(s)) {
 						eventResource.query({
 							status : s
