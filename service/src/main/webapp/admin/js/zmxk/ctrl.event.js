@@ -907,6 +907,7 @@ zmxk
 																							},
 																							function() {
 																							});
+																			$scope.init();
 																		},
 																		function(
 																				error) {
