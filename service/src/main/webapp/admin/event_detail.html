@@ -29,7 +29,7 @@
 						<td class="center"><span
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
 								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
-						<td class="center"><span ng-click="editing = true"
+						<td class="center"><span ng-click="clickToEdit()"
 							ng-hide="editing" ng-bind="attendee.score" class="btn btn-info"></span>
 							<input ng-model="attendee.score" ng-show="editing"
 							class="form-control gridInput" />

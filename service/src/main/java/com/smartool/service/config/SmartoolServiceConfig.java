@@ -59,6 +59,8 @@ import com.smartool.service.service.CreditServiceImpl;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
 
+import redis.clients.jedis.Jedis;
+
 @Configuration
 @ComponentScan(basePackages = { "com.smartool.service.*" })
 @EnableTransactionManagement(proxyTargetClass = true)
@@ -86,7 +88,12 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public CreditRecordDao getCreditRecordDao() {
 		return new CreditRecordDaoImpl();
 	}
-
+	
+	@Bean
+	public Jedis redis() {
+		Jedis jedis = new Jedis("10.0.50.157");
+		return jedis;
+	}
 	@Bean
 	public UserService getUserService() {
 		return new UserServiceImpl();

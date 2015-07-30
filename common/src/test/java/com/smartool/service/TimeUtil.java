@@ -2,13 +2,16 @@ package com.smartool.service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class TimeUtil {
 	
-	 public static String calCurrentTimeSeg()
+	 public static String calCurrentTimeSeg() throws Exception
 	  {
 	    SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    Long cur = Long.valueOf(System.currentTimeMillis());
+	    Date date=d.parse("2015-07-30 11:13:42");
+	    System.out.println(date.getTime());
+	    Long cur = Long.valueOf((date.getTime()));
 	    String temporary = d.format(new Timestamp(cur.longValue()));
 	    System.out.println(temporary);
 	    String[] clock = temporary.split(" ")[1].split("\\:");
@@ -18,7 +21,7 @@ public class TimeUtil {
 	    return formattedSeg;
 	  }
 	 
-	 public static void main(String [] args) {
+	 public static void main(String [] args)  throws Exception {
 		 System.out.println(calCurrentTimeSeg());
 	 }
 }

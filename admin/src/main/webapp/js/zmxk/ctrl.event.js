@@ -885,30 +885,57 @@ zmxk
 											});
 								}
 							}
+							$scope.clickToEdit = function() {
+								if (canStartEditScore()) {
+									$scope.editing = true;
+								}
+
+							}
+							var canStartEditScore = function() {
+								var d = new Date();
+								var t = d.getTime();
+								console.log($scope.eventInit.eventTime);
+								console.log(t);
+								if (!angular
+										.isUndefined($scope.eventInit.eventTime)
+										&& t < $scope.eventInit.eventTime) {
+									$scope.launch("error", "", "比赛还未开始！ 当前时间: "+d+", 比赛时间: " + new Date($scope.eventInit.eventTime),
+											function() {
+
+											}, function() {
+
+											});
+									return false;
+								} else {
+									return true;
+								}
+							}
 							$scope.editScore = function() {
-								var m = new Map();
-								angular.forEach($scope.eventInit.attendees,
-										function(attendee, index) {
-											if (!m.get(attendee.tagId)) {
-												m.set(attendee.tagId, []);
-											}
-											m.get(attendee.tagId)
-													.push(attendee);
+								if (canStartEditScore()) {
+									var m = new Map();
+									angular.forEach($scope.eventInit.attendees,
+											function(attendee, index) {
+												if (!m.get(attendee.tagId)) {
+													m.set(attendee.tagId, []);
+												}
+												m.get(attendee.tagId).push(
+														attendee);
+											});
+									m.forEach(function(attendees, tagId) {
+										attendees.sort(function(a, b) {
+											var key = "score";
+											var x = a[key];
+											var y = b[key];
+											return ((x < y) ? -1 : ((x > y) ? 1
+													: 0));
 										});
-								m.forEach(function(attendees, tagId) {
-									attendees.sort(function(a, b) {
-										var key = "score";
-										var x = a[key];
-										var y = b[key];
-										return ((x < y) ? -1
-												: ((x > y) ? 1 : 0));
+										attendees.forEach(function(attendee,
+												index) {
+											attendee.rank = index + 1;
+										})
 									});
-									attendees
-											.forEach(function(attendee, index) {
-												attendee.rank = index + 1;
-											})
-								});
-								console.log($scope.eventInit.attendees);
+									console.log($scope.eventInit.attendees);
+								}
 							}
 
 							$scope.applyAttendeeChanges = function() {
@@ -948,8 +975,8 @@ zmxk
 																			$scope
 																					.launch(
 																							"notify",
-																							"成绩修改成功",
-																							"成绩修改成功",
+																							"修改成功",
+																							"修改成功",
 																							function() {
 
 																							},
