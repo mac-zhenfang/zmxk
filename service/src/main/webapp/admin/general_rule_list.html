@@ -15,6 +15,7 @@
 					<tr>
 						<th>规则名</th>
 						<th>可给予积分</th>
+						<th>给予奖牌</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -26,6 +27,15 @@
 						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.credit"></span> <input ng-model="rule.credit"
 							ng-show="{{rule.showInput}}" class="form-control gridInput2" /></td>
+						<td class="center">金<span ng-hide="{{rule.showInput}}"
+							ng-bind="rule.goldenMedal"></span> <input ng-model="rule.goldenMedal"
+							ng-show="{{rule.showInput}}" class="form-control gridInput4" /><br />银<span
+							ng-hide="{{rule.showInput}}" ng-bind="rule.silverMedal"></span> <input
+							ng-model="rule.silverMedal" ng-show="{{rule.showInput}}"
+							class="form-control gridInput4" /><br />铜<span
+							ng-hide="{{rule.showInput}}" ng-bind="rule.bronzeMedal"></span> <input
+							ng-model="rule.bronzeMedal" ng-show="{{rule.showInput}}"
+							class="form-control gridInput4" /></td>
 						<td class="center"><a class="btn btn-info"
 							href="#/general_rules"
 							ng-click="rule.showInput?saveRule($index, rule):updateRule($index, rule)">

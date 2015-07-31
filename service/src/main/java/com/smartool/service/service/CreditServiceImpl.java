@@ -230,12 +230,12 @@ public class CreditServiceImpl implements CreditService {
 			if (eventCreditRule.getUpperRank() != null || eventCreditRule.getLowerRank() != null) {
 				creditRecord.setRank(attendee.getRank());
 			}
-			creditRecord.setGoldenMedal(eventCreditRule.getGoldenMedal());
-			creditRecord.setSilverMedal(eventCreditRule.getSilverMedal());
-			creditRecord.setBronzeMedal(eventCreditRule.getBronzeMedal());
 		} else {
 			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
 		}
+		creditRecord.setGoldenMedal(creditRecord.getGoldenMedal());
+		creditRecord.setSilverMedal(creditRecord.getSilverMedal());
+		creditRecord.setBronzeMedal(creditRecord.getBronzeMedal());
 		CreditRecord createdCreditRecord = creditRecordDao.createCreditRecord(creditRecord);
 		return createdCreditRecord;
 	}

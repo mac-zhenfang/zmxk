@@ -5,16 +5,19 @@
 <mapper namespace="CREDIT_RULE">
 	<select id="create" parameterType="com.smartool.common.dto.CreditRule">
 		insert creditRules (id, name,
-		credit, createdTime,
+		credit,goldenMedal,silverMedal,bronzeMedal, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},now(),now())
+		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.CreditRule">
 		update creditRules
 		set
 		name=#{name},
-		credit=#{credit}
+		credit=#{credit},
+		goldenMedal=#{goldenMedal},
+		silverMedal=#{silverMedal},
+		bronzeMedal=#{bronzeMedal}
 		where id =
 		#{id};
 	</select>
