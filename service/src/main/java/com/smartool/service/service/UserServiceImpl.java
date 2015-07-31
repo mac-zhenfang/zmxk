@@ -92,12 +92,12 @@ public class UserServiceImpl implements UserService {
 				existSecurityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
 				existSecurityCode.setMobileNumber(securityCode.getMobileNumber());
 				existSecurityCode.setRemoteAddr(securityCode.getRemoteAddr());
-				securityCodeDao.sendSecurityCodeThoughSms(existSecurityCode);
+				securityCodeDao.sendSecurityCode(existSecurityCode);
 				return securityCodeDao.update(existSecurityCode).getSecurityCode();
 			}
 		} else {
 			securityCode.setSecurityCode(CommonUtils.getRandomSecurityCode());
-			securityCodeDao.sendSecurityCodeThoughSms(securityCode);
+			securityCodeDao.sendSecurityCode(securityCode);
 			return securityCodeDao.create(securityCode).getSecurityCode();
 		}
 	}
@@ -131,6 +131,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public boolean validateMobileNumberForRegister(String mobileNumber) {
+		//FIXME: check if it is a 11 number
 		if (CommonUtils.isEmptyString(mobileNumber)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
@@ -224,7 +225,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public byte[] getQRCode(String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://www.ismartool.com:1099/admin/index.html#/enroll/" + userId).withSize(400, 400)
+		QRCode.from("http://www.ismartool.cn:1099/admin/index.html#/enroll/" + userId).withSize(400, 400)
 				.to(ImageType.PNG).writeTo(out);
 		return out.toByteArray();
 	}

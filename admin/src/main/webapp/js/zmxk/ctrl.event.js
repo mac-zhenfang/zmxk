@@ -380,8 +380,9 @@ zmxk
 							$scope.init = function() {
 								// console.log($scope.loginUser);
 								if (!$scope.isAdmin()) {
-									if (angular
-											.isUndefined($scope.loginUser.siteId)) {
+									if (angular.isUndefined($scope.loginUser)
+											|| angular
+													.isUndefined($scope.loginUser.siteId)) {
 										window.location.href = "err403.html";
 									}
 									var loginUserSiteId = $scope.loginUser.siteId;
@@ -899,12 +900,20 @@ zmxk
 								if (!angular
 										.isUndefined($scope.eventInit.eventTime)
 										&& t < $scope.eventInit.eventTime) {
-									$scope.launch("error", "", "比赛还未开始！ 当前时间: "+d+", 比赛时间: " + new Date($scope.eventInit.eventTime),
-											function() {
+									$scope
+											.launch(
+													"error",
+													"",
+													"比赛还未开始！ 当前时间: "
+															+ d
+															+ ", 比赛时间: "
+															+ new Date(
+																	$scope.eventInit.eventTime),
+													function() {
 
-											}, function() {
+													}, function() {
 
-											});
+													});
 									return false;
 								} else {
 									return true;

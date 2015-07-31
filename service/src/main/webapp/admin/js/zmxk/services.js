@@ -289,7 +289,7 @@ zmxk.service('eventTypeService', [ '$resource', 'zmxkConfig', '$q',
 				} else {
 					eventTypeResource.queryBySite({
 						siteId : s
-					},function(data, headers) {
+					}, function(data, headers) {
 						defer.resolve(data);
 					}, function(data, headers) {
 						defer.reject(data);
@@ -401,7 +401,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 
 			this.list = function(s) {
 				var defer = $q.defer();
-				if (!angular.isUndefined(s) && s!=null) {
+				if (!angular.isUndefined(s) && s != null) {
 					if (angular.isNumber(s)) {
 						eventResource.query({
 							status : s
@@ -848,40 +848,56 @@ zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			};
 		} ]);
-zmxk.service('creditRecordService', [ '$resource', 'zmxkConfig', '$q',
-		function($resource, zmxkConfig, $q) {
-			var creditRecordService = $resource(zmxkConfig.event_credit_records_search_uri, {
-				start : '@start',
-				end : '@end',
-				mobileNum : '@mobileNum'
-			}, {
-				search : {
-					url : zmxkConfig.event_credit_records_search_uri,
-					method : "GET",
-					isArray : true
-				},
-				searchMine : {
-					url : zmxkConfig.my_event_credit_records_search_uri,
-					method : "GET",
-					isArray : true
-				}
-			});
-			this.listAll = function(mobileNum, start, end) {
-				var defer = $q.defer();
-				creditRecordService.search({mobileNum, start, end}, function(data, header) {
-					defer.resolve(data);
-				}, function(data, header) {
-					defer.reject(data);
-				});
-				return defer.promise;
-			};
-			this.listAllMine = function(start, end) {
-				var defer = $q.defer();
-				creditRecordService.searchMine({start, end}, function(data, header) {
-					defer.resolve(data);
-				}, function(data, header) {
-					defer.reject(data);
-				});
-				return defer.promise;
-			};
-		} ]);
+zmxk
+		.service(
+				'creditRecordService',
+				[
+						'$resource',
+						'zmxkConfig',
+						'$q',
+						function($resource, zmxkConfig, $q) {
+							var creditRecordService = $resource(
+									zmxkConfig.event_credit_records_search_uri,
+									{
+										start : '@start',
+										end : '@end',
+										mobileNum : '@mobileNum'
+									},
+									{
+										search : {
+											url : zmxkConfig.event_credit_records_search_uri,
+											method : "GET",
+											isArray : true
+										},
+										searchMine : {
+											url : zmxkConfig.my_event_credit_records_search_uri,
+											method : "GET",
+											isArray : true
+										}
+									});
+							this.listAll = function(_mobileNum, _start, _end) {
+								var defer = $q.defer();
+								creditRecordService.search({
+									mobileNum : _mobileNum,
+									start : _start,
+									end : _end
+								}, function(data, header) {
+									defer.resolve(data);
+								}, function(data, header) {
+									defer.reject(data);
+								});
+								return defer.promise;
+							};
+							this.listAllMine = function(_start, _end) {
+								var defer = $q.defer();
+								creditRecordService.searchMine({
+									start : _start,
+									end : _end
+								}, function(data, header) {
+									defer.resolve(data);
+								}, function(data, header) {
+									defer.reject(data);
+								});
+								return defer.promise;
+							};
+						} ]);

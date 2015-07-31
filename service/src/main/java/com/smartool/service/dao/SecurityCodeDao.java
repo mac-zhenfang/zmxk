@@ -9,7 +9,7 @@ public interface SecurityCodeDao {
 
 	SecurityCode update(SecurityCode securityCode);
 
-	void sendSecurityCodeThoughSms(SecurityCode securityCode);
+	void sendSecurityCode(SecurityCode securityCode);
 
 	void remove(String mobileNumber);
 

@@ -37,7 +37,7 @@ public class SecurityCodeDaoImpl implements SecurityCodeDao {
 	}
 
 	@Override
-	public void sendSecurityCodeThoughSms(SecurityCode securityCode) {
+	public void sendSecurityCode(SecurityCode securityCode) {
 		// TODO Auto-generated method stub
 
 	}
