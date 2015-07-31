@@ -19,6 +19,7 @@
 <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
 <!-- CUSTOM STYLE CSS -->
 <link href="assets/css/style.css" rel="stylesheet" />
+<link href="admin/css/city.css" rel="stylesheet" />
 </head>
 <body ng-controller="MainController as main">
 	<div class="container">
@@ -53,7 +54,7 @@
 							<div class="form-group input-group">
 								<span class="input-group-addon"><i
 									class="fa fa-life-bouy"></i></span> <input type="text"
-									class="form-control" placeholder="所在城市"
+									class="form-control" placeholder="所在城市" id="city"
 									ng-model="formData.location" />
 							</div>
 						</div>
@@ -73,6 +74,7 @@
 	<script src="assets/plugins/jquery-1.10.2.js"></script>
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="assets/plugins/bootstrap.js"></script>
+	<script src="admin/js/zmxk/city.js"></script>
 	<script>
 		var zmxk = angular.module('zmxk', []);
 		zmxk
@@ -144,6 +146,7 @@
 											$scope.register_uri = "service/smartool/api/v1/users/register";
 											$scope.send_code_uri = "service/smartool/api/v1/users/code";
 											if($scope.currentStep == 2){
+												$scope.formData.location = test.input.value;
 												var url = $scope.register_uri+"?code="+$scope.formData.code;
 												$http(
 														{
@@ -189,6 +192,7 @@
 									};
 								} ]);
 		angular.bootstrap(document, [ 'zmxk' ]);
+		var test=new Vcity.CitySelector({input:'city'});
 	</script>
 </body>
 </html>
