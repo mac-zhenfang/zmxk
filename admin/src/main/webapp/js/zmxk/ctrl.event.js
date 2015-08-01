@@ -140,6 +140,7 @@ zmxk.controller('SerieManageCtrl', [
 				toCreateSerie["existed"] = false;
 				toCreateSerie["changed"] = true;
 				toCreateSerie["showInput"] = true;
+				toCreateSerie["eventTypeId"] = $scope.eventTypeId;
 				$scope.eventSeries.push(toCreateSerie);
 				/*
 				 * angular.forEach($scope.kids, function(kid, index){ })
