@@ -895,8 +895,6 @@ zmxk
 							var canStartEditScore = function() {
 								var d = new Date();
 								var t = d.getTime();
-								console.log($scope.eventInit.eventTime);
-								console.log(t);
 								if (!angular
 										.isUndefined($scope.eventInit.eventTime)
 										&& t < $scope.eventInit.eventTime) {
@@ -943,11 +941,11 @@ zmxk
 											attendee.rank = index + 1;
 										})
 									});
-									console.log($scope.eventInit.attendees);
 								}
 							}
 
 							$scope.applyAttendeeChanges = function() {
+								$scope.editScore();
 								var error_msg = "";
 								var error = false;
 								/*
