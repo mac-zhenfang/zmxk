@@ -43,9 +43,10 @@ public class CreditGenerator {
 			logger.info("CreditGenerator generating credit for " + events.size() + " events");
 		}
 		for (Event event : events) {
-			/*if (System.currentTimeMillis() - event.getEventTime().getTime() < interval * 60 * 60 * 1000) {
+			if (interval > 0
+					&& System.currentTimeMillis() - event.getEventTime().getTime() < interval * 60 * 60 * 1000) {
 				continue;
-			}*/
+			}
 			List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
 					event.getStage(), event.getSeriesId(), null);
 			RangeMap<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);

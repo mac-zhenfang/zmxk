@@ -489,7 +489,6 @@ zmxk.service('tagService', [ '$resource', 'zmxkConfig', '$q',
 				tagResource.search({
 					type : type
 				}, function(body, headers) {
-					console.log(body);
 					defer.resolve(body);
 				}, function(body, headers) {
 					console.log(body);

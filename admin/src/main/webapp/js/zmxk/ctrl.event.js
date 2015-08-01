@@ -950,7 +950,6 @@ zmxk
 							$scope.applyAttendeeChanges = function() {
 								var error_msg = "";
 								var error = false;
-								console.log($scope.applyCreditRuleAttendeeList);
 								/*
 								 * angular .forEach( $scope.eventInit.attendees,
 								 * function(attendee, index) { if
@@ -1010,7 +1009,6 @@ zmxk
 													}, function() {
 													});
 								}
-								console.log($scope.eventInit.attendees);
 							}
 
 						} ]);
