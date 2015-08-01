@@ -746,8 +746,10 @@ zmxk
 						'$routeParams',
 						'$dialogs',
 						'tagService',
+						'ruleService',
 						function($scope, userService, eventService, $interval,
-								$timeout, $routeParams, $dialogs, tagService) {
+								$timeout, $routeParams, $dialogs, tagService,
+								ruleService) {
 							$scope.eventId = $routeParams.eventId;
 							// console.log("~~~~~" + $scope.eventId);
 							$scope.eventInit = {};
@@ -766,7 +768,7 @@ zmxk
 											.then(
 													function(data) {
 														$scope.eventInit = data;
-														
+
 														var enrolledCount = 0;
 														var applyScoreCount = 0;
 														var leftCount = 0;
@@ -795,7 +797,7 @@ zmxk
 																				tagsMap[attendee.tagId]
 																						.push(attendee);
 																			}
-																			
+
 																		});
 														var d = 0;
 														angular
@@ -821,7 +823,8 @@ zmxk
 
 														$scope.eventInit.attendees = angular
 																.copy(newAttendees);
-														console.log($scope.eventInit.attendees);
+														console
+																.log($scope.eventInit.attendees);
 														$scope.eventInit.leftCount = $scope.eventInit.quota
 																- enrolledCount
 																- applyScoreCount;
@@ -840,7 +843,7 @@ zmxk
 
 								});
 							}
-							
+
 							$scope.clickEditScore = function(attendee) {
 								attendee.editing = true;
 								console.log(attendee);
@@ -864,28 +867,39 @@ zmxk
 								 */
 								// console.log(selectedAttendee);
 								if (selectedAttendee.status == 2) {
-									dlg = $dialogs
-											.create(
-													'/admin/give_event_credit.html',
-													'GiveEventCreditCtrl',
-													{
-														eventTypeId : $scope.eventInit.eventTypeId,
-														serieId : $scope.eventInit.serieId,
-														attendee : selectedAttendee
-													}, 'lg');
-									dlg.result.then(function(selectedRule) {
-										$scope.selectedRule = selectedRule;
-										$scope.applyCreditRuleAttendeeList
-												.push({
-													rule : selectedRule,
-													attendee : selectedAttendee
-												});
-										console.log(selectedRule)
-									}, function() {
-										// $scope.name = 'You decided not to
-										// enter in your name, that makes me
-										// sad.';
-									});
+									ruleService
+											.listAll()
+											.then(
+													function(data) {
+														dlg = $dialogs
+																.create(
+																		'/admin/give_event_credit.html',
+																		'GiveEventCreditCtrl',
+																		{
+																			eventTypeId : $scope.eventInit.eventTypeId,
+																			serieId : $scope.eventInit.serieId,
+																			attendee : selectedAttendee,
+																			generalRules : data
+																		}, 'lg');
+														dlg.result
+																.then(
+																		function(
+																				selectedRule) {
+																			$scope.selectedRule = selectedRule;
+																			$scope.applyCreditRuleAttendeeList
+																					.push({
+																						rule : selectedRule,
+																						attendee : selectedAttendee
+																					});
+																			console
+																					.log(selectedRule)
+																		},
+																		function() {
+																			
+																		});
+													}, function(error) {
+													})
+
 								} else {
 									$scope.launch("error", "",
 											"选手没有完成比赛，无法授予积分", function() {
@@ -933,7 +947,7 @@ zmxk
 												if (!m.get(attendee.tagId)) {
 													m.set(attendee.tagId, []);
 												}
-												if(attendee.score){
+												if (attendee.score) {
 													m.get(attendee.tagId).push(
 															attendee);
 												}
@@ -1026,94 +1040,31 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 	// -- Variables --//
 	$scope.data = data;
 	$scope.selectRule = {};
+	$scope.eventRules = $scope.data.generalRules
 	// FAKE DATA
-	$scope.eventRules = [ {
-		id : "mac-test-event-rule-1",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "预赛",
-		rank : 1,
-		rankName : "1",
-		credit : 100,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-2",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "预赛",
-		rank : 2,
-		rankName : "2",
-		credit : 50,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-3",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "预赛",
-		rank : 0,
-		rankName : ">3",
-		credit : 10,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-4",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "季度复赛",
-		rank : 1,
-		rankName : "1",
-		credit : 400,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-5",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "季度复赛",
-		rank : 2,
-		rankName : "2",
-		credit : 200,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-6",
-		name : "脚踏拉力赛规则",
-		eventType : "脚踏拉力赛",
-		serieName : "季度复赛",
-		rank : 0,
-		rankName : ">3",
-		credit : 200,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-7",
-		name : "最有活力小选手",
-		eventType : "脚踏拉力赛",
-		serieName : "季度复赛",
-		rankName : "单次事件",
-		credit : 300,
-		existed : true,
-		changed : false,
-		showInput : false
-	}, {
-		id : "mac-test-event-rule-8",
-		name : "单圈最快",
-		eventType : "脚踏拉力赛",
-		serieName : "季度复赛",
-		rankName : "单次事件",
-		credit : 200,
-		existed : true,
-		changed : false,
-		showInput : false
-	} ]
+	/*
+	 * $scope.eventRules = [ { id : "mac-test-event-rule-1", name : "脚踏拉力赛规则",
+	 * eventType : "脚踏拉力赛", serieName : "预赛", rank : 1, rankName : "1", credit :
+	 * 100, existed : true, changed : false, showInput : false }, { id :
+	 * "mac-test-event-rule-2", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName :
+	 * "预赛", rank : 2, rankName : "2", credit : 50, existed : true, changed :
+	 * false, showInput : false }, { id : "mac-test-event-rule-3", name :
+	 * "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName : "预赛", rank : 0, rankName :
+	 * ">3", credit : 10, existed : true, changed : false, showInput : false }, {
+	 * id : "mac-test-event-rule-4", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛",
+	 * serieName : "季度复赛", rank : 1, rankName : "1", credit : 400, existed :
+	 * true, changed : false, showInput : false }, { id :
+	 * "mac-test-event-rule-5", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName :
+	 * "季度复赛", rank : 2, rankName : "2", credit : 200, existed : true, changed :
+	 * false, showInput : false }, { id : "mac-test-event-rule-6", name :
+	 * "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName : "季度复赛", rank : 0, rankName :
+	 * ">3", credit : 200, existed : true, changed : false, showInput : false }, {
+	 * id : "mac-test-event-rule-7", name : "最有活力小选手", eventType : "脚踏拉力赛",
+	 * serieName : "季度复赛", rankName : "单次事件", credit : 300, existed : true,
+	 * changed : false, showInput : false }, { id : "mac-test-event-rule-8",
+	 * name : "单圈最快", eventType : "脚踏拉力赛", serieName : "季度复赛", rankName :
+	 * "单次事件", credit : 200, existed : true, changed : false, showInput : false } ]
+	 */
 
 	$scope.init = function() {
 		var newRules = [];
