@@ -29,17 +29,17 @@
 						<td class="center"><span
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
 								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
-						<td class="center"><span ng-click="editing = true"
-							ng-hide="editing" ng-bind="attendee.score" class="btn btn-info"></span>
-							<input ng-model="attendee.score" ng-show="editing"
+						<td class="center"><span ng-click="attendee.editing=true"
+							ng-hide="attendee.editing" ng-bind="attendee.score" class="btn btn-info"></span>
+							<input ng-model="attendee.score" ng-show="attendee.editing"
 							class="form-control gridInput" />
-							<button class="btn btn-info" ng-show="editing"
-								ng-click="editScore();editing = false;">确定</button></td>
+							<button class="btn btn-info" ng-show="attendee.editing"
+								ng-click="editScore();attendee.editing=false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>
-						<td class="center"><span ng-click="editingTag = true"
-							ng-hide="editingTag"
+						<td class="center"><span ng-click="attendee.editingTag=true"
+							ng-hide="attendee.editingTag"
 							ng-bind="{true: '未授予组别', false : attendee.tag}[attendee.tag==null]"
-							ng-class="showTagClass(attendee.tagType)"></span> <select ng-show="editingTag" class="selectpicker gridInput2" data-style="btn-info"
+							ng-class="showTagClass(attendee.tagType)"></span> <select ng-show="attendee.editingTag" class="selectpicker gridInput2" data-style="btn-info"
 								ng-model="attendee.tagId"
 								ng-options="option.id as option.name for option in eventTags">
 							</select>

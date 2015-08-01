@@ -766,7 +766,7 @@ zmxk
 											.then(
 													function(data) {
 														$scope.eventInit = data;
-
+														
 														var enrolledCount = 0;
 														var applyScoreCount = 0;
 														var leftCount = 0;
@@ -795,6 +795,7 @@ zmxk
 																				tagsMap[attendee.tagId]
 																						.push(attendee);
 																			}
+																			
 																		});
 														var d = 0;
 														angular
@@ -811,6 +812,8 @@ zmxk
 																									attendee,
 																									index2) {
 																								attendee["tagType"] = d;
+																								attendee["editing"] = false;
+																								attendee["editingTag"] = false;
 																								newAttendees
 																										.push(attendee);
 																							});
@@ -818,7 +821,7 @@ zmxk
 
 														$scope.eventInit.attendees = angular
 																.copy(newAttendees);
-
+														console.log($scope.eventInit.attendees);
 														$scope.eventInit.leftCount = $scope.eventInit.quota
 																- enrolledCount
 																- applyScoreCount;
@@ -836,6 +839,11 @@ zmxk
 								}, function(data) {
 
 								});
+							}
+							
+							$scope.clickEditScore = function(attendee) {
+								attendee.editing = true;
+								console.log(attendee);
 							}
 
 							$scope.showTagClass = function(tagType) {
