@@ -925,8 +925,10 @@ zmxk
 												if (!m.get(attendee.tagId)) {
 													m.set(attendee.tagId, []);
 												}
-												m.get(attendee.tagId).push(
-														attendee);
+												if(attendee.score){
+													m.get(attendee.tagId).push(
+															attendee);
+												}
 											});
 									m.forEach(function(attendees, tagId) {
 										attendees.sort(function(a, b) {
