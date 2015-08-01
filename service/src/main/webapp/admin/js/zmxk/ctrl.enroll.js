@@ -122,14 +122,14 @@ zmxk
 																			},
 																			function() {
 																			});
-															/* */
+															/* 
 															$timeout(
 																	function() {
 																		$scope
 																				.hoopPage(
 																						"events",
 																						[ $scope.enroll_form_data.id ])
-																	}, 5000)
+																	}, 5000)*/
 															// var url =
 															// $scope.$location.$$host;
 															$scope.enroll_form_data.kids = [];
