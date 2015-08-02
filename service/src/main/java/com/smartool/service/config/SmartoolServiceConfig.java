@@ -9,6 +9,9 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,8 @@ import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
+import com.smartool.service.sms.SmsClient;
+import com.smartool.service.sms.SmsClientFactory;
 
 import redis.clients.jedis.Jedis;
 
@@ -87,6 +92,18 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public CreditRecordDao getCreditRecordDao() {
 		return new CreditRecordDaoImpl();
+	}
+	
+	@Bean
+	public SmsClient smsClient () {
+		SmsClient client = new SmsClient(smsClientFactory(), env.getProperty("sms_send_url", "http://sms-api.luosimao.com/v1"));
+		return client;
+	}
+	
+	@Bean
+	public SmsClientFactory smsClientFactory() {
+		SmsClientFactory clientFactory = SmsClientFactory.builder().disableSSLChecks(true).build();
+		return clientFactory;
 	}
 	
 	@Bean
@@ -168,6 +185,15 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(getAuthenticationInterceptor());
 		registry.addInterceptor(getAuthorizationInterceptor());
+	}
+	
+	@Bean
+	public VelocityEngine velocityEngine() {
+		VelocityEngine ve = new VelocityEngine();
+		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+        ve.init();
+        return ve;
 	}
 
 	@Bean

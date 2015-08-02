@@ -1,6 +1,7 @@
 package com.smartool.service.sms;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,11 @@ public class SmsClient extends Client {
 
 	private static String BASE_URL;
 
-	protected SmsClient(ClientFactory factory, String baseUrl) {
+	public SmsClient(ClientFactory factory, String baseUrl) {
 		super(factory);
 		BASE_URL = baseUrl;
-		setAuthorization("Basic " + BaseEncoding.base64().encode(("api:" + API_KEY).getBytes(Charsets.UTF_8)));
+		String auth = BaseEncoding.base64().encode(("api:" + API_KEY).getBytes(Charsets.UTF_8));;
+		setAuthorization("Basic " + auth);
 	}
 
 	public boolean send(final String mobileNum, final String message) {
@@ -38,14 +40,14 @@ public class SmsClient extends Client {
 		nameValuePairs.add(new BasicNameValuePair("message", message));
 		try {
 			Request<HttpPost> post = post(URI.create(sendUrl));
-			UrlEncodedFormEntity entity;
-
-			entity = new UrlEncodedFormEntity(nameValuePairs);
+			post.header("Content-Type","application/x-www-form-urlencoded;charset=gbk"); 
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(nameValuePairs, "utf-8");
 
 			post.entity(entity);
 			JsonNode response = post.execute(JsonNode.class);
-			System.out.println(response);
-			return true;
+			logger.info(response);
+			return response.get("error").asInt() == 0;
+			
 		} catch (Exception e) {
 			logger.error("error to send sms", e);
 			return false;
@@ -55,6 +57,6 @@ public class SmsClient extends Client {
 	public static void main(String[] args) {
 		SmsClientFactory clientFactory = SmsClientFactory.builder().disableSSLChecks(true).build();
 		SmsClient client = new SmsClient(clientFactory, "http://sms-api.luosimao.com/v1");
-		client.send("13706516916", "验证码：286221【彩虹赛道】");
+		client.send("13706516916", "验证码：111111 【智马行空】");
 	}
 }

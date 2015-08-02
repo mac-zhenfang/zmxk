@@ -84,11 +84,11 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public SecurityCode getSecurityCode(@RequestBody LoginUser user) {
+	public void getSecurityCode(@RequestBody LoginUser user) {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setMobileNumber(user.getMobileNum());
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-		return userService.getSecurityCode(securityCode);
+		userService.getSecurityCode(securityCode);
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

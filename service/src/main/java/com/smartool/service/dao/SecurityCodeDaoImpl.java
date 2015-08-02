@@ -1,13 +1,27 @@
 package com.smartool.service.dao;
 
+import java.io.StringWriter;
+
 import org.apache.ibatis.session.SqlSession;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.service.sms.SmsClient;
 
 public class SecurityCodeDaoImpl implements SecurityCodeDao {
 	@Autowired
 	private SqlSession sqlSession;
+
+	@Autowired
+	private SmsClient smsClient;
+
+	@Autowired
+	private VelocityEngine velocityEngine;
+	
+
 
 	@Override
 	public SecurityCode getSecurityCodeByMobileNumber(String mobileNumber) {
@@ -38,7 +52,18 @@ public class SecurityCodeDaoImpl implements SecurityCodeDao {
 
 	@Override
 	public void sendSecurityCode(SecurityCode securityCode) {
-		// TODO Auto-generated method stub
-
+		Template t = velocityEngine.getTemplate( "templates/sms.vm", "UTF-8" );
+		VelocityContext context = new VelocityContext();
+		context.put("securityCode", securityCode.getSecurityCode());
+		StringWriter writer = new StringWriter();
+	    t.merge( context, writer );
+	    String msg =  writer.toString();
+	    
+	    //FIXME Retry Template
+	    for (int i = 0; i < 3; i++) {
+	    	if(smsClient.send(securityCode.getMobileNumber(), msg)) {
+				return;
+			}
+		}
 	}
 }
