@@ -22,7 +22,7 @@ public class SmsClient extends Client {
 	
 	private static Logger logger = Logger.getLogger(SmsClient.class);
 
-	private static String API_KEY = "";
+	private static String API_KEY = "ev1v1v1dbd5fa1ece44cc3a28651d9b8c837ed";
 
 	private static String BASE_URL;
 

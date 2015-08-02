@@ -135,6 +135,7 @@
 			$scope.mobileVerified = false;
 			$scope.TotalStep = 3;
 			$scope.currentStep = 1;
+			$scope.popTo = window.location.origin + "/qrcode.html";
 		} ]);
 		var send_code_uri;
 		zmxk.controller('QrCodeController', [
@@ -217,6 +218,9 @@
 															function(data) {
 																$scope.currentStep = 3;
 																$scope.submit_label = $scope.const.registerTitle;
+																$timeout(function(){
+																	window.location.href = $scope.popTo;
+																}, 2000)
 															})
 													.error(
 															function(data,
