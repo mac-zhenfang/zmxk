@@ -28,40 +28,45 @@
 				<div class="panel-body">
 					<form role="form" ng-controller="RegisterController"
 						ng-submit="processForm()">
-						<div class="form-group input-group" ng-show="currentStep == 1 || currentStep == 2">
+						<div class="form-group input-group"
+							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
 									class="fa fa-circle-o-notch"></i> -->
 							<span class="input-group-addon"></span> <input type="text"
-								class="form-control" placeholder="{{const.mobile}}"
+								class="form-control" placeholder="手机号码"
 								ng-model="formData.mobileNum" ng-readonly="currentStep == 2" />
 						</div>
-						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon">验证码</span> <input type="text"
+						<div class="form-group input-group" ng-show="currentStep == 2"
+							ng-controller="QrCodeController" ng-init="init()">
+							<span class="input-group-addon"></span><input type="text"
 								class="form-control" ng-model="formData.code" placeholder="验证码" />
+							<input type="button" class="btn btn-info"
+								value="{{security_code_resend_label}}"
+								ng-disabled="canResendQrCode()"
+								ng-click="resendQrCode()" />
 						</div>
 						<div ng-show="currentStep == 2">
 							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-circle-o-notch"></i></span> <input type="text"
+								<span class="input-group-addon"></span><input type="text"
 									class="form-control" placeholder="用户名" ng-model="formData.name" />
 							</div>
 							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-circle-o-notch"></i></span> <input type="password"
-									class="form-control" placeholder="密码" ng-model="formData.password" />
+								<span class="input-group-addon"></span><input type="password"
+									class="form-control" placeholder="密码"
+									ng-model="formData.password" />
 							</div>
-							
+
 							<div class="form-group input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-life-bouy"></i></span> <input type="text"
+								<span class="input-group-addon"></span><input type="text"
 									class="form-control" placeholder="所在城市" id="city"
 									ng-model="formData.location" />
 							</div>
 						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<div ng-show="currentStep == 3">注册成功
-						<img src=""></img></div>
+						<div ng-show="currentStep == 3">
+							注册成功 <img src=""></img>
+						</div>
 					</form>
 				</div>
 			</div>
@@ -132,66 +137,123 @@
 			$scope.currentStep = 1;
 		} ]);
 		var send_code_uri;
+		zmxk.controller('QrCodeController', [
+				'$scope',
+				'$http',
+				'$interval',
+				function($scope, $http, $interval) {
+					$scope.init = function() {
+						var timelmt = 90;
+						$scope.security_code_resend_label = "(" + timelmt
+								+ ")秒后，重新发送验证码";
+						$scope.enableResendQrcode = false;
+						$interval(function() {
+							if (timelmt > 0) {
+								timelmt -= 1;
+								$scope.security_code_resend_label = "("
+										+ timelmt + ")秒后,重新发送验证码"
+							} else {
+								$scope.enableResendQrcode = true;
+								$scope.security_code_resend_label = "重新发送验证码";
+							}
+						}, 1000);
+					}
+					
+					$scope.canResendQrCode = function() {
+						return !$scope.enableResendQrcode;
+					}
 
+					$scope.resendQrCode = function() {
+						if (!$scope.enableResendQrcode) {
+							return;
+						}
+
+						url = $scope.send_code_uri;
+						$http({
+							method : 'POST',
+							url : url,
+							data : JSON.stringify($scope.formData), // pass in data as strings
+							headers : {
+								'Content-Type' : 'application/json'
+							}
+						// set the headers so angular passing info as form data (not request payload)
+						}).success(function(data) {
+
+						}).error(function(data, header) {
+							alert(data.message)
+						});
+					}
+				} ])
 		zmxk
 				.controller(
 						'RegisterController',
 						[
 								'$scope',
 								'$http',
-								function($scope, $http) {
+								'$timeout',
+								function($scope, $http, $timeout) {
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
-											$scope.register_uri = "service/smartool/api/v1/users/register";
-											$scope.send_code_uri = "service/smartool/api/v1/users/code";
-											if($scope.currentStep == 2){
-												$scope.formData.location = test.input.value;
-												var url = $scope.register_uri+"?code="+$scope.formData.code;
-												$http(
-														{
-															method : 'POST',
-															url : url,
-															data : JSON.stringify($scope.formData), // pass in data as strings
-															headers : {
-																'Content-Type' : 'application/json'
-															}
-														// set the headers so angular passing info as form data (not request payload)
-														})
-														.success(
-																function(data) {
-																	$scope.currentStep = 3;
-																	$scope.submit_label = $scope.const.registerTitle;
-																})
-														.error(function(data, header){
-	 															alert(data.message)
-														});
-											} else {
-												url = $scope.send_code_uri;
-												$http(
-														{
-															method : 'POST',
-															url : url,
-															data : JSON.stringify($scope.formData), // pass in data as strings
-															headers : {
-																'Content-Type' : 'application/json'
-															}
-														// set the headers so angular passing info as form data (not request payload)
-														})
-														.success(
-																function(data) {
-																	$scope.currentStep = 2;
-																	$scope.submit_label = $scope.const.registerTitle;
-																})
-														.error(function(data, header){
-															alert(data.message)
-														});
-											}
+										$scope.register_uri = "service/smartool/api/v1/users/register";
+										$scope.send_code_uri = "service/smartool/api/v1/users/code";
+										if ($scope.currentStep == 2) {
+											$scope.formData.location = test.input.value;
+											var url = $scope.register_uri
+													+ "?code="
+													+ $scope.formData.code;
+											$http(
+													{
+														method : 'POST',
+														url : url,
+														data : JSON
+																.stringify($scope.formData), // pass in data as strings
+														headers : {
+															'Content-Type' : 'application/json'
+														}
+													// set the headers so angular passing info as form data (not request payload)
+													})
+													.success(
+															function(data) {
+																$scope.currentStep = 3;
+																$scope.submit_label = $scope.const.registerTitle;
+															})
+													.error(
+															function(data,
+																	header) {
+																alert(data.message)
+															});
+										} else {
+											url = $scope.send_code_uri;
+											$http(
+													{
+														method : 'POST',
+														url : url,
+														data : JSON
+																.stringify($scope.formData), // pass in data as strings
+														headers : {
+															'Content-Type' : 'application/json'
+														}
+													// set the headers so angular passing info as form data (not request payload)
+													})
+													.success(
+															function(data) {
+																$scope.currentStep = 2;
+																$scope.submit_label = $scope.const.registerTitle;
+															})
+													.error(
+															function(data,
+																	header) {
+																alert(data.message)
+															});
+										}
 
 									};
 								} ]);
 		angular.bootstrap(document, [ 'zmxk' ]);
-		var test=new Vcity.CitySelector({input:'city'});
+		var test = new Vcity.CitySelector({
+			input : 'city'
+		});
 	</script>
 </body>
 </html>
