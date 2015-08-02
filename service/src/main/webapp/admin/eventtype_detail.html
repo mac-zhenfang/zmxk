@@ -19,7 +19,7 @@
 						<th>开始时间</th>
 						<th>结束时间</th>
 						<th>stages</th>
-						<th>升级条件</th>
+						<!-- <th>升级条件</th> -->
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -41,9 +41,9 @@
 							ng-model="serie.endTime" required="true" view="hours"></td>
 						<td><span ng-hide="{{serie.showInput}} == true">{{serie.stages}}</span>
 							<input ng-model="serie.stages" ng-show="{{serie.showInput}}" class="gridInput"/></td>
-						<td><span ng-hide="{{serie.showInput}} == true">{{serie.rankUpgradeQualification}}</span>
+						<!-- <td><span ng-hide="{{serie.showInput}} == true">{{serie.rankUpgradeQualification}}</span>
 							<input ng-model="serie.rankUpgradeQualification"
-							ng-show="{{serie.showInput}}" class="gridInput"/></td>
+							ng-show="{{serie.showInput}}" class="gridInput"/></td> -->
 						<td class="center"><span class="btn btn-info"
 							ng-click="updateSerie(serie, $index)"
 							ng-bind="{true:'保存', false:'修改'}[serie.changed==true]"></span><span
