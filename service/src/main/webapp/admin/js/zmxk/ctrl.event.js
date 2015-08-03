@@ -975,18 +975,17 @@ zmxk
 							}
 							$scope.editScore = function() {
 								if (canStartEditScore()) {
-									var m = new Map();
+									var m = {};
 									angular.forEach($scope.eventInit.attendees,
 											function(attendee, index) {
-												if (!m.get(attendee.tagId)) {
-													m.set(attendee.tagId, []);
+												if (angular.isUndefined(m[attendee.tagId])) {
+													m[attendee.tagId] = [];
 												}
 												if (attendee.score) {
-													m.get(attendee.tagId).push(
-															attendee);
+													m[attendee.tagId].push(attendee);
 												}
 											});
-									m.forEach(function(attendees, tagId) {
+									angular.forEach(m, function(attendees, tagId){
 										attendees.sort(function(a, b) {
 											var key = "score";
 											var x = a[key];
@@ -998,7 +997,10 @@ zmxk
 												index) {
 											attendee.rank = index + 1;
 										})
-									});
+									})
+									/*m.forEach(function(attendees, tagId) {
+										
+									});*/
 								}
 							}
 

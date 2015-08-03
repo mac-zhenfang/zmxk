@@ -12,7 +12,7 @@ zmxk.controller('EventRuleCtrl', [
 				$routeParams,  $q) {
 			$scope.deleteLabel = "删除";
 			$scope.eventRules = [];
-			$scope.seriesMap = new Map();
+			$scope.seriesMap = {};
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
@@ -60,7 +60,7 @@ zmxk.controller('EventRuleCtrl', [
 							serieService.list(eventType.id).then(function(data) {
 								data.unshift({id: null, name: "---------"});
 								console.log(data);
-								$scope.seriesMap.set(eventType.id, data);
+								$scope.seriesMap[eventType.id] = data;
 //								if(eventType.id=="eventTypeId1"){
 //									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
 //									data.unshift({id: null, name: "---------"});

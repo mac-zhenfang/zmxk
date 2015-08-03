@@ -36,7 +36,7 @@
 		cr.bronzeMedal as bronzeMedal from creditRecords cr, users
 		u, kids k,
 		events e, eventTypes et, series s, attendees a where
-		e.eventTypeId=et.id and s.eventTypeId = et.id and a.eventId=cr.eventId
+		e.eventTypeId=et.id and s.id = e.seriesId and a.eventId=cr.eventId
 		and a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
 		cr.userId=u.id and cr.userId = #{id}
 	</select>

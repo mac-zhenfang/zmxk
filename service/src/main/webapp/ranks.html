@@ -23,7 +23,7 @@
 
 <body ng-controller="MainController as main" ng-init="init()">
 	<div class="container-fluid-full">
-		<div class="row-fluid">
+		<div class="row-fluid">`
 			<div class="span10 box ">
 				<div class="box-header">
 					<h2>我的排名</h2>
@@ -109,6 +109,7 @@
 									'$scope',
 									'$q',
 									function($resource, $scope, $q) {
+										$scope.showPage = false;
 										var userResource = $resource(
 												"/service/smartool/api/v1/users/me",
 												{},
@@ -142,6 +143,7 @@
 													.then(
 															function(data) {
 																ranks = data;
+																$scope.showPage = true;
 																angular.forEach(ranks, function(rank, idx1){
 																	if(angular.isUndefined(tempRanks[rank.kidId])){
 																		tempRanks[rank.kidId] = rank;
