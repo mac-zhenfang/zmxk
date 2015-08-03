@@ -9,7 +9,7 @@ public class TimeUtil {
 	 public static String calCurrentTimeSeg() throws Exception
 	  {
 	    SimpleDateFormat d = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    Date date=d.parse("2015-07-30 11:13:42");
+	    Date date=d.parse("2015-07-30 11:43:42");
 	    System.out.println(date.getTime());
 	    Long cur = Long.valueOf((date.getTime()));
 	    String temporary = d.format(new Timestamp(cur.longValue()));

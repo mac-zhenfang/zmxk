@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="zmxk">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>动态设置多边形区域的形状</title>
+<title>热图Demo</title>
 <style type="text/css">
 * {
 	margin: 0px;
@@ -19,83 +19,176 @@ body, button, input, select, textarea {
 	margin-top: 10px;
 }
 </style>
+<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+<link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="assets/css/style.min.css" rel="stylesheet" />
+<link href="assets/css/style-responsive.min.css" rel="stylesheet" />
 <link href="assets/css/font-awesome.min.css" rel="stylesheet" />
 <link href="assets/css/font-awesome-ie7.min.css" rel="stylesheet" />
 <!-- CUSTOM STYLE CSS -->
 <link href="assets/css/style.css" rel="stylesheet" />
 <link href="assets/css/zmxk.css" rel="stylesheet" />
+<link href="assets/css/index.css" rel="stylesheet" />
+
+
 <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
-<script>
-	var init = function() {
-		var center = new qq.maps.LatLng(31.23687744140625, 121.44641198730469);
-		var map = new qq.maps.Map(document.getElementById('container'), {
-			center : center,
-			zoom : 13
-		});
-		var polygon1 = new qq.maps.Polygon({
-			map : map,
-			strokeColor : new qq.maps.Color(0, 0, 0, 0.8),
-			strokeWeight : 0,
-			fillColor : qq.maps.Color.fromHex("#f30855", 0.5),
-			visible : true
-		});
 
-		var polygon2 = new qq.maps.Polygon({
-			strokeColor : new qq.maps.Color(0, 0, 0, 0.8),
-			strokeWeight : 1,
-			fillColor : qq.maps.Color.fromHex("#f30853", 0.5),
-			visible : true,
-			map : map
-		});
-		var polygon3 = new qq.maps.Polygon({
-			map : map
-		});
-		var path1 = [
-				new qq.maps.LatLng(31.23687744140625, 121.44641198730469),
-				new qq.maps.LatLng(31.224819946289063, 121.4373779296875),
-				new qq.maps.LatLng(31.22589111328125, 121.43094543457032),
-				new qq.maps.LatLng(31.25335693359375, 121.43876330566407) ];
-
-		var path2 = [
-				new qq.maps.LatLng(31.20941162109375, 121.46895812988281),
-				new qq.maps.LatLng(31.208340454101563, 121.4703369140625),
-				new qq.maps.LatLng(31.20941162109375, 121.46895812988281),
-				new qq.maps.LatLng(31.20941162109375, 121.4724814453125) ];
-		var index = 0;
-
-		polygon1.setPath(path1);
-		polygon2.setPath(path2);
-		// polygon2.setPath(path2);
-		// polygon3.setPath(path3);
-		/* setInterval(function(){
-		     if(index==0){
-		       polygon.setPath(path1);
-		     };
-		     if(index==1){
-		       polygon.setPath(path2);
-		     };
-		     if(index==2){
-		        polygon.setPath(path3);
-		     };
-		     index++;
-		     if(index>2){
-		         index=0;
-		     }
-		 },200);*/
-	}
-</script>
 </head>
 <body ng-controller="MainController as main" ng-init="init()">
-	<div style="width: 603px; height: 300px" id="container"></div>
-	<div id="info">
-		<p>添加一个多边形区域，并动态改变多边形的形状。</p>
+	<div>
+		选择城市<select class="selectpicker gridInput2" data-style="btn-info"
+			ng-model="cityId"
+			ng-options="option.id as option.name for option in cities"
+			ng-init="cityId==option.id">
+		</select>
 	</div>
+	<div>
+		选择时间<input type="text" class="gridInput2" date-time ng-model="date"
+			required="true" view="hours" itemModel="1" />
+	</div>
+	<div>
+		<input type="button" class="btn btn-info btn-block" ng-click="go()"
+			value="Go" />
+	</div>
+	<div style="width: 980px; height: 640px" id="container"></div>
+
+	<script src="assets/js/jquery-1.10.2.min.js"></script>
+
 	<script src="assets/js/angular.js"></script>
-	<script src="assets/js/angular-resource.min.js"></script>
+	<!-- -->
 	<script src="assets/js/angular-route.min.js"></script>
+	<script src="assets/js/angular-resource.min.js"></script>
 	<script src="assets/js/angular-cookies.min.js"></script>
+	<script src="assets/js/dialogs.min.js"></script>
+	<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/index.min.js"></script>
+
+	<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/jquery.sparkline.min.js"></script>
+	<script src="assets/js/jquery.autosize.min.js"></script>
+	<script src="assets/js/retina.js"></script>
+	<script src="assets/js/jquery.placeholder.min.js"></script>
+	<script src="assets/js/wizard.min.js"></script>
+	<script src="assets/js/core.min.js"></script>
+	<script src="assets/js/custom.min.js"></script>
+
 
 	<script type="text/javascript">
+		
+	var dateFormat = function () {
+	    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+	        timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+	        timezoneClip = /[^-+\dA-Z]/g,
+	        pad = function (val, len) {
+	            val = String(val);
+	            len = len || 2;
+	            while (val.length < len) val = "0" + val;
+	            return val;
+	        };
+
+	    // Regexes and supporting functions are cached through closure
+	    return function (date, mask, utc) {
+	        var dF = dateFormat;
+
+	        // You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+	        if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+	            mask = date;
+	            date = undefined;
+	        }
+
+	        // Passing date through Date applies Date.parse, if necessary
+	        date = date ? new Date(date) : new Date;
+	        if (isNaN(date)) throw SyntaxError("invalid date");
+
+	        mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+
+	        // Allow setting the utc argument via the mask
+	        if (mask.slice(0, 4) == "UTC:") {
+	            mask = mask.slice(4);
+	            utc = true;
+	        }
+
+	        var _ = utc ? "getUTC" : "get",
+	            d = date[_ + "Date"](),
+	            D = date[_ + "Day"](),
+	            m = date[_ + "Month"](),
+	            y = date[_ + "FullYear"](),
+	            H = date[_ + "Hours"](),
+	            M = date[_ + "Minutes"](),
+	            s = date[_ + "Seconds"](),
+	            L = date[_ + "Milliseconds"](),
+	            o = utc ? 0 : date.getTimezoneOffset(),
+	            flags = {
+	                d:    d,
+	                dd:   pad(d),
+	                ddd:  dF.i18n.dayNames[D],
+	                dddd: dF.i18n.dayNames[D + 7],
+	                m:    m + 1,
+	                mm:   pad(m + 1),
+	                mmm:  dF.i18n.monthNames[m],
+	                mmmm: dF.i18n.monthNames[m + 12],
+	                yy:   String(y).slice(2),
+	                yyyy: y,
+	                h:    H % 12 || 12,
+	                hh:   pad(H % 12 || 12),
+	                H:    H,
+	                HH:   pad(H),
+	                M:    M,
+	                MM:   pad(M),
+	                s:    s,
+	                ss:   pad(s),
+	                l:    pad(L, 3),
+	                L:    pad(L > 99 ? Math.round(L / 10) : L),
+	                t:    H < 12 ? "a"  : "p",
+	                tt:   H < 12 ? "am" : "pm",
+	                T:    H < 12 ? "A"  : "P",
+	                TT:   H < 12 ? "AM" : "PM",
+	                Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+	                o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+	                S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+	            };
+
+	        return mask.replace(token, function ($0) {
+	            return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+	        });
+	    };
+	}();
+
+	// Some common format strings
+	dateFormat.masks = {
+	    "default":      "ddd mmm dd yyyy HH:MM:ss",
+	    shortDate:      "m/d/yy",
+	    mediumDate:     "mmm d, yyyy",
+	    longDate:       "mmmm d, yyyy",
+	    fullDate:       "dddd, mmmm d, yyyy",
+	    shortTime:      "h:MM TT",
+	    mediumTime:     "h:MM:ss TT",
+	    longTime:       "h:MM:ss TT Z",
+	    isoDate:        "yyyy-mm-dd",
+	    isoTime:        "HH:MM:ss",
+	    isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
+	    isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+	};
+
+	// Internationalization strings
+	dateFormat.i18n = {
+	    dayNames: [
+	        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+	        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+	    ],
+	    monthNames: [
+	        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+	        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+	    ]
+	};
+
+	// For convenience...
+	Date.prototype.format = function (mask, utc) {
+	    return dateFormat(this, mask, utc);
+	};
 		var zmxk = angular.module('zmxk', [ 'ngResource', 'ngRoute',
 				'ngCookies' ]);
 		zmxk.config([ '$resourceProvider', function($resourceProvider) {
@@ -117,14 +210,15 @@ body, button, input, select, textarea {
 											},
 											{
 												getHeats : {
-													url : zmxk.user_register_uri,
+													url : "/service/smartool/api/v1/data/heats",
 													isArray : true,
 													method : 'GET',
 													headers : {
-														'Content-Type' : 'application/x-www-form-urlencoded'
+														'Content-Type' : 'application/json;charset=UTF-8'
 													}
 												}
 											});
+
 									this.getHeats = function(_cityId,
 											_timestamp) {
 										var defer = $q.defer();
@@ -132,43 +226,184 @@ body, button, input, select, textarea {
 											cityId : _cityId,
 											timestamp : _timestamp
 										}, function(body, headers) {
-											console.log(body.data);
 											defer.resolve(body);
 										}, function(body, headers) {
-											console.log(body.data);
 											defer.reject(body);
 										})
 										return defer.promise;
 									}
 								} ]);
-		zmxk.controller('MainController', [
-				'$scope',
-				'$location',
-				'$window',
-				'dataService',
-				function($scope, $location, $window, dataService) {
+		zmxk
+				.controller(
+						'MainController',
+						[
+								'$scope',
+								'$location',
+								'$window',
+								'dataService',
+								function($scope, $location, $window,
+										dataService) {
+									$scope.cityId = 1;
+									var date = new Date();
+									$scope.date = date.format("yyyy-MM-dd HH:mm:ss");  
+									$scope.cities = [ {
+										name : "上海",
+										id : 1
+									}, {
+										name : "广东",
+										id : 2
+									}, {
+										name : "北京",
+										id : 5
+									}, {
+										name : "深圳",
+										id : 13
+									} ]
 
-					$scope.init = function() {
-						var center = new qq.maps.LatLng(31.23687744140625,
-								121.44641198730469);
-						var map = new qq.maps.Map(document
-								.getElementById('container'), {
-							center : center,
-							zoom : 13
-						});
+									$scope.go = function() {
+										$scope.time = 1438227822000;// Date.parse($scope.date);
+										console.log($scope.time);
+										var pathMap = {};
+										//FIXME: add selector
+										dataService
+												.getHeats($scope.cityId,
+														$scope.time)
+												.then(
+														function(data) {
+															if (data.length == 0) {
+																alert("no数据")
+															}
+															angular
+																	.forEach(
+																			data,
+																			function(
+																					heat,
+																					index) {
 
-						dataService.getHeats(1, 1438226022000).then(
-								function(data) {
-									angular.forEach(data,
-											function(heat, index) {
-												console.log(heat);
-											})
-								}, function(data) {
+																				if (angular
+																						.isUndefined(pathMap[heat.pathId])
+																						&& heat.pathId == 0) {
+																					pathMap[heat.pathId] = [];
+																				}
+																				if (angular
+																						.isArray(pathMap[heat.pathId])) {
+																					pathMap[heat.pathId]
+																							.push(heat);
+																				}
 
-								})
-					}
-				} ]);
-		angular.bootstrap(document, [ 'zmxk' ]);
+																			})
+															// create > path
+															angular
+																	.forEach(
+																			pathMap,
+																			function(
+																					value,
+																					key) {
+																				//console.log(key);
+																				//FIXME
+
+																				var contourId;
+																				// create contour map: same contour has >=1 LatLng. 
+																				var contourPathMap = {};
+																				angular
+																						.forEach(
+																								value,
+																								function(
+																										heat,
+																										index) {
+																									var _c = heat.contourId;
+																									if (angular
+																											.isUndefined(contourPathMap[heat.contourId])) {
+																										contourPathMap[heat.contourId] = [];
+																									}
+																									contourPathMap[heat.contourId]
+																											.push(heat);
+																								})
+																				//console.log(contourPathMap);
+																				// draw the pic
+																				var center = null;
+																				var map = null;
+
+																				angular
+																						.forEach(
+																								contourPathMap,
+																								function(
+																										eachPath,
+																										contourId,
+																										index) {
+																									var fillColor = "#f36"
+																											+ index
+																											+ "55";
+																									var strokeColor = "#C40"
+																											+ index
+																											+ "55";
+																									if (center == null
+																											&& map == null) {
+																										center = new qq.maps.LatLng(
+																												eachPath[0].longitude,
+																												eachPath[0].latitude);
+																										map = new qq.maps.Map(
+																												document
+																														.getElementById('container'),
+																												{
+																													center : center,
+																													zoom : 16
+																												});
+																									}
+																									//console.log(center);
+																									eachPath
+																											.sort(function(
+																													a,
+																													b) {
+																												var key = "index";
+																												var x = a[key];
+																												var y = b[key];
+																												return ((x < y) ? -1
+																														: ((x > y) ? 1
+																																: 0));
+																											});
+																									//FIXME: choose center
+
+																									var setPath = [];
+																									angular
+																											.forEach(
+																													eachPath,
+																													function(
+																															heat,
+																															index) {
+																														setPath
+																																.push(new qq.maps.LatLng(
+																																		heat.longitude,
+																																		heat.latitude));
+																													})
+																									var polygon = new qq.maps.Polygon(
+																											{
+																												map : map,
+																												strokeColor : qq.maps.Color
+																														.fromHex(
+																																strokeColor,
+																																0.8),
+																												strokeWeight : 0,
+																												fillColor : qq.maps.Color
+																														.fromHex(
+																																fillColor,
+																																0.5),
+																												visible : true
+																											});
+																									polygon
+																											.setPath(setPath);
+
+																								})
+
+																			})
+														}, function(data) {
+
+														})
+									}
+									$scope.init = function() {
+									}
+								} ]);
+		//angular.bootstrap(document, [ 'zmxk' ]);
 	</script>
 </body>
 </html>

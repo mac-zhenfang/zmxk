@@ -19,11 +19,8 @@
 		#r-result{width:100%;}
     </style>	
 </head>
-<body>
+<body ng-controller="MainController as main" ng-init="init()">
 	<div id="container"></div>
-	<div id="r-result">
-		<input type="button"  onclick="openHeatmap();" value="显示热力图"/><input type="button"  onclick="closeHeatmap();" value="关闭热力图"/>
-	</div>
 	<script src="assets/js/angular.js"></script>
 	<script src="assets/js/angular-resource.min.js"></script>
 	<script src="assets/js/angular-route.min.js"></script>
@@ -85,11 +82,12 @@
 						
 						var pathMap = {};
 						//FIXME: add selector
-						dataService.getHeats(1, 1438220622000).then(
+						dataService.getHeats(1, 1438222422000).then(
 								function(data) {
 									var map = new BMap.Map("container");          // 创建地图实例
 
-								    var point = new BMap.Point(116.418261, 39.921984);
+								    var point = new BMap.Point(31.22589111328125,
+											121.47796691894531);
 								    map.centerAndZoom(point, 15);             // 初始化地图，设置中心点坐标和地图级别
 								    map.enableScrollWheelZoom(); // 允许滚轮缩放
 								    var points = [];
@@ -101,6 +99,7 @@
 									map.addOverlay(heatmapOverlay);
 									heatmapOverlay.setDataSet({data:points,max:100});
 									heatmapOverlay.show();
+									console.log(heatmapOverlay);
 								}, function(data) {
 
 								})
