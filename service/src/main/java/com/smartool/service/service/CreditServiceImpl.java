@@ -24,6 +24,7 @@ import com.smartool.common.dto.EventStages;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
+import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
@@ -43,6 +44,8 @@ public class CreditServiceImpl implements CreditService {
 	private UserDao userDao;
 	@Autowired
 	private Scheduler scheduler;
+	@Autowired
+	private AttendeeDao attendeeDao;
 
 	public void iocInit() throws SchedulerException {
 		if (scheduler.getTrigger(TriggerKey.triggerKey("CreditGeneratorTrigger")) == null) {
@@ -233,9 +236,9 @@ public class CreditServiceImpl implements CreditService {
 		} else {
 			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
 		}
-		creditRecord.setGoldenMedal(creditRecord.getGoldenMedal());
-		creditRecord.setSilverMedal(creditRecord.getSilverMedal());
-		creditRecord.setBronzeMedal(creditRecord.getBronzeMedal());
+		creditRecord.setGoldenMedal(creditRule.getGoldenMedal());
+		creditRecord.setSilverMedal(creditRule.getSilverMedal());
+		creditRecord.setBronzeMedal(creditRule.getBronzeMedal());
 		CreditRecord createdCreditRecord = creditRecordDao.createCreditRecord(creditRecord);
 		return createdCreditRecord;
 	}
@@ -248,5 +251,35 @@ public class CreditServiceImpl implements CreditService {
 	@Override
 	public List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end) {
 		return creditRecordDao.listCreditRecordsByMobileNumber(mobileNum, start, end);
+	}
+
+	@Override
+	public void applyCreditRull(String attendeeId, String creditRuleId) {
+		Attendee attendee = attendeeDao.getAttendee(attendeeId);
+		CreditRule creditRule = getCreditRuleById(creditRuleId);
+		if (attendee == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
+					ErrorMessages.ATTENDEE_DO_NOT_EXIST_ERROR_MESSAGE);
+		}
+		if (creditRule == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.RULE_DO_NOT_EXIST_ERROR_MESSAGE);
+		}
+		applyCreditRull(attendee, creditRule);
+	}
+
+	@Override
+	public void applyEventCreditRull(String attendeeId, String eventCreditRuleId) {
+		Attendee attendee = attendeeDao.getAttendee(attendeeId);
+		CreditRule creditRule = getEventCreditRuleById(eventCreditRuleId);
+		if (attendee == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
+					ErrorMessages.ATTENDEE_DO_NOT_EXIST_ERROR_MESSAGE);
+		}
+		if (creditRule == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.RULE_DO_NOT_EXIST_ERROR_MESSAGE);
+		}
+		if (attendee != null && creditRule != null) {
+			applyCreditRull(attendee, creditRule);
+		}
 	}
 }

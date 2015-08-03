@@ -73,10 +73,11 @@
 							<input ng-model="event.quota" ng-show="{{event.showInput}}"
 							class="gridInput" /></td>
 						<td class="center"><span class="btn btn-info"
-							ng-click="updateEvent(event, $index)"
+							ng-click="updateEvent(event, $index)" ng-show="{{event.status<2}}"
 							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span
 							class="btn btn-danger" ng-click="deleteEvent(event, $index)">
-								删除 </span></td>
+								删除 </span><span class="btn" ng-show="event.existed"
+							ng-click="freezeEvent(event, $index)"> 冻结 </span></td>
 					</tr>
 				</tbody>
 			</table>

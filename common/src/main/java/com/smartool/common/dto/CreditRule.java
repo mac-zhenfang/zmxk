@@ -55,4 +55,8 @@ public class CreditRule extends BaseDateTrackingBean {
 	public void setCredit(int credit) {
 		this.credit = credit;
 	}
+
+	public String getRuleType() {
+		return "GENERAL";
+	}
 }

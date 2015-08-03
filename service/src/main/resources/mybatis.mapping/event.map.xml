@@ -26,6 +26,7 @@
 		<result property="eventTypeId" column="eventTypeId" />
 		<result property="seriesId" column="seriesId" />
 		<result property="stage" column="stage" />
+		<result property="status" column="status" />
 		<result property="quota" column="quota" />
 		<result property="createdTime" column="createdTime" />
 		<result property="lastModifiedTime" column="lastModifiedTime" />
@@ -53,7 +54,7 @@
 		a.rank as rank,
 		a.userId as userId,
 		a.seq as seq,
-		a.status as status,
+		e.status as status,
 		e.stage as stage,
 		e.seriesId as seriesId
 		from events e,

@@ -46,4 +46,9 @@ public class EventCreditRule extends CreditRule {
 	public void setLowerRank(Integer lowerRank) {
 		this.lowerRank = lowerRank;
 	}
+
+	@Override
+	public String getRuleType() {
+		return "GENERAL";
+	}
 }

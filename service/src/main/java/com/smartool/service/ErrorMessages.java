@@ -21,6 +21,8 @@ public class ErrorMessages {
 	public static final String FORBIDEN_ERROR_MESSAGE="您的账号没有权限执行该操作";
 	public static final String NOT_FOUND_ERROR_MESSAGE="您所访问的资源不存在";
 	public static final String ERROR_ENROLL_MESSAGE = "录入选手错误";
+	public static final String ATTENDEE_DO_NOT_EXIST_ERROR_MESSAGE = "该选手不存在";
+	public static final String RULE_DO_NOT_EXIST_ERROR_MESSAGE = "该奖励规则不存在";
 	public static final String DUPLICATE_ENROLL_MESSAGE = "您已经录入了该选手";
 	public static final String EXCEED_QUOTA_ENROLL_MESSAGE = "已经超过赛事名额上线";
 	public static final String EXCEED_GROUP_QUOTA_ERROR_MESSAGE = "已经超过分组名额上线";

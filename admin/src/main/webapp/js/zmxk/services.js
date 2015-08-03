@@ -706,7 +706,8 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var ruleResource = $resource(zmxkConfig.rule_get_uri, {
-				creditRuleId : '@id'
+				creditRuleId : '@id',
+				attendeeId : '@attendeeId'
 			}, {
 				create : {
 					url : zmxkConfig.rule_create_uri,
@@ -734,6 +735,10 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 					url : zmxkConfig.rule_search_uri,
 					method : "GET",
 					isArray : true
+				},
+				apply : {
+					url : zmxkConfig.rule_apply_uri,
+					method : "POST"
 				}
 			});
 			this.create = function(creditRule) {
@@ -774,11 +779,21 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 				});
 				return defer.promise;
 			};
+			this.apply = function(creditRule) {
+				var defer = $q.defer();
+				ruleResource.apply({}, creditRule, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
 		} ]);
 zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var eventRuleService = $resource(zmxkConfig.event_rule_get_uri, {
-				eventCreditRuleId : '@id'
+				eventCreditRuleId : '@id',
+				attendeeId : '@attendeeId'
 			}, {
 				create : {
 					url : zmxkConfig.event_rule_create_uri,
@@ -806,6 +821,10 @@ zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 					url : zmxkConfig.event_rule_search_uri,
 					method : "GET",
 					isArray : true
+				},
+				apply : {
+					url : zmxkConfig.event_rule_apply_uri,
+					method : "POST"
 				}
 			});
 			this.create = function(creditRule) {
@@ -840,6 +859,15 @@ zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 			this.listAll = function() {
 				var defer = $q.defer();
 				eventRuleService.search({}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.apply = function() {
+				var defer = $q.defer();
+				eventRuleResource.apply({}, eventCreditRule, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);

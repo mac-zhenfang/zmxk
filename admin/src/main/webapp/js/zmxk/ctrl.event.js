@@ -605,11 +605,7 @@ zmxk
 									var events = [];
 									angular.forEach($scope.listEvents,
 											function(event, i) {
-
 												if (i == idx) {
-													console
-															.log(i + "~~~"
-																	+ idx);
 													events.push(updateEvent);
 												} else {
 													events.push(event);
@@ -648,6 +644,44 @@ zmxk
 									handleReturn(updateEvent);
 								}
 
+							}
+							$scope.freezeEvent = function(freezeEvent, idx) {
+								if(confirm("是否确定要冻结本赛事")){
+									var handleReturn = function(data) {
+										if (freezeEvent.existed) {
+											freezeEvent.changed = !freezeEvent.changed;
+										}
+										var events = [];
+										angular
+												.forEach(
+														$scope.listEvents,
+														function(event, i) {
+															if (i == idx) {
+																events
+																		.push(freezeEvent);
+															} else {
+																events
+																		.push(event);
+															}
+														})
+										$scope.listEvents = angular
+												.copy(events);
+									}
+									freezeEvent.status=2;
+									eventService.updateEvent(freezeEvent.id,
+											freezeEvent).then(
+											function(data) {
+												handleReturn(data);
+											},
+											function(data) {
+												$scope.launch("error", "",
+														error.data.message,
+														function() {
+
+														}, function() {
+														});
+											});
+								}
 							}
 
 							$scope.deleteEvent = function(deleteEvent, idx) {
@@ -748,9 +782,10 @@ zmxk
 						'$dialogs',
 						'tagService',
 						'ruleService',
+						'eventRuleService',
 						function($scope, userService, eventService, $interval,
 								$timeout, $routeParams, $dialogs, tagService,
-								ruleService) {
+								ruleService, eventRuleService) {
 							$scope.eventId = $routeParams.eventId;
 							// console.log("~~~~~" + $scope.eventId);
 							$scope.eventInit = {};
@@ -824,8 +859,6 @@ zmxk
 
 														$scope.eventInit.attendees = angular
 																.copy(newAttendees);
-														console
-																.log($scope.eventInit.attendees);
 														$scope.eventInit.leftCount = $scope.eventInit.quota
 																- enrolledCount
 																- applyScoreCount;
@@ -880,7 +913,9 @@ zmxk
 																			eventTypeId : $scope.eventInit.eventTypeId,
 																			serieId : $scope.eventInit.serieId,
 																			attendee : selectedAttendee,
-																			generalRules : data
+																			generalRules : data,
+																			ruleService: ruleService,
+																			eventRuleService: eventRuleService
 																		}, 'lg');
 														dlg.result
 																.then(
@@ -892,8 +927,6 @@ zmxk
 																						rule : selectedRule,
 																						attendee : selectedAttendee
 																					});
-																			console
-																					.log(selectedRule)
 																		},
 																		function() {
 																			
@@ -1042,30 +1075,13 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 	$scope.data = data;
 	$scope.selectRule = {};
 	$scope.eventRules = $scope.data.generalRules
-	// FAKE DATA
-	/*
-	 * $scope.eventRules = [ { id : "mac-test-event-rule-1", name : "脚踏拉力赛规则",
-	 * eventType : "脚踏拉力赛", serieName : "预赛", rank : 1, rankName : "1", credit :
-	 * 100, existed : true, changed : false, showInput : false }, { id :
-	 * "mac-test-event-rule-2", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName :
-	 * "预赛", rank : 2, rankName : "2", credit : 50, existed : true, changed :
-	 * false, showInput : false }, { id : "mac-test-event-rule-3", name :
-	 * "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName : "预赛", rank : 0, rankName :
-	 * ">3", credit : 10, existed : true, changed : false, showInput : false }, {
-	 * id : "mac-test-event-rule-4", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛",
-	 * serieName : "季度复赛", rank : 1, rankName : "1", credit : 400, existed :
-	 * true, changed : false, showInput : false }, { id :
-	 * "mac-test-event-rule-5", name : "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName :
-	 * "季度复赛", rank : 2, rankName : "2", credit : 200, existed : true, changed :
-	 * false, showInput : false }, { id : "mac-test-event-rule-6", name :
-	 * "脚踏拉力赛规则", eventType : "脚踏拉力赛", serieName : "季度复赛", rank : 0, rankName :
-	 * ">3", credit : 200, existed : true, changed : false, showInput : false }, {
-	 * id : "mac-test-event-rule-7", name : "最有活力小选手", eventType : "脚踏拉力赛",
-	 * serieName : "季度复赛", rankName : "单次事件", credit : 300, existed : true,
-	 * changed : false, showInput : false }, { id : "mac-test-event-rule-8",
-	 * name : "单圈最快", eventType : "脚踏拉力赛", serieName : "季度复赛", rankName :
-	 * "单次事件", credit : 200, existed : true, changed : false, showInput : false } ]
-	 */
+	
+	console.log($scope.data.attendee.id);
+	console.log($scope.data.ruleService);
+	console.log($scope.data.eventRuleService);
+
+//	ruleService: ruleService,
+//	eventRuleService: eventRuleService
 
 	$scope.init = function() {
 		var newRules = [];
@@ -1075,7 +1091,6 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 			}
 		});
 		$scope.eventRules = newRules;
-		console.log($scope.eventRules);
 	}
 
 	// -- Methods --//
@@ -1086,13 +1101,11 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 
 	$scope.save = function(selectRule) {
 		// console.log(selectRule);
+		console.log(selectRule.id);
+		console.log($scope.data.attendee.id);
+		$scope.data.ruleService.apply({id:selectRule.id,attendeeId:$scope.data.attendee.id}).then(function(data){
+			console.log("A");
+		});
 		$modalInstance.close(selectRule);
-	}; // end save
-
-	/*
-	 * $scope.hitEnter = function(evt) { if (angular.equals(evt.keyCode, 13) &&
-	 * !(angular.equals($scope.user.name, null) || angular.equals(
-	 * $scope.user.name, ''))) $scope.save(); };
-	 */
-
+	};
 })

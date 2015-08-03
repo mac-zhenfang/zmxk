@@ -55,6 +55,20 @@ public class CreditController extends BaseController {
 	}
 
 	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/creditrules/{creditRuleId}/attendee/{attendeeId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public void applyCreditRule(@PathVariable("creditRuleId") String creditRuleId,
+			@PathVariable("attendeeId") String attendeeId) {
+		creditService.applyCreditRull(attendeeId, creditRuleId);
+	}
+
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventcreditrules/{eventCreditRuleId}/attendee/{attendeeId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public void applyEventCreditRule(@PathVariable("eventCreditRuleId") String eventCreditRuleId,
+			@PathVariable("attendeeId") String attendeeId) {
+		creditService.applyEventCreditRull(attendeeId, eventCreditRuleId);
+	}
+
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrules", method = RequestMethod.GET)
 	public List<EventCreditRule> listAllEventCreditRules() {
 		return creditService.listAllEventCreditRules();

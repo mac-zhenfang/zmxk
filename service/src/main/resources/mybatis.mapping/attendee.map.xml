@@ -50,12 +50,7 @@
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
-		select a.id as
-		id, a.kidId as kidId, a.createdTime as
-		createdTime, a.lastModifiedTime
-		as lastModifiedTime, a.status as
-		status, a.score as score, a.seq as seq, a.tagId as tagId  from attendees
-		a where a.id = #{id}
+		select * from attendees where id = #{id}
 	</select>
 
 	<select id="getByEventId" parameterType="String"
