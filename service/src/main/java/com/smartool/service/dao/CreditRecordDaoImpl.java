@@ -20,7 +20,8 @@ public class CreditRecordDaoImpl implements CreditRecordDao {
 		return getCreditRecord(creditRecord.getId());
 	}
 
-	private CreditRecord getCreditRecord(String creditRecordId) {
+	@Override
+	public CreditRecord getCreditRecord(String creditRecordId) {
 		return sqlSession.selectOne("CREDIT_RECORD.getById", creditRecordId);
 	}
 
@@ -53,6 +54,20 @@ public class CreditRecordDaoImpl implements CreditRecordDao {
 			map.put("userId", userId);
 		}
 		return sqlSession.selectList("CREDIT_RECORD.search", map);
+	}
+
+	@Override
+	public CreditRecord updateCreditRecordStatus(String creditRecordId, int status) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", creditRecordId);
+		map.put("status", status);
+		sqlSession.selectList("CREDIT_RECORD.updateStatus", map);
+		return getCreditRecord(creditRecordId);
+	}
+
+	@Override
+	public void removeCreditRecord(String creditRecordId) {
+		sqlSession.selectList("CREDIT_RECORD.remove");
 	}
 
 }

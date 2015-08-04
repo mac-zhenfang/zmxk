@@ -342,7 +342,23 @@ zmxk.controller('CreditRecordCtrl', [
 						tmp.end).then(function(data) {
 					$scope.creditRecords = data;
 				});
-			}
+			};
+			$scope.withdraw = function(creditRecordId, creditRecordIndex) {
+				if(confirm("确定要撤销该记录吗？")){
+					creditRecordService.withdraw(creditRecordId).then(function(data) {
+						var newCreditRecords = [];
+						angular.forEach($scope.creditRecords, function(creditRecord,index) {
+							if (index == creditRecordIndex) {
+								var updatedCreditRecord = angular.copy(data);
+								newCreditRecords.push(updatedCreditRecord);
+							} else {
+								newCreditRecords.push(angular.copy(creditRecord));
+							}
+						});
+						$scope.creditRecords = newCreditRecords;
+					});
+				}
+			};
 			var init = function() {
 				$scope.search();
 			};

@@ -12,7 +12,7 @@ zmxk.controller('EventRuleCtrl', [
 				$routeParams,  $q) {
 			$scope.deleteLabel = "删除";
 			$scope.eventRules = [];
-			$scope.seriesMap = new Map();
+			$scope.seriesMap = {};
 			$scope.rank_option = [ {
 				value : 1,
 				label : "1"
@@ -60,7 +60,7 @@ zmxk.controller('EventRuleCtrl', [
 							serieService.list(eventType.id).then(function(data) {
 								data.unshift({id: null, name: "---------"});
 								console.log(data);
-								$scope.seriesMap.set(eventType.id, data);
+								$scope.seriesMap[eventType.id] = data;
 //								if(eventType.id=="eventTypeId1"){
 //									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
 //									data.unshift({id: null, name: "---------"});
@@ -342,7 +342,23 @@ zmxk.controller('CreditRecordCtrl', [
 						tmp.end).then(function(data) {
 					$scope.creditRecords = data;
 				});
-			}
+			};
+			$scope.withdraw = function(creditRecordId, creditRecordIndex) {
+				if(confirm("确定要撤销该记录吗？")){
+					creditRecordService.withdraw(creditRecordId).then(function(data) {
+						var newCreditRecords = [];
+						angular.forEach($scope.creditRecords, function(creditRecord,index) {
+							if (index == creditRecordIndex) {
+								var updatedCreditRecord = angular.copy(data);
+								newCreditRecords.push(updatedCreditRecord);
+							} else {
+								newCreditRecords.push(angular.copy(creditRecord));
+							}
+						});
+						$scope.creditRecords = newCreditRecords;
+					});
+				}
+			};
 			var init = function() {
 				$scope.search();
 			};

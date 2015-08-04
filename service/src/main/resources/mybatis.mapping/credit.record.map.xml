@@ -6,18 +6,18 @@
 	<select id="create" parameterType="com.smartool.common.dto.CreditRecord">
 		insert creditRecords (id,
 		userId,attendeeId,eventId,
-		creditRuleType,displayName,rank,score,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
+		creditRuleType,displayName,rank,status,score,creditRuleId,credit,goldenMedal,silverMedal,bronzeMedal,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{userId},#{attendeeId},#{eventId},#{creditRuleType},#{displayName},#{rank},#{score},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
+		(#{id},#{userId},#{attendeeId},#{eventId},#{creditRuleType},#{displayName},#{rank},#{status},#{score},#{creditRuleId},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},now(),now())
 	</select>
 
 	<select id="search" parameterType="Map"
 		resultType="com.smartool.common.dto.CreditRecord">
 		select r.id,
 		userId,eventId,
-		creditRuleType,displayName,rank,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
+		creditRuleType,displayName,rank,r.status,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
 		r.createdTime,
 		r.lastModifiedTime,mobileNum
 		from creditRecords as r,
@@ -40,7 +40,7 @@
 		resultType="com.smartool.common.dto.CreditRecord">
 		select r.id,
 		userId,eventId,
-		creditRuleType,displayName,rank,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
+		creditRuleType,displayName,rank,r.status,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
 		r.createdTime,
 		r.lastModifiedTime,mobileNum
 		from creditRecords as r,
@@ -63,4 +63,16 @@
 		resultType="com.smartool.common.dto.CreditRecord">
 		select * from creditRecords where id = #{id}
 	</select>
+
+	<update id="updateStatus" parameterType="Map">
+		update creditRecords
+		set
+		status=#{status}
+		where id = #{id}
+	</update>
+
+	<delete id="remove" parameterType="String">
+		delete from creditRecords
+		where id = #{id}
+	</delete>
 </mapper>

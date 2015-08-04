@@ -15,6 +15,20 @@ public class CreditRecord extends BaseDateTrackingBean {
 	private int goldenMedal;
 	private int silverMedal;
 	private int bronzeMedal;
+	private int status;
+
+	public enum CreditRecordStatus {
+		NORMAL(0), WITHDRAWED(1);
+		private int value;
+
+		CreditRecordStatus(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
 
 	public int getGoldenMedal() {
 		return goldenMedal;
@@ -126,5 +140,13 @@ public class CreditRecord extends BaseDateTrackingBean {
 
 	public void setScore(float score) {
 		this.score = score;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }

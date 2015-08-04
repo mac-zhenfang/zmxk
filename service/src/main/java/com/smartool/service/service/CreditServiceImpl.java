@@ -282,4 +282,19 @@ public class CreditServiceImpl implements CreditService {
 			applyCreditRull(attendee, creditRule);
 		}
 	}
+
+	@Override
+	public CreditRecord withdrawCreditRecord(String creditRecordId) {
+		CreditRecord creditRecord = creditRecordDao.getCreditRecord(creditRecordId);
+		if (creditRecord == null) {
+			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.NOT_FOUND_ERROR_MESSAGE);
+		}
+		if(creditRecord.getStatus() == CreditRecord.CreditRecordStatus.WITHDRAWED.getValue()){
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CREDIT_RECORD_ALREADY_WITHDRAWN_ERROR_MESSAGE);
+		}
+		CreditRecord updateCreditRecordStatus = creditRecordDao.updateCreditRecordStatus(creditRecordId,
+				CreditRecord.CreditRecordStatus.WITHDRAWED.getValue());
+		userDao.withdrawCredit(creditRecord.getUserId(), creditRecord);
+		return updateCreditRecordStatus;
+	}
 }

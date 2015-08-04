@@ -888,7 +888,8 @@ zmxk
 									{
 										start : '@start',
 										end : '@end',
-										mobileNum : '@mobileNum'
+										mobileNum : '@mobileNum',
+										creditRecordId : '@creditRecordId'
 									},
 									{
 										search : {
@@ -900,6 +901,10 @@ zmxk
 											url : zmxkConfig.my_event_credit_records_search_uri,
 											method : "GET",
 											isArray : true
+										},
+										withdraw : {
+											url : zmxkConfig.withdraw_credit_records_uri,
+											method : "POST"
 										}
 									});
 							this.listAll = function(_mobileNum, _start, _end) {
@@ -920,6 +925,17 @@ zmxk
 								creditRecordService.searchMine({
 									start : _start,
 									end : _end
+								}, function(data, header) {
+									defer.resolve(data);
+								}, function(data, header) {
+									defer.reject(data);
+								});
+								return defer.promise;
+							};
+							this.withdraw = function(_creditRecordId) {
+								var defer = $q.defer();
+								creditRecordService.withdraw({
+									creditRecordId : _creditRecordId
 								}, function(data, header) {
 									defer.resolve(data);
 								}, function(data, header) {

@@ -4,29 +4,42 @@ import java.util.Date;
 import java.util.List;
 
 public class Event extends BaseDateTrackingBean {
-	
+
 	private String id;
-	
+
 	private String name;
-	
+
 	private Date eventTime;
-		
+
 	private int quota;
-	
+
 	private List<Attendee> attendees;
-	
+
 	private String eventTypeId;
-	
+
 	private String eventType;
-	
-	private String siteId; //enum
-	
+
+	private String siteId; // enum
+
 	private String seriesId;
-	
+
 	private int status;
-	
+
 	private int stage;
-	
+
+	public enum EventStatus {
+		PREPARE(0), START(1), COMPLETE(2), FROZEN(3);
+		private int value;
+
+		EventStatus(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
+
 	public String getId() {
 		return id;
 	}

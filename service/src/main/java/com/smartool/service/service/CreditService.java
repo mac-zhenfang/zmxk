@@ -45,4 +45,6 @@ public interface CreditService {
 	String getCreditRecordDisplayName(Attendee attendee, CreditRule creditRule);
 
 	List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end);
+	
+	CreditRecord withdrawCreditRecord(String creditRecordId);
 }

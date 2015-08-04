@@ -28,4 +28,5 @@ public class ErrorMessages {
 	public static final String EXCEED_GROUP_QUOTA_ERROR_MESSAGE = "已经超过分组名额上线";
 	public static final String EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE = "请输入有效的积分奖励规则名称";
 	public static final String DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE = "积分奖励规则名称重复";
+	public static final String CREDIT_RECORD_ALREADY_WITHDRAWN_ERROR_MESSAGE = "积分记录已经被撤销";
 }

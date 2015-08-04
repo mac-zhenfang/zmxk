@@ -164,6 +164,7 @@ CREATE TABLE `creditRecords` (
 	`creditRuleId` varchar(36) NOT NULL,
     `displayName` varchar(255) NOT NULL,
   	`rank` int,
+  	`status` int NOT NULL DEFAULT 0,
 	`score` float,
   	`credit` int NOT NULL DEFAULT 0,
   	`goldenMedal` int NOT NULL DEFAULT 0,

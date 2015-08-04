@@ -37,7 +37,8 @@
 		u, kids k,
 		events e, eventTypes et, series s, attendees a where
 		e.eventTypeId=et.id and s.id = e.seriesId and a.eventId=cr.eventId
-		and a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
+		and
+		a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
 		cr.userId=u.id and cr.userId = #{id}
 	</select>
 	<select id="getBaseGrades" parameterType="String"
@@ -49,11 +50,14 @@
 		cr.`goldenMedal` as
 		goldenMedal, et.name as eventTypeName,k.id as kidId, k.name as
 		kidName, e.stage as
-		stage, k.userId as userId from events e, creditRecords cr,attendees a,
+		stage, k.userId as userId from events e,
+		creditRecords cr,attendees a,
 		eventTypes et, kids
-		k where k.id=a.kidId and et.id=e.eventTypeId and
+		k where k.id=a.kidId
+		and et.id=e.eventTypeId and
 		cr.attendeeId=a.id and
-		e.id = cr.eventId and et.id = #{id}
+		e.id = cr.eventId and
+		et.id = #{id}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,
@@ -83,6 +87,13 @@
 		update users
 		set
 		credit=credit+#{credit},goldenMedal=goldenMedal+#{goldenMedal},silverMedal=silverMedal+#{silverMedal},bronzeMedal=bronzeMedal+#{bronzeMedal}
+		where id =
+		#{id};
+	</update>
+	<update id="withdrawCredit" parameterType="Map">
+		update users
+		set
+		credit=credit-#{credit},goldenMedal=goldenMedal-#{goldenMedal},silverMedal=silverMedal-#{silverMedal},bronzeMedal=bronzeMedal-#{bronzeMedal}
 		where id =
 		#{id};
 	</update>

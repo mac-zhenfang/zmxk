@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,12 @@ public class CreditRecordsController extends BaseController {
 			@RequestParam(value = "start", required = false) Long start,
 			@RequestParam(value = "end", required = false) Long end) {
 		return creditService.listCreditRecordsByMobileNumber(mobileNum, start, end);
+	}
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/eventcreditrecords/{creditRecordId}/withdraw", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public CreditRecord withdrawCreditRecord(@PathVariable(value = "creditRecordId") String creditRecordId) {
+		return creditService.withdrawCreditRecord(creditRecordId);
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)

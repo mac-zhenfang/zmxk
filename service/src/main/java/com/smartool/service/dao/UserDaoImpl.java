@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.smartool.common.dto.BaseGrade;
+import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
@@ -95,6 +96,17 @@ public class UserDaoImpl implements UserDao {
 		map.put("silverMedal", creditRule.getSilverMedal());
 		map.put("bronzeMedal", creditRule.getBronzeMedal());
 		sqlSession.update("USER.addCredit", map);
+	}
+
+	@Override
+	public void withdrawCredit(String userId, CreditRecord creditRecord) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", userId);
+		map.put("credit", creditRecord.getCredit());
+		map.put("goldenMedal", creditRecord.getGoldenMedal());
+		map.put("silverMedal", creditRecord.getSilverMedal());
+		map.put("bronzeMedal", creditRecord.getBronzeMedal());
+		sqlSession.update("USER.withdrawCredit", map);
 	}
 
 	@Override
