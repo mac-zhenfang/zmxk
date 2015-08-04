@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html ng-app="zmxk">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>热图Demo</title>
+<style type="text/css">
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+body, button, input, select, textarea {
+	font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+}
+
+#info {
+	margin-top: 10px;
+}
+</style>
+<link href="css/bootstrap.min.css" rel="stylesheet" />
+<link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="css/style.min.css" rel="stylesheet" />
+<link href="css/style-responsive.min.css" rel="stylesheet" />
+<link href="css/retina.css" rel="stylesheet" />
+<link href="css/index.css" rel="stylesheet" />
+<!---->
+<link href="css/zmxk.css" rel="stylesheet" />
+
+
+<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+
+</head>
+<body ng-controller="MainController as main" ng-init="init()">
+
+	<div class="container-fluid-full">
+		<div class="row-fluid">
+
+			<div id="content" class="span10">
+				<div>
+					选择城市<select class="selectpicker gridInput2" data-style="btn-info"
+						ng-model="cityId"
+						ng-options="option.id as option.name for option in cities"
+						ng-init="cityId==option.id">
+					</select>
+				</div>
+				<div>
+					选择时间<input type="text" class="gridInput2" date-time required="true" ng-model="selectTime"
+						itemModel="1" view="hours" />
+				</div>
+				<div>
+					<input type="button" class="btn btn-info btn-block" ng-click="go()"
+						value="Go" />
+				</div>
+				<div class="span12" id="container"></div>
+				
+			</div>
+			<!-- end: Content -->
+
+		</div>
+		<!--/fluid-row-->
+	</div>
+
+
+	<script src="js/jquery-1.10.2.min.js"></script>
+
+	<script src="js/angular.js"></script>
+	<!-- -->
+	<script src="js/angular-route.min.js"></script>
+	<script src="js/angular-resource.min.js"></script>
+	<script src="js/angular-cookies.min.js"></script>
+	<script src="js/dialogs.min.js"></script>
+	<script src="js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/index.min.js"></script>
+
+	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery.sparkline.min.js"></script>
+	<script src="js/jquery.autosize.min.js"></script>
+	<script src="js/retina.js"></script>
+	<script src="js/jquery.placeholder.min.js"></script>
+	<script src="js/wizard.min.js"></script>
+	<script src="js/core.min.js"></script>
+	<script src="js/custom.min.js"></script>
+	<script src="js/zmxk/app.js"></script>
+	<script src="js/zmxk/services.js"></script>
+	<script src="js/zmxk/ctrl.main.js"></script>
+	<script src="js/zmxk/ctrl.user.js"></script>
+	<script src="js/zmxk/ctrl.sidebar.js"></script>
+	<script src="js/zmxk/ctrl.event.js"></script>
+	<script src="js/zmxk/ctrl.enroll.js"></script>
+	<script src="js/zmxk/ctrl.rule.js"></script>
+	<script src="js/zmxk/ctrl.site.js"></script>
+
+	<script type="text/javascript">
+		zmxk
+				.service(
+						'dataService',
+						[
+								'$resource',
+								'$q',
+								function($resource, $q) {
+									var dataResoruce = $resource(
+											"/service/smartool/api/v1/data/heats",
+											{
+
+											},
+											{
+												getHeats : {
+													url : "/service/smartool/api/v1/data/heats",
+													isArray : true,
+													method : 'GET',
+													headers : {
+														'Content-Type' : 'application/json;charset=UTF-8'
+													}
+												}
+											});
+
+									this.getHeats = function(_cityId,
+											_timestamp) {
+										var defer = $q.defer();
+										dataResoruce.getHeats({
+											cityId : _cityId,
+											timestamp : _timestamp
+										}, function(body, headers) {
+											defer.resolve(body);
+										}, function(body, headers) {
+											defer.reject(body);
+										})
+										return defer.promise;
+									}
+								} ]);
+		zmxk
+				.controller(
+						'MainController',
+						[
+								'$scope',
+								'dataService',
+								function($scope, dataService) {
+									$scope.cityId = 1;
+									$scope.selectTime=1438220622000;
+									$scope.cities = [ {
+										name : "上海",
+										id : 1
+									}, {
+										name : "广东",
+										id : 2
+									}, {
+										name : "北京",
+										id : 5
+									}, {
+										name : "深圳",
+										id : 13
+									} ]
+									
+									$scope.$on('setDate1', function(e, date, idx) {
+										 $scope.selectTime = date.getTime();
+										
+									});
+
+									$scope.go = function() {
+										// Date.parse($scope.date);
+										console.log($scope.selectTime);
+										var cMap = {};
+										//FIXME: add selector
+										dataService
+												.getHeats($scope.cityId,
+														$scope.selectTime)
+												.then(
+														function(data) {
+															if (data.length == 0) {
+																$scope.
+															}
+															angular
+																	.forEach(
+																			data,
+																			function(
+																					heat,
+																					index) {
+
+																				if (angular
+																						.isUndefined(cMap[heat.contourId])) {
+																					cMap[heat.contourId] = [];
+																				}
+																				if (angular
+																						.isArray(cMap[heat.contourId])) {
+																					cMap[heat.contourId]
+																							.push(heat);
+																				}
+
+																			})
+															console.log(cMap);
+															// create > path
+															angular
+																	.forEach(
+																			cMap,
+																			function(
+																					value,
+																					key) {
+																				//console.log(key);
+																				//FIXME
+
+																				var pathId;
+																				// create contour map: same contour has >=1 LatLng. 
+																				var contourPathMap = {};
+																				angular
+																						.forEach(
+																								value,
+																								function(
+																										heat,
+																										index) {
+																									var _p = heat.pathId;
+																									if (angular
+																											.isUndefined(contourPathMap[heat.pathId])) {
+																										contourPathMap[heat.pathId] = [];
+																									}
+																									contourPathMap[heat.pathId]
+																											.push(heat);
+																								})
+																				console
+																						.log(key);
+																				console
+																						.log(contourPathMap);
+																				// draw the pic
+																				var center = null;
+																				var map = null;
+
+																				angular
+																						.forEach(
+																								contourPathMap,
+																								function(
+																										eachPath,
+																										pathId,
+																										index) {
+																									var fillColor = "#f36"
+																											+ index
+																											+ "55";
+																									var strokeColor = "#C40"
+																											+ index
+																											+ "55";
+																									if (center == null
+																											&& map == null) {
+
+																										var l = parseInt(eachPath.length);
+																										//console.log(l);
+																										var ce = Math
+																												.round(l / 2);
+																										//console.log(ce);
+																										center = new qq.maps.LatLng(
+																												eachPath[ce].longitude,
+																												eachPath[ce].latitude);
+																										map = new qq.maps.Map(
+																												document
+																														.getElementById('container'),
+																												{
+																													center : center,
+																													zoom : 13
+																												});
+																									}
+																									//console.log(center);
+																									eachPath
+																											.sort(function(
+																													a,
+																													b) {
+																												var key = "index";
+																												var x = a[key];
+																												var y = b[key];
+																												return ((x < y) ? -1
+																														: ((x > y) ? 1
+																																: 0));
+																											});
+																									//FIXME: choose center
+
+																									var setPath = [];
+																									angular
+																											.forEach(
+																													eachPath,
+																													function(
+																															heat,
+																															index) {
+																														setPath
+																																.push(new qq.maps.LatLng(
+																																		heat.longitude,
+																																		heat.latitude));
+																													})
+																									var polygon = new qq.maps.Polygon(
+																											{
+																												map : map,
+																												strokeColor : qq.maps.Color
+																														.fromHex(
+																																strokeColor,
+																																0.8),
+																												strokeWeight : 0,
+																												fillColor : qq.maps.Color
+																														.fromHex(
+																																fillColor,
+																																0.5),
+																												visible : true
+																											});
+																									polygon
+																											.setPath(setPath);
+
+																								})
+
+																			})
+														}, function(data) {
+
+														})
+									}
+									$scope.init = function() {
+									}
+								} ]);
+		//angular.bootstrap(document, [ 'zmxk' ]);
+	</script>
+</body>
+</html>

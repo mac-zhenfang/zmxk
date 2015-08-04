@@ -36,12 +36,15 @@ zmxk
 							
 
 							$scope.addChild = function() {
-								$scope.addKid["existed"] = false;
-								$scope.addKid["selected"] = true;
-								$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
-								var kid = angular.copy($scope.addKid);
-								$scope.kidsToShow.push(kid);
-								$scope.showAddChildForm = 0;
+								if(!angular.isUndefined($scope.addKid.name)) {
+									$scope.addKid["existed"] = false;
+									$scope.addKid["selected"] = true;
+									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
+									var kid = angular.copy($scope.addKid);
+									$scope.kidsToShow.push(kid);
+									$scope.showAddChildForm = 0;
+								}
+								$scope.addKid = {};
 							}
 
 							$scope.showChildForm = function() {
