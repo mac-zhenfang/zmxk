@@ -45,7 +45,7 @@
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.seriesId"
-							ng-options="series.id as series.name for series in seriesMap.get(rule.eventTypeId)"
+							ng-options="series.id as series.name for series in seriesMap[rule.eventTypeId]"
 							ng-init="rule.seriesId==series.id"></select></td>
 						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.upperRank"></span> <input ng-model="rule.upperRank"

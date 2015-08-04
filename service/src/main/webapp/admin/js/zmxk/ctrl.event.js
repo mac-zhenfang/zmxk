@@ -167,10 +167,7 @@ zmxk
 								eventTypeService, siteService, serieService,
 								$interval, $timeout, $routeParams) {
 
-							$scope.sites = [ {
-								id : null,
-								name : "公共"
-							} ];
+							$scope.sites = [ ];
 							$scope.giveUpdateEventType = {};
 							$scope.toDeleteEventType = {};
 							$scope.init = function() {
@@ -736,6 +733,7 @@ zmxk
 								toCreateEvent["existed"] = false;
 								toCreateEvent["changed"] = true;
 								toCreateEvent["showInput"] = true;
+								toCreateEvent["status"] = 0;
 								$scope.listEvents.push(toCreateEvent);
 
 							}

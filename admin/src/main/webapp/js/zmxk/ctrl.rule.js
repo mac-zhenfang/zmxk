@@ -61,6 +61,7 @@ zmxk.controller('EventRuleCtrl', [
 								data.unshift({id: null, name: "---------"});
 								console.log(data);
 								$scope.seriesMap[eventType.id] = data;
+								console.log($scope.seriesMap);
 //								if(eventType.id=="eventTypeId1"){
 //									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
 //									data.unshift({id: null, name: "---------"});

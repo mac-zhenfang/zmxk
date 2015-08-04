@@ -16,10 +16,7 @@ zmxk
 								siteService, siteService, serieService,
 								$interval, $timeout, $routeParams) {
 
-							$scope.sites = [ {
-								id : null,
-								name : "公共"
-							} ];
+							$scope.sites = [];
 							$scope.giveUpdateSite = {};
 							$scope.toDeleteSite = {};
 							$scope.init = function() {
