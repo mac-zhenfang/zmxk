@@ -27,7 +27,7 @@ CREATE TABLE `kids` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`schoolType` int,
-	`schoolName` varchar(255) CHARACTER SET utf8 NOT NULL,
+	`schoolName` varchar(255) CHARACTER SET utf8,
 	`userId` varchar(36) NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

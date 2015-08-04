@@ -50,7 +50,16 @@ zmxk.controller('MainController', [
 					"C" : 3
 			}
 			
-			
+			$scope.kids_school_options = [ {
+				value : 0,
+				label : "幼儿园"
+			}, {
+				value : 1,
+				label : "小学"
+			}, {
+				value : 2,
+				label : "未上幼儿园"
+			} ]
 
 			// console.log($cookies.get("loginUser"));
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));

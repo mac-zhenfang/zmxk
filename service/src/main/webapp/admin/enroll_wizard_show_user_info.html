@@ -72,7 +72,6 @@
 				<thead>
 					<tr>
 						<th>姓名</th>
-						<th>学校类型</th>
 						<th>学校名</th>
 						<th>选择</th>
 					</tr>
@@ -81,13 +80,6 @@
 					<tr ng-repeat="kid in kidsToShow">
 						<td class="center">
 							<!-- <input type="text" ng-model="kid.name" /> -->{{kid.name}}
-						</td>
-						<td class="center">
-							<!-- <select class="selectpicker"
-							data-style="btn-info" ng-model="kid.schoolType"
-							ng-init="kid.schoolType == kids_school_options[0]"
-							ng-options="option.value as option.label for option in kids_school_options">
-						</select>-->{{kid.schoolType}}
 						</td>
 						<td class="center">
 							<!-- <input type="text"
