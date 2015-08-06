@@ -53,7 +53,7 @@ body, button, input, select, textarea {
 					<input type="button" class="btn btn-info btn-block" ng-click="go()"
 						value="Go" />
 				</div>
-				<div class="span12" id="container"></div>
+				<div class="span12" id="container" style="width:800px;height:600px;"></div>
 				
 			</div>
 			<!-- end: Content -->
@@ -141,7 +141,7 @@ body, button, input, select, textarea {
 								'dataService',
 								function($scope, dataService) {
 									$scope.cityId = 1;
-									$scope.selectTime=1438220622000;
+									$scope.selectTime= (new Date()).getTime();
 									$scope.cities = [ {
 										name : "上海",
 										id : 1
