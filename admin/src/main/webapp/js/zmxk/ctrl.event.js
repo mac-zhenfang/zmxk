@@ -167,7 +167,7 @@ zmxk
 								eventTypeService, siteService, serieService,
 								$interval, $timeout, $routeParams) {
 
-							$scope.sites = [];
+							$scope.sites = [ ];
 							$scope.giveUpdateEventType = {};
 							$scope.toDeleteEventType = {};
 							$scope.init = function() {
@@ -426,10 +426,7 @@ zmxk
 																		event["changed"] = false;
 																		event["showInput"] = false;
 
-																		event.eventSeries = [ {
-																			id : null,
-																			name : "单次比赛"
-																		} ];
+																		event.eventSeries = [];
 																		serieService
 																				.list(
 																						event.eventTypeId)
@@ -572,10 +569,7 @@ zmxk
 
 							}
 							$scope.initSeries = function(event) {
-								event.eventSeries = [ {
-									id : null,
-									name : "单次比赛"
-								} ];
+								event.eventSeries = [];
 								serieService.list(event.eventTypeId).then(
 										function(data) {
 											angular.forEach(data, function(
@@ -610,6 +604,15 @@ zmxk
 											})
 									$scope.listEvents = angular.copy(events);
 								}
+								if (angular.isUndefined(updateEvent.seriesId)
+										|| !updateEvent.seriesId) {
+									$scope.launch("error", "", "请选择系列",
+											function() {
+
+											}, function() {
+											});
+									return;
+								}
 								// save event
 								if (!updateEvent.existed) {
 									eventService.createEvent(updateEvent).then(
@@ -643,7 +646,7 @@ zmxk
 
 							}
 							$scope.freezeEvent = function(freezeEvent, idx) {
-								if(confirm("是否确定要冻结本赛事")){
+								if (confirm("是否确定要冻结本赛事")) {
 									var handleReturn = function(data) {
 										if (freezeEvent.existed) {
 											freezeEvent.changed = !freezeEvent.changed;
@@ -664,7 +667,7 @@ zmxk
 										$scope.listEvents = angular
 												.copy(events);
 									}
-									freezeEvent.status=2;
+									freezeEvent.status = 2;
 									eventService.updateEvent(freezeEvent.id,
 											freezeEvent).then(
 											function(data) {
@@ -730,13 +733,9 @@ zmxk
 								toCreateEvent["existed"] = false;
 								toCreateEvent["changed"] = true;
 								toCreateEvent["showInput"] = true;
+								toCreateEvent["status"] = 0;
 								$scope.listEvents.push(toCreateEvent);
-								/*
-								 * angular.forEach($scope.kids, function(kid,
-								 * index){ })
-								 */
-								// create all existed == false
-								// update all changed == true
+
 							}
 
 						} ]);
@@ -830,7 +829,8 @@ zmxk
 																				tagsMap[attendee.tagId]
 																						.push(attendee);
 																			}
-
+																			attendee.min = Math.floor(attendee.score / 60);
+																			attendee.sec = attendee.score % 60;
 																		});
 														var d = 0;
 														angular
@@ -911,8 +911,8 @@ zmxk
 																			serieId : $scope.eventInit.serieId,
 																			attendee : selectedAttendee,
 																			generalRules : data,
-																			ruleService: ruleService,
-																			eventRuleService: eventRuleService
+																			ruleService : ruleService,
+																			eventRuleService : eventRuleService
 																		}, 'lg');
 														dlg.result
 																.then(
@@ -926,7 +926,7 @@ zmxk
 																					});
 																		},
 																		function() {
-																			
+
 																		});
 													}, function(error) {
 													})
@@ -972,18 +972,20 @@ zmxk
 							}
 							$scope.editScore = function() {
 								if (canStartEditScore()) {
-									var m = new Map();
+									var m = {};
 									angular.forEach($scope.eventInit.attendees,
-											function(attendee, index) {
-												if (!m.get(attendee.tagId)) {
-													m.set(attendee.tagId, []);
-												}
-												if (attendee.score) {
-													m.get(attendee.tagId).push(
-															attendee);
-												}
-											});
-									m.forEach(function(attendees, tagId) {
+										function(attendee, index) {
+											attendee.score = parseInt(attendee.min) * 60 + parseInt(attendee.sec);
+											console.log(attendee.score);
+											if (angular.isUndefined(m[attendee.tagId])) {
+												m[attendee.tagId] = [];
+											}
+											if (attendee.score) {
+												m[attendee.tagId].push(attendee);
+											}
+										});
+									angular.forEach(m, function(attendees,
+											tagId) {
 										attendees.sort(function(a, b) {
 											var key = "score";
 											var x = a[key];
@@ -995,7 +997,12 @@ zmxk
 												index) {
 											attendee.rank = index + 1;
 										})
-									});
+									})
+									/*
+									 * m.forEach(function(attendees, tagId) {
+									 * 
+									 * });
+									 */
 								}
 							}
 
@@ -1072,13 +1079,13 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 	$scope.data = data;
 	$scope.selectRule = {};
 	$scope.eventRules = $scope.data.generalRules
-	
+
 	console.log($scope.data.attendee.id);
 	console.log($scope.data.ruleService);
 	console.log($scope.data.eventRuleService);
 
-//	ruleService: ruleService,
-//	eventRuleService: eventRuleService
+	// ruleService: ruleService,
+	// eventRuleService: eventRuleService
 
 	$scope.init = function() {
 		var newRules = [];
@@ -1100,7 +1107,10 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 		// console.log(selectRule);
 		console.log(selectRule.id);
 		console.log($scope.data.attendee.id);
-		$scope.data.ruleService.apply({id:selectRule.id,attendeeId:$scope.data.attendee.id}).then(function(data){
+		$scope.data.ruleService.apply({
+			id : selectRule.id,
+			attendeeId : $scope.data.attendee.id
+		}).then(function(data) {
 			console.log("A");
 		});
 		$modalInstance.close(selectRule);

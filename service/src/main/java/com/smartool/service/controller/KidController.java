@@ -3,6 +3,7 @@ package com.smartool.service.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.Kid;
 import com.smartool.service.CommonUtils;
+import com.smartool.service.ErrorMessages;
+import com.smartool.service.SmartoolException;
 import com.smartool.service.dao.KidDao;
 
 @RestController
@@ -24,9 +27,20 @@ public class KidController extends BaseController {
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Kid create(@RequestBody Kid kid, @PathVariable String userId) {
-		// isUserValidForCreate(user);
+		isUserValidKid(kid);
 		kid.setId(CommonUtils.getRandomUUID());
 		return kidDao.create(kid);
+	}
+
+	private boolean isUserValidKid(Kid kid) {
+		if (CommonUtils.isEmptyString(kid.getName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_NAME_ERROR_MESSAGE);
+		}
+		if (CommonUtils.isEmptyString(kid.getSchoolName())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_KID_SCHOOL_NAME_ERROR_MESSAGE);
+		}
+		return true;
 	}
 
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.GET, produces = {
@@ -39,15 +53,16 @@ public class KidController extends BaseController {
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Kid update(@PathVariable String userId, @PathVariable String kidId, @RequestBody Kid kid) {
-		//List<Kid> kids = kidDao.listByUserId(userId);
-		//Check userId/kidId;
+		// List<Kid> kids = kidDao.listByUserId(userId);
+		// Check userId/kidId;
+		isUserValidKid(kid);
 		Kid retKid = kidDao.update(kid);
 		return retKid;
 	}
-	
+
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String userId, @PathVariable String kidId) {
-		//Check userId/kidId;
+		// Check userId/kidId;
 		kidDao.remove(kidId);
 	}
 }

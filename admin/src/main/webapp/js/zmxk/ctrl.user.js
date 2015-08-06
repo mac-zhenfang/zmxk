@@ -170,27 +170,47 @@ zmxk.controller('UserDetailCtrl', [
 			$scope.updateKid = function(updateKid, idx) {
 
 				// save kid
-				if (!updateKid.existed) {
+				if (!updateKid.id && updateKid.changed) {
 					kidService.createKid($scope.userId, updateKid).then(
 							function(data) {
-								updateKid = data;
-							}, function(data) {
+								var createdKid;
+								$scope.newKids = [];
+								angular.forEach($scope.kids, function(kid, index) {
+									if (index == idx) {
+										createdKid = angular.copy(data);
+										$scope.newKids.push(createdKid);
+									} else {
+										$scope.newKids.push(angular.copy(kid));
+									}
+								});
 
+								createdKid.showInput = false;
+								$scope.kids = $scope.newKids;
+							}, function(data){
+								alert(data.data.message);
+								return;
 							})
 				} else if (updateKid.changed) {
 					kidService
 							.updateKid($scope.userId, updateKid.id, updateKid)
 							.then(
 									function(data) {
-										updateKid = data;
+										var updatedKid;
+										$scope.newKids = [];
+										angular.forEach($scope.kids, function(kid, index) {
+											if (index == idx) {
+												updatedKid = angular.copy(data);
+												$scope.newKids.push(updatedKid);
+											} else {
+												$scope.newKids.push(angular.copy(kid));
+											}
+										});
 
-									},
-									function(data) {
-										$scope.launch("error", "",
-												error.data.message, function() {
-
-												}, function() {
-												});
+										createdKid.showInput = false;
+										$scope.kids = $scope.newKids;
+									}, function(data){
+										alert(data.data.message);
+										return;
 									});
 				}
 
@@ -217,7 +237,31 @@ zmxk.controller('UserDetailCtrl', [
 			}
 
 			$scope.deleteKid = function(toDeleteKid, idx) {
-				console.log(toDeleteKid);
+				if(toDeleteKid.id){
+					if(confirm("确定要删除吗？")){
+						kidService.deleteKid($scope.userId, toDeleteKid.id).then(
+								function(data) {
+									$scope.newKids = [];
+									angular.forEach($scope.kids, function(kid, index) {
+										if (index != idx) {
+											$scope.newKids.push(kid);
+										}
+									});
+									$scope.kids = $scope.newKids;
+								}, function(data) {
+									alert(data.data.message);
+									return;
+								});
+					}
+				} else {
+					$scope.newKids = [];
+					angular.forEach($scope.kids, function(kid, index) {
+						if (index != idx) {
+							$scope.newKids.push(kid);
+						}
+					});
+					$scope.kids = $scope.newKids;
+				}
 				if (!toDeleteKid.existed) {
 					toDeleteKid = null;
 				} else {

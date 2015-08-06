@@ -16,7 +16,7 @@
 						<th>选手名</th>
 						<th>车次</th>
 						<th>状态</th>
-						<th>分数</th>
+						<th>成绩</th>
 						<th>排名</th>
 						<th>组别</th>
 						<th>操作</th>
@@ -29,10 +29,14 @@
 						<td class="center"><span
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
 								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
-						<td class="center"><span ng-click="attendee.editing=true"
-							ng-hide="attendee.editing" ng-bind="attendee.score" class="btn btn-info"></span>
-							<input ng-model="attendee.score" ng-show="attendee.editing"
-							class="form-control gridInput" />
+						<td class="center"><span ng-hide="attendee.editing"
+							ng-bind="attendee.min"></span> <input ng-model="attendee.min"
+							ng-show="attendee.editing" class="form-control gridInput" />分<span
+							ng-hide="attendee.editing" ng-bind="attendee.sec"></span> <input
+							ng-model="attendee.sec" ng-show="attendee.editing"
+							class="form-control gridInput" />秒
+							<button class="btn btn-info" ng-hide="attendee.editing"
+								ng-click="attendee.editing=true;">修改</button>
 							<button class="btn btn-info" ng-show="attendee.editing"
 								ng-click="editScore();attendee.editing=false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>

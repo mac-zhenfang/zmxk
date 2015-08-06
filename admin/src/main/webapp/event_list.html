@@ -24,6 +24,7 @@
 						<th>已录入</th>
 						<th>完成人数</th>
 						<th>上限</th>
+						<th>状态</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -72,11 +73,15 @@
 							ng-hide="{{event.showInput}} == true" ng-bind="event.quota"></span>
 							<input ng-model="event.quota" ng-show="{{event.showInput}}"
 							class="gridInput" /></td>
+						<td class="center"><span
+							ng-class="{0:'label label-success', 1:'label label-success', 2:'label label-success', 3:'label label-success'}[event.status]">{{{0:'已创建',
+								1:'已开始',2:'已冻结',3:'已授予奖励'}[event.status]}}</span></td>
 						<td class="center"><span class="btn btn-info"
-							ng-click="updateEvent(event, $index)"
+							ng-click="updateEvent(event, $index)" ng-show="{{event.status<2}}"
 							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span
 							class="btn btn-danger" ng-click="deleteEvent(event, $index)">
-								删除 </span></td>
+								删除 </span><span ng-show="{{event.status<2}}" class="btn" ng-show="event.existed"
+							ng-click="freezeEvent(event, $index)"> 冻结 </span></td>
 					</tr>
 				</tbody>
 			</table>

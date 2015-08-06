@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 	private SecurityCodeDao securityCodeDao;
 	@Autowired
 	private KidDao kidDao;
-	
+
 	@Autowired
 	private EventTypeDao eventTypeDao;
 
@@ -60,17 +60,19 @@ public class UserServiceImpl implements UserService {
 		if (existUser != null) {
 			if (CommonUtils.encryptBySha2(user.getPassword()).equals(existUser.getPassword())) {
 				securityCodeDao.remove(user.getMobileNum());
-				/*User retUser = new User();
-				retUser.setCreatedTime(existUser.getCreatedTime());
-				retUser.setCredit(existUser.getCredit());
-				retUser.setId(existUser.getId());
-				retUser.setKids(existUser.getKids());
-				retUser.setLastModifiedTime(existUser.getLastModifiedTime());
-				retUser.setLocation(existUser.getLocation());
-				retUser.setMobileNum(existUser.getMobileNum());
-				retUser.setName(existUser.getName());
-				retUser.setRoleId(existUser.getRoleId());
-				retUser.setStatus(existUser.getStatus());*/
+				/*
+				 * User retUser = new User();
+				 * retUser.setCreatedTime(existUser.getCreatedTime());
+				 * retUser.setCredit(existUser.getCredit());
+				 * retUser.setId(existUser.getId());
+				 * retUser.setKids(existUser.getKids());
+				 * retUser.setLastModifiedTime(existUser.getLastModifiedTime());
+				 * retUser.setLocation(existUser.getLocation());
+				 * retUser.setMobileNum(existUser.getMobileNum());
+				 * retUser.setName(existUser.getName());
+				 * retUser.setRoleId(existUser.getRoleId());
+				 * retUser.setStatus(existUser.getStatus());
+				 */
 				return existUser;
 			} else {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
@@ -107,7 +109,7 @@ public class UserServiceImpl implements UserService {
 		if (CommonUtils.isEmptyString(user.getName())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_USER_NAME_ERROR_MESSAGE);
 		}
-		if (CommonUtils.isEmptyString(user.getPassword())) {
+		if (CommonUtils.isEmptyString(user.getPassword()) || user.getPassword().length() < 6) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
 		if (CommonUtils.isEmptyString(user.getMobileNum())) {
@@ -131,7 +133,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public boolean validateMobileNumberForRegister(String mobileNumber) {
-		//FIXME: check if it is a 11 number
+		// FIXME: check if it is a 11 number
 		if (CommonUtils.isEmptyString(mobileNumber)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
@@ -246,7 +248,7 @@ public class UserServiceImpl implements UserService {
 		if (userRoleChaned(existedUser, user) && UserRole.ADMIN.getValue().compareTo(sessionUser.getRoleId()) > 0) {
 			throw new SmartoolException(HttpStatus.FORBIDDEN.value(), ErrorMessages.FORBIDEN_ERROR_MESSAGE);
 		}
-		//user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		// user.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
 		return userDao.updateUser(user);
 	}
 
@@ -276,7 +278,7 @@ public class UserServiceImpl implements UserService {
 	public List<BaseGrade> getRanks(User user) {
 		List<BaseGrade> baseGrades = new ArrayList<>();
 		List<EventType> eventTypes = eventTypeDao.getDistinctEventTypes(user.getId());
-		for(EventType eventType : eventTypes) {
+		for (EventType eventType : eventTypes) {
 			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId()));
 		}
 		return baseGrades;

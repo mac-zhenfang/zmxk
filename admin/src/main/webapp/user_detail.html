@@ -32,7 +32,7 @@
 							ng-show="{{kid.showInput}}"/></td>
 
 					<td class="center"><span class="btn btn-info"
-						ng-click="updateKid(kid, $index)" ng-bind="{true:'保存', false:'修改'}[kid.changed==true]"></span> <span
+						ng-click="updateKid(kid, $index)" ng-bind="{true:'保存', false:'修改'}[kid.showInput==true]"></span> <span
 						class="btn btn-danger" href="#/users" ng-click="deleteKid(kid, $index)">
 							{{deleteLabel}} </span></td>
 				</tr>
