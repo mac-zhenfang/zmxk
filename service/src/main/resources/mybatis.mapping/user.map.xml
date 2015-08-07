@@ -39,7 +39,7 @@
 		e.eventTypeId=et.id and s.id = e.seriesId and a.eventId=cr.eventId
 		and
 		a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
-		cr.userId=u.id and cr.userId = #{id}
+		cr.userId=u.id and cr.userId = #{id} and cr.creditRuleType='EVENT'
 	</select>
 	<select id="getBaseGrades" parameterType="String"
 		resultType="com.smartool.common.dto.BaseGrade">
