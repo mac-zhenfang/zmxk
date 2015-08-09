@@ -272,4 +272,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerFactoryBean.start();
 		return schedulerFactoryBean;
 	}
+	
+	public String getQrCodePath() {
+		return env.getProperty("smartool_site", "http://www.ismartool.cn");
+	}
 }

@@ -20,6 +20,7 @@ import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
+import com.smartool.service.config.SmartoolServiceConfig;
 import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.SecurityCodeDao;
@@ -38,6 +39,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private EventTypeDao eventTypeDao;
+
+	@Autowired
+	private SmartoolServiceConfig config;
 
 	@Override
 	public List<User> listAllUser() {
@@ -227,8 +231,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public byte[] getQRCode(String userId) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		QRCode.from("http://www.ismartool.cn:1099/admin/index.html#/enroll/" + userId).withSize(400, 400)
-				.to(ImageType.PNG).writeTo(out);
+		StringBuilder sb = new StringBuilder();
+		sb.append(config.getQrCodePath()).append("/admin/index.html#/enroll/").append(userId);
+		QRCode.from(sb.toString()).withSize(400, 400).to(ImageType.PNG)
+				.writeTo(out);
 		return out.toByteArray();
 	}
 
