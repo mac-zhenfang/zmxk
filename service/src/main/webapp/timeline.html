@@ -39,7 +39,7 @@
 										{{grade.serieName}}{{{1:'预赛', 2:'季度赛', 3:"决赛"}[grade.stage]}}</span>
 									<span class="details" ng-bind="showGradeInfo({{grade}})"></span>
 									<span> 成绩 <span class="remaining">
-											{{grade.score}} 分钟 </span>
+											{{grade.min}} 分 {{grade.sec}} 秒 </span>
 								</span>
 								</span>
 								<div class="arrow"></div>
@@ -193,7 +193,13 @@
 
 									$scope.init = function() {
 										getGrades().then(function(data) {
-											$scope.grades = data;
+											var grades = data;
+											angular.forEach(grades, function(grade, index) {
+												grade.min = Math.floor(grade.score / 60);
+												grade.sec = grade.score % 60;
+												$scope.grades.push(grade);
+											})
+											//$scope.grades = data;
 										}, function(data) {
 
 										});
