@@ -39,8 +39,6 @@ public class CreditServiceImpl implements CreditService {
 	@Autowired
 	private EventDao eventDao;
 	@Autowired
-	private SerieDao serieDao;
-	@Autowired
 	private UserDao userDao;
 	@Autowired
 	private Scheduler scheduler;
@@ -65,10 +63,6 @@ public class CreditServiceImpl implements CreditService {
 		if (creditRule instanceof EventCreditRule) {
 			EventCreditRule eventCreditRule = (EventCreditRule) creditRule;
 			StringBuilder sb = new StringBuilder();
-			if (eventCreditRule.getSeriesId() != null) {
-				String serieName = serieDao.get(eventCreditRule.getSeriesId()).getName();
-				sb.append(serieName).append(" - ");
-			}
 			String eventName = eventDao.getEvent(attendee.getEventId()).getName();
 			sb.append(eventName);
 			if (eventCreditRule.getStage() != null) {
@@ -161,7 +155,6 @@ public class CreditServiceImpl implements CreditService {
 		List<EventCreditRule> existedCreditRules = creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName());
 		for (EventCreditRule existedCreditRule : existedCreditRules) {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
-					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
 					&& Objects.equals(existedCreditRule.getUpperRank(), eventCreditRule.getUpperRank())
 					&& Objects.equals(existedCreditRule.getLowerRank(), eventCreditRule.getLowerRank())
 					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())) {
@@ -180,7 +173,6 @@ public class CreditServiceImpl implements CreditService {
 		List<EventCreditRule> existedCreditRules = creditRuleDao.getEventCreditRuleByName(eventCreditRule.getName());
 		for (EventCreditRule existedCreditRule : existedCreditRules) {
 			if (existedCreditRule != null && existedCreditRule.getEventTypeId().equals(eventCreditRule.getEventTypeId())
-					&& Objects.equals(existedCreditRule.getSeriesId(), eventCreditRule.getSeriesId())
 					&& Objects.equals(existedCreditRule.getUpperRank(), eventCreditRule.getUpperRank())
 					&& Objects.equals(existedCreditRule.getLowerRank(), eventCreditRule.getLowerRank())
 					&& Objects.equals(existedCreditRule.getStage(), eventCreditRule.getStage())
@@ -204,15 +196,13 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
-			String name) {
-		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, seriesId, name);
+	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name) {
+		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, name);
 	}
 
 	@Override
-	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
-			String name) {
-		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, seriesId, name);
+	public List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String name) {
+		return creditRuleDao.listNonrankingEventCreditRules(eventTypeId, stage, name);
 	}
 
 	@Override
@@ -289,8 +279,9 @@ public class CreditServiceImpl implements CreditService {
 		if (creditRecord == null) {
 			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.NOT_FOUND_ERROR_MESSAGE);
 		}
-		if(creditRecord.getStatus() == CreditRecord.CreditRecordStatus.WITHDRAWED.getValue()){
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CREDIT_RECORD_ALREADY_WITHDRAWN_ERROR_MESSAGE);
+		if (creditRecord.getStatus() == CreditRecord.CreditRecordStatus.WITHDRAWED.getValue()) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.CREDIT_RECORD_ALREADY_WITHDRAWN_ERROR_MESSAGE);
 		}
 		CreditRecord updateCreditRecordStatus = creditRecordDao.updateCreditRecordStatus(creditRecordId,
 				CreditRecord.CreditRecordStatus.WITHDRAWED.getValue());

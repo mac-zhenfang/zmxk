@@ -28,11 +28,9 @@ public interface CreditService {
 
 	void removeEventCreditRule(String eventCreditRuleId);
 
-	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
-			String name);
+	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name);
 
-	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String seriesId,
-			String name);
+	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String name);
 
 	CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule);
 
@@ -45,6 +43,6 @@ public interface CreditService {
 	String getCreditRecordDisplayName(Attendee attendee, CreditRule creditRule);
 
 	List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end);
-	
+
 	CreditRecord withdrawCreditRecord(String creditRecordId);
 }

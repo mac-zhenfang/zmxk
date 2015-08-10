@@ -102,7 +102,6 @@ CREATE TABLE `eventCreditRules` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`eventTypeId` varchar(36) NOT NULL,
-	`seriesId` varchar(36),
 	`stage` int,
 	`upperRank` int,
 	`lowerRank` int,

@@ -6,11 +6,11 @@
 	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,seriesId,upperRank,lowerRank,stage,
+		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,upperRank,lowerRank,stage,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{seriesId},#{upperRank},#{lowerRank},#{stage},now(),now())
+		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{upperRank},#{lowerRank},#{stage},now(),now())
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
@@ -21,7 +21,6 @@
 		silverMedal=#{silverMedal},
 		bronzeMedal=#{bronzeMedal},
 		eventTypeId=#{eventTypeId},
-		seriesId=#{seriesId},
 		stage=#{stage},
 		upperRank=#{upperRank},
 		lowerRank=#{lowerRank}
@@ -58,9 +57,6 @@
 		<if test="eventTypeId != null">
 			AND eventTypeId = #{eventTypeId}
 		</if>
-		<if test="seriesId != null">
-			AND seriesId = #{seriesId}
-		</if>
 		<if test="name != null">
 			AND name = #{name}
 		</if>
@@ -75,9 +71,6 @@
 		where (upperRank IS NULL AND lowerRank IS NULL)
 		<if test="eventTypeId != null">
 			AND eventTypeId = #{eventTypeId}
-		</if>
-		<if test="seriesId != null">
-			AND seriesId = #{seriesId}
 		</if>
 		<if test="name != null">
 			AND name = #{name}

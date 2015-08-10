@@ -48,7 +48,7 @@ public class CreditGenerator {
 				continue;
 			}
 			List<EventCreditRule> eventCreditRules = creditRuleDao.listRankingEventCreditRules(event.getEventTypeId(),
-					event.getStage(), event.getSeriesId(), null);
+					event.getStage(), null);
 			RangeMap<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
 			for (Attendee attendee : event.getAttendees()) {
 				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());

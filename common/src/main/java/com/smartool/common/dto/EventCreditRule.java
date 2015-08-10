@@ -2,7 +2,6 @@ package com.smartool.common.dto;
 
 public class EventCreditRule extends CreditRule {
 	private String eventTypeId;
-	private String seriesId;
 	private Integer upperRank;
 	private Integer lowerRank;
 	private Integer stage;
@@ -13,14 +12,6 @@ public class EventCreditRule extends CreditRule {
 
 	public void setEventTypeId(String eventTypeId) {
 		this.eventTypeId = eventTypeId;
-	}
-
-	public String getSeriesId() {
-		return seriesId;
-	}
-
-	public void setSeriesId(String seriesId) {
-		this.seriesId = seriesId;
 	}
 
 	public Integer getStage() {
