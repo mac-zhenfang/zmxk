@@ -51,7 +51,6 @@ public class CreditGenerator {
 					event.getStage(), event.getSeriesId(), null);
 			RangeMap<Integer, List<EventCreditRule>> creditRuleMap = toCreditRuleMap(eventCreditRules);
 			for (Attendee attendee : event.getAttendees()) {
-				attendee.setStatus(2);
 				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
 				if (rulesToApply != null && !rulesToApply.isEmpty()) {
 					for (EventCreditRule ruleToApply : rulesToApply) {
