@@ -310,7 +310,11 @@ zmxk.controller('CreditRecordCtrl', [
 			$scope.creditRecords = [];
 			$scope.search = function() {
 				var tmp = {}
-				tmp.mobileNum = $scope.criteria.mobileNum;
+				if($scope.criteria.mobileNum){
+					tmp.mobileNum = $scope.criteria.mobileNum;
+				} else {
+					tmp.mobileNum = null;
+				}
 				if ($scope.criteria.start) {
 					tmp.start = $scope.criteria.start.getTime();
 				} else {
