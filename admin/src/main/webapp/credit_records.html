@@ -6,12 +6,11 @@
 
 	</div>
 	<div class="box-content">
-		起始时间：<input type="text" class="gridInput4" date-time
-			ng-model="criteria.start" required="true" view="day"
-			itemModel="{{$index}}">&nbsp;&nbsp;&nbsp;&nbsp; 结束时间：<input
-			type="text" class="gridInput4" date-time ng-model="criteria.end"
-			required="true" view="hours" itemModel="{{$index}}"> <br />
-		用户手机：<input id="appendedInputButton" size="16" type="text"
+		起始时间：&nbsp;<input type="text" class="gridInput4" date-time
+			ng-model="criteria.start" required="true" itemModel="{{$index}}">&nbsp;&nbsp;&nbsp;&nbsp;
+		结束时间：&nbsp;<input type="text" class="gridInput4" date-time
+			ng-model="criteria.end" required="true" itemModel="{{$index}}">
+		<br /> 用户手机：&nbsp;<input id="appendedInputButton" size="16" type="text"
 			ng-model="criteria.mobileNum" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<button class="btn" type="button" class="btn btn-info"
 			ng-click="search()">搜索</button>
