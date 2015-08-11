@@ -25,7 +25,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="serie in eventSeries | filter:filterRule">
-						<td><span ng-hide="{{serie.showInput}} == true">{{serie.name}}</span>
+						<td><span ng-hide="{{serie.showInput}} == true"><a href="#/events">{{serie.name}}</a></span>
 							<input ng-model="serie.name" ng-show="{{serie.showInput}}" class="gridInput2" /></td>
 						<td><select ng-disabled="{{!serie.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"

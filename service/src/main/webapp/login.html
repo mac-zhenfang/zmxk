@@ -28,29 +28,30 @@
 		<div class="row  pad-top">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<form role="form" ng-controller="RegisterController"
-						ng-submit="processForm()">
+					<form role="form" ng-init="showPassword=false"
+						ng-controller="LoginController" ng-submit="processForm()">
 						<div class="form-group input-group"
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
 									class="fa fa-circle-o-notch"></i> -->
-							<span class="input-group-addon"><i
-								class="icon-mobile-phone"></i></span> <input type="text"
-								class="form-control" placeholder="手机号码"
+							<span class="input-group-addon">#</span> <input type="text"
+								class="form-control" placeholder="{{const.mobile}}"
 								ng-model="formData.mobileNum" />
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon"><i
-								class=" icon-warning-sign"></i></span> <input type="password"
-								class="form-control" ng-model="formData.password"
-								placeholder="密码" />
+							<span class="input-group-addon">密码</span> <input
+								ng-hide="showPassword" type="password" class="form-control"
+								ng-model="formData.password" placeholder="密码" /><input
+								ng-show="showPassword" type="text" class="form-control"
+								ng-model="formData.password" placeholder="密码" />
 						</div>
-						<input type="submit" value="登录" class="btn btn-info btn-block"
-							ng-show="currentStep!=3"> <a href="register.html"
-							ng-show="currentStep!=3">注册</a>
-						<div ng-show="currentStep==3 && status==200">登陆成功，3秒后跳转</div>
-						<div ng-show="currentStep==3 && status==404">
-							用户不存在，点击<a href="register.html">注册</a>
+						<div class="checkbox">
+							<input type="checkbox" ng-model="showPassword">显示密码</input>
+						</div>
+						<input type="submit" value="{{submit_label}}"
+							class="btn btn-info btn-block" ng-show="currentStep != 3">
+						<div ng-show="currentStep == 3">
+							登录成功 <img src=""></img>
 						</div>
 					</form>
 				</div>

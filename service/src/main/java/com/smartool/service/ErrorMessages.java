@@ -14,7 +14,7 @@ public class ErrorMessages {
 	public static final String MOBILE_NUMBER_ALREADY_USED_ERROR_MESSAGE = "该手机号码已经被注册";
 	public static final String MOBILE_NUMBER_HAVNT_REGISTERED_ERROR_MESSAGE = "该手机号码还未被注册";
 	public static final String WC_ID_ALREADY_USED_ERROR_MESSAGE = "该微信号码已经被注册";
-	public static final String INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE="错误的手机号码或验证码";
+	public static final String INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE="错误的手机号码或密码";
 	public static final String PLEASE_LOGIN_FIRST_ERROR_MESSAGE="请先登录";
 	public static final String WRONG_EVENT_FORMAT = "错误的Event格式";
 	public static final String WRONG_EVENT_STATUS= "错误的status格式";

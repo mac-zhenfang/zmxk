@@ -63,6 +63,24 @@
 		<div class="clearfix" ng-include="'footer.html'"></div>
 
 	</div>
+				<div id="loadingModal" class="modal hide fade" tabindex="-1"
+				role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h3>正在装载</h3>
+				</div>
+				<div class="modal-body" ng-init="createNew=false">
+					<div ng-show="createNew==false">
+						<div class="alert alert-info">
+							正在载入，数据请稍等......
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</div>
 	<script src="js/jquery-1.10.2.min.js"></script>
 
 	<script src="js/angular.js"></script>

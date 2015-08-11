@@ -22,8 +22,8 @@
 		<div class="row  pad-top">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<form role="form" ng-controller="LoginController"
-						ng-submit="processForm()">
+					<form role="form" ng-init="showPassword=false"
+						ng-controller="LoginController" ng-submit="processForm()">
 						<div class="form-group input-group"
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
@@ -33,9 +33,14 @@
 								ng-model="formData.mobileNum" />
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon">密码</span> <input type="password"
-								class="form-control" ng-model="formData.password"
-								placeholder="密码" />
+							<span class="input-group-addon">密码</span> <input
+								ng-hide="showPassword" type="password" class="form-control"
+								ng-model="formData.password" placeholder="密码" /><input
+								ng-show="showPassword" type="text" class="form-control"
+								ng-model="formData.password" placeholder="密码" />
+						</div>
+						<div class="checkbox">
+							<input type="checkbox" ng-model="showPassword">显示密码</input>
 						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
@@ -126,7 +131,11 @@
 																	.then(
 																			function(
 																					data) {
-																				$cookies.put("loginUser", angular.toJson(data));
+																				$cookies
+																						.put(
+																								"loginUser",
+																								angular
+																										.toJson(data));
 																				$scope
 																						.launch(
 																								"notify",

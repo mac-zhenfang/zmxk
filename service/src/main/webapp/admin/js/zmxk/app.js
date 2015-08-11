@@ -3,6 +3,16 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 		'dialogs', 'ngRoute', 'ngCookies' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
+			'request': function(config) {
+		      // do something on success
+//			    $("#loadingModal").modal().show();
+		      return config;
+		    },
+		    'response': function(response) {
+		        // do something on success
+//			    $("#loadingModal").modal().hide();
+		        return response;
+		      },
 			'responseError' : function(response) {
 				if (response.status == "401") {
 					window.location = "login.html";
@@ -12,16 +22,6 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 					window.location = "err403.html";
 					return;
 				}
-				/*if (response.status == "500") {
-					window.location = "err500.html";
-					return;
-				}*/
-				/*
-				 * if (response.status == "400") {
-				 * 
-				 * alert(response.data.error); } if (response.data.error) {
-				 * alert(response.data.error); }
-				 */
 				return $q.reject(response);
 			}
 		};

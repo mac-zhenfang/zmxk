@@ -42,17 +42,9 @@ zmxk.controller('EventRuleCtrl', [
 				value : null,
 				label : "------"
 			} ];
-			
 			var init = function() {
 				eventTypeService.list().then(function(data) {
 					$scope.eventTypeList = data;
-//					$scope.eventTypeList = [ {
-//						id : "eventTypeId1",
-//						name : "脚踏拉力赛"
-//					}, {
-//						id : "eventTypeId2",
-//						name : "手摇拉力赛"
-//					} ];
 					var getSeries = function() {
 						var defer = $q.defer(); 
 						var recievedSerieMaps = 0;
@@ -61,16 +53,6 @@ zmxk.controller('EventRuleCtrl', [
 								data.unshift({id: null, name: "---------"});
 								console.log(data);
 								$scope.seriesMap[eventType.id] = data;
-								console.log($scope.seriesMap);
-//								if(eventType.id=="eventTypeId1"){
-//									var data = [{id: "serieId11", name: "serieName11"},{id: "serieId12", name: "serieName12"}];
-//									data.unshift({id: null, name: "---------"});
-//									$scope.seriesMap.set(eventType.id, data);
-//								} else {
-//									var data = [{id: "serieId21", name: "serieName21"},{id: "serieId22", name: "serieName22"}];
-//									data.unshift({id: null, name: "---------"});
-//									$scope.seriesMap.set(eventType.id, data);
-//								}
 								recievedSerieMaps++;
 								if($scope.eventTypeList.length == recievedSerieMaps) {
 									defer.resolve(recievedSerieMaps);
