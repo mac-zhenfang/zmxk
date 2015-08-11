@@ -40,7 +40,7 @@
 								ng-model="formData.password" placeholder="密码" />
 						</div>
 						<div class="checkbox">
-							<input type="checkbox" ng-model="showPassword">显示密码</input>
+							<input type="checkbox" ng-model="showPassword" ng-show="currentStep == 2"/><span ng-show="currentStep == 2">显示密码</span>
 						</div>
 						<input type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
