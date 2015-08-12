@@ -181,23 +181,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<violationSeverity>warning</violationSeverity>
-					<failsOnError>false</failsOnError>
-					<failOnViolation>false</failOnViolation>
-					<consoleOutput>false</consoleOutput>
-					<includeTestSourceDirectory>false</includeTestSourceDirectory>
-					<enableRSS>false</enableRSS>
-					<configLocation>${projectrootdir}/buildtools/checkstyle.xml</configLocation>
-					<enableRulesSummary>false</enableRulesSummary>
-					<excludes>**/generated-sources/**/*</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.0.1</version>
 				<configuration>
@@ -214,31 +197,6 @@
 					<targetJdk>1.7</targetJdk>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.cisco.ipcentral</groupId>
-				<artifactId>maven-ipcentral-plugin</artifactId>
-				<version>4.20</version>
-				<configuration>
-					<!-- Server URL pointing to IPCentral -->
-					<url>http://ipcentral.cisco.com/ipcentral/services</url>
-					<ipcProject>true</ipcProject>
-					<businessUnit>SQBU</businessUnit>
-					<componentEditorsGrouper>wx2-ipcentral</componentEditorsGrouper>
-					<assetEditorsGrouper>wx2-ipcentral</assetEditorsGrouper>
-					<!-- TODO: No support for generic user in IPCentral yet -->
-					<username>amrangan</username>
-					<componentattributes>
-						<componentattribute>
-							<type>JAVA</type>
-							<value>1.7</value>
-							<forcecreation>true</forcecreation>
-						</componentattribute>
-					</componentattributes>
-				</configuration>
-			</plugin>
-
-
-
 		</plugins>
 	</build>
 </project>

@@ -188,22 +188,6 @@
 					<skip>false</skip>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<violationSeverity>warning</violationSeverity>
-					<failsOnError>false</failsOnError>
-					<failOnViolation>false</failOnViolation>
-					<consoleOutput>false</consoleOutput>
-					<includeTestSourceDirectory>false</includeTestSourceDirectory>
-					<enableRSS>false</enableRSS>
-					<configLocation>${projectrootdir}/buildtools/checkstyle.xml</configLocation>
-					<enableRulesSummary>false</enableRulesSummary>
-					<excludes>**/generated-sources/**/*</excludes>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -223,31 +207,6 @@
 					<targetJdk>1.7</targetJdk>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.cisco.ipcentral</groupId>
-				<artifactId>maven-ipcentral-plugin</artifactId>
-				<version>4.20</version>
-				<configuration>
-					<!-- Server URL pointing to IPCentral -->
-					<url>http://ipcentral.cisco.com/ipcentral/services</url>
-					<ipcProject>true</ipcProject>
-					<businessUnit>SQBU</businessUnit>
-					<componentEditorsGrouper>wx2-ipcentral</componentEditorsGrouper>
-					<assetEditorsGrouper>wx2-ipcentral</assetEditorsGrouper>
-					<!-- TODO: No support for generic user in IPCentral yet -->
-					<username>amrangan</username>
-					<componentattributes>
-						<componentattribute>
-							<type>JAVA</type>
-							<value>1.7</value>
-							<forcecreation>true</forcecreation>
-						</componentattribute>
-					</componentattributes>
-				</configuration>
-			</plugin>
-
-
-
 		</plugins>
 	</build>
 
@@ -363,46 +322,6 @@
 							<dataFile>${session.executionRootDirectory}/target/jacoco.exec</dataFile>
 						</configuration>
 
-					</plugin>
-					<plugin>
-						<groupId>ch.fortysix</groupId>
-						<artifactId>maven-postman-plugin</artifactId>
-						<version>0.1.6</version>
-						<executions>
-							<execution>
-								<id>send a mail</id>
-								<goals>
-									<goal>send-mail</goal>
-								</goals>
-								<inherited>false</inherited>
-							</execution>
-						</executions>
-						<configuration>
-							<from>zhefang@cisco.com</from>
-							<subject>Email Engine Micro Service Code Coverage Report</subject>
-							<failonerror>true</failonerror>
-							<mailhost>mail.cisco.com</mailhost>
-							<htmlMessageFile>${session.executionRootDirectory}/server/target/site/jacoco/index.html</htmlMessageFile>
-							<receivers>
-								<receiver>zhefang@cisco.com</receiver>
-								<receiver>kinchen@cisco.com</receiver>
-								<receiver>chenzhu@cisco.com</receiver>
-								<receiver>cjianqi@cisco.com</receiver>
-								<receiver>clofsted@cisco.com</receiver>
-								<receiver>jefbrow2@cisco.com</receiver>
-								<receiver>${MORE_EMAIL_1}</receiver>
-								<receiver>${MORE_EMAIL_2}</receiver>
-								<receiver>${MORE_EMAIL_3}</receiver>
-							</receivers>
-							<fileSets>
-								<fileSet>
-									<directory>${basedir}</directory>
-									<includes>
-										<include>**/codecoverage.tar.gz</include>
-									</includes>
-								</fileSet>
-							</fileSets>
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
