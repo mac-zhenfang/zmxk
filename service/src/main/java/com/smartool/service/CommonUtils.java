@@ -1,23 +1,27 @@
 package com.smartool.service;
 
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.method.HandlerMethod;
 
 import com.smartool.service.controller.annotation.ApiScope;
 
 public class CommonUtils {
+	private static Logger logger = Logger.getLogger(CommonUtils.class);
 	private static int securityCodeLength = 6;
 	private static MessageDigest messageDigest;
+	private static Charset charset;
 
 	static {
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			charset = Charset.forName("UTF-8");
+		} catch (Exception e) {
+			logger.error("File to initialize: ", e);
 		}
 	}
 
@@ -42,8 +46,8 @@ public class CommonUtils {
 	}
 
 	public static String encryptBySha2(String string) {
-		byte[] digest = messageDigest.digest(string.getBytes());
-		return new String(digest);
+		byte[] digest = messageDigest.digest(string.getBytes(charset));
+		return new String(digest, charset);
 	}
 
 	public static boolean isSaveMethod(Object handler) {

@@ -28,7 +28,6 @@ import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
-import com.smartool.service.dao.SerieDao;
 import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {

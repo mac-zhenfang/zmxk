@@ -22,8 +22,8 @@
 		<div class="row  pad-top">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<form role="form" ng-init="showPassword=false"
-						ng-controller="LoginController" ng-submit="processForm()">
+					<form role="form" ng-init="buttonDisabled=false;showPassword=false;"
+						ng-controller="LoginController" ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
 						<div class="form-group input-group"
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
@@ -42,7 +42,7 @@
 						<div class="checkbox">
 							<input type="checkbox" ng-model="showPassword" ng-show="currentStep == 2"/><span ng-show="currentStep == 2">显示密码</span>
 						</div>
-						<input type="submit" value="{{submit_label}}"
+						<input ng-disabled="buttonDisabled" type="submit" value="{{submit_label}}"
 							class="btn btn-info btn-block" ng-show="currentStep != 3">
 						<div ng-show="currentStep == 3">
 							登录成功 <img src=""></img>

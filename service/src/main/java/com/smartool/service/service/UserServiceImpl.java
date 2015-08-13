@@ -63,20 +63,6 @@ public class UserServiceImpl implements UserService {
 		LoginUser existUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
 		if (existUser != null) {
 			if (CommonUtils.encryptBySha2(user.getPassword()).equals(existUser.getPassword())) {
-				securityCodeDao.remove(user.getMobileNum());
-				/*
-				 * User retUser = new User();
-				 * retUser.setCreatedTime(existUser.getCreatedTime());
-				 * retUser.setCredit(existUser.getCredit());
-				 * retUser.setId(existUser.getId());
-				 * retUser.setKids(existUser.getKids());
-				 * retUser.setLastModifiedTime(existUser.getLastModifiedTime());
-				 * retUser.setLocation(existUser.getLocation());
-				 * retUser.setMobileNum(existUser.getMobileNum());
-				 * retUser.setName(existUser.getName());
-				 * retUser.setRoleId(existUser.getRoleId());
-				 * retUser.setStatus(existUser.getStatus());
-				 */
 				return existUser;
 			} else {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),

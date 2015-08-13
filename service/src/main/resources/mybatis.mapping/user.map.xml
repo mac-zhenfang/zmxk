@@ -39,7 +39,7 @@
 		e.eventTypeId=et.id and s.id = e.seriesId and a.eventId=cr.eventId
 		and
 		a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
-		cr.userId=u.id and cr.userId = #{id} and cr.creditRuleType='EVENT'
+		cr.userId=u.id and cr.userId = #{id} and cr.creditRuleType='EVENT' and cr.status=0
 	</select>
 	<select id="getBaseGrades" parameterType="String"
 		resultType="com.smartool.common.dto.BaseGrade">
@@ -57,7 +57,7 @@
 		and et.id=e.eventTypeId and
 		cr.attendeeId=a.id and
 		e.id = cr.eventId and
-		et.id = #{id}
+		et.id = #{id}  and cr.status=0
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,

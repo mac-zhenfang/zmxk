@@ -46,7 +46,7 @@
 							<tr ng-repeat="grade in grades">
 								<td>{{formatDate(grade.eventTime) | date:"MM/dd/yyyy,
 									HH:mm" }}</td>
-								<td>{{grade.score}}</td>
+								<td>{{Math.floor(grade.score / 60)}}分{{grade.score % 60}}秒</td>
 								<td>{{grade.goldenMedal}}</td>
 								<td>{{grade.silverMedal}}</td>
 								<td>{{grade.bronzeMedal}}</td>
