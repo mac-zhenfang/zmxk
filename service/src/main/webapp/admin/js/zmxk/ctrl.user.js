@@ -13,7 +13,7 @@ zmxk.controller('UserCtrl', [
 			$scope.userList = [];
 			$scope.sites = [ {
 				id : null,
-				name : "N/A"
+				name : "所有"
 			}];
 			$scope.init = function() {
 
