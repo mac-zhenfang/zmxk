@@ -37,6 +37,12 @@ public class CreditRecordsController extends BaseController {
 		return creditService.withdrawCreditRecord(creditRecordId);
 	}
 
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/eventcreditrecords/{creditRecordId}/recoverwithdraw", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public CreditRecord recoverWithdrawCreditRecord(@PathVariable(value = "creditRecordId") String creditRecordId) {
+		return creditService.recoverWithdrawCreditRecord(creditRecordId);
+	}
+
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/eventcreditrecords/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CreditRecord> searchMyCreditRecord(@RequestParam(value = "start", required = false) Long start,

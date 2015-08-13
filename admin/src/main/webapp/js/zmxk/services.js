@@ -905,6 +905,10 @@ zmxk
 										withdraw : {
 											url : zmxkConfig.withdraw_credit_records_uri,
 											method : "POST"
+										},
+										recoverWithdraw : {
+											url : zmxkConfig.recover_withdraw_credit_records_uri,
+											method : "POST"
 										}
 									});
 							this.listAll = function(_mobileNum, _start, _end) {
@@ -935,6 +939,17 @@ zmxk
 							this.withdraw = function(_creditRecordId) {
 								var defer = $q.defer();
 								creditRecordService.withdraw({
+									creditRecordId : _creditRecordId
+								}, function(data, header) {
+									defer.resolve(data);
+								}, function(data, header) {
+									defer.reject(data);
+								});
+								return defer.promise;
+							};
+							this.recoverWithdraw = function(_creditRecordId) {
+								var defer = $q.defer();
+								creditRecordService.recoverWithdraw({
 									creditRecordId : _creditRecordId
 								}, function(data, header) {
 									defer.resolve(data);

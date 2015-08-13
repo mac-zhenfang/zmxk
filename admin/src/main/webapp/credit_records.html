@@ -10,8 +10,8 @@
 			ng-model="criteria.start" required="true" itemModel="{{$index}}">&nbsp;&nbsp;&nbsp;&nbsp;
 		结束时间：&nbsp;<input type="text" class="gridInput4" date-time
 			ng-model="criteria.end" required="true" itemModel="{{$index}}">
-		<br /> 用户手机：&nbsp;<input id="appendedInputButton" size="16" type="text"
-			ng-model="criteria.mobileNum" />&nbsp;&nbsp;&nbsp;&nbsp;
+		<br /> 用户手机：&nbsp;<input id="appendedInputButton" size="16"
+			type="text" ng-model="criteria.mobileNum" />&nbsp;&nbsp;&nbsp;&nbsp;
 		<button class="btn" type="button" class="btn btn-info"
 			ng-click="search()">搜索</button>
 		<table
@@ -44,7 +44,10 @@
 							0:'已授予',1:'已撤销'}[creditRecord.status]}}</span></td>
 					<td><button ng-show="creditRecord.status==0" class="btn"
 							type="button" class="btn btn-info"
-							ng-click="withdraw(creditRecord.id,$index)">撤销</button></td>
+							ng-click="withdraw(creditRecord.id,$index)">撤销</button>
+						<button ng-show="creditRecord.status==1" class="btn" type="button"
+							class="btn btn-info"
+							ng-click="recoverWithdraw(creditRecord.id,$index)">恢复</button></td>
 				</tr>
 			</tbody>
 		</table>

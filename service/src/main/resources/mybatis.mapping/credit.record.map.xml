@@ -61,7 +61,15 @@
 
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.CreditRecord">
-		select * from creditRecords where id = #{id}
+		select r.id,
+		userId,eventId,
+		creditRuleType,displayName,rank,r.status,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
+		r.createdTime,
+		r.lastModifiedTime,mobileNum
+		from creditRecords as r,
+		users as u
+		where u.id =
+		r.userId and r.id=#{id}
 	</select>
 
 	<update id="updateStatus" parameterType="Map">

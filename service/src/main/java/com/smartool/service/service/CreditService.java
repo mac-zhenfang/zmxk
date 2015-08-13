@@ -45,4 +45,6 @@ public interface CreditService {
 	List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end);
 
 	CreditRecord withdrawCreditRecord(String creditRecordId);
+
+	CreditRecord recoverWithdrawCreditRecord(String creditRecordId);
 }

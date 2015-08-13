@@ -346,6 +346,22 @@ zmxk.controller('CreditRecordCtrl', [
 					});
 				}
 			};
+			$scope.recoverWithdraw = function(creditRecordId, creditRecordIndex) {
+				if(confirm("确定要恢复该记录吗？")){
+					creditRecordService.recoverWithdraw(creditRecordId).then(function(data) {
+						var newCreditRecords = [];
+						angular.forEach($scope.creditRecords, function(creditRecord,index) {
+							if (index == creditRecordIndex) {
+								var updatedCreditRecord = angular.copy(data);
+								newCreditRecords.push(updatedCreditRecord);
+							} else {
+								newCreditRecords.push(angular.copy(creditRecord));
+							}
+						});
+						$scope.creditRecords = newCreditRecords;
+					});
+				}
+			};
 			var init = function() {
 				$scope.search();
 			};

@@ -33,4 +33,6 @@ public interface UserDao {
 	List<BaseGrade> getBaseGradesByEventType(String eventTypeId);
 
 	void withdrawCredit(String userId, CreditRecord creditRecord);
+
+	void addCredit(String userId, CreditRecord creditRecord);
 }
