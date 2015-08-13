@@ -122,6 +122,7 @@
 									'$scope',
 									'$q',
 									function($resource, $scope, $q) {
+										$scope.Math = Math;
 										$scope.gold = "<div class=\"medals\"><img src=\"assets/img/1.png\"></img></div>";
 										var userResource = $resource(
 												"/service/smartool/api/v1/users/me",
