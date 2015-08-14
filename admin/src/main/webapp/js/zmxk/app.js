@@ -52,6 +52,7 @@ zmxk
 					user_rest_uri : "/service/smartool/api/v1/users/:userId",
 					event_site_uri: "/service/smartool/api/v1/:siteId/events/",
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
+					event_search_uri : "/service/smartool/api/v1/events/search",
 					site_rest_uri : "/service/smartool/api/v1/sites/:siteId",
 					serie_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId/series/:serieId",
 					event_type_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId",
@@ -97,6 +98,9 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'event_detail.html',
 		controller : "EventDetailCtrl"
 	}).when('/events', {
+		templateUrl : 'event_list.html',
+		controller : "EventManageCtrl"
+	}).when('/events/serieses/:seriesId', {
 		templateUrl : 'event_list.html',
 		controller : "EventManageCtrl"
 	}).when('/event_types', {

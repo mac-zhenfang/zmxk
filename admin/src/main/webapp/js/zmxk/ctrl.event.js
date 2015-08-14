@@ -367,6 +367,7 @@ zmxk
 							}
 
 							$scope.listEvents = [];
+							$scope.seriesId = null;
 							var dateNames = {};
 							$scope.$on('setDate1', function(e, date, idx) {
 								// console.log(idx);
@@ -376,18 +377,14 @@ zmxk
 							});
 							$scope.sites = [];
 							$scope.init = function() {
-								// console.log($scope.loginUser);
-								if (!$scope.isAdmin()) {
-									if (angular.isUndefined($scope.loginUser)
-											|| angular
-													.isUndefined($scope.loginUser.siteId)) {
-										window.location.href = "err403.html";
-									}
-									var loginUserSiteId = $scope.loginUser.siteId;
+								$scope.seriesId = $routeParams.seriesId;
+								var criteria = {};
+								if($scope.seriesId){
+									criteria.seriesId = $scope.seriesId;
 								}
 
 								eventService
-										.list(loginUserSiteId)
+										.search(criteria)
 										.then(
 												function(data) {
 													$scope.listEvents = data;

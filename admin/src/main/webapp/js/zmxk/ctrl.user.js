@@ -137,16 +137,7 @@ zmxk.controller('UserDetailCtrl', [
 			$scope.schoolOptions = zmxkConstant.kids_school_options;
 
 			$scope.init = function() {
-				console.log($scope.schoolOptions);
-				// FIXME FAKE data
-				/*
-				 * var user = { id : "mac-test-user-id-" + i, name : "Mac Test
-				 * User " + i, roleId : i % 3, mobileNum : "13706516651", credit :
-				 * 100 * i, createdTime : 1436339694000, existed : true, changed :
-				 * false, showInput : false }
-				 */
 				$scope.userId = $routeParams.userId;
-				console.log($scope.userId)
 				if (!angular.isUndefined($scope.userId)) {
 					userService.getUser($scope.userId).then(function(data) {
 

@@ -1,6 +1,7 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.smartool.common.dto.Event;
 
@@ -23,4 +24,6 @@ public interface EventDao {
 	Event getFullEvent(String eventId);
 	
 	void delete(String eventId);
+
+	List<Event> search(Map<String, Object> param);
 }

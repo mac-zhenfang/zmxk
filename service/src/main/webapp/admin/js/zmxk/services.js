@@ -362,8 +362,26 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					headers : {
 						'Content-Type' : 'application/json'
 					}
+				},
+				search : {
+					url : zmxkConfig.event_search_uri,
+					method : "GET",
+					isArray : true,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
 				}
 			})
+
+			this.search = function(criteria) {
+				var defer = $q.defer();
+				eventResource.search(criteria, function(e, headers) {
+					defer.resolve(e);
+				}, function(e, headers) {
+					defer.reject(e);
+				});
+				return defer.promise;
+			}
 
 			this.createEvent = function(event) {
 				var defer = $q.defer();

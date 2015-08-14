@@ -24,10 +24,12 @@ import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
+import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
@@ -87,16 +89,25 @@ public class EventController extends BaseController {
 			}
 			returnList = eventDao.listAllEvent(s);
 		}
-
-		/*
-		 * for(Event event : returnList) { List<Attendee> attendees =
-		 * attendeeDao.getAllPendingAttendees(event.getId()); for(Attendee att :
-		 * attendees) { Kid kid = kidDao.get(att.getKidId()); if(null != kid) {
-		 * att.setKidId(kid.getId()); att.setKidName(kid.getName()); } }
-		 * event.setAttendees(attendees); }
-		 */
-
 		return returnList;
+	}
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/events/search", method = RequestMethod.GET)
+	public List<Event> search(@RequestParam(value = "status", required = false) Integer status,
+			@RequestParam(value = "seriesId", required = false) String seriesId) {
+		User user = UserSessionManager.getSessionUser();
+		Map<String, Object> param = new HashMap<String, Object>();
+		if (UserRole.INTERNAL_USER.getValue().equals(user.getRoleId())) {
+			param.put("siteId", user.getSiteId());
+		}
+		if (status != null) {
+			param.put("status", status);
+		}
+		if (seriesId != null) {
+			param.put("seriesId", seriesId);
+		}
+		return eventDao.search(param);
 	}
 
 	/**

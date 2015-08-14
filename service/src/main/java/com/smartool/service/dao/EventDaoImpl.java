@@ -1,6 +1,7 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,10 @@ public class EventDaoImpl implements EventDao {
 	@Override
 	public List<Event> listAllEvent(String siteId) {
 		return sqlSession.selectList("EVENT.listAllBySiteId", siteId);
+	}
+
+	@Override
+	public List<Event> search(Map<String, Object> param) {
+		return sqlSession.selectList("EVENT.search", param);
 	}
 }
