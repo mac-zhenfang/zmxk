@@ -143,31 +143,24 @@
 	</select>
 	
 	<select id="search" parameterType="Map" resultMap="event">
-		select e.eventTime as
-		eventTime,
-		e.name as eventName, t.name as eventType, e.id as eventId,
-		t.id as
-		eventTypeId, e.quota as quota, e.siteId as siteId,
-		e.createdTime as
+		select e.eventTime as eventTime,
+		e.name as eventName, t.name as eventType, e.id as eventId, t.id as
+		eventTypeId, e.quota as quota, e.siteId as siteId, e.createdTime as
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
 		a.id as attendeeId,
-		k.id as kidId,
 		a.score as score,
 		a.rank as rank,
-		k.name as kidName,
 		a.userId as userId,
 		a.seq as seq,
-		a.status as status,
+		e.status as status,
 		e.stage as stage,
 		e.seriesId as seriesId
 		from events e,
-		eventTypes t, attendees a, kids k
-		where
-		e.id = a.eventId
-		and
-		e.eventTypeId = t.id and k.id = a.kidId
+		attendees a,
+		eventTypes t where
+		e.eventTypeId = t.id and a.eventId = e.id
 		<if test="status != null">
 			and e.status = #{status}
 		</if>
