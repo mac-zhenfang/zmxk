@@ -14,6 +14,7 @@ import com.google.common.collect.TreeRangeMap;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.Event;
 import com.smartool.common.dto.EventCreditRule;
+import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
 
@@ -28,6 +29,9 @@ public class CreditGenerator {
 
 	@Autowired
 	private CreditRuleDao creditRuleDao;
+
+	@Autowired
+	private AttendeeDao attendeeDao;
 
 	private long interval;
 
@@ -58,6 +62,7 @@ public class CreditGenerator {
 					}
 				}
 			}
+			attendeeDao.removeUnused(event.getId());
 			event.setStatus(3);
 			eventDao.updateEvent(event);
 		}

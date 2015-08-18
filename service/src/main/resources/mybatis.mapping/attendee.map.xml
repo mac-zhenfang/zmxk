@@ -69,4 +69,7 @@
 		a.eventId = #{eventId} and
 		a.status = 0
 	</select>
+	<delete id="removeUnused" parameterType="String">
+		delete attendees where kidId IS NULL and eventId = #{eventId}
+	</delete>
 </mapper>
