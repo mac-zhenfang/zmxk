@@ -6,23 +6,23 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.smartool.common.dto.Attendee;
+import com.smartool.common.dto.Event;
 
 public class AttendeeDaoImpl implements AttendeeDao {
-	
 
 	@Autowired
 	private SqlSession sqlSession;
-	
+
 	@Override
 	public Attendee create(Attendee attendee) {
 		sqlSession.selectOne("ATTENDEE.create", attendee);
 		return getAttendeeInternal(attendee.getId());
 	}
-	
+
 	public Attendee getAttendee(String attendeeId) {
 		return getAttendeeInternal(attendeeId);
 	}
-	
+
 	private Attendee getAttendeeInternal(String attendeeId) {
 		return sqlSession.selectOne("ATTENDEE.getById", attendeeId);
 	}
@@ -31,8 +31,6 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public List<Attendee> getAttendeeFromEvent(String eventId) {
 		return sqlSession.selectList("ATTENDEE.getByEventId", eventId);
 	}
-	
-	
 
 	@Override
 	public Attendee update(Attendee attendee) {
@@ -55,5 +53,10 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public Attendee complete(Attendee attendee) {
 		sqlSession.selectOne("ATTENDEE.complete", attendee);
 		return getAttendeeInternal(attendee.getId());
+	}
+
+	@Override
+	public void removeUnused(String eventId) {
+		sqlSession.delete("ATTENDEE.removeUnused", eventId);
 	}
 }
