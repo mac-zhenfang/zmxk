@@ -15,5 +15,5 @@ public interface CreditRecordDao {
 
 	List<CreditRecord> listCreditRecords(String userId, Long start, Long end);
 
-	List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNumber, Long start, Long end);
+	List<CreditRecord> listCreditRecordsByMobileNumber(String siteId, String mobileNumber, Long start, Long end);
 }

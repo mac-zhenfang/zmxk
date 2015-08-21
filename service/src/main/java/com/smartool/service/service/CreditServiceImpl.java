@@ -238,8 +238,8 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end) {
-		return creditRecordDao.listCreditRecordsByMobileNumber(mobileNum, start, end);
+	public List<CreditRecord> listCreditRecordsByMobileNumber(String siteId, String mobileNum, Long start, Long end) {
+		return creditRecordDao.listCreditRecordsByMobileNumber(siteId, mobileNum, start, end);
 	}
 
 	@Override

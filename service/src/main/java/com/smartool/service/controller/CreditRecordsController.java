@@ -28,16 +28,17 @@ public class CreditRecordsController extends BaseController {
 	public List<CreditRecord> searchCreditRecord(@RequestParam(value = "mobileNum", required = false) String mobileNum,
 			@RequestParam(value = "start", required = false) Long start,
 			@RequestParam(value = "end", required = false) Long end) {
-		return creditService.listCreditRecordsByMobileNumber(mobileNum, start, end);
+		User sessionUser = UserSessionManager.getSessionUser();
+		return creditService.listCreditRecordsByMobileNumber(sessionUser.getSiteId(), mobileNum, start, end);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrecords/{creditRecordId}/withdraw", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CreditRecord withdrawCreditRecord(@PathVariable(value = "creditRecordId") String creditRecordId) {
 		return creditService.withdrawCreditRecord(creditRecordId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventcreditrecords/{creditRecordId}/recoverwithdraw", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public CreditRecord recoverWithdrawCreditRecord(@PathVariable(value = "creditRecordId") String creditRecordId) {
 		return creditService.recoverWithdrawCreditRecord(creditRecordId);

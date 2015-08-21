@@ -69,7 +69,7 @@
 							<input ng-model="event.quota" ng-show="{{event.showInput}}"
 							class="gridInput" /></div>
 						</td>
-						<td class="center"><span
+						<td class="center"><span ng-show="event.id"
 							ng-class="{0:'label label-success', 1:'label label-success', 2:'label label-success', 3:'label label-success'}[event.status]">{{{0:'已创建',
 								1:'已开始',2:'已冻结',3:'已授予奖励'}[event.status]}}</span></td>
 						<td class="center"><span class="btn btn-info"

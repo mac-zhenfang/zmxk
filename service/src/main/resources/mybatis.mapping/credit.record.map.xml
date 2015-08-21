@@ -20,10 +20,21 @@
 		creditRuleType,displayName,rank,r.status,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
 		r.createdTime,
 		r.lastModifiedTime,mobileNum
-		from creditRecords as r,
-		users as u
-		where u.id =
-		r.userId
+		FROM creditRecords as r JOIN users as u
+		<if test="siteId != null">
+			JOIN events as e
+		</if>
+		ON u.id = r.userId
+		<if test="siteId != null">
+			and e.id = r.eventId
+		</if>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+		<if test="siteId != null">
+			and e.siteId = #{siteId}
+		</if>
+		<if test="mobileNum != null">
+			and u.mobileNum = #{mobileNum}
+		</if>
 		<if test="userId != null">
 			and r.userId = #{userId}
 		</if>
@@ -33,29 +44,7 @@
 		<if test="end != null">
 			<![CDATA[and r.lastModifiedTime < #{end}]]>
 		</if>
-		order by r.lastModifiedTime desc
-	</select>
-
-	<select id="searchByMobileNumber" parameterType="Map"
-		resultType="com.smartool.common.dto.CreditRecord">
-		select r.id,
-		userId,eventId,
-		creditRuleType,displayName,rank,r.status,creditRuleId,r.credit,r.goldenMedal,r.silverMedal,r.bronzeMedal,
-		r.createdTime,
-		r.lastModifiedTime,mobileNum
-		from creditRecords as r,
-		users as u
-		where u.id =
-		r.userId
-		<if test="mobileNum != null">
-			and u.mobileNum = #{mobileNum}
-		</if>
-		<if test="start != null">
-			<![CDATA[and r.lastModifiedTime > #{start}]]>
-		</if>
-		<if test="end != null">
-			<![CDATA[and r.lastModifiedTime < #{end}]]>
-		</if>
+		</trim>
 		order by r.lastModifiedTime desc
 	</select>
 

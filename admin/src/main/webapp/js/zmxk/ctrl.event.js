@@ -377,6 +377,7 @@ zmxk
 							});
 							$scope.sites = [];
 							$scope.init = function() {
+								var loginUserSiteId = $scope.loginUser.siteId;
 								$scope.seriesId = $routeParams.seriesId;
 								var criteria = {};
 								if($scope.seriesId){
@@ -463,7 +464,6 @@ zmxk
 											})
 
 								} else {
-									console.log(loginUserSiteId);
 									eventTypeService.list(loginUserSiteId)
 											.then(function(data) {
 												$scope.eventTypes = data;
@@ -482,7 +482,6 @@ zmxk
 									siteService.get(loginUserSiteId).then(
 											function(data) {
 												$scope.sites.push(data);
-												console.log($scope.sites);
 											}, function(data) {
 											})
 								} else {

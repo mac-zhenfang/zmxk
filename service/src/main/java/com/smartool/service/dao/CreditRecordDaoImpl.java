@@ -26,8 +26,11 @@ public class CreditRecordDaoImpl implements CreditRecordDao {
 	}
 
 	@Override
-	public List<CreditRecord> listCreditRecordsByMobileNumber(String mobileNum, Long start, Long end) {
+	public List<CreditRecord> listCreditRecordsByMobileNumber(String siteId, String mobileNum, Long start, Long end) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		if (siteId != null) {
+			map.put("siteId", siteId);
+		}
 		if (start != null) {
 			map.put("start", new Date(start));
 		}
@@ -36,7 +39,6 @@ public class CreditRecordDaoImpl implements CreditRecordDao {
 		}
 		if (mobileNum != null) {
 			map.put("mobileNum", mobileNum);
-			return sqlSession.selectList("CREDIT_RECORD.searchByMobileNumber", map);
 		}
 		return sqlSession.selectList("CREDIT_RECORD.search", map);
 	}

@@ -74,7 +74,7 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events")
 	 */
-	@ApiScope(userScope = UserRole.ADMIN)
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events", method = RequestMethod.GET)
 	public List<Event> getEvents(@RequestParam(value = "status", required = false) String status) {
 		List<Event> returnList = new ArrayList<Event>();

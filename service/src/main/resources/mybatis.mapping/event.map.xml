@@ -153,13 +153,13 @@
 		ON attendees.kidId = kids.id and events.id = attendees.eventId and eventTypes.id = events.eventTypeId
 		<trim prefix="WHERE" prefixOverrides="AND |OR ">
 		<if test="status != null">
-			AND e.status = #{status}
+			AND events.status = #{status}
 		</if>
 		<if test="siteId != null">
-			AND e.siteId=#{siteId}
+			AND events.siteId=#{siteId}
 		</if>
 		<if test="seriesId != null">
-			AND e.seriesId = #{seriesId}
+			AND events.seriesId = #{seriesId}
 		</if>
 		</trim>
 	</select>

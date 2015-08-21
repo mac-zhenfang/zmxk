@@ -12,19 +12,18 @@
 		<!-- start: Header Menu -->
 		<div class="nav-no-collapse header-nav">
 			<ul class="nav pull-right">
-
-				<!-- start: User Dropdown -->
-				<li class="dropdown"><a class="btn account dropdown-toggle"
-					data-toggle="dropdown">
-						<div class="avatar">
-							<img src="img/avatar.jpeg" alt="Avatar" />
-						</div>
-						<div class="user">
-							<span class="hello">Welcome!</span> <span class="name">{{loginUser.name}}</span>
-							<li><a href="login.html">Logout</li>
-						</div>
-				</a>
-				<!-- end: User Dropdown -->
+				<div class="dropdown">
+					<a class="btn account dropdown-toggle" data-toggle="dropdown">
+						<span class="hello">Welcome!</span> <span class="name">{{loginUser.name}}</span>
+					</a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+<!-- 						<li role="presentation"><a href="changePassword.html" -->
+<!-- 							tabindex="-1" role="menuitem">Change Password</a></li> -->
+<!-- 						<li class="divider" role="presentation"></li> -->
+						<li role="presentation"><a href="login.html" tabindex="-1"
+							role="menuitem">Logout</a></li>
+					</ul>
+				</div>
 			</ul>
 		</div>
 		<!-- end: Header Menu -->

@@ -15,15 +15,8 @@
 				<thead>
 					<tr>
 						<th>赛事名</th>
-						<th>赛道</th>
-						<th>赛事类型</th>
-						<th>赛事系列</th>
-						<th>赛事阶段</th>
-						<th>时间</th>
-						<th>可录入</th>
-						<th>已录入</th>
-						<th>完成人数</th>
-						<th>上限</th>
+						<th>赛事详细</th>
+						<th>报名情况</th>
 						<th>状态</th>
 						<th>操作</th>
 					</tr>
@@ -37,43 +30,46 @@
 								href="#/events/{{event.id}}">{{event.name}}</a></span> <input
 							ng-model="event.name" ng-show="{{event.showInput}}" ng-change="changeName($index)"/>
 						</td>
-						<td><select ng-disabled="{{!event.showInput}}"
-							class="selectpicker gridInput2" data-style="btn-info"
+						<td>
+						<div>赛道：<select ng-disabled="{{!event.showInput}}"
+							class="selectpicker gridInput4" data-style="btn-info"
 							ng-model="event.siteId"
 							ng-options="option.id as option.name for option in sites"
 							ng-init="event.siteId==option.id">
-						</select></td>
-						<td><select ng-disabled="{{!event.showInput}}"
-							class="selectpicker gridInput2" data-style="btn-info"
+						</select></div>
+						<div>类型：<select ng-disabled="{{!event.showInput}}"
+							class="selectpicker gridInput4" data-style="btn-info"
 							ng-model="event.eventTypeId"
 							ng-options="option.id as option.name for option in eventTypes"
 							ng-init="event.eventTypeId==option.id"
 							ng-change="initSeries(event)">
-						</select></td>
-						<td><select ng-disabled="{{!event.showInput}}"
-							class="selectpicker gridInput2" data-style="btn-info"
+						</select></div>
+						<div>系列：<select ng-disabled="{{!event.showInput}}"
+							class="selectpicker gridInput4" data-style="btn-info"
 							ng-model="event.seriesId"
 							ng-options="option.id as option.name for option in event.eventSeries"
 							ng-init="event.seriesId==option.id">
-						</select></td>
-						<td class="center"><select ng-disabled={{!event.showInput}}
-							class="selectpicker gridInput2" data-style="btn-info"
+						</select></div>
+						<div>阶段：<select ng-disabled={{!event.showInput}}
+							class="selectpicker gridInput4" data-style="btn-info"
 							ng-model="event.stage"
 							ng-options="stage.value as stage.label for stage in stages"
 							ng-init="event.stage==stage.value"
 							ng-change="formEventName($index)">
-						</select></td>
+						</select></div></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
 							ng-model="event.eventTime" required="true" view="hours" itemModel="{{$index}}"></td>
-						<td class="center"><span class="label label-error">{{event.leftCount}}</span></td>
-						<td class="center"><span class="label label-warning">{{event.enrolledCount}}</span></td>
-						<td class="center"><span class="label label-success">{{event.applyScoreCount}}</span></td>
-						<td class="center"><span
+						<td class="center">
+							<div>可录：<span class="label label-error">{{event.leftCount}}</span></div>
+							<div>已录：<span class="label label-warning">{{event.enrolledCount}}</span></div>
+							<div>完成：<span class="label label-success">{{event.applyScoreCount}}</span></div>
+							<div>上限：<span
 							ng-hide="{{event.showInput}} == true" ng-bind="event.quota"></span>
 							<input ng-model="event.quota" ng-show="{{event.showInput}}"
-							class="gridInput" /></td>
-						<td class="center"><span
+							class="gridInput" /></div>
+						</td>
+						<td class="center"><span ng-show="event.id"
 							ng-class="{0:'label label-success', 1:'label label-success', 2:'label label-success', 3:'label label-success'}[event.status]">{{{0:'已创建',
 								1:'已开始',2:'已冻结',3:'已授予奖励'}[event.status]}}</span></td>
 						<td class="center"><span class="btn btn-info"

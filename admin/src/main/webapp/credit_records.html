@@ -42,10 +42,10 @@
 					<td><span
 						ng-class="{0:'label label-success', 1:'label label-warning'}[creditRecord.status]">{{{
 							0:'已授予',1:'已撤销'}[creditRecord.status]}}</span></td>
-					<td><button ng-show="creditRecord.status==0" class="btn"
+					<td><button ng-show="creditRecord.status==0&&isAdmin()" class="btn"
 							type="button" class="btn btn-info"
 							ng-click="withdraw(creditRecord.id,$index)">撤销</button>
-						<button ng-show="creditRecord.status==1" class="btn" type="button"
+						<button ng-show="creditRecord.status==1&&isAdmin()" class="btn" type="button"
 							class="btn btn-info"
 							ng-click="recoverWithdraw(creditRecord.id,$index)">恢复</button></td>
 				</tr>
