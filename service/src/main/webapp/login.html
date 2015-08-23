@@ -28,28 +28,36 @@
 		<div class="row  pad-top">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<form role="form" ng-init="buttonDisabled=false;showPassword=false;"
-						ng-controller="LoginController" ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
+					<form role="form"
+						ng-init="buttonDisabled=false;showPassword=false;"
+						ng-controller="LoginController"
+						ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
 						<div class="form-group input-group"
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
 									class="fa fa-circle-o-notch"></i> -->
-							<span class="input-group-addon">#</span> <input type="text"
+							<span class="input-group-addon"></span> <input type="text"
 								class="form-control" placeholder="{{const.mobile}}"
 								ng-model="formData.mobileNum" />
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon">密码</span> <input
+							<span class="input-group-addon"></span> <input
 								ng-hide="showPassword" type="password" class="form-control"
 								ng-model="formData.password" placeholder="密码" /><input
 								ng-show="showPassword" type="text" class="form-control"
 								ng-model="formData.password" placeholder="密码" />
 						</div>
-						<div class="checkbox">
-							<input type="checkbox" ng-model="showPassword" ng-show="currentStep == 2"/><span ng-show="currentStep == 2">显示密码</span>
+						<div class="form-group input-group">
+							<a href="register.html">注册</a>
 						</div>
-						<input ng-disabled="buttonDisabled" type="submit" value="{{submit_label}}"
-							class="btn btn-info btn-block" ng-show="currentStep != 3">
+						<div class="checkbox">
+							<input type="checkbox" ng-model="showPassword"
+								ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
+						</div>
+
+						<input ng-disabled="buttonDisabled" type="submit"
+							value="{{submit_label}}" class="btn btn-info btn-block"
+							ng-show="currentStep != 3">
 						<div ng-show="currentStep == 3">
 							登录成功, 正在跳转 ... <img src=""></img>
 						</div>

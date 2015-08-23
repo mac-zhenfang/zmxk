@@ -29,6 +29,7 @@ CREATE TABLE `kids` (
 	`schoolType` int,
 	`schoolName` varchar(255) CHARACTER SET utf8,
 	`userId` varchar(36) NOT NULL,
+	`teamId` varchar(36),
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
@@ -89,6 +90,7 @@ CREATE TABLE `creditRules` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
 	`credit` int,
+	`tp` tinyint(1) DEFAULT 0 COMMENT 'single: 0, team: 1',
   	`goldenMedal` int NOT NULL DEFAULT 0,
   	`silverMedal` int NOT NULL DEFAULT 0,
   	`bronzeMedal` int NOT NULL DEFAULT 0,
@@ -120,6 +122,7 @@ CREATE TABLE `attendees` (
 	`id` varchar(36) NOT NULL,
 	`kidId` varchar(36),
 	`userId` varchar(36),
+	`teamId` varchar(36),
 	`eventId` varchar(36) NOT NULL,
 	`tagId` varchar(36),
 	`score` float,
@@ -129,6 +132,18 @@ CREATE TABLE `attendees` (
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `teams`;
+CREATE TABLE `teams` (
+	`id` varchar(36),
+	`name` varchar(36),
+	`tp` int COMMENT "team type",
+	`pid` varchar(36) COMMENT "connect to other object, like club",
+	`size` int,
+	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  	 PRIMARY KEY (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `eventTypes`;

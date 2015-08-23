@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TEAM">
+	<select id="list" resultType="com.smartool.common.dto.Team">
+		select * from teams
+	</select>
+	<select id="members" resultType="com.smartool.common.dto.Kid" parameterType="String">
+		select * from kids where teamId = #{teamId}
+	</select>
+	<select id="memberOf" resultType="com.smartool.common.dto.Team" parameterType="String">
+		select t.id as id, t.name as name, t.tp as tp, t.size as size from teams t, users u, kids k.teamId = t.id where k.userId = #{userId}
+	</select>
+	<insert id="create"  parameterType="com.smartool.common.dto.Team">
+		insert into teams (id, name, tp, size, createdTime, lastModifiedTime) values (#{id}, #{name}, #{tp}, #{size}, #{createdTime}, #{lastModifiedTime})
+	</insert>
+	<update id="update" parameterType="com.smartool.common.dto.Team">
+		update teams set name=#{name}, tp=#{tp}, size=#{size} where id=#{id}
+	</update>
+	<delete id="delete" parameterType="String">
+		delete from teams where id=#{id}
+	</delete>
+	<select id="get" resultType="com.smartool.common.dto.Team" parameterType="String">
+		select * from teams where id=#{id}
+	</select>
+</mapper>

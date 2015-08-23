@@ -22,5 +22,6 @@
 		<mapper resource="mybatis.mapping/creditRule.map.xml" />
 		<mapper resource="mybatis.mapping/eventCreditRule.map.xml" />
 		<mapper resource="mybatis.mapping/credit.record.map.xml" />
+		<mapper resource="mybatis.mapping/team.map.xml" />
 	</mappers>
 </configuration>

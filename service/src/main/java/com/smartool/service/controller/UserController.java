@@ -21,6 +21,7 @@ import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
 import com.smartool.service.UserRole;
@@ -131,6 +132,16 @@ public class UserController extends BaseController {
 	public void deleteUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		userService.delete(userId);
 	}
+	
+	/**
+	 * Return the teams my kids belongs to
+	 *
+	@RequestMapping(value = "/users/me/teams", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Team> getMyTeams() {
+		User sessionUser = UserSessionManager.getSessionUser();
+		List<Team> teams = teamDao.memberOf(sessionUser.getId());
+		return teamDao.list();
+	} */
 
 	/**
 	 * Return the qrcode with url+token

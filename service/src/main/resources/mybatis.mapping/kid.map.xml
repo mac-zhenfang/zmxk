@@ -14,7 +14,7 @@
 		update kids
 		set
 		name=#{name},
-		schoolType=#{schoolType}, schoolName=#{schoolName},
+		schoolType=#{schoolType}, schoolName=#{schoolName}, teamId=#{teamId},
 		userId=#{userId}
 		where id =
 		#{id};

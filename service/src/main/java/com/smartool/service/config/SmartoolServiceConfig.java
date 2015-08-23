@@ -54,6 +54,8 @@ import com.smartool.service.dao.SiteDao;
 import com.smartool.service.dao.SiteDaoImpl;
 import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.TagDaoImpl;
+import com.smartool.service.dao.TeamDao;
+import com.smartool.service.dao.TeamDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
 import com.smartool.service.service.CreditGenerator;
@@ -134,6 +136,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public SiteDao getSiteDao() {
 		return new SiteDaoImpl();
+	}
+	
+	@Bean
+	public TeamDao teamDao() {
+		return new TeamDaoImpl();
 	}
 
 	@Bean
