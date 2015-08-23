@@ -31,7 +31,7 @@ public class TeamDaoImpl implements TeamDao {
 
 	@Override
 	public Team update(Team team) {
-		sqlSession.update("", team);
+		sqlSession.update("TEAM.update", team);
 		return internalGet(team.getId());
 	}
 	
@@ -41,7 +41,7 @@ public class TeamDaoImpl implements TeamDao {
 
 	@Override
 	public void delete(String teamId) {
-		sqlSession.delete("Team.delete", teamId);
+		sqlSession.delete("TEAM.delete", teamId);
 	}
 
 	@Override
