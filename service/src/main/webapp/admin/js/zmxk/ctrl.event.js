@@ -213,6 +213,7 @@ zmxk
 										giveUpdateEventType.changed = !giveUpdateEventType.changed;
 									} else {
 										giveUpdateEventType.existed = !giveUpdateEventType.existed;
+										giveUpdateEventType.changed = !giveUpdateEventType.changed;
 									}
 
 									giveUpdateEventType.showInput = !giveUpdateEventType.showInput;
