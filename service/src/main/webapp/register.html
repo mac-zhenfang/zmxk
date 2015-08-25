@@ -32,8 +32,8 @@
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
 									class="fa fa-circle-o-notch"></i> -->
-							<span class="input-group-addon"></span> <input type="text" required
-								class="form-control" placeholder="手机号码"
+							<span class="input-group-addon"></span> <input type="text"
+								required class="form-control" placeholder="手机号码"
 								ng-model="formData.mobileNum" ng-readonly="currentStep == 2" />
 						</div>
 						<div class="form-group input-group" ng-show="currentStep == 2"
@@ -50,9 +50,15 @@
 									class="form-control" placeholder="用户名" ng-model="formData.name" />
 							</div>
 							<div class="form-group input-group">
-								<span class="input-group-addon"></span><input type="password"
-									class="form-control" placeholder="密码"
-									ng-model="formData.password" />
+								<span class="input-group-addon"></span><input
+									ng-hide="showPassword" type="password" class="form-control"
+									placeholder="密码" ng-model="formData.password" /><input
+									ng-show="showPassword" type="text" class="form-control"
+									placeholder="密码" ng-model="formData.password" />
+							</div>
+							<div class="checkbox">
+								<input type="checkbox" ng-model="showPassword"
+									ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
 							</div>
 
 							<div class="form-group input-group">
@@ -158,7 +164,7 @@
 							}
 						}, 1000);
 					}
-					
+
 					$scope.canResendQrCode = function() {
 						return !$scope.enableResendQrcode;
 					}
@@ -217,9 +223,10 @@
 															function(data) {
 																$scope.currentStep = 3;
 																$scope.submit_label = $scope.const.registerTitle;
-																$timeout(function(){
-																	window.location.href = $scope.popTo;
-																}, 2000)
+																$timeout(
+																		function() {
+																			window.location.href = $scope.popTo;
+																		}, 2000)
 															})
 													.error(
 															function(data,
@@ -228,10 +235,10 @@
 															});
 										} else {
 											url = $scope.send_code_uri;
-											if($scope.formData.mobileNum.length < 11) {
+											if ($scope.formData.mobileNum.length < 11) {
 												alert("请输入有效的手机号码");
 												return;
-											}									
+											}
 											$http(
 													{
 														method : 'POST',
