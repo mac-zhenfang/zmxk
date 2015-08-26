@@ -21,6 +21,7 @@ import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.EventStages;
+import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
@@ -52,6 +53,14 @@ public class CreditServiceImpl implements CreditService {
 					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
+	}
+
+	@Override
+	public String getCreditRecordDisplayName(CreditRule creditRule) {
+		if (creditRule == null) {
+			return null;
+		}
+		return creditRule.getName();
 	}
 
 	@Override
@@ -205,7 +214,28 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule) {
+	public CreditRecord applyCreditRule(User user, CreditRule creditRule) {
+		userDao.addCredit(user.getId(), creditRule);
+		CreditRecord creditRecord = new CreditRecord();
+		creditRecord.setId(CommonUtils.getRandomUUID());
+		creditRecord.setUserId(user.getId());
+		creditRecord.setCreditRuleId(creditRule.getId());
+		creditRecord.setCredit(creditRule.getCredit());
+		creditRecord.setDisplayName(getCreditRecordDisplayName(creditRule));
+		if (creditRule instanceof EventCreditRule) {
+			creditRecord.setCreditRuleType(CreditRuleType.EVENT);
+		} else {
+			creditRecord.setCreditRuleType(CreditRuleType.NORMAL);
+		}
+		creditRecord.setGoldenMedal(creditRule.getGoldenMedal());
+		creditRecord.setSilverMedal(creditRule.getSilverMedal());
+		creditRecord.setBronzeMedal(creditRule.getBronzeMedal());
+		CreditRecord createdCreditRecord = creditRecordDao.createCreditRecord(creditRecord);
+		return createdCreditRecord;
+	}
+
+	@Override
+	public CreditRecord applyCreditRule(Attendee attendee, CreditRule creditRule) {
 		userDao.addCredit(attendee.getUserId(), creditRule);
 		CreditRecord creditRecord = new CreditRecord();
 		creditRecord.setId(CommonUtils.getRandomUUID());
@@ -253,7 +283,7 @@ public class CreditServiceImpl implements CreditService {
 		if (creditRule == null) {
 			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.RULE_DO_NOT_EXIST_ERROR_MESSAGE);
 		}
-		applyCreditRull(attendee, creditRule);
+		applyCreditRule(attendee, creditRule);
 	}
 
 	@Override
@@ -268,7 +298,7 @@ public class CreditServiceImpl implements CreditService {
 			throw new SmartoolException(HttpStatus.NOT_FOUND.value(), ErrorMessages.RULE_DO_NOT_EXIST_ERROR_MESSAGE);
 		}
 		if (attendee != null && creditRule != null) {
-			applyCreditRull(attendee, creditRule);
+			applyCreditRule(attendee, creditRule);
 		}
 	}
 

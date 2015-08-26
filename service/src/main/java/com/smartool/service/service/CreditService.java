@@ -6,6 +6,7 @@ import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.EventCreditRule;
+import com.smartool.common.dto.User;
 
 public interface CreditService {
 	List<CreditRule> listAllCreditRules();
@@ -32,7 +33,7 @@ public interface CreditService {
 
 	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String name);
 
-	CreditRecord applyCreditRull(Attendee attendee, CreditRule creditRule);
+	CreditRecord applyCreditRule(Attendee attendee, CreditRule creditRule);
 
 	void applyCreditRull(String attendeeId, String creditRuleId);
 
@@ -47,4 +48,8 @@ public interface CreditService {
 	CreditRecord withdrawCreditRecord(String creditRecordId);
 
 	CreditRecord recoverWithdrawCreditRecord(String creditRecordId);
+
+	String getCreditRecordDisplayName(CreditRule creditRule);
+
+	CreditRecord applyCreditRule(User user, CreditRule creditRule);
 }

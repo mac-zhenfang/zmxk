@@ -295,10 +295,3 @@ zmxk
 
 							$scope.init();
 						} ]);
-
-/*
- * Enroll Start zmxk.controller('EnrollWithUserController', [ '$scope',
- * 'userService', 'eventService', '$interval', '$timeout', '$routeParams',
- * function($scope, userService, eventService, $interval, $timeout,
- * $routeParams) { } ]);
- */

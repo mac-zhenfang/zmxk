@@ -1077,10 +1077,6 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 	$scope.selectRule = {};
 	$scope.eventRules = $scope.data.generalRules
 
-	console.log($scope.data.attendee.id);
-	console.log($scope.data.ruleService);
-	console.log($scope.data.eventRuleService);
-
 	// ruleService: ruleService,
 	// eventRuleService: eventRuleService
 
@@ -1101,9 +1097,6 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 	}; // end cancel
 
 	$scope.save = function(selectRule) {
-		// console.log(selectRule);
-		console.log(selectRule.id);
-		console.log($scope.data.attendee.id);
 		$scope.data.ruleService.apply({
 			id : selectRule.id,
 			attendeeId : $scope.data.attendee.id
@@ -1112,4 +1105,4 @@ zmxk.controller('GiveEventCreditCtrl', function($scope, $modalInstance, data) {
 		});
 		$modalInstance.close(selectRule);
 	};
-})
+});

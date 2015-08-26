@@ -23,25 +23,19 @@ zmxk
 							$scope.previous_label = "上一步";
 							$scope.next_label = "下一步";
 							$scope.events = [];
-							$scope.kids_school_options = [ {
-								value : 0,
-								label : "幼儿园"
-							}, {
-								value : 1,
-								label : "小学"
-							}, {
-								value : 2,
-								label : "未上幼儿园"
-							} ]
+							
 							
 
 							$scope.addChild = function() {
-								$scope.addKid["existed"] = false;
-								$scope.addKid["selected"] = true;
-								$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
-								var kid = angular.copy($scope.addKid);
-								$scope.kidsToShow.push(kid);
-								$scope.showAddChildForm = 0;
+								if(!angular.isUndefined($scope.addKid.name)) {
+									$scope.addKid["existed"] = false;
+									$scope.addKid["selected"] = true;
+									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
+									var kid = angular.copy($scope.addKid);
+									$scope.kidsToShow.push(kid);
+									$scope.showAddChildForm = 0;
+								}
+								$scope.addKid = {};
 							}
 
 							$scope.showChildForm = function() {
@@ -301,10 +295,3 @@ zmxk
 
 							$scope.init();
 						} ]);
-
-/*
- * Enroll Start zmxk.controller('EnrollWithUserController', [ '$scope',
- * 'userService', 'eventService', '$interval', '$timeout', '$routeParams',
- * function($scope, userService, eventService, $interval, $timeout,
- * $routeParams) { } ]);
- */

@@ -219,9 +219,13 @@ public class UserServiceImpl implements UserService {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		StringBuilder sb = new StringBuilder();
 		sb.append(config.getQrCodePath()).append("/admin/index.html#/enroll/").append(userId);
-		QRCode.from(sb.toString()).withSize(400, 400).to(ImageType.PNG)
-				.writeTo(out);
+		QRCode.from(sb.toString()).withSize(400, 400).to(ImageType.PNG).writeTo(out);
 		return out.toByteArray();
+	}
+
+	@Override
+	public List<User> search(String mobileNum, String wcId, String kidName) {
+		return userDao.search(mobileNum, wcId, kidName);
 	}
 
 	@Override

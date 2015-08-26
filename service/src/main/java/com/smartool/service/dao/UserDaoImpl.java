@@ -70,6 +70,21 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
+	public List<User> search(String mobileNum, String wcId, String kidName) {
+		Map<String, Object> param = new HashMap<String, Object>();
+		if (mobileNum != null) {
+			param.put("mobileNum", mobileNum);
+		}
+		if (wcId != null) {
+			param.put("wcId", wcId);
+		}
+		if (kidName != null) {
+			param.put("kidName", kidName);
+		}
+		return sqlSession.selectList("USER.query", param);
+	}
+
+	@Override
 	public List<User> search(String query) {
 		List<User> users = sqlSession.selectList("USER.search", query);
 		for (User user : users) {

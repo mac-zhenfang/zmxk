@@ -58,7 +58,7 @@ public class CreditGenerator {
 				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
 				if (rulesToApply != null && !rulesToApply.isEmpty()) {
 					for (EventCreditRule ruleToApply : rulesToApply) {
-						creditService.applyCreditRull(attendee, ruleToApply);
+						creditService.applyCreditRule(attendee, ruleToApply);
 					}
 				}
 			}

@@ -171,9 +171,9 @@ CREATE TABLE `securityCodes` (
 DROP TABLE IF EXISTS `creditRecords`;
 CREATE TABLE `creditRecords` (
 	`id` varchar(36) CHARACTER SET utf8 NOT NULL,
-	`userId` varchar(36) CHARACTER SET utf8 NOT NULL,
-	`attendeeId` varchar(36) CHARACTER SET utf8 NOT NULL,
-	`eventId` varchar(36) CHARACTER SET utf8 NOT NULL,
+	`userId` varchar(36) NOT NULL,
+	`attendeeId` varchar(36),
+	`eventId` varchar(36),
 	`creditRuleType` varchar(255) NOT NULL,
 	`creditRuleId` varchar(36) NOT NULL,
     `displayName` varchar(255) NOT NULL,

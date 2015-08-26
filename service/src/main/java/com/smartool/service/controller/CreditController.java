@@ -11,17 +11,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.CreditRecord;
 import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.EventCreditRule;
+import com.smartool.common.dto.User;
 import com.smartool.service.UserRole;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.service.CreditService;
+import com.smartool.service.service.UserService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class CreditController extends BaseController {
 	@Autowired
 	private CreditService creditService;
+	@Autowired
+	private UserService userService;
 
 	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/creditrules", method = RequestMethod.GET)
@@ -116,5 +121,14 @@ public class CreditController extends BaseController {
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "stage", required = false) Integer stage) {
 		return creditService.searchNonrankingEventCreditRules(eventTypeId, stage, name);
+	}
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/creditrules/{creditRuleId}/users/{userId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public CreditRecord applyCreditRuleToUser(@PathVariable(value = "creditRuleId") String creditRuleId,
+			@PathVariable(value = "userId") String userId) {
+		CreditRule creditRule = creditService.getCreditRuleById(creditRuleId);
+		User user = userService.getUserById(userId);
+		return creditService.applyCreditRule(user, creditRule);
 	}
 }

@@ -640,8 +640,26 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 				remove : {
 					url : zmxkConfig.user_rest_uri,
 					method : 'DELETE'
+				},
+				queryUsers : {
+					url : zmxkConfig.user_query_uri,
+					isArray : true,
+					method : 'POST'
 				}
 			})
+			this.query = function(mobileNumber, wcId, kidName) {
+				var defer = $q.defer();
+				var users = usersResource.queryUsers({
+					mobileNumber : mobileNumber,
+					wcId : wcId,
+					kidName : kidName
+				}, function(data) {
+					defer.resolve(data);
+				}, function(data) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
 			this.login = function() {
 				// TODO
 			};
@@ -688,7 +706,6 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 			this.create = function(user) {
 				var defer = $q.defer();
 				usersResource.create(user, function(body, headers) {
-					console.log(body);
 					defer.resolve(body);
 				}, function(body, headers) {
 					console.log(body);
@@ -725,7 +742,8 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var ruleResource = $resource(zmxkConfig.rule_get_uri, {
 				creditRuleId : '@id',
-				attendeeId : '@attendeeId'
+				attendeeId : '@attendeeId',
+				userId : '@userId'
 			}, {
 				create : {
 					url : zmxkConfig.rule_create_uri,
@@ -757,7 +775,12 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 				apply : {
 					url : zmxkConfig.rule_apply_uri,
 					method : "POST"
+				},
+				applyToUser : {
+					url : zmxkConfig.rule_apply_to_user_uri,
+					method : "POST"
 				}
+				
 			});
 			this.create = function(creditRule) {
 				var defer = $q.defer();
@@ -800,6 +823,15 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 			this.apply = function(creditRule) {
 				var defer = $q.defer();
 				ruleResource.apply({}, creditRule, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.applyToUser = function(creditRule) {
+				var defer = $q.defer();
+				ruleResource.applyToUser({}, creditRule, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);

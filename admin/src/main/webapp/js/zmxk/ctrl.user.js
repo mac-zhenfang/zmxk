@@ -3,10 +3,12 @@ zmxk.controller('UserCtrl', [
 		'$location',
 		'userService',
 		'siteService',
+		'ruleService',
+		'eventRuleService',
 		'$window',
 		'$dialogs',
 		'$routeParams',
-		function($scope, $location, userService, siteService, $window, $dialogs,
+		function($scope, $location, userService, siteService, ruleService, eventRuleService, $window, $dialogs,
 				$routeParams) {
 			$scope.updateLabel = "修改";
 			$scope.deleteLabel = "删除";
@@ -15,14 +17,27 @@ zmxk.controller('UserCtrl', [
 				id : null,
 				name : "所有"
 			}];
+			$scope.criteria = {};
 			$scope.init = function() {
-
-				userService.list().then(function(data) {
+				$scope.userList = [];
+				var searchCriteria = {};
+				if ($scope.criteria.mobileNum && $scope.criteria.mobileNum.trim()) {
+					searchCriteria.mobileNum = $scope.criteria.mobileNum.trim();
+				} else {
+					searchCriteria.mobileNum = null;
+				}
+				if ($scope.criteria.kidName && $scope.criteria.kidName.trim()) {
+					searchCriteria.kidName = $scope.criteria.kidName.trim();
+				} else {
+					searchCriteria.kidName = null;
+				}
+				userService.query(searchCriteria.mobileNum, null,
+						searchCriteria.kidName).then(function(data) {
 					angular.forEach(data, function(user, index) {
 						user["existed"] = true;
 						user["changed"] = false;
 						user["showInput"] = false;
-						
+
 						$scope.userList.push(user);
 					})
 				}, function(data) {
@@ -77,8 +92,6 @@ zmxk.controller('UserCtrl', [
 			}
 
 			$scope.deleteUser = function(toDeleteUser, idx) {
-
-				console.log(toDeleteUser);
 				if (!toDeleteUser.existed) {
 					toDeleteKid = null;
 				} else {
@@ -108,14 +121,41 @@ zmxk.controller('UserCtrl', [
 					}
 				})
 
+			};
+			
+			$scope.giveCredit = function(user, idx) {
+				var selectedUser = user;
+				ruleService.listAll().then(
+					function(data) {
+						dlg = $dialogs.create('/admin/give_credit.html','GiveCreditCtrl',
+								{
+									user : user,
+									generalRules : data,
+									ruleService : ruleService,
+									eventRuleService : eventRuleService
+								}, 'lg');
+						dlg.result.then(function(selectedRule) {
+//									var users = [];
+//									userService.getUser(user.id).then(function(user){
+//										user["existed"] = true;
+//										user["changed"] = false;
+//										user["showInput"] = false;
+//										angular.forEach($scope.userList, function(u, i) {
+//											if (i == idx) {
+//												users.push(user);
+//											} else {
+//												users.push(u);
+//											}
+//										})
+//										$scope.userList = angular.copy(users);
+//									});
+									$scope.init();
+								},
+								function() {
+								});
+					}, function(error) {
+					});
 			}
-
-			/*
-			 * $scope.createUser = function() { var toCreateUser = { }
-			 * toCreateUser["existed"] = false; toCreateUser["changed"] = true;
-			 * toCreateUser["showInput"] = true;
-			 * $scope.userList.push(toCreateUser); }
-			 */
 
 		} ]);
 
@@ -300,3 +340,37 @@ zmxk.controller('UserDetailCtrl', [
 			}
 
 		} ]);
+
+zmxk.controller('GiveCreditCtrl', function($scope, $modalInstance, data) {
+	$scope.data = data;
+	$scope.selectRule = {};
+	$scope.eventRules = $scope.data.generalRules
+
+	// ruleService: ruleService,
+	// eventRuleService: eventRuleService
+
+	$scope.init = function() {
+		var newRules = [];
+		angular.forEach($scope.eventRules, function(rule, index) {
+			if (angular.isUndefined(rule.rank)) {
+				newRules.push(angular.copy(rule));
+			}
+		});
+		$scope.eventRules = newRules;
+	}
+
+	// -- Methods --//
+
+	$scope.cancel = function() {
+		$modalInstance.dismiss('Canceled');
+	}; // end cancel
+
+	$scope.save = function(selectRule) {
+		$scope.data.ruleService.applyToUser({
+			id : selectRule.id,
+			userId : $scope.data.user.id
+		}).then(function(data) {
+		});
+		$modalInstance.close(selectRule);
+	};	
+});

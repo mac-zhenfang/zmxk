@@ -35,4 +35,6 @@ public interface UserDao {
 	void withdrawCredit(String userId, CreditRecord creditRecord);
 
 	void addCredit(String userId, CreditRecord creditRecord);
+
+	List<User> search(String mobileNum, String wcId, String kidName);
 }

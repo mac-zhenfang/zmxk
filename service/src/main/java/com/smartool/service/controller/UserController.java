@@ -1,6 +1,7 @@
 package com.smartool.service.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,6 @@ import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
-import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
 import com.smartool.service.UserRole;
@@ -40,6 +40,15 @@ public class UserController extends BaseController {
 	private HttpServletRequest httpServletRequest;
 	@Autowired
 	private HttpServletResponse httpServletResponse;
+
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/users/query", method = RequestMethod.POST)
+	public List<User> query(@RequestBody Map<String, String> criteria) {
+		if (criteria == null) {
+			return userService.search(null, null, null);
+		}
+		return userService.search(criteria.get("mobileNum"), criteria.get("wcId"), criteria.get("kidName"));
+	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users/search", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -132,16 +141,18 @@ public class UserController extends BaseController {
 	public void deleteUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		userService.delete(userId);
 	}
-	
+
 	/**
 	 * Return the teams my kids belongs to
 	 *
-	@RequestMapping(value = "/users/me/teams", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<Team> getMyTeams() {
-		User sessionUser = UserSessionManager.getSessionUser();
-		List<Team> teams = teamDao.memberOf(sessionUser.getId());
-		return teamDao.list();
-	} */
+	 * @RequestMapping(value = "/users/me/teams", method = RequestMethod.GET,
+	 *                       produces = { MediaType.APPLICATION_JSON_VALUE })
+	 *                       public List<Team> getMyTeams() { User sessionUser =
+	 *                       UserSessionManager.getSessionUser(); List
+	 *                       <Team> teams =
+	 *                       teamDao.memberOf(sessionUser.getId()); return
+	 *                       teamDao.list(); }
+	 */
 
 	/**
 	 * Return the qrcode with url+token
