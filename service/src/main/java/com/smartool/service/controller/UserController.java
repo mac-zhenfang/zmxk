@@ -101,6 +101,25 @@ public class UserController extends BaseController {
 		userService.getSecurityCode(securityCode);
 	}
 
+	@RequestMapping(value = "/users/codeforsetpassword", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void getSecurityCodeToSetPassword(@RequestBody LoginUser user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		userService.getSecurityCodeToSetPassword(securityCode);
+	}
+
+	@RequestMapping(value = "/users/setpassword", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public User setPassword(@RequestParam(value = "code", required = false) String code, @RequestBody LoginUser user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setSecurityCode(code);
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		return userService.setPassword(securityCode, user);
+	}
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {

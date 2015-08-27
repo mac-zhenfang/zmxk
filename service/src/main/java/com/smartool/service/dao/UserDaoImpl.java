@@ -156,4 +156,10 @@ public class UserDaoImpl implements UserDao {
 		List<BaseGrade> grades = sqlSession.selectList("USER.getBaseGrades", eventTypeId);
 		return grades;
 	}
+
+	@Override
+	public LoginUser updatePassword(LoginUser existedUser) {
+		sqlSession.update("USER.updatePassword", existedUser);
+		return getLoginUserByMobileNumber(existedUser.getMobileNum());
+	}
 }

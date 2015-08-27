@@ -130,6 +130,13 @@
 		status=#{status}, credit=#{credit}
 		where id = #{id};
 	</select>
+	<update id="updatePassword" parameterType="com.smartool.common.dto.LoginUser">
+		update users
+		set
+		password=#{password}
+		where
+		mobileNum=#{mobileNum};
+	</update>
 	<select id="remove" parameterType="String">
 		delete from users where id =
 		#{id}

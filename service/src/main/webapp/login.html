@@ -47,9 +47,6 @@
 								ng-show="showPassword" type="text" class="form-control"
 								ng-model="formData.password" placeholder="密码" />
 						</div>
-						<div class="form-group input-group">
-							<a href="register.html">注册</a>
-						</div>
 						<div class="checkbox">
 							<input type="checkbox" ng-model="showPassword"
 								ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
@@ -57,7 +54,9 @@
 
 						<input ng-disabled="buttonDisabled" type="submit"
 							value="{{submit_label}}" class="btn btn-info btn-block"
-							ng-show="currentStep != 3">
+							ng-show="currentStep != 3"> <a class="btn btn-info btn-block"
+							href="register.html">注册</a> <a class="btn btn-info btn-block"
+							href="chang_password.html"> 忘记密码</a>
 						<div ng-show="currentStep == 3">
 							登录成功, 正在跳转 ... <img src=""></img>
 						</div>

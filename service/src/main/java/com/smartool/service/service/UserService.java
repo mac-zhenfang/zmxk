@@ -32,5 +32,8 @@ public interface UserService {
 	SecurityCode getSecurityCode(SecurityCode securityCode);
 
 	List<User> search(String mobileNum, String wcId, String kidName);
-	
+
+	SecurityCode getSecurityCodeToSetPassword(SecurityCode securityCode);
+
+	User setPassword(SecurityCode securityCode, LoginUser user);
 }

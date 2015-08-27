@@ -280,4 +280,24 @@ public class UserServiceImpl implements UserService {
 		return baseGrades;
 	}
 
+	@Override
+	public SecurityCode getSecurityCodeToSetPassword(SecurityCode securityCode) {
+		validateMobileNumberForLogin(securityCode.getMobileNumber());
+		String securityCodeString = createCodeInternal(securityCode);
+		securityCode.setSecurityCode(securityCodeString);
+		return securityCode;
+	}
+
+	@Override
+	public User setPassword(SecurityCode securityCode, LoginUser user) {
+		if (!isValidSecurityCode(securityCode)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+		}
+		LoginUser existedUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
+		existedUser.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		LoginUser updateUser = userDao.updatePassword(existedUser);
+		securityCodeDao.remove(user.getMobileNum());
+		return updateUser;
+	}
+
 }

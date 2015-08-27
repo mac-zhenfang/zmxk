@@ -37,4 +37,6 @@ public interface UserDao {
 	void addCredit(String userId, CreditRecord creditRecord);
 
 	List<User> search(String mobileNum, String wcId, String kidName);
+
+	LoginUser updatePassword(LoginUser existedUser);
 }
