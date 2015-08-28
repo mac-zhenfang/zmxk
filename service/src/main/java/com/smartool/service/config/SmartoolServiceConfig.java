@@ -281,6 +281,6 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 	
 	public String getQrCodePath() {
-		return env.getProperty("smartool_site", "http://www.ismartool.cn");
+		return env.getProperty("smartool_site", "http://120.55.117.171");
 	}
 }
