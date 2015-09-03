@@ -23,7 +23,6 @@
 			<result property="schoolType" column="schoolType" />
 			<result property="schoolName" column="schoolName" />
 			<result property="userId" column="userId" />
-			<result property="teamId" column="teamId" />
 			<result property="createdTime" column="kidCreatedTime" />
 			<result property="lastModifiedTime" column="kidLastModifiedTime" />
 		</collection>
@@ -37,7 +36,7 @@
 		bronzeMedal, users.createdTime as userCreatedTime,
 		users.lastModifiedTime as userLastModifiedTime,
 		kids.id as kidId,
-		kids.name as kidName, schoolType, schoolName, teamId, kids.createdTime
+		kids.name as kidName, schoolType, schoolName, kids.createdTime
 		as userCreatedTime, kids.lastModifiedTime as userLastModifiedTime
 		FROM
 		users LEFT JOIN
