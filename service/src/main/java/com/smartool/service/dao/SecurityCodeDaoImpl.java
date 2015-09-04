@@ -52,18 +52,18 @@ public class SecurityCodeDaoImpl implements SecurityCodeDao {
 
 	@Override
 	public void sendSecurityCode(SecurityCode securityCode) {
-//		Template t = velocityEngine.getTemplate( "templates/sms.vm", "UTF-8" );
-//		VelocityContext context = new VelocityContext();
-//		context.put("securityCode", securityCode.getSecurityCode());
-//		StringWriter writer = new StringWriter();
-//	    t.merge( context, writer );
-//	    String msg =  writer.toString();
-//	    
-//	    //FIXME Retry Template
-//	    for (int i = 0; i < 3; i++) {
-//	    	if(smsClient.send(securityCode.getMobileNumber(), msg)) {
-//				return;
-//			}
-//		}
+		Template t = velocityEngine.getTemplate( "templates/sms.vm", "UTF-8" );
+		VelocityContext context = new VelocityContext();
+		context.put("securityCode", securityCode.getSecurityCode());
+		StringWriter writer = new StringWriter();
+	    t.merge( context, writer );
+	    String msg =  writer.toString();
+	    
+	    //FIXME Retry Template
+	    for (int i = 0; i < 3; i++) {
+	    	if(smsClient.send(securityCode.getMobileNumber(), msg)) {
+				return;
+			}
+		}
 	}
 }

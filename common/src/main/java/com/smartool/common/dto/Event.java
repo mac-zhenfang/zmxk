@@ -26,7 +26,13 @@ public class Event extends BaseDateTrackingBean {
 	private int status;
 
 	private int stage;
-
+	
+	private boolean isTeam;
+	
+	private boolean isSerieTeam;
+	
+	private boolean isEventTeam;
+	
 	public enum EventStatus {
 		PREPARE(0), START(1), COMPLETE(2), FROZEN(3);
 		private int value;
@@ -126,5 +132,29 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setSeriesId(String seriesId) {
 		this.seriesId = seriesId;
+	}
+
+	public boolean isTeam() {
+		return isSerieTeam | isEventTeam;
+	}
+
+	public void setTeam(boolean isTeam) {
+		this.isTeam = isTeam;
+	}
+
+	public boolean isSerieTeam() {
+		return isSerieTeam;
+	}
+
+	public void setSerieTeam(boolean isSerieTeam) {
+		this.isSerieTeam = isSerieTeam;
+	}
+
+	public boolean isEventTeam() {
+		return isEventTeam;
+	}
+
+	public void setEventTeam(boolean isEventTeam) {
+		this.isEventTeam = isEventTeam;
 	}
 }

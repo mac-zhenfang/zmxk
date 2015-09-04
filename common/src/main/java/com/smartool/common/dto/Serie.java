@@ -9,6 +9,7 @@ public class Serie {
 	private Date endTime;
 	private int stages;
 	private int rankUpgradeQualification;
+	private boolean isTeam;
 	private String eventTypeId;
 
 	public String getId() {
@@ -66,5 +67,13 @@ public class Serie {
 
 	public void setEventTypeId(String eventTypeId) {
 		this.eventTypeId = eventTypeId;
+	}
+
+	public boolean isTeam() {
+		return isTeam;
+	}
+
+	public void setTeam(boolean isTeam) {
+		this.isTeam = isTeam;
 	}
 }

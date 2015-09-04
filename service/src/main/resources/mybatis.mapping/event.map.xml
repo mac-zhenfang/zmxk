@@ -28,6 +28,8 @@
 		<result property="stage" column="stage" />
 		<result property="status" column="status" />
 		<result property="quota" column="quota" />
+		<result property="isEventTeam" column="isEventTeam" />
+		<result property="isSerieTeam" column="isSerieTeam" />
 		<result property="createdTime" column="createdTime" />
 		<result property="lastModifiedTime" column="lastModifiedTime" />
 		<collection property="attendees" ofType="com.smartool.common.dto.Attendee">
@@ -57,8 +59,8 @@
 		e.status as status,
 		e.stage as stage,
 		e.seriesId as seriesId
-		FROM events e JOIN eventTypes t LEFT JOIN (attendees a JOIN kids k)
-		ON a.kidId = k.id and e.id = a.eventId and t.id = e.eventTypeId
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 	</select>
 	
 	<select id="listAllBySiteId" resultMap="event" parameterType="String">
@@ -75,9 +77,11 @@
 		a.seq as seq,
 		a.status as status,
 		e.stage as stage,
-		e.seriesId as seriesId
-		FROM events e JOIN eventTypes t LEFT JOIN (attendees a JOIN kids k)
-		ON a.kidId = k.id and e.id = a.eventId and t.id = e.eventTypeId
+		e.seriesId as seriesId,
+		s.isTeam as isSerieTeam,
+		e.isTeam as isEventTeam
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 		WHERE e.siteId=#{siteId}
 	</select>
 	
@@ -98,9 +102,11 @@
 		a.seq as seq,
 		a.status as status,
 		e.stage as stage,
-		e.seriesId as seriesId
-		FROM events e JOIN eventTypes t LEFT JOIN (attendees a JOIN kids k)
-		ON a.kidId = k.id and e.id = a.eventId and t.id = e.eventTypeId
+		e.seriesId as seriesId,
+		s.isTeam as isSerieTeam,
+		e.isTeam as isEventTeam
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 		WHERE e.status = #{status};
 	</select>
 
@@ -128,47 +134,51 @@
 		a.seq as seq,
 		a.status as status,
 		e.stage as stage,
-		e.seriesId as seriesId
-		FROM events e JOIN eventTypes t LEFT JOIN (attendees a JOIN kids k)
-		ON a.kidId = k.id and e.id = a.eventId and t.id = e.eventTypeId
+		e.seriesId as seriesId,
+		s.isTeam as isSerieTeam,
+		e.isTeam as isEventTeam
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 	</select>
 	
 	<select id="search" parameterType="Map" resultMap="event">
-		SELECT events.eventTime as eventTime,
-				events.name as eventName, eventTypes.name as eventType, events.id as eventId,
-				eventTypes.id as eventTypeId, events.quota as quota, events.siteId as siteId,
-				events.createdTime as createdTime,
-				events.lastModifiedTime as lastModifiedTime,
-				attendees.id as attendeeId,
-				kids.id as kidId,
-				attendees.score as score,
-				attendees.rank as rank,
-				kids.name as kidName,
-				attendees.userId as userId,
-				attendees.seq as seq,
-				attendees.status as status,
-				events.stage as stage,
-				events.seriesId as seriesId
-		FROM events JOIN eventTypes LEFT JOIN (attendees JOIN kids)
-		ON attendees.kidId = kids.id and events.id = attendees.eventId and eventTypes.id = events.eventTypeId
+		SELECT e.eventTime as eventTime,
+				e.name as eventName, t.name as eventType, e.id as eventId,
+				t.id as eventTypeId, e.quota as quota, e.siteId as siteId,
+				e.createdTime as createdTime,
+				e.lastModifiedTime as lastModifiedTime,
+				a.id as attendeeId,
+				k.id as kidId,
+				a.score as score,
+				a.rank as rank,
+				k.name as kidName,
+				a.userId as userId,
+				a.seq as seq,
+				a.status as status,
+				e.stage as stage,
+				e.seriesId as seriesId,
+				s.isTeam as isSerieTeam,
+				e.isTeam as isEventTeam
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 		<trim prefix="WHERE" prefixOverrides="AND |OR ">
 		<if test="status != null">
-			AND events.status = #{status}
+			AND e.status = #{status}
 		</if>
 		<if test="siteId != null">
-			AND events.siteId=#{siteId}
+			AND e.siteId=#{siteId}
 		</if>
 		<if test="seriesId != null">
-			AND events.seriesId = #{seriesId}
+			AND e.seriesId = #{seriesId}
 		</if>
 		</trim>
 	</select>
 
 	<select id="create" parameterType="com.smartool.common.dto.Event">
 		insert events (id, name,
-		eventTypeId,siteId, quota, stage, eventTime, seriesId, createdTime,lastModifiedTime)
+		eventTypeId,siteId, quota, stage, eventTime, seriesId, isTeam, createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},#{seriesId},now(),now())
+		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},#{seriesId}, #{isTeam}, now(),now())
 	</select>
 
 
@@ -194,9 +204,11 @@
 		userId,
 		a.seq as seq,
 		e.stage as stage,
-		e.seriesId as seriesId
-		FROM events e JOIN eventTypes t LEFT JOIN (attendees a JOIN kids k)
-		ON a.kidId = k.id and e.id = a.eventId and t.id = e.eventTypeId
+		e.seriesId as seriesId,
+		s.isTeam as isSerieTeam,
+		e.isTeam as isEventTeam
+		FROM events e JOIN eventTypes t JOIN series s LEFT JOIN (attendees a JOIN kids k)
+		ON a.kidId = k.id and e.id = a.eventId and s.id=e.seriesId and t.id = e.eventTypeId
 		WHERE e.id = #{id};
 	</select>
 
@@ -216,6 +228,7 @@
 		stage=#{stage},
 		status=#{status},
 		seriesId=#{seriesId},
+		isTeam=#{isTeam},
 		eventTime=#{eventTime}
 		where id =
 		#{id};

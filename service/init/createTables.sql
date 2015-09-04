@@ -53,6 +53,7 @@ CREATE TABLE `events` (
 	`siteId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
 	`quota` int,
+	`isTeam` boolean  DEFAULT FALSE COMMENT 'check if it is the team series',
 	`stage` int, -- Preliminary(0)/contest(1)/semi final(2)/final(3)
 	`status` int NOT NULL DEFAULT 0,-- prepare(0) / start (1) / complete (2)
 	`eventTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -78,6 +79,7 @@ CREATE TABLE `series` (
 	`startTime` timestamp NOT NULL,
 	`endTime` timestamp NOT NULL,
 	`stages` int,
+	`isTeam` boolean DEFAULT FALSE COMMENT 'check if it is the team series',
 	`rankUpgradeQualification` int,-- which rank can upgrade to next stage
 	`eventTypeId` varchar(36) NOT NULL,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
