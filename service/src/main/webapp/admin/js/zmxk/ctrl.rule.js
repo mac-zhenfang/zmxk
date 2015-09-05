@@ -51,7 +51,6 @@ zmxk.controller('EventRuleCtrl', [
 						angular.forEach($scope.eventTypeList, function(eventType, index) {
 							serieService.list(eventType.id).then(function(data) {
 								data.unshift({id: null, name: "---------"});
-								console.log(data);
 								$scope.seriesMap[eventType.id] = data;
 								recievedSerieMaps++;
 								if($scope.eventTypeList.length == recievedSerieMaps) {

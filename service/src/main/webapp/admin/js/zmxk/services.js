@@ -519,7 +519,9 @@ zmxk.service('tagService', [ '$resource', 'zmxkConfig', '$q',
 zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var kidResource = $resource(zmxkConfig.kid_rest_uri, {
-				kidId : '@id'
+				kidId : '@id',
+				kidId : '@kidId',
+				teamId : '@teamId'
 			}, {
 				create : {
 					url : zmxkConfig.kid_rest_uri,
@@ -542,6 +544,14 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 				remove : {
 					url : zmxkConfig.kid_rest_uri,
 					method : 'DELETE'
+				},
+				joinTeam: {
+					url : zmxkConfig.kid_join_team_uri,
+					method : 'POST'
+				},
+				leaveTeam: {
+					url : zmxkConfig.kid_leave_team_uri,
+					method : 'POST'
 				}
 			})
 
@@ -595,6 +605,31 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 
+			this.joinTeam = function(kidId, teamId) {
+				var defer = $q.defer();
+				kidResource.joinTeam({
+					kidId : kidId,
+					teamId : teamId
+				}, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+			}
+
+			this.leaveTeam = function(kidId, teamId) {
+				var defer = $q.defer();
+				kidResource.leaveTeam({
+					kidId : kidId,
+					teamId : teamId
+				}, function(kid, headers) {
+					defer.resolve(kid);
+				}, function(kid, headers) {
+					defer.reject(kid);
+				});
+				return defer.promise;
+			}
 		} ]);
 // User Service
 zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
@@ -694,7 +729,6 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 				usersResource.search({
 					query : query
 				}, function(body, headers) {
-					console.log(body);
 					defer.resolve(body);
 				}, function(body, headers) {
 					console.log(body);
@@ -1009,3 +1043,102 @@ zmxk
 								return defer.promise;
 							};
 						} ]);
+zmxk.service('teamService', [
+		'$resource',
+		'zmxkConfig',
+		'$q',
+		function($resource, zmxkConfig, $q) {
+			var teamResource = $resource(zmxkConfig.team_get_uri, {
+				teamId : '@teamId',
+			}, {
+				create : {
+					url : zmxkConfig.team_create_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				update : {
+					url : zmxkConfig.team_update_uri,
+					method : 'PUT',
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
+				get : {
+					url : zmxkConfig.team_get_uri,
+					method : 'GET'
+				},
+				list : {
+					url : zmxkConfig.team_list_uri,
+					method : 'GET',
+					isArray : true
+				},
+				listMembers : {
+					url : zmxkConfig.team_list_members_uri,
+					method : 'GET',
+					isArray : true
+				},
+				remove : {
+					url : zmxkConfig.team_remove_uri,
+					method : 'DELETE'
+				}
+			});
+			this.create = function(team) {
+				var defer = $q.defer();
+				teamResource.create(team, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.update = function(team) {
+				var defer = $q.defer();
+				teamResource.update({}, team, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.get = function(teamId) {
+				var defer = $q.defer();
+				teamResource.get({teamId, teamId}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.remove = function(teamId) {
+				var defer = $q.defer();
+				teamResource.remove({}, {
+					id : teamId
+				}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.listAll = function() {
+				var defer = $q.defer();
+				teamResource.list({}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			this.listMembers = function(teamId) {
+				var defer = $q.defer();
+				teamResource.listMembers({teamId, teamId}, function(data, header) {
+					defer.resolve(data);
+				}, function(data, header) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			};
+			
+		} ]);

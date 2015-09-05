@@ -65,4 +65,16 @@ public class KidController extends BaseController {
 		// Check userId/kidId;
 		kidDao.remove(kidId);
 	}
+
+	@RequestMapping(value = "/kids/{kidId}/joinTeam/{teamId}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Kid joinTeam(@PathVariable String kidId, @PathVariable String teamId) {
+		return kidDao.joinTeam(kidId, teamId);
+	}
+
+	@RequestMapping(value = "/kids/{kidId}/leaveTeam/{teamId}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Kid leaveTeam(@PathVariable String kidId, @PathVariable String teamId) {
+		return kidDao.leaveTeam(kidId, teamId);
+	}
 }
