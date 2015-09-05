@@ -1,6 +1,8 @@
 package com.smartool.service.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +48,23 @@ public class KidDaoImpl implements KidDao {
 	@Override
 	public void removeByUserId(String userId) {
 		sqlSession.delete("KID.listByUserId", userId);
+	}
+
+	@Override
+	public Kid joinTeam(String kidId, String teamId) {
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("kidId", kidId);
+		param.put("teamId", teamId);
+		sqlSession.update("KID.joinTeam", param);
+		return get(kidId);
+	}
+
+	@Override
+	public Kid leaveTeam(String kidId, String teamId) {
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("kidId", kidId);
+		param.put("teamId", teamId);
+		sqlSession.update("KID.leaveTeam", param);
+		return get(kidId);
 	}
 }

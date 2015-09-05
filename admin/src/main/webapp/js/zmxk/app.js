@@ -3,16 +3,16 @@ var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
 		'dialogs', 'ngRoute', 'ngCookies' ], function($httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
-			'request': function(config) {
-		      // do something on success
-//			    $("#loadingModal").modal().show();
-		      return config;
-		    },
-		    'response': function(response) {
-		        // do something on success
-//			    $("#loadingModal").modal().hide();
-		        return response;
-		      },
+			'request' : function(config) {
+				// do something on success
+				// $("#loadingModal").modal().show();
+				return config;
+			},
+			'response' : function(response) {
+				// do something on success
+				// $("#loadingModal").modal().hide();
+				return response;
+			},
 			'responseError' : function(response) {
 				if (response.status == "401") {
 					window.location = "login.html";
@@ -39,7 +39,7 @@ zmxk.constant('zmxkConstant', {
 	}, {
 		value : 2,
 		label : "未上幼儿园"
-	}]
+	} ]
 });
 
 zmxk
@@ -51,7 +51,7 @@ zmxk
 					user_search_uri : "/service/smartool/api/v1/users/search?query=:query",
 					user_query_uri : "/service/smartool/api/v1/users/query",
 					user_rest_uri : "/service/smartool/api/v1/users/:userId",
-					event_site_uri: "/service/smartool/api/v1/:siteId/events/",
+					event_site_uri : "/service/smartool/api/v1/:siteId/events/",
 					event_rest_uri : "/service/smartool/api/v1/events/:eventId",
 					event_search_uri : "/service/smartool/api/v1/events/search",
 					site_rest_uri : "/service/smartool/api/v1/sites/:siteId",
@@ -76,12 +76,20 @@ zmxk
 					event_rule_remove_uri : "/service/smartool/api/v1/eventcreditrules/:eventCreditRuleId",
 					event_rule_apply_uri : "/service/smartool/api/v1/eventcreditrules/:eventCreditRuleId/attendee/:attendeeId",
 					kid_rest_uri : "/service/smartool/api/v1/users/:userId/kids/:kidId",
+					kid_join_team_uri : "/service/smartool/api/v1/kids/:kidId/joinTeam/:teamId",
+					kid_leave_team_uri : "/service/smartool/api/v1/kids/:kidId/leaveTeam/:teamId",
 					tag_search_uri : "/service/smartool/api/v1/tags/search?type=:type",
 					event_credit_records_search_uri : "/service/smartool/api/v1/eventcreditrecords/search",
 					withdraw_credit_records_uri : "/service/smartool/api/v1/eventcreditrecords/:creditRecordId/withdraw",
 					recover_withdraw_credit_records_uri : "/service/smartool/api/v1/eventcreditrecords/:creditRecordId/recoverwithdraw",
 					my_event_credit_records_search_uri : "/service/smartool/api/v1/users/me/eventcreditrecords/search",
-					tag_rest_uri : "/service/smartool/api/v1/tags/:tagId"
+					tag_rest_uri : "/service/smartool/api/v1/tags/:tagId",
+					team_create_uri : "/service/smartool/api/v1/teams",
+					team_update_uri : "/service/smartool/api/v1/teams/:teamId",
+					team_remove_uri : "/service/smartool/api/v1/teams/:teamId",
+					team_list_uri : "/service/smartool/api/v1/teams",
+					team_get_uri : "/service/smartool/api/v1/teams/:teamId",
+					team_list_members_uri : "/service/smartool/api/v1/teams/:teamId/members"
 				});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {
@@ -134,5 +142,11 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 	}).when('/sites', {
 		templateUrl : 'site_list.html',
 		controller : "CreditRecordCtrl"
+	}).when('/teams', {
+		templateUrl : 'team_list.html',
+		controller : "TeamCtrl"
+	}).when('/teams/:teamId', {
+		templateUrl : 'team_member_list.html',
+		controller : "TeamMemberCtrl"
 	});
 } ]);

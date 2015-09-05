@@ -38,4 +38,18 @@
 		select *
 		from kids where id = #{id}
 	</select>
+	<select id="listByName" parameterType="String"
+		resultType="com.smartool.common.dto.Kid">
+		select *
+		from kids where name = #{name}
+	</select>
+	<update id="joinTeam" parameterType="Map">
+		UPDATE kids SET
+		teamId=#{teamId}
+		WHERE id=#{kidId}
+	</update>
+	<update id="leaveTeam" parameterType="Map">
+		UPDATE kids SET teamId=null
+		WHERE id=#{kidId} AND teamId=#{teamId}
+	</update>
 </mapper>

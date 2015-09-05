@@ -24,34 +24,35 @@ import com.smartool.service.dao.TeamDao;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
-public class TeamController  extends BaseController {
+public class TeamController extends BaseController {
 
 	@Autowired
 	private TeamDao teamDao;
-	
+
 	@Autowired
 	private KidDao kidDao;
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/teams", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<Team> getTeams() {
 		return teamDao.list();
 	}
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public List<Kid> getTeamMembers(@PathVariable String teamId) {
 		return teamDao.getMembers(teamId);
 	}
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public Kid joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
 		kid.setTeamId(teamId);
 		return kidDao.update(kid);
 	}
-	
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/teams", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -59,36 +60,39 @@ public class TeamController  extends BaseController {
 		team.setId(CommonUtils.getRandomUUID());
 		return teamDao.create(team);
 	}
-	
+
 	@ApiScope(userScope = UserRole.NORMAL_USER)
-	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.GET,  produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public Team getTeam(@PathVariable String teamId) {
 		User sessionUser = UserSessionManager.getSessionUser();
-		List<Team> teams = teamDao.memberOf(sessionUser.getId());
-		boolean isMemberOf = false;
-		for(Team team : teams) {
-			if(teamId.equals(team.getId())) {
-				isMemberOf = true;
-				break;
+		Team team = teamDao.get(teamId);
+		if (UserRole.INTERNAL_USER.getValue().compareTo(sessionUser.getRoleId()) > 0) {
+			// Is normal user
+			List<Kid> members = teamDao.getMembers(team.getId());
+			for (Kid kid : members) {
+				if (kid.getUserId().equals(sessionUser.getId())) {
+					return team;
+				}
 			}
-		}
-		if(!isMemberOf) {
 			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(), "you are not the member of this team");
+		} else {
+			return team;
 		}
-		return teamDao.get(teamId);
 	}
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Team updateTeam(@RequestBody Team team, @PathVariable String teamId) {
-		if(!teamId.equals(team.getId())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), "teamId should be same as the id in request body");
+		if (!teamId.equals(team.getId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					"teamId should be same as the id in request body");
 		}
 		team.setId(teamId);
 		return teamDao.update(team);
 	}
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable String teamId) {

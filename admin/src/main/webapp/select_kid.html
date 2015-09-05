@@ -1,0 +1,87 @@
+<div class="modal-header" ng-init="init()">
+	<h4 class="modal-title">
+		<span class="glyphicon glyphicon-star"></span>选择小孩
+	</h4>
+</div>
+<div class="modal-body"
+	style="width: auto, height:auto, max-height:100%">
+	<ng-form name="nameDialog" novalidate role="form"> <label
+		class="control-label" for="appendedInputButton">手机号码</label>
+	<div class="controls">
+		<div class="input-append">
+			<input id="appendedInputButton" size="16" type="text"
+				ng-model="enroll_form_data.userQueryString" />
+			<button class="btn" type="button" class="btn btn-info"
+				ng-click="searchUser()">搜索</button>
+		</div>
+	</div>
+	<fieldset>
+		<div class="box">
+			<div class="box-header">
+				<h2>
+					<i class="icon-align-justify"></i><span class="break"></span>用户信息
+				</h2>
+			</div>
+			<div class="box-content ">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>姓名</th>
+							<th>手机</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="center">{{found_user.name}}</td>
+							<td class="center">{{found_user.mobileNum}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset>
+		<div class="box">
+			<div class="box-header">
+				<h2>
+					<i class="icon-align-justify"></i><span class="break"></span>小孩信息
+				</h2>
+			</div>
+			<!---->
+			<div class="box-content">
+
+				<table
+					class="table table-striped table-bordered bootstrap-datatable datatable">
+					<thead>
+						<tr>
+							<th>姓名</th>
+							<th>学校名</th>
+							<th>选择</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="kid in found_user.kids">
+							<td class="center">
+								<!-- <input type="text" ng-model="kid.name" /> -->{{kid.name}}
+							</td>
+							<td class="center">
+								<!-- <input type="text"
+							ng-model="kid.schoolName" /> -->{{kid.schoolName}}
+							</td>
+							<td class="center"><label class="checkbox"> <!---->
+									<input type="checkbox" ng-model="kid.selected"
+									ng-true-value="{{true}}" ng-false-value="{{false}}" />
+							</label></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</fieldset>
+	</ng-form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" ng-click="cancel()">取消</button>
+	<button type="button" class="btn btn-primary" ng-click="save()"
+		ng-disabled="(nameDialog.$dirty && nameDialog.$invalid) || nameDialog.$pristine">确定</button>
+</div>

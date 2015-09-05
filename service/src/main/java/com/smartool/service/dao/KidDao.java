@@ -18,4 +18,8 @@ public interface KidDao {
 	void remove(String id);
 
 	void removeByUserId(String userId);
+
+	Kid joinTeam(String kidId, String teamId);
+
+	Kid leaveTeam(String kidId, String teamId);
 }
