@@ -1,5 +1,6 @@
 <div class="row-fluid">
-	<div class="box span12" ng-controller="EventDetailCtrl" ng-init="init()">
+	<div class="box span12" ng-controller="EventDetailCtrl"
+		ng-init="init()">
 		<div class="box-header">
 			<h2>
 				<i class="icon-edit"></i>赛事管理
@@ -14,6 +15,7 @@
 				<thead>
 					<tr>
 						<th>选手名</th>
+						<th>所属团队</th>
 						<th>车次</th>
 						<th>状态</th>
 						<th>成绩</th>
@@ -24,7 +26,10 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="attendee in eventInit.attendees | orderBy:'rank'">
-						<td class="center">{{attendee.kidName}}</td>
+						<td class="center">
+							{{attendee.kidName}}
+						</td>
+						<td class="center"><span ng-show="eventInit.team" class="label label-success">{{attendee.teamName}}</span></td>
 						<td class="center">{{attendee.seq}}</td>
 						<td class="center"><span
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
@@ -43,10 +48,11 @@
 						<td class="center"><span ng-click="attendee.editingTag=true"
 							ng-hide="attendee.editingTag"
 							ng-bind="{true: '未授予组别', false : attendee.tag}[attendee.tag==null]"
-							ng-class="showTagClass(attendee.tagType)"></span> <select ng-show="attendee.editingTag" class="selectpicker gridInput2" data-style="btn-info"
-								ng-model="attendee.tagId"
-								ng-options="option.id as option.name for option in eventTags">
-							</select>
+							ng-class="showTagClass(attendee.tagType)"></span> <select
+							ng-show="attendee.editingTag" class="selectpicker gridInput2"
+							data-style="btn-info" ng-model="attendee.tagId"
+							ng-options="option.id as option.name for option in eventTags">
+						</select>
 						<td class="center"><span class="btn btn-danger"
 							ng-click="giveCredit(attendee)"
 							ng-disabled="canGiveCredit(attendee)">授予积分</span></td>

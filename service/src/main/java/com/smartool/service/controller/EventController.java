@@ -327,7 +327,7 @@ public class EventController extends BaseController {
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
 	public Event getEvent(@PathVariable String eventId) {
 		Event retEvent = eventDao.getFullEvent(eventId);
-		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		/*List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
 		for (Attendee attendee : attendees) {
 			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
 				attendee.setTag(tagDao.getTag(attendee.getTagId()).getName());
@@ -337,7 +337,7 @@ public class EventController extends BaseController {
 				attendee.setKidName(kidDao.get(attendee.getKidId()).getName());
 			}
 		}
-		retEvent.setAttendees(attendees);
+		retEvent.setAttendees(attendees);*/
 		/*
 		 * List<Attendee> attendees =
 		 * attendeeDao.getAttendeeFromEvent(retEvent.getId()); for(Attendee

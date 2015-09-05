@@ -21,6 +21,10 @@ public class Attendee extends BaseDateTrackingBean {
 	private int rank;
 
 	private Integer seq;
+	
+	private String teamName;
+	
+	private String teamId;
 
 	private int status; // 0 (prepared when create event) / 1 (enrolled) / 2
 						// (complete event)
@@ -114,5 +118,21 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
 	}
 }

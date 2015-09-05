@@ -41,7 +41,7 @@ public class EventDaoImpl implements EventDao {
 
 	@Override
 	public Event getFullEvent(String eventId) {
-		return sqlSession.selectOne("EVENT.getById", eventId);
+		return sqlSession.selectOne("EVENT.getFullById", eventId);
 	}
 
 	@Override
