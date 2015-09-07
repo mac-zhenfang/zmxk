@@ -6,11 +6,12 @@ zmxk
 						'$scope',
 						'userService',
 						'eventService',
+						'teamService',
 						'$interval',
 						'$timeout',
 						'$routeParams',
-						function($scope, userService, eventService, $interval,
-								$timeout, $routeParams) {
+						function($scope, userService, eventService,
+								teamService, $interval, $timeout, $routeParams) {
 							$scope.enroll_form_data = {};
 							$scope.enroll_form_data.kids = [];
 							$scope.kidsToShow = [];
@@ -23,11 +24,9 @@ zmxk
 							$scope.previous_label = "上一步";
 							$scope.next_label = "下一步";
 							$scope.events = [];
-							
-							
-
+							$scope.errorProcess = false;
 							$scope.addChild = function() {
-								if(!angular.isUndefined($scope.addKid.name)) {
+								if (!angular.isUndefined($scope.addKid.name)) {
 									$scope.addKid["existed"] = false;
 									$scope.addKid["selected"] = true;
 									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
@@ -57,12 +56,52 @@ zmxk
 								}
 							}
 
-							$scope.selectEvent = function(eventId) {
-								$scope.enroll_form_data.id = eventId;
+							$scope.selectEvent = function(event) {
+								console.log(event);
+								
+								var kids = [];
+								for (var i = 0; i < $scope.kidsToShow.length; i++) {
+									var kid = $scope.kidsToShow[i];
+
+									if (kid.selected) {
+										kids.push(kid);
+									}
+								}
+								console.log(kids);
+								angular.forEach(kids, function(kid){
+									if(event.team && (angular.isUndefined(kid["teamId"]) || kid["teamId"]==null)) {
+										$scope.errorProcess = true;
+										$scope
+										.launch(
+												"error",
+												"",
+												"选手必须已经加入战队",
+												function() {
+
+												},
+												function() {
+												});
+										return;
+									}
+								});
+								$scope.enroll_form_data.id = event.id;
 								// console.log($scope.enroll_form_data);
 							}
 
 							$scope.processForm = function() {
+								if($scope.errorProcess) {
+									$scope
+									.launch(
+											"出现错误",
+											"",
+											"请仔细核对步骤中的错误信息",
+											function() {
+
+											},
+											function() {
+											});
+									return;
+								}
 								var kidsToCreate = [];
 								for (var i = 0; i < $scope.kidsToShow.length; i++) {
 									var kid = $scope.kidsToShow[i];
@@ -102,7 +141,7 @@ zmxk
 														// msg += data.seq
 														// msg += " "
 														if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
-															
+
 															$scope
 																	.launch(
 																			"notify",
@@ -116,14 +155,14 @@ zmxk
 																			},
 																			function() {
 																			});
-															/* 
-															$timeout(
-																	function() {
-																		$scope
-																				.hoopPage(
-																						"events",
-																						[ $scope.enroll_form_data.id ])
-																	}, 5000)*/
+															/*
+															 * $timeout(
+															 * function() {
+															 * $scope .hoopPage(
+															 * "events", [
+															 * $scope.enroll_form_data.id ]) },
+															 * 5000)
+															 */
 															// var url =
 															// $scope.$location.$$host;
 															$scope.enroll_form_data.kids = [];
@@ -156,35 +195,34 @@ zmxk
 												$scope.enroll_form_data.userQueryString)
 										.then(
 												function(users) {
-													
-													if(users.length > 1 || users.length == 0) {
-														$scope
-														.launch(
-																"error",
-																"",
-																"搜索到"+ users.length + "个用户，请到用户页面检查用户",
-																function() {
 
-																},
-																function() {
-																});
+													if (users.length > 1
+															|| users.length == 0) {
+														$scope
+																.launch(
+																		"error",
+																		"",
+																		"搜索到"
+																				+ users.length
+																				+ "个用户，请到用户页面检查用户",
+																		function() {
+
+																		},
+																		function() {
+																		});
 													} else {
 														console
-														.log(" found users ---- ")
+																.log(" found users ---- ")
 														$scope.found_user = users[0];
-														console
-														.log(users);
+														console.log(users);
 													}
-												}, function(error) {
-													$scope
-													.launch(
-															"error",
-															"",
+												},
+												function(error) {
+													$scope.launch("error", "",
 															error.data.message,
 															function() {
 
-															},
-															function() {
+															}, function() {
 															});
 												});
 
@@ -194,10 +232,21 @@ zmxk
 								$scope.enroll_form_data.user = $scope.found_user;
 								$scope.kidsToShow = [];
 								for (var i = 0; i < $scope.found_user.kids.length; i++) {
-									var kid = angular.copy($scope.found_user.kids[i]);
+									var kid = angular
+											.copy($scope.found_user.kids[i]);
 									kid["existed"] = true;
-									$scope.kidsToShow
-											.push(kid);
+									if (!angular.isUndefined(kid["teamId"]) && kid["teamId"]!=null) {
+										teamService.get(kid["teamId"]).then(
+												function(data) {
+													kid["teamName"] = data.name;
+													$scope.kidsToShow.push(kid);
+												}, function(error) {
+													alert(error.data.message);
+												})
+									}else{
+										$scope.kidsToShow.push(kid);
+									}
+									
 								}
 							}
 
@@ -206,7 +255,7 @@ zmxk
 								var loginUserSiteId = $scope.loginUser.siteId;
 
 								$scope.userId = $routeParams.userId;
-								
+
 								if (!angular.isUndefined($scope.userId)) {
 									// "dd6ebe09-d00f-4bb5-b7b0-22d8ae607afc" -
 									// Mac Fang
@@ -225,7 +274,7 @@ zmxk
 																		.push(kid);
 															}
 														}
-														
+
 														$scope.enroll_form_data.user = user;
 														console
 																.log($scope.enroll_form_data.user);
@@ -252,32 +301,47 @@ zmxk
 								}
 
 								// FIXME, we dont need to have status
-							
-								eventService.list(loginUserSiteId).then(function(data) {
-									var events = [];
-									events = data;
-									angular.forEach(events, function(event, index) {
-										
-										var enrolledCount = 0;
-										angular.forEach(event.attendees, function(attendee, index2){
-											var attStatus = attendee.status;
-											//console.log(attStatus);
-											if(attStatus >= 1) {
-												enrolledCount+=1;
-											}
-										});
-										//console.log(enrolledCount);
-										var leftCount = event.quota - enrolledCount;
-										//console.log(leftCount);
-										event.leftCount= leftCount;
-										event.enrolledCount = enrolledCount;
-										if(event.status == 0 ) {
-											$scope.events.push(event);
-										}
-									});
-								}, function(error) {
-									// TODO
-								});
+
+								eventService
+										.list(loginUserSiteId)
+										.then(
+												function(data) {
+													var events = [];
+													events = data;
+													angular
+															.forEach(
+																	events,
+																	function(
+																			event,
+																			index) {
+
+																		var enrolledCount = 0;
+																		angular
+																				.forEach(
+																						event.attendees,
+																						function(
+																								attendee,
+																								index2) {
+																							var attStatus = attendee.status;
+																							// console.log(attStatus);
+																							if (attStatus >= 1) {
+																								enrolledCount += 1;
+																							}
+																						});
+																		// console.log(enrolledCount);
+																		var leftCount = event.quota
+																				- enrolledCount;
+																		// console.log(leftCount);
+																		event.leftCount = leftCount;
+																		event.enrolledCount = enrolledCount;
+																		if (event.status == 0) {
+																			$scope.events
+																					.push(event);
+																		}
+																	});
+												}, function(error) {
+													// TODO
+												});
 
 							}
 
