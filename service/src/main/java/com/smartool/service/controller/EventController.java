@@ -327,6 +327,14 @@ public class EventController extends BaseController {
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.GET)
 	public Event getEvent(@PathVariable String eventId) {
 		Event retEvent = eventDao.getFullEvent(eventId);
+		List<Attendee> newAttendees = new ArrayList<Attendee>();
+		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		for (Attendee attendee : attendees) {
+			if(!Strings.isNullOrEmpty(attendee.getId())) {
+				newAttendees.add(attendee);
+			}
+		}
+		retEvent.setAttendees(newAttendees);
 		/*List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
 		for (Attendee attendee : attendees) {
 			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
