@@ -32,7 +32,7 @@
 							ng-change="changeName($index)" />
 						</td>
 						<td>
-
+				
 							<div>
 								赛道：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
@@ -43,6 +43,14 @@
 							</div>
 							<div>
 								类型：<select ng-disabled="{{!event.showInput}}"
+									class="selectpicker gridInput4" data-style="btn-info"
+									ng-model="event.team"
+									ng-options="option.id as option.name for option in eventCategories"
+									ng-init="event.team==option.id">
+								</select>
+							</div>
+							<div>
+								赛事：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
 									ng-model="event.eventTypeId"
 									ng-options="option.id as option.name for option in eventTypes"
@@ -66,10 +74,6 @@
 									ng-init="event.stage==stage.value"
 									ng-change="formEventName($index)">
 								</select>
-							</div>
-							<div>
-								<span class="label label-success"
-									ng-bind="{true:'团队赛事', false:'个人赛事'}[event.team==true]"></span>
 							</div>
 						</td>
 						<td class="center"><input type="text"

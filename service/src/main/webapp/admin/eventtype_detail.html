@@ -25,14 +25,26 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="serie in eventSeries | filter:filterRule">
-						<td><span ng-hide="{{serie.showInput}} == true"><a href="#/events/serieses/{{serie.id}}">{{serie.name}}</a></span>
-							<input ng-model="serie.name" ng-show="{{serie.showInput}}" class="gridInput2" /></td>
-						<td><select ng-disabled="{{!serie.showInput}}"
-							class="selectpicker gridInput2" data-style="btn-info"
-							ng-model="serie.eventTypeId"
-							ng-options="option.id as option.name for option in eventTypes"
-							ng-init="serie.eventTypeId==option.id">
-						</select></td>
+						<td><span ng-hide="{{serie.showInput}} == true"><a
+								href="#/events/serieses/{{serie.id}}">{{serie.name}}</a></span> <input
+							ng-model="serie.name" ng-show="{{serie.showInput}}"
+							class="gridInput2" /></td>
+						<td><div>
+								<select ng-disabled="{{!serie.showInput}}"
+									class="selectpicker gridInput2" data-style="btn-info"
+									ng-model="serie.team"
+									ng-options="option.id as option.name for option in eventSeriesCategories"
+									ng-init="serie.team==option.id">
+								</select>
+							</div>
+							<div>
+								<select ng-disabled="{{!serie.showInput}}"
+									class="selectpicker gridInput2" data-style="btn-info"
+									ng-model="serie.eventTypeId"
+									ng-options="option.id as option.name for option in eventTypes"
+									ng-init="serie.eventTypeId==option.id">
+								</select>
+							</div></td>
 						<td class="center"><input type="text"
 							ng-disabled="{{!serie.showInput}}" class="gridInput2" date-time
 							ng-model="serie.startTime" required="true" view="hours"></td>
@@ -40,7 +52,8 @@
 							ng-disabled="{{!serie.showInput}}" class="gridInput2" date-time
 							ng-model="serie.endTime" required="true" view="hours"></td>
 						<td><span ng-hide="{{serie.showInput}} == true">{{serie.stages}}</span>
-							<input ng-model="serie.stages" ng-show="{{serie.showInput}}" class="gridInput"/></td>
+							<input ng-model="serie.stages" ng-show="{{serie.showInput}}"
+							class="gridInput" /></td>
 						<!-- <td><span ng-hide="{{serie.showInput}} == true">{{serie.rankUpgradeQualification}}</span>
 							<input ng-model="serie.rankUpgradeQualification"
 							ng-show="{{serie.showInput}}" class="gridInput"/></td> -->

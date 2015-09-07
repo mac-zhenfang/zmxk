@@ -28,4 +28,7 @@ values ("951d936c-9f11-4648-afbb-b0ee530e31e7", "分组08", "event", now(), now(
 insert tags (id, name, type, createdTime, lastModifiedTime)
 values ("951d936c-9f11-4648-afbb-b0ee530e31e8", "分组09", "event", now(), now());
 
+insert eventtypes (id, name, siteId, createdTime, lastModifiedTime)
+values ("cbedb2a5-907c-43e2-9463-a7529dca669b", "彩虹拉力赛", "4474ed41-b979-474b-b398-34c3079fc7dc", now(), now());
+
 commit;

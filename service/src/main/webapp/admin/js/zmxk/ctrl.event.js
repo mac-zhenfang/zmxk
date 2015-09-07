@@ -15,6 +15,13 @@ zmxk.controller('SerieManageCtrl', [
 			$scope.eventTypeId = $routeParams.eventTypeId;
 			$scope.eventSeries = [];
 			$scope.eventTypes = [];
+			$scope.eventSeriesCategories = [ {
+				id : true,
+				name : "团队赛"
+			}, {
+				id : false,
+				name : "个人赛"
+			} ]
 			$scope.init = function() {
 				serieService.list($scope.eventTypeId).then(function(data) {
 					angular.forEach(data, function(serie, index) {
@@ -167,7 +174,7 @@ zmxk
 								eventTypeService, siteService, serieService,
 								$interval, $timeout, $routeParams) {
 
-							$scope.sites = [ ];
+							$scope.sites = [];
 							$scope.giveUpdateEventType = {};
 							$scope.toDeleteEventType = {};
 							$scope.init = function() {
@@ -352,7 +359,13 @@ zmxk
 						function($scope, userService, eventService,
 								eventTypeService, siteService, serieService,
 								$interval, $timeout, $routeParams) {
-
+							$scope.eventCategories = [ {
+								id : true,
+								name : "团队赛"
+							}, {
+								id : false,
+								name : "个人赛"
+							} ]
 							$scope.viewEventManagePage = function() {
 								if (angular.isUndefined($scope.eventId)) {
 									return "event_manage_show_list.html";
@@ -381,7 +394,7 @@ zmxk
 								var loginUserSiteId = $scope.loginUser.siteId;
 								$scope.seriesId = $routeParams.seriesId;
 								var criteria = {};
-								if($scope.seriesId){
+								if ($scope.seriesId) {
 									criteria.seriesId = $scope.seriesId;
 								}
 
@@ -826,7 +839,8 @@ zmxk
 																				tagsMap[attendee.tagId]
 																						.push(attendee);
 																			}
-																			attendee.min = Math.floor(attendee.score / 60);
+																			attendee.min = Math
+																					.floor(attendee.score / 60);
 																			attendee.sec = attendee.score % 60;
 																		});
 														var d = 0;
@@ -970,17 +984,24 @@ zmxk
 							$scope.editScore = function() {
 								if (canStartEditScore()) {
 									var m = {};
-									angular.forEach($scope.eventInit.attendees,
-										function(attendee, index) {
-											attendee.score = parseInt(attendee.min) * 60 + parseInt(attendee.sec);
-											console.log(attendee.score);
-											if (angular.isUndefined(m[attendee.tagId])) {
-												m[attendee.tagId] = [];
-											}
-											if (attendee.score) {
-												m[attendee.tagId].push(attendee);
-											}
-										});
+									angular
+											.forEach(
+													$scope.eventInit.attendees,
+													function(attendee, index) {
+														attendee.score = parseInt(attendee.min)
+																* 60
+																+ parseInt(attendee.sec);
+														console
+																.log(attendee.score);
+														if (angular
+																.isUndefined(m[attendee.tagId])) {
+															m[attendee.tagId] = [];
+														}
+														if (attendee.score) {
+															m[attendee.tagId]
+																	.push(attendee);
+														}
+													});
 									angular.forEach(m, function(attendees,
 											tagId) {
 										attendees.sort(function(a, b) {
