@@ -45,7 +45,7 @@
 			<result property="score" column="score" />
 			<result property="rank" column="rank" />
 			<result property="seq" column="seq" />
-			<result property="status" column="status" />
+			<result property="status" column="attendeeStatus" />
 		</collection>
 	</resultMap>
 	<select id="listAll" resultMap="event">
@@ -76,6 +76,7 @@
 		isSerieTeam,
 		e.isTeam as
 		isEventTeam,
+		e.status as status,
 		teamName,
 		teamId
 		FROM events e
@@ -112,6 +113,7 @@
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
+		e.status as status,
 		attendeeId,
 		kidId,
 		score,
@@ -167,6 +169,7 @@
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
+		e.status as status,
 		attendeeId,
 		kidId,
 		score,
@@ -228,6 +231,7 @@
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
+		e.status as status,
 		attendeeId,
 		kidId,
 		score,
@@ -281,6 +285,7 @@
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
+		e.status as status,
 		attendeeId,
 		kidId,
 		score,
@@ -355,6 +360,7 @@
 		createdTime,
 		e.lastModifiedTime as
 		lastModifiedTime,
+		e.status as status,
 		attendeeId,
 		kidId,
 		score,
