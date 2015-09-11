@@ -328,7 +328,8 @@ public class EventController extends BaseController {
 	public Event getEvent(@PathVariable String eventId) {
 		Event retEvent = eventDao.getFullEvent(eventId);
 		List<Attendee> newAttendees = new ArrayList<Attendee>();
-		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		List<Attendee> attendees = retEvent.getAttendees();
+		//List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
 		for (Attendee attendee : attendees) {
 			if(!Strings.isNullOrEmpty(attendee.getId())) {
 				newAttendees.add(attendee);
