@@ -53,6 +53,14 @@ public class CreditServiceImpl implements CreditService {
 					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}
+		
+		if (scheduler.getTrigger(TriggerKey.triggerKey("EventStartNotificationJobTimer")) == null) {
+			JobDetail jobDetail = JobBuilder.newJob(EventStartNotificationJob.class)
+					.withIdentity(JobKey.jobKey("EventStartNotificationJobTimer")).build();
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("EventStartNotificationJobTimer"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+			scheduler.scheduleJob(jobDetail, trigger);
+		}
 	}
 
 	@Override

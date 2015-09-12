@@ -53,12 +53,12 @@ private static Logger logger = Logger.getLogger(EventStartNotificationJob.class)
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("status", NOT_START_EVENT);
 		List<Event> events = eventDao.search(param);
-		logger.info("Notice   ....... get events " + events);
+		logger.debug("Notice   ....... get events " + events);
 		for(Event event : events) {
 			Date startDate = event.getEventTime();
 			long startDateTime = startDate.getTime();
-			logger.info("time to fire " + (startDateTime - System.currentTimeMillis()));
-			logger.info("inteval    ......." + config.getEventNofityTime());
+			logger.debug("time to fire " + (startDateTime - System.currentTimeMillis()));
+			logger.debug("inteval    ......." + config.getEventNofityTime());
 
 			if(startDateTime - System.currentTimeMillis() <= config.getEventNofityTime() && startDateTime - System.currentTimeMillis() > 0) {
 				logger.info("Get event need notify   ......." + event.getName());

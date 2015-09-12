@@ -1104,7 +1104,7 @@ zmxk.service('teamService', [
 			};
 			this.get = function(teamId) {
 				var defer = $q.defer();
-				teamResource.get({teamId, teamId}, function(data, header) {
+				teamResource.get({"teamId" : teamId}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);
@@ -1133,7 +1133,7 @@ zmxk.service('teamService', [
 			};
 			this.listMembers = function(teamId) {
 				var defer = $q.defer();
-				teamResource.listMembers({teamId, teamId}, function(data, header) {
+				teamResource.listMembers({"teamId" : teamId}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);

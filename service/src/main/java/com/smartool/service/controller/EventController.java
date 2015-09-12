@@ -9,6 +9,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +43,7 @@ import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TagDao;
+import com.smartool.service.service.EventStartNotificationJob;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -59,6 +68,9 @@ public class EventController extends BaseController {
 	private int attendeePerGourpLimitation = 100;
 
 	private static Random r = new Random();
+	
+	
+
 
 	/**
 	 * List events by site

@@ -165,8 +165,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public KidDao getKidDao() {
 		return new KidDaoImpl();
 	}
-
-	@Bean(initMethod = "iocInit")
+	
+	@Bean
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
 	}
