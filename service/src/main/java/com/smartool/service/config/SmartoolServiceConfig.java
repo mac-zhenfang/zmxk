@@ -61,6 +61,7 @@ import com.smartool.service.dao.UserDaoImpl;
 import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
+import com.smartool.service.service.EventStartNotification;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
 import com.smartool.service.sms.SmsClient;
@@ -85,6 +86,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public CreditGenerator getCreditGenerator() {
 		return new CreditGenerator(env.getProperty("credit.generate.interval.hour", Long.class));
 	}
+	
+	@Bean
+	public EventStartNotification eventStartNotification() {
+		return new EventStartNotification();
+	}
 
 	@Bean
 	public Encrypter getEncrypter() {
@@ -95,24 +101,26 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public CreditRecordDao getCreditRecordDao() {
 		return new CreditRecordDaoImpl();
 	}
-	
+
 	@Bean
-	public SmsClient smsClient () {
-		SmsClient client = new SmsClient(smsClientFactory(), env.getProperty("sms_send_url", "http://sms-api.luosimao.com/v1"));
+	public SmsClient smsClient() {
+		SmsClient client = new SmsClient(smsClientFactory(),
+				env.getProperty("sms_send_url", "http://sms-api.luosimao.com/v1"));
 		return client;
 	}
-	
+
 	@Bean
 	public SmsClientFactory smsClientFactory() {
 		SmsClientFactory clientFactory = SmsClientFactory.builder().disableSSLChecks(true).build();
 		return clientFactory;
 	}
-	
+
 	@Bean
 	public Jedis redis() {
 		Jedis jedis = new Jedis("10.0.50.157");
 		return jedis;
 	}
+
 	@Bean
 	public UserService getUserService() {
 		return new UserServiceImpl();
@@ -137,7 +145,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public SiteDao getSiteDao() {
 		return new SiteDaoImpl();
 	}
-	
+
 	@Bean
 	public TeamDao teamDao() {
 		return new TeamDaoImpl();
@@ -158,7 +166,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new KidDaoImpl();
 	}
 
-	@Bean
+	@Bean(initMethod = "iocInit")
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
 	}
@@ -193,14 +201,14 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		registry.addInterceptor(getAuthenticationInterceptor());
 		registry.addInterceptor(getAuthorizationInterceptor());
 	}
-	
+
 	@Bean
 	public VelocityEngine velocityEngine() {
 		VelocityEngine ve = new VelocityEngine();
 		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-        ve.init();
-        return ve;
+		ve.init();
+		return ve;
 	}
 
 	@Bean
@@ -265,6 +273,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		}
 		return systemProperties;
 	}
+	
 
 	@Bean
 	public SchedulerFactoryBean getSchedulerFactoryBean() throws Exception {
@@ -275,12 +284,21 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
 		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
+		schedulerContextAsMap.put("EventStartNotification", eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
 		schedulerFactoryBean.start();
 		return schedulerFactoryBean;
 	}
-	
+
 	public String getQrCodePath() {
 		return env.getProperty("smartool_site", "http://120.55.117.171");
+	}
+
+	public int getEventNofityTime() {
+		return env.getProperty("event_notify_time", Integer.class, 10 * 60 * 1000);
+	}
+	
+	public int getNeedNotifyTimes() {
+		return env.getProperty("event_need_notify_time",  Integer.class,  1);
 	}
 }

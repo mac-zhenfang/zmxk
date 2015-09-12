@@ -10,7 +10,7 @@ public interface AttendeeDao {
 	
 	List<Attendee> getAttendeeFromEvent(String eventId);
 	
-	Attendee update(Attendee attendee);
+	Attendee updateNotifyTimes(Attendee attendee);
 	
 	Attendee enroll(Attendee attendee);
 	

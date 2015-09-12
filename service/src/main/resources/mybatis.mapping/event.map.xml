@@ -46,6 +46,7 @@
 			<result property="rank" column="rank" />
 			<result property="seq" column="seq" />
 			<result property="status" column="attendeeStatus" />
+			<result  property="attendeeNotifyTimes" column="attendeeNotifyTimes" />
 		</collection>
 	</resultMap>
 	<select id="listAll" resultMap="event">
@@ -68,6 +69,7 @@
 		seq,
 		tagId,
 		tag,
+		attendeeNotifyTimes,
 		attendeeStatus,
 		e.stage as
 		stage,
@@ -87,7 +89,7 @@
 		LEFT JOIN ( select a.id
 		as attendeeId, k.id as kidId, k.name as
 		kidName,
-		a.userId as userId,
+		a.userId as userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
@@ -124,6 +126,7 @@
 		tagId,
 		tag,
 		attendeeStatus,
+		attendeeNotifyTimes,
 		e.stage as
 		stage,
 		e.seriesId as seriesId,
@@ -139,7 +142,7 @@
 		e.eventTypeId
 		JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
-		as attendeeId, k.id as kidId, k.name as
+		as attendeeId, a.notify_times as attendeeNotifyTimes, k.id as kidId, k.name as
 		kidName,
 		a.userId as userId,
 		a.rank as rank, a.score as score, a.seq as
@@ -180,6 +183,7 @@
 		tagId,
 		tag,
 		attendeeStatus,
+		attendeeNotifyTimes,
 		e.stage as
 		stage,
 		e.seriesId as seriesId,
@@ -201,7 +205,7 @@
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.eventId as eventId, ts.name as
+		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
@@ -242,6 +246,7 @@
 		tagId,
 		tag,
 		attendeeStatus,
+		attendeeNotifyTimes,
 		e.stage as
 		stage,
 		e.seriesId as seriesId,
@@ -263,7 +268,7 @@
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.eventId as eventId, ts.name as
+		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
@@ -273,7 +278,7 @@
 		on k.teamId=ts.id
 		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
 	</select>
-
+	
 	<select id="search" parameterType="Map" resultMap="event">
 		SELECT e.eventTime as eventTime,
 		e.name as eventName, t.name as
@@ -296,6 +301,7 @@
 		tagId,
 		tag,
 		attendeeStatus,
+		attendeeNotifyTimes,
 		e.stage as
 		stage,
 		e.seriesId as seriesId,
@@ -315,7 +321,7 @@
 		kidName,
 		a.userId as userId,
 		a.rank as rank, a.score as score, a.seq as
-		seq,
+		seq, a.notify_times as attendeeNotifyTimes,
 		a.status as
 		attendeeStatus, a.eventId as eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
@@ -371,6 +377,7 @@
 		tagId,
 		tag,
 		attendeeStatus,
+		attendeeNotifyTimes,
 		e.stage as
 		stage,
 		e.seriesId as seriesId,
@@ -392,7 +399,7 @@
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.eventId as eventId, ts.name as
+		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
@@ -405,6 +412,8 @@
 		e.id =
 		#{id};
 	</select>
+	
+	
 
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Event">

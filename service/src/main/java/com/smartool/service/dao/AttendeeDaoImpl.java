@@ -33,9 +33,9 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	}
 
 	@Override
-	public Attendee update(Attendee attendee) {
-		// TODO Auto-generated method stub
-		return null;
+	public Attendee updateNotifyTimes(Attendee attendee) {
+		sqlSession.update("ATTENDEE.updateNotifyTimes", attendee);
+		return getAttendeeInternal(attendee.getId());
 	}
 
 	@Override

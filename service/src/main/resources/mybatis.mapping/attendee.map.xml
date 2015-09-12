@@ -19,18 +19,10 @@
 		where id =
 		#{id};
 	</select>
-	<select id="update" parameterType="com.smartool.common.dto.Attendee">
+	<select id="updateNotifyTimes" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
-		seq=#{seq},
-		kidId=#{kidId},
-		userId=#{userId},
-		eventId=#{eventId},
-		tagId =
-		#{tagId},
-		rank=#{rank},
-		score=#{score},
-		status=#{status}
+		notify_times=#{attendeeNotifyTimes}
 		where id =
 		#{id};
 	</select>

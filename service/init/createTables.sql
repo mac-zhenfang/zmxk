@@ -130,6 +130,7 @@ CREATE TABLE `attendees` (
 	`score` float,
 	`rank` int,
  	`seq` int,
+ 	`notify_times` tinyint default 0,
  	`status` int NOT NULL DEFAULT 0,
 	`createdTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

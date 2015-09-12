@@ -28,7 +28,8 @@ public class Attendee extends BaseDateTrackingBean {
 
 	private int status; // 0 (prepared when create event) / 1 (enrolled) / 2
 						// (complete event)
-
+	private Integer attendeeNotifyTimes;
+	
 	public Attendee() {
 	}
 
@@ -134,5 +135,13 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
+	}
+
+	public Integer getAttendeeNotifyTimes() {
+		return attendeeNotifyTimes;
+	}
+
+	public void setAttendeeNotifyTimes(int attendeeNotifyTimes) {
+		this.attendeeNotifyTimes = attendeeNotifyTimes;
 	}
 }
