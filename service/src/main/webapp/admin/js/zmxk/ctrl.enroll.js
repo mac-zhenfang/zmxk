@@ -252,7 +252,10 @@ zmxk
 
 							$scope.init = function() {
 								// TODO get from user api
-								var loginUserSiteId = $scope.loginUser.siteId;
+								var loginUserSiteId = null;
+								if(!angular.isUndefined($scope.loginUser)) {
+									loginUserSiteId = $scope.loginUser.siteId;
+								}
 
 								$scope.userId = $routeParams.userId;
 
