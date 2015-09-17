@@ -295,7 +295,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	public int getEventNofityTime() {
-		return env.getProperty("event_notify_time", Integer.class, 10 * 60 * 1000);
+		return env.getProperty("event_notify_time", Integer.class, 20 * 60 * 1000);
 	}
 	
 	public int getNeedNotifyTimes() {
