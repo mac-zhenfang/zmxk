@@ -744,8 +744,8 @@ zmxk
 								toCreateEvent["changed"] = true;
 								toCreateEvent["showInput"] = true;
 								toCreateEvent["status"] = 0;
-								$scope.listEvents.push(toCreateEvent);
-
+								$scope.listEvents.unshift(toCreateEvent);
+								
 							}
 
 						} ]);

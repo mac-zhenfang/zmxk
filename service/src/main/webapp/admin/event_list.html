@@ -6,33 +6,38 @@
 				<i class="icon-edit"></i>赛事管理
 			</h2>
 		</div>
+
+
+
 		<div class="box-content">
-			<input ng-model="filterRule.name" class="form-control gridInput2" />
-		</div>
-		<div class="box-content">
+			<div class="control-group">
+				<div class="controls">
+					<button type="button" class="btn btn-info" ng-click="createEvent()">创建</button>
+				</div>
+			</div>
+			<div class="box-content">
+				按赛事名搜索：<input ng-model="filterRule.name" class="form-control gridInput4" />
+			</div>
 			<table
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
 					<tr>
-						<th>赛事名</th>
-						<th>赛事详细</th>
 						<th>时间</th>
+						<th>赛事详细</th>
+						<th>赛事名</th>
 						<th>状态</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="event in listEvents | filter:filterRule">
+
+						<td class="center"><input type="text"
+							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
+							ng-model="event.eventTime" required="true" view="hours"
+							itemModel="{{$index}}"></td>
 						<td>
-							<!--<span ng-hide="{{event.showInput}} == true"><a
-								href="#/events/{{event.id}}">{{event.name}}</a></span>--> <span
-							ng-hide="{{event.showInput}} == true"><a
-								href="#/events/{{event.id}}">{{event.name}}</a></span> <input
-							ng-model="event.name" ng-show="{{event.showInput}}"
-							ng-change="changeName($index)" />
-						</td>
-						<td>
-				
+
 							<div>
 								赛道：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
@@ -42,7 +47,7 @@
 								</select>
 							</div>
 							<div>
-								类型：<select ng-disabled="{{!event.showInput}}"
+								属性：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
 									ng-model="event.team"
 									ng-options="option.id as option.name for option in eventCategories"
@@ -50,7 +55,7 @@
 								</select>
 							</div>
 							<div>
-								赛事：<select ng-disabled="{{!event.showInput}}"
+								类型：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
 									ng-model="event.eventTypeId"
 									ng-options="option.id as option.name for option in eventTypes"
@@ -59,7 +64,7 @@
 								</select>
 							</div>
 							<div>
-								系列：<select ng-disabled="{{!event.showInput}}"
+								联赛：<select ng-disabled="{{!event.showInput}}"
 									class="selectpicker gridInput4" data-style="btn-info"
 									ng-model="event.seriesId"
 									ng-options="option.id as option.name for option in event.eventSeries"
@@ -76,10 +81,14 @@
 								</select>
 							</div>
 						</td>
-						<td class="center"><input type="text"
-							ng-disabled="{{!event.showInput}}" class="gridInput2" date-time
-							ng-model="event.eventTime" required="true" view="hours"
-							itemModel="{{$index}}"></td>
+						<td>
+							<!--<span ng-hide="{{event.showInput}} == true"><a
+								href="#/events/{{event.id}}">{{event.name}}</a></span>--> <span
+							ng-hide="{{event.showInput}} == true"><a
+								href="#/events/{{event.id}}">{{event.name}}</a></span> <input
+							ng-model="event.name" ng-show="{{event.showInput}}"
+							ng-change="changeName($index)" />
+						</td>
 						<td class="center">
 							<div>
 								可录：<span class="label label-error">{{event.leftCount}}</span>
@@ -110,11 +119,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="control-group">
-				<div class="controls">
-					<button type="button" class="btn btn-info" ng-click="createEvent()">创建</button>
-				</div>
-			</div>
+
 		</div>
 	</div>
 </div>
