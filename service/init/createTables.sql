@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
 	`id` varchar(36) NOT NULL,
 	`name` varchar(255) CHARACTER SET utf8 NOT NULL,
-	`eventTypeId` varchar(36) NOT NULL,
+	`eventTypeId` varchar(36),
 	`siteId` varchar(36) NOT NULL,
 	`seriesId` varchar(36),
 	`quota` int,

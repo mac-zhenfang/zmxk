@@ -3,7 +3,7 @@
 		ng-init="init()">
 		<div class="box-header">
 			<h2>
-				<i class="icon-edit"></i>赛事管理
+				<i class="icon-edit"></i>联赛管理
 			</h2>
 		</div>
 		<div class="box-content">
@@ -14,7 +14,7 @@
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
 					<tr>
-						<th>赛事类型名</th>
+						<th>联赛类型</th>
 						<th>赛道</th>
 						<th>操作</th>
 					</tr>
@@ -22,7 +22,7 @@
 				<tbody>
 					<tr ng-repeat="eventType in listEventTypes | filter:filterRule">
 						<td><span ng-hide="{{eventType.showInput}} == true"><a
-								href="#/event_types/{{eventType.id}}">{{eventType.name}}</a></span> <input
+								href="#/sites/{{eventType.siteId}}/event_types/{{eventType.id}}">{{eventType.name}}</a></span> <input
 							ng-model="eventType.name" ng-show="{{eventType.showInput}}" /></td>
 						<td><select ng-disabled="{{!eventType.showInput}}"
 							class="selectpicker gridInput2" data-style="btn-info"

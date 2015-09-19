@@ -3,7 +3,7 @@
 		ng-init="init()">
 		<div class="box-header">
 			<h2>
-				<i class="icon-edit"></i>系列管理
+				<i class="icon-edit"></i>联赛管理
 			</h2>
 		</div>
 		<div class="box-content">
@@ -14,11 +14,11 @@
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
 					<tr>
-						<th>系列名</th>
-						<th>赛事类型</th>
+						<th>联赛名</th>
+						<th>所属类型</th>
 						<th>开始时间</th>
 						<th>结束时间</th>
-						<th>stages</th>
+						<th>联赛层级</th>
 						<!-- <th>升级条件</th> -->
 						<th>操作</th>
 					</tr>
@@ -26,7 +26,7 @@
 				<tbody>
 					<tr ng-repeat="serie in eventSeries | filter:filterRule">
 						<td><span ng-hide="{{serie.showInput}} == true"><a
-								href="#/events/serieses/{{serie.id}}">{{serie.name}}</a></span> <input
+								href="#/sites/{{siteId}}/events/{{serie.eventTypeId}}/serieses/{{serie.id}}">{{serie.name}}</a></span> <input
 							ng-model="serie.name" ng-show="{{serie.showInput}}"
 							class="gridInput2" /></td>
 						<td><div>

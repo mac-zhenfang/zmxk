@@ -15,6 +15,7 @@ zmxk.controller('SerieManageCtrl', [
 			$scope.eventTypeId = $routeParams.eventTypeId;
 			$scope.eventSeries = [];
 			$scope.eventTypes = [];
+			$scope.siteId = null;
 			$scope.eventSeriesCategories = [ {
 				id : true,
 				name : "团队赛"
@@ -23,6 +24,7 @@ zmxk.controller('SerieManageCtrl', [
 				name : "个人赛"
 			} ]
 			$scope.init = function() {
+				$scope.siteId = $routeParams.siteId;
 				serieService.list($scope.eventTypeId).then(function(data) {
 					angular.forEach(data, function(serie, index) {
 						$scope.eventSeries.push(serie);
@@ -382,6 +384,8 @@ zmxk
 
 							$scope.listEvents = [];
 							$scope.seriesId = null;
+							$scope.eventTypeId = null;
+							$scope.siteId = null;
 							var dateNames = {};
 							$scope.$on('setDate1', function(e, date, idx) {
 								// console.log(idx);
@@ -390,9 +394,16 @@ zmxk
 								}
 							});
 							$scope.sites = [];
+
+							$scope.eventTypes = [ {
+								id : "",
+								name : "N/A"
+							} ]
 							$scope.init = function() {
 								var loginUserSiteId = $scope.loginUser.siteId;
+								$scope.siteId = $routeParams.siteId;
 								$scope.seriesId = $routeParams.seriesId;
+								$scope.eventTypeId = $routeParams.eventTypeId;
 								var criteria = {};
 								if ($scope.seriesId) {
 									criteria.seriesId = $scope.seriesId;
@@ -438,7 +449,10 @@ zmxk
 																		event["changed"] = false;
 																		event["showInput"] = false;
 
-																		event.eventSeries = [];
+																		event.eventSeries = [ {
+																			id : "",
+																			name : "N/A"
+																		} ];
 																		serieService
 																				.list(
 																						event.eventTypeId)
@@ -472,18 +486,32 @@ zmxk
 								if ($scope.isAdmin()) {
 									eventTypeService.list().then(
 											function(data) {
-												$scope.eventTypes = data;
+												angular.forEach(data, function(
+														eachData) {
+													$scope.eventTypes
+															.push(eachData);
+												})
 											}, function(data) {
 
 											})
 
 								} else {
-									eventTypeService.list(loginUserSiteId)
-											.then(function(data) {
-												$scope.eventTypes = data;
-											}, function(data) {
+									eventTypeService
+											.list(loginUserSiteId)
+											.then(
+													function(data) {
+														angular
+																.forEach(
+																		data,
+																		function(
+																				eachData) {
+																			$scope.eventTypes
+																					.push(eachData);
+																		})
 
-											})
+													}, function(data) {
+
+													})
 								}
 
 								if ($scope.isAdmin()) {
@@ -547,6 +575,9 @@ zmxk
 								}
 
 								var namePrefix = $scope.stageNameMap[selectEvent.stage];
+								if (angular.isUndefined(namePrefix)) {
+									namePrefix = "";
+								}
 								console.log(selectEvent);
 								var name;
 								if (angular.isUndefined(selectEvent.eventTime)) {
@@ -579,7 +610,10 @@ zmxk
 
 							}
 							$scope.initSeries = function(event) {
-								event.eventSeries = [];
+								event.eventSeries = [{
+									id : "",
+									name : "N/A"
+								}];
 								serieService.list(event.eventTypeId).then(
 										function(data) {
 											angular.forEach(data, function(
@@ -592,6 +626,14 @@ zmxk
 								// "单次比赛"})
 								console.log(event.eventSeries);
 
+							}
+
+							$scope.isSingleEvent = function(updateEvent) {
+									if ((angular.isUndefined(updateEvent.seriesId) || !updateEvent.seriesId)) {
+										return true;
+									} else {
+										return false
+									}
 							}
 
 							$scope.updateEvent = function(updateEvent, idx) {
@@ -614,15 +656,17 @@ zmxk
 											})
 									$scope.listEvents = angular.copy(events);
 								}
-								if (angular.isUndefined(updateEvent.seriesId)
-										|| !updateEvent.seriesId) {
-									$scope.launch("error", "", "请选择系列",
-											function() {
-
-											}, function() {
-											});
-									return;
+								if($scope.serieId == null && $scope.eventTypeId == null) {
+									if (!$scope.isSingleEvent(updateEvent)) {
+										$scope.launch("error", "", "请选择系列",
+												function() {
+	
+												}, function() {
+												});
+										return;
+									}
 								}
+								console.log(updateEvent);
 								// save event
 								if (!updateEvent.existed) {
 									eventService.createEvent(updateEvent).then(
@@ -633,7 +677,7 @@ zmxk
 												updateEvent.existed = true;
 												handleReturn(updateEvent);
 											}, function(data) {
-
+												console.log(data);
 											})
 								} else if (updateEvent.changed) {
 									eventService.updateEvent(updateEvent.id,
@@ -740,12 +784,43 @@ zmxk
 								var toCreateEvent = {
 
 								}
+
 								toCreateEvent["existed"] = false;
 								toCreateEvent["changed"] = true;
 								toCreateEvent["showInput"] = true;
 								toCreateEvent["status"] = 0;
-								$scope.listEvents.unshift(toCreateEvent);
-								
+								toCreateEvent["eventTypeId"] = $scope.eventTypeId==null?"":$scope.eventTypeId;
+								toCreateEvent["seriesId"] = $scope.seriesId==null?"":$scope.seriesId;
+								toCreateEvent["siteId"] = $scope.siteId;
+								toCreateEvent["stage"] =  $scope.seriesId==null?0:1;
+								toCreateEvent.eventSeries = [ {
+									id : "",
+									name : "N/A"
+								} ];
+								if ($scope.eventTypeId != null) {
+									
+									
+									serieService.list($scope.eventTypeId).then(
+											function(data) {
+												angular.forEach(data, function(
+														serie, index) {
+													toCreateEvent.eventSeries
+															.push(serie);
+													/*
+													 * console.log("<<<<<<<<<<<<<<<")
+													 * console.log(serie.id)
+													 * console.log(serie.name)
+													 * console.log(event.seriesId)
+													 * console.log(">>>>>>>>>>>>>>>")
+													 */
+													// $scope.listEvents.push(event);
+													$scope.listEvents.unshift(toCreateEvent);
+												})
+											})
+								} else {
+									console.log("~~~~~");
+									$scope.listEvents.unshift(toCreateEvent);
+								}
 							}
 
 						} ]);

@@ -110,13 +110,13 @@ zmxk.config([ '$routeProvider', function($routeProvider) {
 	}).when('/events', {
 		templateUrl : 'event_list.html',
 		controller : "EventManageCtrl"
-	}).when('/events/serieses/:seriesId', {
+	}).when('/sites/:siteId/events/:eventTypeId/serieses/:seriesId', {
 		templateUrl : 'event_list.html',
 		controller : "EventManageCtrl"
 	}).when('/event_types', {
 		templateUrl : 'eventtype_list.html',
 		controller : "EventManageCtrl"
-	}).when('/event_types/:eventTypeId', {
+	}).when('/sites/:siteId/event_types/:eventTypeId', {
 		templateUrl : 'eventtype_detail.html',
 		controller : "EventManageCtrl"
 	}).when('/event_rules', {

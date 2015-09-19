@@ -14,6 +14,9 @@ zmxk.controller('MainController', [
 			$scope.userId = $scope.$location.search().userId;
 			$scope.eventId = $scope.$location.search().eventId;
 			$scope.stages = [ {
+				value : 0,
+				label : "N/A"
+			},{
 				value : 1,
 				label : "预赛"
 			}, {
@@ -22,10 +25,7 @@ zmxk.controller('MainController', [
 			}, {
 				value : 3,
 				label : "年度赛"
-			}, {
-				value : null,
-				label : "------"
-			} ];
+			}];
 			
 			$scope.roles_option = [ {
 				value : 0,
