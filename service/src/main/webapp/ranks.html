@@ -19,11 +19,34 @@
 <link href="assets/css/style-responsive.min.css" rel="stylesheet" />
 <link href="assets/css/retina.css" rel="stylesheet" />
 <link href="assets/css/index.css" rel="stylesheet" />
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+
+<script src="assets/js/angular.js"></script>
+<!-- -->
+<script src="assets/js/angular-route.min.js"></script>
+<script src="assets/js/angular-resource.min.js"></script>
+<script src="assets/js/angular-cookies.min.js"></script>
+<script src="assets/js/dialogs.min.js"></script>
+<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/index.min.js"></script>
+
+<script src="assets/js/jquery-1.10.2.min.js"></script>
+<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/jquery.sparkline.min.js"></script>
+<script src="assets/js/jquery.autosize.min.js"></script>
+<script src="assets/js/retina.js"></script>
+<script src="assets/js/jquery.placeholder.min.js"></script>
+<script src="assets/js/core.min.js"></script>
+<script src="assets/js/custom.min.js"></script>
 </head>
 
 <body ng-controller="MainController as main" ng-init="init()">
 	<div class="container-fluid-full">
-		<div class="row-fluid">`
+		<div class="row-fluid">
+			`
 			<div class="span10 box ">
 				<div class="box-header">
 					<h2>我的排名</h2>
@@ -42,7 +65,7 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="rank in ranks">
-								<td>{{$index + 1}} </td>
+								<td>{{$index + 1}}</td>
 								<td>{{rank.kidName}}</td>
 								<td>{{rank.goldenMedal}}</td>
 								<td>{{rank.silverMedal}}</td>
@@ -54,28 +77,7 @@
 			</div>
 		</div>
 
-		<script src="assets/js/jquery-1.10.2.min.js"></script>
 
-		<script src="assets/js/angular.js"></script>
-		<!-- -->
-		<script src="assets/js/angular-route.min.js"></script>
-		<script src="assets/js/angular-resource.min.js"></script>
-		<script src="assets/js/angular-cookies.min.js"></script>
-		<script src="assets/js/dialogs.min.js"></script>
-		<script src="assets/js/ui-bootstrap-tpls-0.13.0.min.js"></script>
-
-		<script src="assets/js/bootstrap.min.js"></script>
-		<script src="assets/js/index.min.js"></script>
-
-		<script src="assets/js/jquery-1.10.2.min.js"></script>
-		<script src="assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-		<script src="assets/js/bootstrap.min.js"></script>
-		<script src="assets/js/jquery.sparkline.min.js"></script>
-		<script src="assets/js/jquery.autosize.min.js"></script>
-		<script src="assets/js/retina.js"></script>
-		<script src="assets/js/jquery.placeholder.min.js"></script>
-		<script src="assets/js/core.min.js"></script>
-		<script src="assets/js/custom.min.js"></script>
 		<script>
 			var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
 					$httpProvider) {
@@ -144,19 +146,35 @@
 															function(data) {
 																ranks = data;
 																$scope.showPage = true;
-																angular.forEach(ranks, function(rank, idx1){
-																	if(angular.isUndefined(tempRanks[rank.kidId])){
-																		tempRanks[rank.kidId] = rank;
-																	} else {
-																		tempRanks[rank.kidId].goldenMedal = parseInt(tempRanks[rank.kidId].goldenMedal) + parseInt(rank.goldenMedal);
-																		tempRanks[rank.kidId].silverMedal = parseInt(tempRanks[rank.kidId].silverMedal) + parseInt(rank.silverMedal);
-																		tempRanks[rank.kidId].bronzeMedal = parseInt(tempRanks[rank.kidId].bronzeMedal) +  parseInt(rank.bronzeMedal);
-																	}
-																})
-																
-																angular.forEach(tempRanks, function(key, value, idx2){
-																	$scope.ranks.push(key);
-																})
+																angular
+																		.forEach(
+																				ranks,
+																				function(
+																						rank,
+																						idx1) {
+																					if (angular
+																							.isUndefined(tempRanks[rank.kidId])) {
+																						tempRanks[rank.kidId] = rank;
+																					} else {
+																						tempRanks[rank.kidId].goldenMedal = parseInt(tempRanks[rank.kidId].goldenMedal)
+																								+ parseInt(rank.goldenMedal);
+																						tempRanks[rank.kidId].silverMedal = parseInt(tempRanks[rank.kidId].silverMedal)
+																								+ parseInt(rank.silverMedal);
+																						tempRanks[rank.kidId].bronzeMedal = parseInt(tempRanks[rank.kidId].bronzeMedal)
+																								+ parseInt(rank.bronzeMedal);
+																					}
+																				})
+
+																angular
+																		.forEach(
+																				tempRanks,
+																				function(
+																						key,
+																						value,
+																						idx2) {
+																					$scope.ranks
+																							.push(key);
+																				})
 																$scope.ranks
 																		.sort(function(
 																				bgA,
@@ -176,8 +194,9 @@
 																						- bgA.goldenMedal;
 																			}
 																		});
-																
-																console.log($scope.ranks);
+
+																console
+																		.log($scope.ranks);
 															}, function(data) {
 
 															});

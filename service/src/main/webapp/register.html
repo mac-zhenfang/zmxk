@@ -20,6 +20,14 @@
 <!-- CUSTOM STYLE CSS -->
 <link href="assets/css/style.css" rel="stylesheet" />
 <link href="admin/css/city.css" rel="stylesheet" />
+<!-- ANGULAR -->
+<script src="assets/plugins/angular.min.js"></script>
+<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+<!-- CORE JQUERY  -->
+<script src="assets/plugins/jquery-1.10.2.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="assets/plugins/bootstrap.js"></script>
+<script src="admin/js/zmxk/city.js"></script>
 </head>
 <body ng-controller="MainController as main">
 	<div class="container">
@@ -47,7 +55,7 @@
 						<div ng-show="currentStep == 2">
 							<div class="form-group input-group">
 								<span class="input-group-addon"></span><input type="text"
-									class="form-control" placeholder="用户名" ng-model="formData.name" />
+									class="form-control" placeholder="真实姓名" ng-model="formData.name" />
 							</div>
 							<div class="form-group input-group">
 								<span class="input-group-addon"></span><input
@@ -67,24 +75,16 @@
 									ng-model="formData.location" />
 							</div>
 						</div>
-						<input type="submit" value="注册"
-							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<div ng-show="currentStep == 3">
-							注册成功 <img src=""></img>
-						</div>
+						<input type="submit" value="注册" class="btn btn-info btn-block"
+							ng-show="currentStep != 3">
+						<div class="btn btn-success btn-block" ng-show="currentStep == 3">
+							注册成功</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- ANGULAR -->
-	<script src="assets/plugins/angular.min.js"></script>
-	<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
-	<!-- CORE JQUERY  -->
-	<script src="assets/plugins/jquery-1.10.2.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="assets/plugins/bootstrap.js"></script>
-	<script src="admin/js/zmxk/city.js"></script>
+
 	<script>
 		var zmxk = angular.module('zmxk', []);
 		zmxk

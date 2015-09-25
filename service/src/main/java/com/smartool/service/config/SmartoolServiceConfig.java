@@ -301,4 +301,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public int getNeedNotifyTimes() {
 		return env.getProperty("event_need_notify_time",  Integer.class,  1);
 	}
+	
+	public int getQrCodeLength() {
+		return env.getProperty("qrcode_length",  Integer.class,  350); 
+	}
+	public int getQrCodeWidth() {
+		return env.getProperty("qrcode_width",  Integer.class,  350); 
+	}
 }
