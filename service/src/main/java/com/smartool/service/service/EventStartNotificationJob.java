@@ -11,13 +11,13 @@ public class EventStartNotificationJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		logger.info("EventStartNotificationJob  ....... ");
-		try {
-			EventStartNotification eventStartNotification = (EventStartNotification) context.getScheduler().getContext()
-					.get("EventStartNotification");
-			eventStartNotification.notice();
-		} catch (SchedulerException e) {
-			logger.error("Caught exception when executing EventStartNotification: ", e);
-		}
+//		logger.info("EventStartNotificationJob  ....... ");
+//		try {
+//			EventStartNotification eventStartNotification = (EventStartNotification) context.getScheduler().getContext()
+//					.get("EventStartNotification");
+//			eventStartNotification.notice();
+//		} catch (SchedulerException e) {
+//			logger.error("Caught exception when executing EventStartNotification: ", e);
+//		}
 	}
 }

@@ -610,10 +610,10 @@ zmxk
 
 							}
 							$scope.initSeries = function(event) {
-								event.eventSeries = [{
+								event.eventSeries = [ {
 									id : "",
 									name : "N/A"
-								}];
+								} ];
 								serieService.list(event.eventTypeId).then(
 										function(data) {
 											angular.forEach(data, function(
@@ -629,11 +629,11 @@ zmxk
 							}
 
 							$scope.isSingleEvent = function(updateEvent) {
-									if ((angular.isUndefined(updateEvent.seriesId) || !updateEvent.seriesId)) {
-										return true;
-									} else {
-										return false
-									}
+								if ((angular.isUndefined(updateEvent.seriesId) || !updateEvent.seriesId)) {
+									return true;
+								} else {
+									return false
+								}
 							}
 
 							$scope.updateEvent = function(updateEvent, idx) {
@@ -656,11 +656,12 @@ zmxk
 											})
 									$scope.listEvents = angular.copy(events);
 								}
-								if($scope.serieId == null && $scope.eventTypeId == null) {
+								if ($scope.serieId == null
+										&& $scope.eventTypeId == null) {
 									if (!$scope.isSingleEvent(updateEvent)) {
 										$scope.launch("error", "", "请选择系列",
 												function() {
-	
+
 												}, function() {
 												});
 										return;
@@ -789,34 +790,44 @@ zmxk
 								toCreateEvent["changed"] = true;
 								toCreateEvent["showInput"] = true;
 								toCreateEvent["status"] = 0;
-								toCreateEvent["eventTypeId"] = $scope.eventTypeId==null?"":$scope.eventTypeId;
-								toCreateEvent["seriesId"] = $scope.seriesId==null?"":$scope.seriesId;
+								toCreateEvent["team"] = false;
+								toCreateEvent["eventTypeId"] = $scope.eventTypeId == null ? ""
+										: $scope.eventTypeId;
+								toCreateEvent["seriesId"] = $scope.seriesId == null ? ""
+										: $scope.seriesId;
 								toCreateEvent["siteId"] = $scope.siteId;
-								toCreateEvent["stage"] =  $scope.seriesId==null?0:1;
+								toCreateEvent["stage"] = $scope.seriesId == null ? 0
+										: 1;
 								toCreateEvent.eventSeries = [ {
 									id : "",
 									name : "N/A"
 								} ];
 								if ($scope.eventTypeId != null) {
-									
-									
-									serieService.list($scope.eventTypeId).then(
-											function(data) {
-												angular.forEach(data, function(
-														serie, index) {
-													toCreateEvent.eventSeries
-															.push(serie);
-													/*
-													 * console.log("<<<<<<<<<<<<<<<")
-													 * console.log(serie.id)
-													 * console.log(serie.name)
-													 * console.log(event.seriesId)
-													 * console.log(">>>>>>>>>>>>>>>")
-													 */
-													// $scope.listEvents.push(event);
-													$scope.listEvents.unshift(toCreateEvent);
-												})
-											})
+
+									serieService
+											.list($scope.eventTypeId)
+											.then(
+													function(data) {
+														angular
+																.forEach(
+																		data,
+																		function(
+																				serie,
+																				index) {
+																			toCreateEvent.eventSeries
+																					.push(serie);
+																			/*
+																			 * console.log("<<<<<<<<<<<<<<<")
+																			 * console.log(serie.id)
+																			 * console.log(serie.name)
+																			 * console.log(event.seriesId)
+																			 * console.log(">>>>>>>>>>>>>>>")
+																			 */
+																			// $scope.listEvents.push(event);
+																		})
+														$scope.listEvents
+																.unshift(toCreateEvent);
+													})
 								} else {
 									console.log("~~~~~");
 									$scope.listEvents.unshift(toCreateEvent);
@@ -870,6 +881,8 @@ zmxk
 							$scope.eventId = $routeParams.eventId;
 							// console.log("~~~~~" + $scope.eventId);
 							$scope.eventInit = {};
+							$scope.isGeneratedGrades = false;
+							$scope.generateGradesLabel = "生成表单";
 							$scope.selectedRule
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
@@ -1096,6 +1109,15 @@ zmxk
 									 * 
 									 * });
 									 */
+								}
+							}
+
+							$scope.generateGrades = function() {
+								$scope.isGeneratedGrades = !$scope.isGeneratedGrades;
+								if (!$scope.isGeneratedGrades) {
+									$scope.generateGradesLabel = "生成表单";
+								} else {
+									$scope.generateGradesLabel = "返回选手管理";
 								}
 							}
 

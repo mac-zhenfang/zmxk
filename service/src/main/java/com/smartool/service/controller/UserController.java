@@ -47,7 +47,7 @@ public class UserController extends BaseController {
 		if (criteria == null) {
 			return userService.search(null, null, null);
 		}
-		return userService.search(criteria.get("mobileNum"), criteria.get("wcId"), criteria.get("kidName"));
+		return userService.search(criteria.get("mobileNumber"), criteria.get("wcId"), criteria.get("kidName"));
 	}
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)

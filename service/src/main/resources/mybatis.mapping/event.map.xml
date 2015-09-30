@@ -13,8 +13,8 @@
 		column="attendeeId" /> <result property="userId" column="userId" /> </collection> 
 		</resultMap> <select id="listAllWithAttendees" resultMap="event"> select 
 		e.eventTime as eventTime, e.name as eventName, t.name as eventType, e.id 
-		as eventId, e.eventTypeId as eventTypeId, e.quota as quota, a.id as attendeeId, a.userId 
-		as userId, e.createdTime as createdTime, e.lastModifiedTime as lastModifiedTime 
+		as eventId, e.eventTypeId as eventTypeId, e.quota as quota, a.id as attendeeId, 
+		a.userId as userId, e.createdTime as createdTime, e.lastModifiedTime as lastModifiedTime 
 		from events e, eventTypes t, attendees a where e.eventTypeId=t.id and a.eventId 
 		= e.id </select> -->
 	<resultMap type="com.smartool.common.dto.Event" id="event">
@@ -38,6 +38,8 @@
 			<result property="eventId" column="eventId" />
 			<result property="kidId" column="kidId" />
 			<result property="userId" column="userId" />
+			<result property="schoolType" column="schoolType" />
+			<result property="schoolName" column="schoolName" />
 			<result property="teamId" column="teamId" />
 			<result property="teamName" column="teamName" />
 			<result property="tagId" column="tagId" />
@@ -46,7 +48,7 @@
 			<result property="rank" column="rank" />
 			<result property="seq" column="seq" />
 			<result property="status" column="attendeeStatus" />
-			<result  property="attendeeNotifyTimes" column="attendeeNotifyTimes" />
+			<result property="attendeeNotifyTimes" column="attendeeNotifyTimes" />
 		</collection>
 	</resultMap>
 	<select id="listAll" resultMap="event">
@@ -73,12 +75,14 @@
 		attendeeStatus,
 		e.stage as
 		stage,
-		e.seriesId as seriesId,
+		e.seriesId as
+		seriesId,
 		s.isTeam as
 		isSerieTeam,
 		e.isTeam as
 		isEventTeam,
-		e.status as status,
+		e.status as
+		status,
 		teamName,
 		teamId
 		FROM events e
@@ -89,19 +93,24 @@
 		LEFT JOIN ( select a.id
 		as attendeeId, k.id as kidId, k.name as
 		kidName,
-		a.userId as userId,a.notify_times as attendeeNotifyTimes,
-		a.rank as rank, a.score as score, a.seq as
+		a.userId as
+		userId,a.notify_times as attendeeNotifyTimes,
+		a.rank as rank, a.score
+		as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.eventId as eventId, ts.name as
+		attendeeStatus, a.eventId as eventId,
+		ts.name as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
 		JOIN attendees a on a.kidId=k.id
 		LEFT
 		JOIN teams ts
-		on k.teamId=ts.id
-		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
+		on
+		k.teamId=ts.id
+		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id =
+		akts.eventId
 	</select>
 
 	<select id="listAllBySiteId" resultMap="event" parameterType="String">
@@ -109,7 +118,8 @@
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -142,32 +152,40 @@
 		e.eventTypeId
 		JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
-		as attendeeId, a.notify_times as attendeeNotifyTimes, k.id as kidId, k.name as
+		as attendeeId, a.notify_times as
+		attendeeNotifyTimes, k.id as kidId, k.name as
 		kidName,
-		a.userId as userId,
+		a.userId as
+		userId,
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
 		attendeeStatus, a.eventId as eventId, ts.name as
-		teamName, ts.id as teamId, a.tagId as
+		teamName, ts.id as
+		teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
-		JOIN attendees a on a.kidId=k.id
+		JOIN attendees a on
+		a.kidId=k.id
 		LEFT
 		JOIN teams ts
 		on k.teamId=ts.id
-		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
+		LEFT JOIN tags tg on
+		a.tagId=tg.id) akts on e.id = akts.eventId
 		WHERE
 		e.siteId=#{siteId}
 	</select>
 
 	<select id="listAllStatus" parameterType="int" resultMap="event">
-		SELECT e.eventTime as eventTime,
+		SELECT
+		e.eventTime as eventTime,
 		e.name as eventName, t.name as
-		eventType, e.id as eventId,
+		eventType, e.id
+		as eventId,
 		e.eventTypeId as
 		eventTypeId, e.quota as quota,
-		e.siteId as siteId,
+		e.siteId as
+		siteId,
 		e.createdTime as
 		createdTime,
 		e.lastModifiedTime as
@@ -195,25 +213,31 @@
 		teamId
 		FROM events e
 		JOIN
-		eventTypes t on t.id=
+		eventTypes t on
+		t.id=
 		e.eventTypeId
 		JOIN series s on s.id=e.seriesId
-		LEFT JOIN ( select a.id
+		LEFT JOIN ( select
+		a.id
 		as attendeeId, k.id as kidId, k.name as
 		kidName,
 		a.userId as userId,
 		a.rank as rank, a.score as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
+		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as
+		eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
-		tagId, tg.name as tag
+		tagId, tg.name
+		as tag
 		from kids k
 		JOIN attendees a on a.kidId=k.id
 		LEFT
 		JOIN teams ts
-		on k.teamId=ts.id
-		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
+		on
+		k.teamId=ts.id
+		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id =
+		akts.eventId
 		WHERE
 		e.status =
 		#{status};
@@ -225,7 +249,8 @@
 	</select>
 
 	<select id="listFullAll" resultMap="event">
-		SELECT e.eventTime as eventTime,
+		SELECT e.eventTime as
+		eventTime,
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
@@ -262,29 +287,35 @@
 		e.eventTypeId
 		JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
-		as attendeeId, k.id as kidId, k.name as
+		as attendeeId,
+		k.id as kidId, k.name as
 		kidName,
 		a.userId as userId,
-		a.rank as rank, a.score as score, a.seq as
+		a.rank as rank,
+		a.score as score, a.seq as
 		seq,
 		a.status as
-		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
+		attendeeStatus,
+		a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name
+		as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name as tag
-		from kids k
+		from kids
+		k
 		JOIN attendees a on a.kidId=k.id
 		LEFT
 		JOIN teams ts
 		on k.teamId=ts.id
 		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
 	</select>
-	
+
 	<select id="search" parameterType="Map" resultMap="event">
 		SELECT e.eventTime as eventTime,
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -312,26 +343,33 @@
 		teamName,
 		teamId
 		FROM events e
-		LEFT JOIN
+		LEFT
+		JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		LEFT JOIN series s on s.id=e.seriesId
+		LEFT JOIN series s on
+		s.id=e.seriesId
 		LEFT JOIN ( select a.id
-		as attendeeId, k.id as kidId, k.name as
+		as attendeeId, k.id as kidId,
+		k.name as
 		kidName,
 		a.userId as userId,
-		a.rank as rank, a.score as score, a.seq as
+		a.rank as rank, a.score as score,
+		a.seq as
 		seq, a.notify_times as attendeeNotifyTimes,
 		a.status as
 		attendeeStatus, a.eventId as eventId, ts.name as
-		teamName, ts.id as teamId, a.tagId as
+		teamName, ts.id as
+		teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
-		JOIN attendees a on a.kidId=k.id
+		JOIN attendees a on
+		a.kidId=k.id
 		LEFT
 		JOIN teams ts
 		on k.teamId=ts.id
-		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
+		LEFT JOIN tags tg on
+		a.tagId=tg.id) akts on e.id = akts.eventId
 		<trim prefix="WHERE" prefixOverrides="AND |OR ">
 			<if test="status != null">
 				AND e.status = #{status}
@@ -360,7 +398,8 @@
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -372,6 +411,8 @@
 		score,
 		rank,
 		kidName,
+		schoolType,
+		schoolName,
 		userId,
 		seq,
 		tagId,
@@ -380,7 +421,8 @@
 		attendeeNotifyTimes,
 		e.stage as
 		stage,
-		e.seriesId as seriesId,
+		e.seriesId as
+		seriesId,
 		s.isTeam as
 		isSerieTeam,
 		e.isTeam as
@@ -391,29 +433,39 @@
 		JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		JOIN series s on s.id=e.seriesId
+		JOIN series s
+		on s.id=e.seriesId
 		LEFT JOIN ( select a.id
-		as attendeeId, k.id as kidId, k.name as
-		kidName,
+		as attendeeId, k.id as kidId,
+		k.name as
+		kidName,k.schoolType as schoolType,k.schoolName as
+		schoolName,
 		a.userId as userId,
-		a.rank as rank, a.score as score, a.seq as
+		a.rank as rank, a.score as score, a.seq
+		as
 		seq,
 		a.status as
-		attendeeStatus, a.notify_times as attendeeNotifyTimes, a.eventId as eventId, ts.name as
-		teamName, ts.id as teamId, a.tagId as
+		attendeeStatus, a.notify_times as
+		attendeeNotifyTimes,
+		a.eventId as eventId, ts.name as
+		teamName, ts.id as
+		teamId, a.tagId as
 		tagId, tg.name as tag
 		from kids k
-		JOIN attendees a on a.kidId=k.id
+		JOIN attendees a on
+		a.kidId=k.id
 		LEFT
 		JOIN teams ts
 		on k.teamId=ts.id
-		LEFT JOIN tags tg on a.tagId=tg.id) akts on e.id = akts.eventId
+		LEFT JOIN tags tg on
+		a.tagId=tg.id) akts
+		on e.id = akts.eventId
 		WHERE
 		e.id =
 		#{id};
 	</select>
-	
-	
+
+
 
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Event">

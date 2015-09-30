@@ -9,13 +9,13 @@
 		<!-- <div class="gridStyle" ng-grid="gridOptions"></div> -->
 
 		<!---->
-		<div class="box-content">
+		<div class="box-content" ng-show="isGeneratedGrades==false">
 			<table
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
 					<tr>
 						<th>选手名</th>
-						<th>所属团队</th>
+						<th>属性</th>
 						<th>车次</th>
 						<th>状态</th>
 						<th>成绩</th>
@@ -26,10 +26,13 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="attendee in eventInit.attendees | orderBy:'rank'">
+						<td class="center">{{attendee.kidName}}</td>
 						<td class="center">
-							{{attendee.kidName}}
+							<div ng-show="eventInit.team">
+								战队：<span class="label label-success">{{attendee.teamName}}</span>
+							</div>
+							<div ng-show="attendee.schoolType!=2">{{attendee.schoolName}}</div>
 						</td>
-						<td class="center"><span ng-show="eventInit.team" class="label label-success">{{attendee.teamName}}</span></td>
 						<td class="center">{{attendee.seq}}</td>
 						<td class="center"><span
 							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
@@ -59,13 +62,53 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="control-group">
-				<div class="controls">
-					<button type="button" class="btn btn-info"
-						ng-click="applyAttendeeChanges()">保存</button>
-				</div>
+		</div>
+		<div class="box-content" ng-show="isGeneratedGrades">
+			<table
+				class="table table-striped table-bordered bootstrap-datatable datatable">
+				<thead>
+					<tr>
+						<th>选手名</th>
+						<th>状态</th>
+						<th>成绩</th>
+						<th>排名</th>
+						<th>组别</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="attendee in eventInit.attendees | orderBy:'rank'">
+						<td class="center">{{attendee.kidName}}</td>
+						<td class="center"><span
+							ng-class="{true:'label label-success', false:'label label-warning'}[attendee.score > 0]">{{{true:'已完成比赛',
+								false:'未完成比赛'}[attendee.score > 0]}}</span></td>
+						<td class="center"><span ng-hide="attendee.editing"
+							ng-bind="attendee.min"></span> <input ng-model="attendee.min"
+							ng-show="attendee.editing" class="form-control gridInput" />分<span
+							ng-hide="attendee.editing" ng-bind="attendee.sec"></span> <input
+							ng-model="attendee.sec" ng-show="attendee.editing"
+							class="form-control gridInput" />秒
+						<td class="center">{{attendee.rank}}</td>
+						<td class="center"><span ng-click="attendee.editingTag=true"
+							ng-hide="attendee.editingTag"
+							ng-bind="{true: '未授予组别', false : attendee.tag}[attendee.tag==null]"
+							ng-class="showTagClass(attendee.tagType)"></span> <select
+							ng-show="attendee.editingTag" class="selectpicker gridInput2"
+							data-style="btn-info" ng-model="attendee.tagId"
+							ng-options="option.id as option.name for option in eventTags">
+						</select></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="box-content control-group">
+			<div class="controls">
+				<button type="button" class="btn btn-info"
+					ng-click="applyAttendeeChanges()">保存</button>
+				<button type="button" class="btn btn-warn"
+					ng-click="generateGrades()">{{generateGradesLabel}}</button>
 			</div>
 		</div>
+
 	</div>
 </div>
 <!--/row-->

@@ -284,7 +284,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
 		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
-		schedulerContextAsMap.put("EventStartNotification", eventStartNotification());
+		//schedulerContextAsMap.put("EventStartNotification", eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
 		schedulerFactoryBean.start();
 		return schedulerFactoryBean;
@@ -303,9 +303,9 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 	
 	public int getQrCodeLength() {
-		return env.getProperty("qrcode_length",  Integer.class,  350); 
+		return env.getProperty("qrcode_length",  Integer.class,  320); 
 	}
 	public int getQrCodeWidth() {
-		return env.getProperty("qrcode_width",  Integer.class,  350); 
+		return env.getProperty("qrcode_width",  Integer.class,  320); 
 	}
 }
