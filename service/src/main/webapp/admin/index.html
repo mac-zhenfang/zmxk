@@ -22,7 +22,7 @@
 <link href="css/retina.css" rel="stylesheet" />
 <link href="css/index.css" rel="stylesheet" />
 <!---->
-<link href="css/zmxk.css" rel="stylesheet" /> 
+<link href="css/zmxk.css" rel="stylesheet" />
 <!-- end: CSS -->
 
 
@@ -37,6 +37,34 @@
 	<![endif]-->
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="js/jquery-1.10.2.min.js"></script>
+
+<script src="js/angular.js"></script>
+<!-- -->
+<script src="js/angular-route.min.js"></script>
+<script src="js/angular-resource.min.js"></script>
+<script src="js/angular-cookies.min.js"></script>
+<script src="js/dialogs.min.js"></script>
+<script src="js/ui-bootstrap-tpls-0.13.0.min.js"></script>
+
+<script src="js/bootstrap.min.js"></script>
+<script src="js/index.min.js"></script>
+
+<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="js/retina.js"></script>
+<script src="js/wizard.min.js"></script>
+<script src="js/core.min.js"></script>
+<script src="js/custom.min.js"></script>
+<script src="js/zmxk/app.js"></script>
+<script src="js/zmxk/services.js"></script>
+<script src="js/zmxk/ctrl.main.js"></script>
+<script src="js/zmxk/ctrl.user.js"></script>
+<script src="js/zmxk/ctrl.sidebar.js"></script>
+<script src="js/zmxk/ctrl.event.js"></script>
+<script src="js/zmxk/ctrl.enroll.js"></script>
+<script src="js/zmxk/ctrl.rule.js"></script>
+<script src="js/zmxk/ctrl.site.js"></script>
+<script src="js/zmxk/ctrl.team.js"></script>
 </head>
 
 <body ng-cloak ng-controller="MainController as main" ng-init="init()">
@@ -63,52 +91,23 @@
 		<div class="clearfix" ng-include="'footer.html'"></div>
 
 	</div>
-				<div id="loadingModal" class="modal hide fade" tabindex="-1"
-				role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h3>正在装载</h3>
-				</div>
-				<div class="modal-body" ng-init="createNew=false">
-					<div ng-show="createNew==false">
-						<div class="alert alert-info">
-							正在载入，数据请稍等......
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-				</div>
+	<div id="loadingModal" class="modal hide fade" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">&times;</button>
+			<h3>正在装载</h3>
+		</div>
+		<div class="modal-body" ng-init="createNew=false">
+			<div ng-show="createNew==false">
+				<div class="alert alert-info">正在载入，数据请稍等......</div>
 			</div>
-	<script src="js/jquery-1.10.2.min.js"></script>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
 
-	<script src="js/angular.js"></script>
-	<!-- -->
-	<script src="js/angular-route.min.js"></script>
-	<script src="js/angular-resource.min.js"></script>
-	<script src="js/angular-cookies.min.js"></script>
-	<script src="js/dialogs.min.js"></script>
-	<script src="js/ui-bootstrap-tpls-0.13.0.min.js"></script>
-
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/index.min.js"></script>
-
-	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
-	<script src="js/retina.js"></script>
-	<script src="js/wizard.min.js"></script>
-	<script src="js/core.min.js"></script>
-	<script src="js/custom.min.js"></script>
-	<script src="js/zmxk/app.js"></script>
-	<script src="js/zmxk/services.js"></script>
-	<script src="js/zmxk/ctrl.main.js"></script>
-	<script src="js/zmxk/ctrl.user.js"></script>
-	<script src="js/zmxk/ctrl.sidebar.js"></script>
-	<script src="js/zmxk/ctrl.event.js"></script>
-	<script src="js/zmxk/ctrl.enroll.js"></script>
-	<script src="js/zmxk/ctrl.rule.js"></script>
-	<script src="js/zmxk/ctrl.site.js"></script>
-	<script src="js/zmxk/ctrl.team.js"></script>
 	<!-- end: JavaScript-->
 
 </body>
