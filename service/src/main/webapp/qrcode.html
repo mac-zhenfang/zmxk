@@ -21,7 +21,12 @@
 </head>
 <body ng-controller="MainController as main" ng-init="init()">
 	<div class="container">
-		<img ng-src="/service/smartool/api/v1/users/me/qrcode"></img>
+		<div class="box-content">
+			<img ng-src="/service/smartool/api/v1/users/me/qrcode"></img>
+		</div>
+		<div class="box-content">
+			<CENTER>此二维码目前仅用于现场报名比赛</CENTER>
+		</div>
 	</div>
 </body>
 <script src="assets/js/jquery-1.10.2.min.js"></script>
@@ -46,34 +51,34 @@
 <script src="assets/js/core.min.js"></script>
 <script src="assets/js/custom.min.js"></script>
 <script>
-var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
-		$httpProvider) {
-	$httpProvider.interceptors.push(function($q) {
-		return {
-			'responseError' : function(response) {
-				if (response.status == "401") {
-					window.location = "login.html#?page=timeline";
-					return;
-				}
-				if (response.status == "403") {
-					window.location = "err403.html";
-					return;
-				}
-				/*if (response.status == "500") {
-					window.location = "err500.html";
-					return;
-				}*/
-				/*
-				 * if (response.status == "400") {
-				 * 
-				 * alert(response.data.error); } if (response.data.error) {
-				 * alert(response.data.error); }
-				 */
-				return $q.reject(response);
-			}
-		};
-	});
-});
+	var zmxk = angular.module('zmxk', [ 'ngResource' ],
+			function($httpProvider) {
+				$httpProvider.interceptors.push(function($q) {
+					return {
+						'responseError' : function(response) {
+							if (response.status == "401") {
+								window.location = "login.html#?page=timeline";
+								return;
+							}
+							if (response.status == "403") {
+								window.location = "err403.html";
+								return;
+							}
+							/*if (response.status == "500") {
+								window.location = "err500.html";
+								return;
+							}*/
+							/*
+							 * if (response.status == "400") {
+							 * 
+							 * alert(response.data.error); } if (response.data.error) {
+							 * alert(response.data.error); }
+							 */
+							return $q.reject(response);
+						}
+					};
+				});
+			});
 	zmxk.config([ '$resourceProvider', function($resourceProvider) {
 		// Don't strip trailing slashes from calculated URLs
 		$resourceProvider.defaults.stripTrailingSlashes = false;
@@ -102,9 +107,11 @@ var zmxk = angular.module('zmxk', [ 'ngResource' ], function(
 
 	zmxk.controller('MainController', [ '$scope', 'userService', '$location',
 			function($scope, userService, $location) {
-		userService.getMe(function(data){}, function(data){});
+				userService.getMe(function(data) {
+				}, function(data) {
+				});
 				$scope.getQrCode = function() {
-					
+
 					var url = window.location.origin;
 					url = url + "/service/smartool/api/v1/users/me/qrcode";
 					console.log(url);
