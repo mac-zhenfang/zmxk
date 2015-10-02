@@ -55,7 +55,8 @@
 						<div ng-show="currentStep == 2">
 							<div class="form-group input-group">
 								<span class="input-group-addon"></span><input type="text"
-									class="form-control" placeholder="真实姓名" ng-model="formData.name" />
+									class="form-control" placeholder="真实姓名"
+									ng-model="formData.name" />
 							</div>
 							<div class="form-group input-group">
 								<span class="input-group-addon"></span><input
@@ -140,29 +141,17 @@
 			$scope.mobileVerified = false;
 			$scope.TotalStep = 3;
 			$scope.currentStep = 1;
+			$scope.enableResendQrcode = false;
+			$scope.timelmt = 120;
+			$scope.security_code_resend_label = "(" + $scope.timelmt + ")秒后，重新发送验证码";
 			$scope.popTo = window.location.origin + "/qrcode.html";
 		} ]);
 		var send_code_uri;
-		zmxk.controller('QrCodeController', [
-				'$scope',
-				'$http',
-				'$interval',
+		zmxk.controller('QrCodeController', [ '$scope', '$http', '$interval',
 				function($scope, $http, $interval) {
+
 					$scope.init = function() {
-						var timelmt = 90;
-						$scope.security_code_resend_label = "(" + timelmt
-								+ ")秒后，重新发送验证码";
-						$scope.enableResendQrcode = false;
-						$interval(function() {
-							if (timelmt > 0) {
-								timelmt -= 1;
-								$scope.security_code_resend_label = "("
-										+ timelmt + ")秒后,重新发送验证码"
-							} else {
-								$scope.enableResendQrcode = true;
-								$scope.security_code_resend_label = "重新发送验证码";
-							}
-						}, 1000);
+
 					}
 
 					$scope.canResendQrCode = function() {
@@ -197,7 +186,8 @@
 								'$scope',
 								'$http',
 								'$timeout',
-								function($scope, $http, $timeout) {
+								'$interval',
+								function($scope, $http, $timeout, $interval) {
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
@@ -254,6 +244,18 @@
 															function(data) {
 																$scope.currentStep = 2;
 																$scope.submit_label = $scope.const.registerTitle;
+																$interval(
+																		function() {
+																			if ($scope.timelmt > 0) {
+																				$scope.timelmt -= 1;
+																				$scope.security_code_resend_label = "("
+																						+ $scope.timelmt
+																						+ ")秒后,重新发送验证码"
+																			} else {
+																				$scope.enableResendQrcode = true;
+																				$scope.security_code_resend_label = "重新发送验证码";
+																			}
+																		}, 1000);
 															})
 													.error(
 															function(data,
