@@ -1,0 +1,1 @@
+ALTER TABLE users ADD idp tinyint default 0

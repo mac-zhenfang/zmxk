@@ -62,6 +62,13 @@ public class UserController extends BaseController {
 		return userService.listAllUser();
 	}
 
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/users", method = RequestMethod.POST)
+	public User createUser(@RequestBody User user) {
+		return userService.createUser(user);
+	}
+	
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public User login(@RequestBody LoginUser user) {

@@ -16,7 +16,7 @@ zmxk.controller('MainController', [
 			$scope.stages = [ {
 				value : 0,
 				label : "N/A"
-			},{
+			}, {
 				value : 1,
 				label : "预赛"
 			}, {
@@ -25,8 +25,8 @@ zmxk.controller('MainController', [
 			}, {
 				value : 3,
 				label : "年度赛"
-			}];
-			
+			} ];
+
 			$scope.roles_option = [ {
 				value : 0,
 				label : "用户"
@@ -37,19 +37,19 @@ zmxk.controller('MainController', [
 				value : 2,
 				label : "管理员"
 			} ];
-			
+
 			$scope.stageNameMap = {
-					"1" : "A",
-					"2" : "B",
-					"3" : "C"
+				"1" : "A",
+				"2" : "B",
+				"3" : "C"
 			}
-			
+
 			$scope.nameStageMap = {
-					"A" : 1,
-					"B" : 2,
-					"C" : 3
+				"A" : 1,
+				"B" : 2,
+				"C" : 3
 			}
-			
+
 			$scope.kids_school_options = [ {
 				value : 0,
 				label : "幼儿园"
@@ -61,20 +61,25 @@ zmxk.controller('MainController', [
 				label : "未上幼儿园"
 			} ]
 
-			// console.log($cookies.get("loginUser"));
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
 			// console.log($scope.loginUser);
 			$scope.init = function() {
-				
 
+				//console.log($scope.loginUser);
+				userService.getUser($scope.loginUser.id).then(function(data) {
+					
+				}, function(data) {
+				});
 				if (!angular.isUndefined($scope.$location.search().page)) {
 					// console.log($scope.$location);
 					currentModule = $scope.$location.search().page;
 				}
 			}
-			
+
 			$scope.isAdmin = function() {
-				return !angular.isUndefined($scope.loginUser) && !angular.isUndefined($scope.loginUser.roleId) && $scope.loginUser.roleId==2;
+				return !angular.isUndefined($scope.loginUser)
+						&& !angular.isUndefined($scope.loginUser.roleId)
+						&& $scope.loginUser.roleId == 2;
 			}
 
 			$scope.hoopPage = function(page, params) {

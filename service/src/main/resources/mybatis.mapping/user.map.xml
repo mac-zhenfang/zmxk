@@ -16,6 +16,7 @@
 		<result property="silverMedal" column="silverMedal" />
 		<result property="bronzeMedal" column="bronzeMedal" />
 		<result property="createdTime" column="userCreatedTime" />
+		<result property="idp" column="idp" />
 		<result property="lastModifiedTime" column="userLastModifiedTime" />
 		<collection property="kids" ofType="com.smartool.common.dto.Kid">
 			<id property="id" column="kidId" />
@@ -37,7 +38,8 @@
 		users.lastModifiedTime as userLastModifiedTime,
 		kids.id as kidId,
 		kids.name as kidName, schoolType, schoolName, kids.createdTime
-		as userCreatedTime, kids.lastModifiedTime as userLastModifiedTime
+		as
+		userCreatedTime, kids.lastModifiedTime as userLastModifiedTime
 		FROM
 		users LEFT JOIN
 		kids
@@ -113,10 +115,10 @@
 		insert users (id, name,
 		password,
 		mobileNum, location,
-		roleId,status,siteId, createdTime,
+		roleId,status,siteId, idp, createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{password},#{mobileNum},#{location},#{roleId},#{status},#{siteId},now(),now())
+		(#{id},#{name},#{password},#{mobileNum},#{location},#{roleId},#{status},#{siteId},#{idp},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.User">
 		update users
@@ -132,7 +134,8 @@
 	<update id="updatePassword" parameterType="com.smartool.common.dto.LoginUser">
 		update users
 		set
-		password=#{password}
+		password=#{password},
+		idp=#{idp}
 		where
 		mobileNum=#{mobileNum};
 	</update>

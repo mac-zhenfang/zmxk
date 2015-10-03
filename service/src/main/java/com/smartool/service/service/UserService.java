@@ -10,6 +10,8 @@ import com.smartool.common.dto.User;
 
 public interface UserService {
 	List<User> listAllUser();
+	
+	User createUser(User user);
 
 	User login(LoginUser user);
 

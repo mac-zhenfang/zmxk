@@ -308,4 +308,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public int getQrCodeWidth() {
 		return env.getProperty("qrcode_width",  Integer.class,  320); 
 	}
+	
+	public String getDefaultPassword() {
+		return env.getProperty("default_password", "ismartool");
+	}
 }

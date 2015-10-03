@@ -629,6 +629,7 @@ zmxk
 							}
 
 							$scope.isSingleEvent = function(updateEvent) {
+								console.log(updateEvent);
 								if ((angular.isUndefined(updateEvent.seriesId) || !updateEvent.seriesId)) {
 									return true;
 								} else {
@@ -656,7 +657,9 @@ zmxk
 											})
 									$scope.listEvents = angular.copy(events);
 								}
-								if ($scope.serieId == null
+								//console.log($scope.serieId);
+								//console.log($scope.eventTypeId);
+								/*if ($scope.serieId == null
 										&& $scope.eventTypeId == null) {
 									if (!$scope.isSingleEvent(updateEvent)) {
 										$scope.launch("error", "", "请选择系列",
@@ -666,7 +669,7 @@ zmxk
 												});
 										return;
 									}
-								}
+								}*/
 								console.log(updateEvent);
 								// save event
 								if (!updateEvent.existed) {

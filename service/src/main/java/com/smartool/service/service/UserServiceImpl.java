@@ -16,6 +16,7 @@ import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
+import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
@@ -295,9 +296,28 @@ public class UserServiceImpl implements UserService {
 		}
 		LoginUser existedUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
 		existedUser.setPassword(CommonUtils.encryptBySha2(user.getPassword()));
+		existedUser.setIdp(Constants.NOT_USE_DEFAULT_PASSWORD);
 		LoginUser updateUser = userDao.updatePassword(existedUser);
 		securityCodeDao.remove(user.getMobileNum());
 		return updateUser;
+	}
+
+	@Override
+	public User createUser(User user) {
+		validateMobileNumberForRegister(user.getMobileNum());
+		LoginUser loginUser = new LoginUser();
+		loginUser.setId(CommonUtils.getRandomUUID());
+		loginUser.setName(user.getName());
+		loginUser.setMobileNum(user.getMobileNum());
+		loginUser.setKids(user.getKids());
+		loginUser.setLocation(user.getLocation());
+		loginUser.setRoleId(UserRole.NORMAL_USER.getValue());
+		loginUser.setPassword(CommonUtils.encryptBySha2(config.getDefaultPassword()));
+		loginUser.setIdp(Constants.USE_DEFAULT_PASSWORD);
+		isUserValidForCreate(loginUser);
+		User createdUser = userDao.createUser(loginUser);
+		securityCodeDao.remove(user.getMobileNum());
+		return createdUser;
 	}
 
 }

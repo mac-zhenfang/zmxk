@@ -1,16 +1,55 @@
 <div class="box span12" ng-controller="UserCtrl" ng-init="init()">
 	<div class="box-header" data-original-title="">
 		<h2>
+			<i class="icon-user"></i><span class="break"></span>创建用户
+		</h2>
+
+	</div>
+	<div class="box-content">
+		<div class="control-group">
+			<div class="controls">
+				<button type="button" class="btn btn-info" ng-click="createUser()">{{create_user_label}}</button>
+			</div>
+		</div>
+
+	</div>
+	<div class="box-content" ng-show="userCreateStep == 1">
+		<div class="control-group">
+			<div class="controls">
+				手机：<input type="text" ng-model="newCreateUser.mobileNum" />
+			</div>
+			<div class="controls">
+				名字：<input type="text" ng-model="newCreateUser.name" />
+			</div>
+			<div class="controls">
+				城市：<input type="text" ng-model="newCreateUser.location" id="city" />(请type缩写，如'hz',目前点击选择城市功能正在修改)
+			</div>
+		</div>
+	</div>
+	<div class="box-header" data-original-title="">
+		<h2>
 			<i class="icon-user"></i><span class="break"></span>用户列表
 		</h2>
 
 	</div>
-	用户手机：&nbsp;<input id="appendedInputButton" size="16"
-			type="text" ng-model="criteria.mobileNum" />&nbsp;&nbsp;&nbsp;&nbsp;
-	小孩名字：&nbsp;<input id="appendedInputButton" size="16"
-			type="text" ng-model="criteria.kidName" />&nbsp;&nbsp;&nbsp;&nbsp;
-		<button class="btn" type="button" class="btn btn-info"
-			ng-click="init()">搜索</button>
+	
+	<div class="box-content">
+
+		<div class="control-group">
+			<div class="controls">
+				用户手机：<input id="appendedInputButton" type="text"
+					ng-model="criteria.mobileNum" />&nbsp;&nbsp;&nbsp;&nbsp; 小孩名字：<input
+					id="appendedInputButton" type="text" ng-model="criteria.kidName" />
+			</div>
+		</div>
+		<div class="control-group">
+			<div class="controls">
+				<button type="button" class="btn btn-info" ng-click="init()">
+					搜索</button>
+			</div>
+		</div>
+	</div>
+
 	<div class="box-content">
 		<table
 			class="table table-striped table-bordered bootstrap-datatable datatable">
@@ -45,7 +84,9 @@
 						ng-options="option.id as option.name for option in sites"
 						ng-init="user.siteId==option.id">
 					</select></td>
-					<td><div ng-repeat="kid in user.kids">{{kid.name}}<br /></div></td>
+					<td><div ng-repeat="kid in user.kids">
+							{{kid.name}}<br />
+						</div></td>
 					<td class="center"><span ng-hide="{{user.showInput}} == true"
 						ng-bind="user.credit"></span> <select ng-disabled="true"
 						ng-show="{{user.showInput}} == true"
@@ -57,8 +98,8 @@
 						ng-click="updateUser(user, $index)"
 						ng-bind="{true:'保存', false:'修改'}[user.changed==true]"></span><span
 						class="btn btn-danger" href="#/users"
-						ng-click="deleteUser(user, $index)"> {{deleteLabel}} </span><span class="btn"
-							ng-click="giveCredit(user, $index)">授予积分</span></td>
+						ng-click="deleteUser(user, $index)"> {{deleteLabel}} </span><span
+						class="btn" ng-click="giveCredit(user, $index)">授予积分</span></td>
 				</tr>
 			</tbody>
 		</table>

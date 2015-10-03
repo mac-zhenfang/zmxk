@@ -10,4 +10,6 @@ public class Constants {
 	public static final String GET_SECURITY_CODE_PATH = "/users/code";
 	public static final String USER_REGISTER_PATH = "/users/register";
 	public static final String USER_LOGIN_PATH = "/users/login";
+	public static final int USE_DEFAULT_PASSWORD = 1;
+	public static final int NOT_USE_DEFAULT_PASSWORD = 0;
 }
