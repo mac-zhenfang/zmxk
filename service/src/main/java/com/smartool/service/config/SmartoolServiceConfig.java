@@ -26,9 +26,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
+import com.aliyun.oss.OSSClient;
 import com.google.common.io.Closeables;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.smartool.service.Encrypter;
@@ -58,6 +61,8 @@ import com.smartool.service.dao.TeamDao;
 import com.smartool.service.dao.TeamDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
+import com.smartool.service.service.AvatarService;
+import com.smartool.service.service.AvatarServiceImpl;
 import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
@@ -86,7 +91,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public CreditGenerator getCreditGenerator() {
 		return new CreditGenerator(env.getProperty("credit.generate.interval.hour", Long.class));
 	}
-	
+
 	@Bean
 	public EventStartNotification eventStartNotification() {
 		return new EventStartNotification();
@@ -119,6 +124,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public Jedis redis() {
 		Jedis jedis = new Jedis("10.0.50.157");
 		return jedis;
+	}
+
+	@Bean
+	public AvatarService getAvatarService() {
+		return new AvatarServiceImpl();
 	}
 
 	@Bean
@@ -165,7 +175,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public KidDao getKidDao() {
 		return new KidDaoImpl();
 	}
-	
+
 	@Bean
 	public EventDao getEventDao() {
 		return new EventDaoImpl();
@@ -273,7 +283,6 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		}
 		return systemProperties;
 	}
-	
 
 	@Bean
 	public SchedulerFactoryBean getSchedulerFactoryBean() throws Exception {
@@ -284,10 +293,48 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
 		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
-		//schedulerContextAsMap.put("EventStartNotification", eventStartNotification());
+		// schedulerContextAsMap.put("EventStartNotification",
+		// eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
 		schedulerFactoryBean.start();
 		return schedulerFactoryBean;
+	}
+
+	/*
+	 * @Bean public ByteArrayHttpMessageConverter
+	 * byteArrayHttpMessageConverter() { ByteArrayHttpMessageConverter bam = new
+	 * ByteArrayHttpMessageConverter(); List<org.springframework.http.MediaType>
+	 * mediaTypes = new LinkedList<org.springframework.http.MediaType>();
+	 * mediaTypes.add(org.springframework.http.MediaType.APPLICATION_JSON);
+	 * mediaTypes.add(org.springframework.http.MediaType.IMAGE_JPEG);
+	 * mediaTypes.add(org.springframework.http.MediaType.IMAGE_PNG);
+	 * mediaTypes.add(org.springframework.http.MediaType.IMAGE_GIF);
+	 * mediaTypes.add(org.springframework.http.MediaType.TEXT_PLAIN);
+	 * bam.setSupportedMediaTypes(mediaTypes); return bam; }
+	 * 
+	 * @Override public void
+	 * configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+	 * 
+	 * MappingJackson2HttpMessageConverter mapper = new
+	 * MappingJackson2HttpMessageConverter(); ObjectMapper om = new
+	 * ObjectMapper(); om.registerModule(new JodaModule());
+	 * om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+	 * mapper.setObjectMapper(om); converters.add(mapper);
+	 * 
+	 * converters.add(byteArrayHttpMessageConverter());
+	 * 
+	 * super.configureMessageConverters(converters); }
+	 */
+	@Bean
+	public MultipartResolver multipartResolver() {
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+		return multipartResolver;
+	}
+
+	@Bean
+	public OSSClient ossClient() throws Exception {
+		OSSClient ossCLient = new OSSClient(getOssEndPoint(), getOssAccessKeyId(), getOssAccessKeySecret());
+		return ossCLient;
 	}
 
 	public String getQrCodePath() {
@@ -297,19 +344,44 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public int getEventNofityTime() {
 		return env.getProperty("event_notify_time", Integer.class, 20 * 60 * 1000);
 	}
-	
+
 	public int getNeedNotifyTimes() {
-		return env.getProperty("event_need_notify_time",  Integer.class,  1);
+		return env.getProperty("event_need_notify_time", Integer.class, 1);
 	}
-	
+
 	public int getQrCodeLength() {
-		return env.getProperty("qrcode_length",  Integer.class,  320); 
+		return env.getProperty("qrcode_length", Integer.class, 320);
 	}
+
 	public int getQrCodeWidth() {
-		return env.getProperty("qrcode_width",  Integer.class,  320); 
+		return env.getProperty("qrcode_width", Integer.class, 320);
 	}
-	
+
 	public String getDefaultPassword() {
 		return env.getProperty("default_password", "ismartool");
+	}
+
+	public String getOssAccessKeyId() {
+		return env.getProperty("oss_accesskey_id", "GDuoKY9WdRUDAu5o");
+	}
+
+	public String getOssAccessKeySecret() {
+		return env.getProperty("oss_accesskey_secret", "vxNz5yVXcBgkQ0HQg8VG5thlvUkqnm");
+	}
+
+	public String getOssEndPoint() {
+		return env.getProperty("oss_end_point", "http://oss.aliyuncs.com");
+	}
+
+	public String getAvatarBucket() {
+		return env.getProperty("oss_bucket_name", "ismartoolavatartest");
+	}
+
+	public String getAvatarCName() {
+		return env.getProperty("avatar_cname", "img.ismartool.cn");
+	}
+
+	public String getAvatarFileFormatSuffix() {
+		return env.getProperty("avatar_file_format_suffix", "jpeg");
 	}
 }

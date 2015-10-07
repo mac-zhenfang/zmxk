@@ -1,5 +1,8 @@
 package com.smartool.service.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +12,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.smartool.common.dto.Avatar;
 import com.smartool.common.dto.Kid;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
+import com.smartool.service.UserRole;
+import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.KidDao;
+import com.smartool.service.service.AvatarService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -23,6 +32,9 @@ public class KidController extends BaseController {
 
 	@Autowired
 	private KidDao kidDao;
+
+	@Autowired
+	private AvatarService avatarService;
 
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -58,6 +70,16 @@ public class KidController extends BaseController {
 		isUserValidKid(kid);
 		Kid retKid = kidDao.update(kid);
 		return retKid;
+	}
+
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/avatar", method = RequestMethod.POST, consumes = {
+			"multipart/*" }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Avatar uploadKidAvatar(@PathVariable String userId, @PathVariable String kidId,
+			@RequestPart("file") MultipartFile file) throws IOException {
+		byte[] payload = file.getBytes();
+		InputStream avatar = new ByteArrayInputStream(payload);
+		return avatarService.upload(userId, kidId, avatar);
 	}
 
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.DELETE)
