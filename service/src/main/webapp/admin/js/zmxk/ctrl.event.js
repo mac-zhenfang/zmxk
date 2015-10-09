@@ -1042,9 +1042,9 @@ zmxk
 								}
 							}
 							$scope.clickToEdit = function() {
-								if (canStartEditScore()) {
+								//if (canStartEditScore()) {
 									$scope.editing = true;
-								}
+								//}
 
 							}
 							var canStartEditScore = function() {
@@ -1073,7 +1073,7 @@ zmxk
 								}
 							}
 							$scope.editScore = function() {
-								if (canStartEditScore()) {
+								//if (canStartEditScore()) {
 									var m = {};
 									angular
 											.forEach(
@@ -1112,7 +1112,7 @@ zmxk
 									 * 
 									 * });
 									 */
-								}
+								//}
 							}
 
 							$scope.generateGrades = function() {
