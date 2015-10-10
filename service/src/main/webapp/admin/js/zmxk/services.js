@@ -545,16 +545,35 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 					url : zmxkConfig.kid_rest_uri,
 					method : 'DELETE'
 				},
-				joinTeam: {
+				joinTeam : {
 					url : zmxkConfig.kid_join_team_uri,
 					method : 'POST'
 				},
-				leaveTeam: {
+				leaveTeam : {
 					url : zmxkConfig.kid_leave_team_uri,
 					method : 'POST'
+				},
+				uploadAvatar : {
+					url : zmxkConfig.kid_avatar_uri,
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'image/jpeg'
+					}
 				}
 			})
-
+			this.uploadAvatar = function(giveUserId, giveKidId, giveFile) {
+				
+				var defer = $q.defer();
+				kidResource.uploadAvatar({
+					kidId : giveKidId,
+					userId : giveUserId
+				}, giveFile, function(avatar, headers) {
+					defer.resolve(avatar);
+				}, function(avatar, headers) {
+					defer.reject(avatar);
+				});
+				return defer.promise;
+			}
 			this.getKid = function(giveUserId, giveKidId) {
 				var defer = $q.defer();
 				kidResource.get({
@@ -772,7 +791,10 @@ zmxk.service('userService', [ '$resource', 'zmxkConfig', '$q',
 			}
 
 		} ]);
-zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
+zmxk.service('ruleService', [
+		'$resource',
+		'zmxkConfig',
+		'$q',
 		function($resource, zmxkConfig, $q) {
 			var ruleResource = $resource(zmxkConfig.rule_get_uri, {
 				creditRuleId : '@id',
@@ -814,7 +836,7 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 					url : zmxkConfig.rule_apply_to_user_uri,
 					method : "POST"
 				}
-				
+
 			});
 			this.create = function(creditRule) {
 				var defer = $q.defer();
@@ -865,15 +887,19 @@ zmxk.service('ruleService', [ '$resource', 'zmxkConfig', '$q',
 			};
 			this.applyToUser = function(creditRule) {
 				var defer = $q.defer();
-				ruleResource.applyToUser({}, creditRule, function(data, header) {
-					defer.resolve(data);
-				}, function(data, header) {
-					defer.reject(data);
-				});
+				ruleResource.applyToUser({}, creditRule,
+						function(data, header) {
+							defer.resolve(data);
+						}, function(data, header) {
+							defer.reject(data);
+						});
 				return defer.promise;
 			};
 		} ]);
-zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
+zmxk.service('eventRuleService', [
+		'$resource',
+		'zmxkConfig',
+		'$q',
 		function($resource, zmxkConfig, $q) {
 			var eventRuleService = $resource(zmxkConfig.event_rule_get_uri, {
 				eventCreditRuleId : '@id',
@@ -951,7 +977,8 @@ zmxk.service('eventRuleService', [ '$resource', 'zmxkConfig', '$q',
 			};
 			this.apply = function() {
 				var defer = $q.defer();
-				eventRuleResource.apply({}, eventCreditRule, function(data, header) {
+				eventRuleResource.apply({}, eventCreditRule, function(data,
+						header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);
@@ -1043,10 +1070,7 @@ zmxk
 								return defer.promise;
 							};
 						} ]);
-zmxk.service('teamService', [
-		'$resource',
-		'zmxkConfig',
-		'$q',
+zmxk.service('teamService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
 			var teamResource = $resource(zmxkConfig.team_get_uri, {
 				teamId : '@teamId',
@@ -1104,7 +1128,9 @@ zmxk.service('teamService', [
 			};
 			this.get = function(teamId) {
 				var defer = $q.defer();
-				teamResource.get({"teamId" : teamId}, function(data, header) {
+				teamResource.get({
+					"teamId" : teamId
+				}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);
@@ -1133,12 +1159,14 @@ zmxk.service('teamService', [
 			};
 			this.listMembers = function(teamId) {
 				var defer = $q.defer();
-				teamResource.listMembers({"teamId" : teamId}, function(data, header) {
+				teamResource.listMembers({
+					"teamId" : teamId
+				}, function(data, header) {
 					defer.resolve(data);
 				}, function(data, header) {
 					defer.reject(data);
 				});
 				return defer.promise;
 			};
-			
+
 		} ]);

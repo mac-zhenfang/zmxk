@@ -22,4 +22,6 @@ public interface KidDao {
 	Kid joinTeam(String kidId, String teamId);
 
 	Kid leaveTeam(String kidId, String teamId);
+	
+	Kid updateAvatarUrl(String kidId, String avatarUrl);
 }

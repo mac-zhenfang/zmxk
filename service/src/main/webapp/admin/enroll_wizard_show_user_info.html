@@ -29,9 +29,12 @@
 			</div>
 			<div class="control-group">
 				<div class="controls">
-					<button type="button" ng-click="showChildForm()" class="btn btn-info">添加小孩信息</button>
+					<button type="button" ng-click="showChildForm()"
+						class="btn btn-info">添加小孩信息</button>
 				</div>
 			</div>
+			<div class="control-group"></div>
+
 			<div class="box span10" ng-show="showAddChildForm % 2 ==1">
 				<div class="box-header">
 					<h2>
@@ -40,7 +43,7 @@
 				</div>
 				<!---->
 				<div class="box-content">
-					<div class="control-group" >
+					<div class="control-group">
 						<label class="control-label" for="inputWarning">姓名</label>
 						<div class="controls">
 							<input type="text" ng-model="addKid.name" />
@@ -74,6 +77,7 @@
 						<th>姓名</th>
 						<th>所属战队</th>
 						<th>学校名</th>
+						<th>定装照</th>
 						<th>选择</th>
 					</tr>
 				</thead>
@@ -82,13 +86,16 @@
 						<td class="center">
 							<!-- <input type="text" ng-model="kid.name" /> -->{{kid.name}}
 						</td>
-						<td class="center">
-							{{kid.teamName}}
-						</td>
+						<td class="center">{{kid.teamName}}</td>
 						<td class="center">
 							<!-- <input type="text"
 							ng-model="kid.schoolName" /> -->{{kid.schoolName}}
 						</td>
+						<td class="center"><input type="file"
+							accept="image/*;capture=camera" ng-model="kid.avatar"
+							app-filereader />
+							<img ng-src="{{kid.avatar || kid.avatarUrl}}" width="100"></img>
+							</td>
 						<td class="center"><label class="checkbox"> <!----> <input
 								type="checkbox" ng-model="kid.selected" ng-true-value="{{true}}"
 								ng-false-value="{{false}}" />

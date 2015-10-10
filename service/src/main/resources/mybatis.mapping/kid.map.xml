@@ -6,7 +6,7 @@
 	<select id="create" parameterType="com.smartool.common.dto.Kid">
 		insert kids (id, name,
 		schoolType, schoolName,userId,
-		createdTime, lastModifiedTime)
+		createdTime,lastModifiedTime)
 		values
 		(#{id},#{name},#{schoolType},#{schoolName},#{userId},now(),now())
 	</select>
@@ -19,6 +19,12 @@
 		where id =
 		#{id};
 	</select>
+	<update id="setAvatar" parameterType="com.smartool.common.dto.Kid">
+	update kids
+		set
+		avatarUrl=#{avatarUrl}
+		where id = #{id};
+	</update>
 	<select id="remove" parameterType="String">
 		delete from kids where id =
 		#{id}

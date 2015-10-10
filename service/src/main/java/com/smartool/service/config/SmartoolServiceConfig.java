@@ -3,6 +3,7 @@ package com.smartool.service.config;
 import java.beans.PropertyVetoException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,6 +24,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -34,6 +36,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import com.aliyun.oss.OSSClient;
 import com.google.common.io.Closeables;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.smartool.service.Base64EncodedImageHttpMessageConverter;
 import com.smartool.service.Encrypter;
 import com.smartool.service.controller.AuthenticationInterceptor;
 import com.smartool.service.controller.AuthorizationInterceptor;
@@ -119,6 +122,16 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		SmsClientFactory clientFactory = SmsClientFactory.builder().disableSSLChecks(true).build();
 		return clientFactory;
 	}
+
+	@Override
+	protected void extendMessageConverters(List<HttpMessageConverter<?>> converters){
+		converters.add(getImageConverter());
+	}
+	@Bean
+	public Base64EncodedImageHttpMessageConverter getImageConverter() { 
+        Base64EncodedImageHttpMessageConverter converter = new Base64EncodedImageHttpMessageConverter();
+        return converter;
+    }
 
 	@Bean
 	public Jedis redis() {

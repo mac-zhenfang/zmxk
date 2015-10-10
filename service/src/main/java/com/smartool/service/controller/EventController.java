@@ -370,8 +370,7 @@ public class EventController extends BaseController {
 	}
 
 	private boolean isEventValid(Event event) {
-		if (Strings.isNullOrEmpty(event.getId()) || Strings.isNullOrEmpty(event.getSiteId())
-				|| Strings.isNullOrEmpty(event.getEventTypeId())) {
+		if (Strings.isNullOrEmpty(event.getId()) || Strings.isNullOrEmpty(event.getSiteId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_EVENT_FORMAT);
 		}
 		return true;

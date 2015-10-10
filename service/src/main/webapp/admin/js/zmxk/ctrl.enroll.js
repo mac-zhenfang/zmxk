@@ -10,8 +10,11 @@ zmxk
 						'$interval',
 						'$timeout',
 						'$routeParams',
+						'imageService',
+						'kidService',
 						function($scope, userService, eventService,
-								teamService, $interval, $timeout, $routeParams) {
+								teamService, $interval, $timeout, $routeParams,imageService,
+								kidService) {
 							$scope.enroll_form_data = {};
 							$scope.enroll_form_data.kids = [];
 							$scope.kidsToShow = [];
@@ -57,8 +60,8 @@ zmxk
 							}
 
 							$scope.selectEvent = function(event) {
-								console.log(event);
-								
+								// console.log(event);
+
 								var kids = [];
 								for (var i = 0; i < $scope.kidsToShow.length; i++) {
 									var kid = $scope.kidsToShow[i];
@@ -68,37 +71,34 @@ zmxk
 									}
 								}
 								console.log(kids);
-								angular.forEach(kids, function(kid){
-									if(event.team && (angular.isUndefined(kid["teamId"]) || kid["teamId"]==null)) {
-										$scope.errorProcess = true;
-										$scope
-										.launch(
-												"error",
-												"",
-												"选手必须已经加入战队",
-												function() {
+								angular
+										.forEach(
+												kids,
+												function(kid) {
+													if (event.team
+															&& (angular
+																	.isUndefined(kid["teamId"]) || kid["teamId"] == null)) {
+														$scope.errorProcess = true;
+														$scope.launch("error",
+																"",
+																"选手必须已经加入战队",
+																function() {
 
-												},
-												function() {
+																}, function() {
+																});
+														return;
+													}
 												});
-										return;
-									}
-								});
 								$scope.enroll_form_data.id = event.id;
 								// console.log($scope.enroll_form_data);
 							}
 
 							$scope.processForm = function() {
-								if($scope.errorProcess) {
-									$scope
-									.launch(
-											"出现错误",
-											"",
-											"请仔细核对步骤中的错误信息",
+								if ($scope.errorProcess) {
+									$scope.launch("出现错误", "", "请仔细核对步骤中的错误信息",
 											function() {
 
-											},
-											function() {
+											}, function() {
 											});
 									return;
 								}
@@ -123,16 +123,67 @@ zmxk
 									} else {
 										attendee["kidId"] = kid.id;
 
+										if (!angular.isUndefined(kid.avatar)
+												&& kid.avatar != null) {
+											attendee["kidAvatar"] = kid.avatar;
+										}
+
 									}
+									var avatar = attendee["kidAvatar"]
+									|| attendee.kid.avatar;
 									console.log("~~~~~ input ~~~~~~");
 									console.log(attendee);
+
+//									imageService.resize(avatar,
+//											50, 50).then(
+//											function(resizedImage) {
+//												console.log(resizedImage.src);
+//											})
+
+									var enrollAttendee = {};
+									angular.copy(attendee, enrollAttendee);
+									if (!angular
+											.isUndefined(enrollAttendee["kid"])
+											&& !angular
+													.isUndefined(enrollAttendee["kid"]["avatar"])) {
+										delete enrollAttendee["kid"]["avatar"];
+									} else if (!angular
+											.isUndefined(enrollAttendee["kidAvatar"])) {
+										delete enrollAttendee["kidAvatar"];
+									}
+
 									var msg = "";
 									eventService
 											.addAttendee(
 													$scope.enroll_form_data.id,
-													attendee)
+													enrollAttendee)
 											.then(
 													function(data) {
+														console
+																.log("```` return ````");
+														
+														//console.log(avatar);
+														//console.log(data);
+														if (!angular
+																.isUndefined(avatar)
+																&& avatar != null) {
+															kidService
+																	.uploadAvatar(
+																			data.userId,
+																			data.kidId,
+																			avatar)
+																	.then(
+																			function(
+																					data) {
+																				console
+																						.log(data);
+																			},
+																			function(
+																					error) {
+																				console
+																						.log(error);
+																			});
+														}
 														returnAttendees
 																.push(data);
 														msg += "姓名: "
@@ -169,6 +220,7 @@ zmxk
 														}
 													},
 													function(error) {
+
 														$scope
 																.launch(
 																		"error",
@@ -189,7 +241,6 @@ zmxk
 							}
 
 							$scope.searchUser = function() {
-
 								userService
 										.search(
 												$scope.enroll_form_data.userQueryString)
@@ -235,25 +286,30 @@ zmxk
 									var kid = angular
 											.copy($scope.found_user.kids[i]);
 									kid["existed"] = true;
-									if (!angular.isUndefined(kid["teamId"]) && kid["teamId"]!=null) {
-										teamService.get(kid["teamId"]).then(
-												function(data) {
-													kid["teamName"] = data.name;
-													$scope.kidsToShow.push(kid);
-												}, function(error) {
-													alert(error.data.message);
-												})
-									}else{
+									if (!angular.isUndefined(kid["teamId"])
+											&& kid["teamId"] != null) {
+										teamService
+												.get(kid["teamId"])
+												.then(
+														function(data) {
+															kid["teamName"] = data.name;
+															$scope.kidsToShow
+																	.push(kid);
+														},
+														function(error) {
+															alert(error.data.message);
+														})
+									} else {
 										$scope.kidsToShow.push(kid);
 									}
-									
+
 								}
 							}
 
 							$scope.init = function() {
 								// TODO get from user api
 								var loginUserSiteId = null;
-								if(!angular.isUndefined($scope.loginUser)) {
+								if (!angular.isUndefined($scope.loginUser)) {
 									loginUserSiteId = $scope.loginUser.siteId;
 								}
 

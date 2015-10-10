@@ -1,9 +1,13 @@
 package com.smartool.service.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.smartool.common.dto.Avatar;
 import com.smartool.common.dto.Kid;
@@ -73,13 +75,20 @@ public class KidController extends BaseController {
 	}
 
 	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/users/{userId}/kids/{kidId}/avatar", method = RequestMethod.POST, consumes = {
-			"multipart/*" }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/avatar", method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
 	public Avatar uploadKidAvatar(@PathVariable String userId, @PathVariable String kidId,
-			@RequestPart("file") MultipartFile file) throws IOException {
-		byte[] payload = file.getBytes();
-		InputStream avatar = new ByteArrayInputStream(payload);
-		return avatarService.upload(userId, kidId, avatar);
+			@RequestBody BufferedImage image) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(image, "jpeg", baos);
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			InputStream avatar = new ByteArrayInputStream(imageInByte);
+			return avatarService.upload(userId, kidId, avatar);
+		} finally {
+			baos.close();
+		}
 	}
 
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.DELETE)

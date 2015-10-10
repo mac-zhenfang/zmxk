@@ -1,7 +1,6 @@
 package com.smartool.service.service;
 
 import java.io.InputStream;
-import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.smartool.common.dto.Avatar;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.config.SmartoolServiceConfig;
+import com.smartool.service.dao.KidDao;
 
 public class AvatarServiceImpl implements AvatarService {
 
@@ -21,6 +21,9 @@ public class AvatarServiceImpl implements AvatarService {
 
 	@Autowired
 	private OSSClient ossClient;
+	
+	@Autowired
+	KidDao kidDao;
 
 	private final static String SEPERATOR = "/";
 
@@ -37,13 +40,18 @@ public class AvatarServiceImpl implements AvatarService {
 			// objectMeta.setContentMD5(contentMD5);
 			PutObjectResult result = ossClient.putObject(config.getAvatarBucket(), generateOssFileName(kidId), image,
 					objectMeta);
-			// TODO check result
+			String avatarUrl = generateAvatarUrl(kidId);
+			updateAvatarUrl(kidId, avatarUrl);;
 			Avatar avatar = new Avatar();
-			avatar.setUrl(generateAvatarUrl(kidId));
+			avatar.setUrl(avatarUrl);
 			return avatar;
 		} catch (Exception e) {
 			throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error when upload avatar", e);
 		}
+	}
+	
+	private void updateAvatarUrl(String kidId, String avatarUrl) {
+		kidDao.updateAvatarUrl(kidId, avatarUrl);
 	}
 
 	private String generateAvatarUrl(String kidId) {

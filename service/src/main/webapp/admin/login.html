@@ -22,8 +22,10 @@
 		<div class="row  pad-top">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<form role="form" ng-init="buttonDisabled=false;showPassword=false;"
-						ng-controller="LoginController" ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
+					<form role="form"
+						ng-init="buttonDisabled=false;showPassword=false;"
+						ng-controller="LoginController"
+						ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
 						<div class="form-group input-group"
 							ng-show="currentStep == 1 || currentStep == 2">
 							<!--  <i
@@ -40,13 +42,14 @@
 								ng-model="formData.password" placeholder="密码" />
 						</div>
 						<div class="checkbox">
-							<input type="checkbox" ng-model="showPassword" ng-show="currentStep == 2"/><span ng-show="currentStep == 2">显示密码</span>
+							<input type="checkbox" ng-model="showPassword"
+								ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
 						</div>
-						<input ng-disabled="buttonDisabled" type="submit" value="{{submit_label}}"
-							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<button class="btn btn-success btn-block" ng-show="currentStep == 3">
-							登录成功，正在跳转...
-						</button>
+						<input ng-disabled="buttonDisabled" type="submit"
+							value="{{submit_label}}" class="btn btn-info btn-block"
+							ng-show="currentStep != 3">
+						<button class="btn btn-success btn-block"
+							ng-show="currentStep == 3">登录成功，正在跳转...</button>
 					</form>
 				</div>
 			</div>
@@ -55,11 +58,9 @@
 	<!-- ANGULAR -->
 	<script src="js/jquery-1.10.2.min.js"></script>
 	<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
-
 	<script src="js/angular.js"></script>
 	<script src="js/angular-route.min.js"></script>
 	<script src="js/angular-resource.min.js"></script>
-
 	<script src="js/angular-cookies.min.js"></script>
 
 	<script src="js/dialogs.min.js"></script>

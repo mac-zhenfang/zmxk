@@ -67,4 +67,12 @@ public class KidDaoImpl implements KidDao {
 		sqlSession.update("KID.leaveTeam", param);
 		return get(kidId);
 	}
+
+	@Override
+	public Kid updateAvatarUrl(String kidId, String avatarUrl) {
+		Kid kid = get(kidId);
+		kid.setAvatarUrl(avatarUrl);
+		sqlSession.update("KID.setAvatar", kid);
+		return kid;
+	}
 }

@@ -37,6 +37,7 @@
 			<result property="kidName" column="kidName" />
 			<result property="eventId" column="eventId" />
 			<result property="kidId" column="kidId" />
+			<result property="avatarUrl" column="avatarUrl" />
 			<result property="userId" column="userId" />
 			<result property="schoolType" column="schoolType" />
 			<result property="schoolName" column="schoolName" />
@@ -67,6 +68,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		userId,
 		seq,
 		tagId,
@@ -86,13 +88,13 @@
 		teamName,
 		teamId
 		FROM events e
-		JOIN
+		LEFT JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		JOIN series s on s.id=e.seriesId
+		LEFT JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
 		as attendeeId, k.id as kidId, k.name as
-		kidName,
+		kidName,k.avatarUrl as avatarUrl,
 		a.userId as
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
@@ -131,6 +133,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		userId,
 		seq,
 		tagId,
@@ -147,14 +150,14 @@
 		teamName,
 		teamId
 		FROM events e
-		JOIN
+		LEFT JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		JOIN series s on s.id=e.seriesId
+		LEFT JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
 		as attendeeId, a.notify_times as
 		attendeeNotifyTimes, k.id as kidId, k.name as
-		kidName,
+		kidName,k.avatarUrl as avatarUrl,
 		a.userId as
 		userId,
 		a.rank as rank, a.score as score, a.seq as
@@ -196,6 +199,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		userId,
 		seq,
 		tagId,
@@ -212,15 +216,15 @@
 		teamName,
 		teamId
 		FROM events e
-		JOIN
+		LEFT JOIN
 		eventTypes t on
 		t.id=
 		e.eventTypeId
-		JOIN series s on s.id=e.seriesId
+		LEFT JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select
 		a.id
 		as attendeeId, k.id as kidId, k.name as
-		kidName,
+		kidName,k.avatarUrl as avatarUrl,
 		a.userId as userId,
 		a.rank as rank, a.score as score, a.seq as
 		seq,
@@ -266,6 +270,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		userId,
 		seq,
 		tagId,
@@ -282,14 +287,14 @@
 		teamName,
 		teamId
 		FROM events e
-		JOIN
+		LEFT JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		JOIN series s on s.id=e.seriesId
+		LEFT JOIN series s on s.id=e.seriesId
 		LEFT JOIN ( select a.id
 		as attendeeId,
 		k.id as kidId, k.name as
-		kidName,
+		kidName,k.avatarUrl as avatarUrl,
 		a.userId as userId,
 		a.rank as rank,
 		a.score as score, a.seq as
@@ -327,6 +332,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		userId,
 		seq,
 		tagId,
@@ -352,7 +358,7 @@
 		LEFT JOIN ( select a.id
 		as attendeeId, k.id as kidId,
 		k.name as
-		kidName,
+		kidName,k.avatarUrl as avatarUrl,
 		a.userId as userId,
 		a.rank as rank, a.score as score,
 		a.seq as
@@ -411,6 +417,7 @@
 		score,
 		rank,
 		kidName,
+		avatarUrl,
 		schoolType,
 		schoolName,
 		userId,
@@ -430,15 +437,15 @@
 		teamName,
 		teamId
 		FROM events e
-		JOIN
+		LEFT JOIN
 		eventTypes t on t.id=
 		e.eventTypeId
-		JOIN series s
+		LEFT JOIN series s
 		on s.id=e.seriesId
 		LEFT JOIN ( select a.id
 		as attendeeId, k.id as kidId,
 		k.name as
-		kidName,k.schoolType as schoolType,k.schoolName as
+		kidName,k.avatarUrl as avatarUrl,k.schoolType as schoolType,k.schoolName as
 		schoolName,
 		a.userId as userId,
 		a.rank as rank, a.score as score, a.seq
