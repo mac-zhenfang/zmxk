@@ -215,11 +215,6 @@
 			<version>${quartz.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.versly</groupId>
-			<artifactId>versly-wsdoc</artifactId>
-			<version>1.1.006</version>
-		</dependency>
-		<dependency>
 			<groupId>net.coobird</groupId>
 			<artifactId>thumbnailator</artifactId>
 			<version>[0.4, 0.5)</version>
@@ -316,7 +311,7 @@
 					<targetJdk>1.7</targetJdk>
 				</configuration>
 			</plugin>
-			<!-- REST documentation -->
+			<!-- REST documentation
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
 				<artifactId>maven-processor-plugin</artifactId>
@@ -335,52 +330,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<id>raml-doc-assembler</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>org.versly.rest.wsdoc.RestDocAssembler</mainClass>
-							<arguments>
-								<argument>--format</argument>
-								<argument>raml</argument>
-								<argument>--scope</argument>
-								<argument>all</argument>
-								<argument>-o</argument>
-								<argument>${project.build.directory}/${project.artifactId}.raml</argument>
-								<argument>${project.build.directory}/classes/org.versly.rest.wsdoc.web-service-api.ser</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>raml-doc-assembler-public</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>org.versly.rest.wsdoc.RestDocAssembler</mainClass>
-							<arguments>
-								<argument>--format</argument>
-								<argument>raml</argument>
-								<argument>--scope</argument>
-								<argument>public</argument>
-								<argument>-o</argument>
-								<argument>${project.build.directory}/public-${project.artifactId}.raml</argument>
-								<argument>${project.build.directory}/classes/org.versly.rest.wsdoc.web-service-api.ser</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			 </plugin> -->
 		</plugins>
 	</build>
 </project>
