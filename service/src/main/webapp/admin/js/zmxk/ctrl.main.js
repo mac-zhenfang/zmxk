@@ -62,7 +62,7 @@ zmxk.controller('MainController', [
 			} ]
 
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
-			// console.log($scope.loginUser);
+			//console.log($scope.loginUser);
 			$scope.init = function() {
 
 				//console.log($scope.loginUser);
@@ -79,7 +79,7 @@ zmxk.controller('MainController', [
 			$scope.isAdmin = function() {
 				return !angular.isUndefined($scope.loginUser)
 						&& !angular.isUndefined($scope.loginUser.roleId)
-						&& $scope.loginUser.roleId == 2;
+						&& $scope.loginUser.roleId == "2";
 			}
 
 			$scope.hoopPage = function(page, params) {

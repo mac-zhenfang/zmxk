@@ -53,15 +53,15 @@ public class Base64EncodedImageHttpMessageConverter extends AbstractHttpMessageC
 		String imageInBase64 = writer.toString();
 		int startOfBase64Data = imageInBase64.indexOf(",") + 1;
 		imageInBase64 = imageInBase64.substring(startOfBase64Data, imageInBase64.length());
-
+		BufferedImage image = null;
 		if (Base64.isBase64(imageInBase64) == false) {
-			logger.error("************************************************");
-			logger.error("*** IMAGE IN REQUEST IS NOT IN BASE64 FORMAT ***");
-			logger.error("************************************************");
+			logger.info("*** IMAGE IN REQUEST IS NOT IN BASE64 FORMAT ***");
+			image = ImageIO.read(inputMessage.getBody());
+		} else {
+			byte[] decodeBase64 = Base64.decodeBase64(imageInBase64);
+			image = ImageIO.read(new ByteArrayInputStream(decodeBase64));
 		}
 
-		byte[] decodeBase64 = Base64.decodeBase64(imageInBase64);
-		BufferedImage image = ImageIO.read(new ByteArrayInputStream(decodeBase64));
 		return image;
 
 	}

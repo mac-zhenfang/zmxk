@@ -395,6 +395,6 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	public String getAvatarFileFormatSuffix() {
-		return env.getProperty("avatar_file_format_suffix", "jpeg");
+		return env.getProperty("avatar_file_format_suffix", "png");
 	}
 }

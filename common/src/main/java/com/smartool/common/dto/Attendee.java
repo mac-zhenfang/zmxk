@@ -11,6 +11,8 @@ public class Attendee extends BaseDateTrackingBean {
 	private String userId;
 
 	private String eventId;
+	
+	private String avatarUrl;
 
 	private String tagId;
 
@@ -163,5 +165,13 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setSchoolName(String schoolName) {
 		this.schoolName = schoolName;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 }

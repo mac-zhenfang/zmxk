@@ -11,7 +11,7 @@
 			<thead>
 				<tr>
 					<th>小孩姓名</th>
-					<th>学校类型</th>
+					<th>照片</th>
 					<th>学校</th>
 					<th>操作</th>
 				</tr>
@@ -19,22 +19,47 @@
 			<tbody>
 				<tr ng-repeat="kid in kids">
 					<td><span ng-hide="{{kid.showInput}} == true"
-							ng-bind="kid.name"></span> <input ng-model="kid.name"
-							ng-show="{{kid.showInput}}"/></td>
+						ng-bind="kid.name"></span> <input ng-model="kid.name"
+						ng-show="{{kid.showInput}}" /></td>
+					<td class="center">
+						<div ng-show="imageCropStep != 2">
+							<img ng-src="{{kid.avatar || kid.avatarUrl}}"></img>
+						</div>
+						<div>
+							<input type="file" accept="image/*;capture=camera"
+								ng-model="kid.avatarBefore" app-filereader />
+							<image-crop
+								ng-show="kid.avatarBefore!=null && imageCropStep == 2"
+								data-height="200" data-width="150" data-shape="square"
+								data-step="imageCropStep" src="kid.avatarBefore"
+								data-result="kid.avatar" crop="initCrop" padding="250"
+								max-size="4096"></image-crop>
+						</div>
+						<div ng-show="imageCropStep == 3">
+							<button ng-click="uploadKidAvatar(kid)">上传照片</button>
+						</div>
+						<div ng-show="imageCropStep == 2">
+							<br />
+							<button ng-click="clear()">Cancel</button>
+							<button ng-click="initCrop = true">Crop</button>
+						</div>
+					</td>
 					<td><select ng-disabled="{{!kid.showInput}}"
-						class="selectpicker gridInput2" data-style="btn-info"
+						class="selectpicker gridInput4" data-style="btn-info"
 						ng-model="kid.schoolType"
 						ng-options="option.value as option.label for option in schoolOptions"
 						ng-init="kid.schoolType==option.value">
-					</select></td>
-					<td><span ng-hide="{{kid.showInput}} == true"
-							ng-bind="kid.schoolName"></span><input ng-model="kid.schoolName"
-							ng-show="{{kid.showInput}}"/></td>
+					</select>
+					<div ng-hide="{{kid.showInput}} == true" ng-bind="kid.schoolName"></div>
+						<div>
+							<input ng-model="kid.schoolName" ng-show="{{kid.showInput}}" />
+						</div></td>
 
 					<td class="center"><span class="btn btn-info"
-						ng-click="updateKid(kid, $index)" ng-bind="{true:'保存', false:'修改'}[kid.showInput==true]"></span> <span
-						class="btn btn-danger" href="#/users" ng-click="deleteKid(kid, $index)">
-							{{deleteLabel}} </span></td>
+						ng-click="updateKid(kid, $index)"
+						ng-bind="{true:'保存', false:'修改'}[kid.showInput==true]"></span> <span
+						class="btn btn-danger" href="#/users"
+						ng-click="deleteKid(kid, $index)"> {{deleteLabel}} </span></td>
 				</tr>
 			</tbody>
 		</table>

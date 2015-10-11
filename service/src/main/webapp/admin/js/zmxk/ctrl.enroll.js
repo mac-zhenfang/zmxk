@@ -10,10 +10,9 @@ zmxk
 						'$interval',
 						'$timeout',
 						'$routeParams',
-						'imageService',
 						'kidService',
 						function($scope, userService, eventService,
-								teamService, $interval, $timeout, $routeParams,imageService,
+								teamService, $interval, $timeout, $routeParams,
 								kidService) {
 							$scope.enroll_form_data = {};
 							$scope.enroll_form_data.kids = [];
@@ -33,11 +32,18 @@ zmxk
 									$scope.addKid["existed"] = false;
 									$scope.addKid["selected"] = true;
 									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
-									var kid = angular.copy($scope.addKid);
-									$scope.kidsToShow.push(kid);
-									$scope.showAddChildForm = 0;
+									kidService.createKid(
+											$scope.enroll_form_data.user.id,
+											$scope.addKid).then(function(data) {
+										var kid = angular.copy($scope.addKid);
+										$scope.kidsToShow.push(kid);
+										$scope.showAddChildForm = 0;
+										$scope.addKid = {};
+									}, function(data) {
+										alert("创建失败");
+									});
+
 								}
-								$scope.addKid = {};
 							}
 
 							$scope.showChildForm = function() {
@@ -93,6 +99,25 @@ zmxk
 								// console.log($scope.enroll_form_data);
 							}
 
+							$scope.uploadKidAvatar = function(kid) {
+							//	console.log("```` return avatar ````");
+
+								//console.log(kid.avatar);
+								// console.log(data);
+								if (!angular.isUndefined(kid.avatar)
+										&& kid.avatar != null) {
+									kidService.uploadAvatar(kid.userId,
+											kid.id, kid.avatar).then(
+											function(data) {
+												alert("上传成功");
+												console.log(data);
+											}, function(error) {
+												alert("上传失败");
+												console.log(error);
+											});
+								}
+							}
+
 							$scope.processForm = function() {
 								if ($scope.errorProcess) {
 									$scope.launch("出现错误", "", "请仔细核对步骤中的错误信息",
@@ -130,15 +155,15 @@ zmxk
 
 									}
 									var avatar = attendee["kidAvatar"]
-									|| attendee.kid.avatar;
+											|| attendee.kid.avatar;
 									console.log("~~~~~ input ~~~~~~");
 									console.log(attendee);
 
-//									imageService.resize(avatar,
-//											50, 50).then(
-//											function(resizedImage) {
-//												console.log(resizedImage.src);
-//											})
+									// imageService.resize(avatar,
+									// 50, 50).then(
+									// function(resizedImage) {
+									// console.log(resizedImage.src);
+									// })
 
 									var enrollAttendee = {};
 									angular.copy(attendee, enrollAttendee);
@@ -159,31 +184,7 @@ zmxk
 													enrollAttendee)
 											.then(
 													function(data) {
-														console
-																.log("```` return ````");
-														
-														//console.log(avatar);
-														//console.log(data);
-														if (!angular
-																.isUndefined(avatar)
-																&& avatar != null) {
-															kidService
-																	.uploadAvatar(
-																			data.userId,
-																			data.kidId,
-																			avatar)
-																	.then(
-																			function(
-																					data) {
-																				console
-																						.log(data);
-																			},
-																			function(
-																					error) {
-																				console
-																						.log(error);
-																			});
-														}
+
 														returnAttendees
 																.push(data);
 														msg += "姓名: "

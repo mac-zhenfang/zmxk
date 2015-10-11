@@ -81,9 +81,10 @@ public class KidController extends BaseController {
 			@RequestBody BufferedImage image) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			ImageIO.write(image, "jpeg", baos);
+			ImageIO.write(image, "png", baos);
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
+			System.out.println("~~~~~~~~ image length " + imageInByte.length);
 			InputStream avatar = new ByteArrayInputStream(imageInByte);
 			return avatarService.upload(userId, kidId, avatar);
 		} finally {

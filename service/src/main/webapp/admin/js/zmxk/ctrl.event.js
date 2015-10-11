@@ -976,7 +976,7 @@ zmxk
 
 								});
 							}
-
+							
 							$scope.clickEditScore = function(attendee) {
 								attendee.editing = true;
 								console.log(attendee);
@@ -1123,7 +1123,9 @@ zmxk
 									$scope.generateGradesLabel = "返回选手管理";
 								}
 							}
-
+							$scope.deleteAttendee = function(attendee, index) {
+								
+							}
 							$scope.applyAttendeeChanges = function() {
 								$scope.editScore();
 								var error_msg = "";

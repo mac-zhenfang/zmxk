@@ -73,7 +73,7 @@ zmxk
 							$scope.createUser = function() {
 								if ($scope.userCreateStep == 0) {
 									$scope.create_user_label = "保存"
-									
+
 									$scope.userCreateStep = 1;
 
 								} else if ($scope.userCreateStep == 1) {
@@ -89,15 +89,13 @@ zmxk
 										alert("用户所在城市不能为空");
 										return;
 									}
-									
+
 									if (angular
 											.isUndefined($scope.newCreateUser.name)
 											|| !$scope.newCreateUser.name) {
 										alert("用户名不能为空");
 										return;
 									}
-									
-									
 
 									userService
 											.create($scope.newCreateUser)
@@ -318,6 +316,24 @@ zmxk
 
 													}, function(data) {
 													});
+								}
+							}
+
+							$scope.uploadKidAvatar = function(kid) {
+								// console.log("```` return avatar ````");
+
+								// console.log(kid.avatar);
+								// console.log(data);
+								if (!angular.isUndefined(kid.avatar)
+										&& kid.avatar != null) {
+									kidService.uploadAvatar(kid.userId, kid.id,
+											kid.avatar).then(function(data) {
+										alert("上传成功");
+										console.log(data);
+									}, function(error) {
+										alert("上传失败");
+										console.log(error);
+									});
 								}
 							}
 

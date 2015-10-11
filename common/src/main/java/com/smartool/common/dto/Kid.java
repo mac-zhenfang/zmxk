@@ -7,6 +7,7 @@ public class Kid extends BaseDateTrackingBean {
 	private String schoolName;
 	private String userId;
 	private String teamId;
+	private String avatarUrl;
 
 	public Kid() {
 	}
@@ -57,5 +58,13 @@ public class Kid extends BaseDateTrackingBean {
 
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
+	}
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
 	}
 }
