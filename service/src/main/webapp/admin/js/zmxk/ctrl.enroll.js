@@ -100,21 +100,26 @@ zmxk
 							}
 
 							$scope.uploadKidAvatar = function(kid) {
-							//	console.log("```` return avatar ````");
+								// console.log("```` return avatar ````");
 
-								//console.log(kid.avatar);
+								// console.log(kid.avatar);
 								// console.log(data);
 								if (!angular.isUndefined(kid.avatar)
 										&& kid.avatar != null) {
-									kidService.uploadAvatar(kid.userId,
-											kid.id, kid.avatar).then(
-											function(data) {
-												alert("上传成功");
-												console.log(data);
-											}, function(error) {
-												alert("上传失败");
-												console.log(error);
-											});
+									kidService.uploadAvatar(kid.userId, kid.id,
+											kid.avatar).then(function(data) {
+										alert("上传成功");
+										$scope.imageCropStep = 1;
+										delete kid.avatar;
+										delete kid.avatarBefore;
+										console.log(data);
+									}, function(error) {
+										alert("上传失败");
+										$scope.imageCropStep = 1;
+										delete kid.avatar;
+										delete kid.avatarBefore;
+										console.log(error);
+									});
 								}
 							}
 
