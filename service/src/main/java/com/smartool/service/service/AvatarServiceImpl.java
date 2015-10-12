@@ -21,7 +21,7 @@ public class AvatarServiceImpl implements AvatarService {
 
 	@Autowired
 	private OSSClient ossClient;
-	
+
 	@Autowired
 	KidDao kidDao;
 
@@ -30,6 +30,9 @@ public class AvatarServiceImpl implements AvatarService {
 	private final static String FILE_SEPEATOR = ".";
 
 	private final static String PROTOCOL = "http://";
+	private final static String PARAMETER_SEPERATOR = "?";
+	private final static String PARAMETER_TIMESTAMP = "ts";
+	private final static String PARAMETER_EQUAL = "=";
 
 	@Override
 	public Avatar upload(String userId, String kidId, InputStream image) {
@@ -41,7 +44,7 @@ public class AvatarServiceImpl implements AvatarService {
 			PutObjectResult result = ossClient.putObject(config.getAvatarBucket(), generateOssFileName(kidId), image,
 					objectMeta);
 			String avatarUrl = generateAvatarUrl(kidId);
-			updateAvatarUrl(kidId, avatarUrl);;
+			updateAvatarUrl(kidId, avatarUrl);
 			Avatar avatar = new Avatar();
 			avatar.setUrl(avatarUrl);
 			return avatar;
@@ -49,7 +52,7 @@ public class AvatarServiceImpl implements AvatarService {
 			throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "error when upload avatar", e);
 		}
 	}
-	
+
 	private void updateAvatarUrl(String kidId, String avatarUrl) {
 		kidDao.updateAvatarUrl(kidId, avatarUrl);
 	}
@@ -57,7 +60,8 @@ public class AvatarServiceImpl implements AvatarService {
 	private String generateAvatarUrl(String kidId) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(PROTOCOL).append(config.getAvatarCName()).append(SEPERATOR).append(kidId).append(FILE_SEPEATOR)
-				.append(config.getAvatarFileFormatSuffix());
+				.append(config.getAvatarFileFormatSuffix()).append(PARAMETER_SEPERATOR).append(PARAMETER_TIMESTAMP)
+				.append(PARAMETER_EQUAL).append(System.currentTimeMillis());
 		return sb.toString();
 	}
 
