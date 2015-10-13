@@ -51,7 +51,7 @@
 							ng-model="attendee.sec" ng-show="attendee.editing"
 							class="form-control gridInput" />秒
 							<button class="btn btn-info" ng-hide="attendee.editing"
-								ng-click="clickToEditScore()">修改</button>
+								ng-click="clickToEditScore(attendee)">修改</button>
 							<button class="btn btn-info" ng-show="attendee.editing"
 								ng-click="editScore();attendee.editing=false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>
@@ -71,6 +71,13 @@
 			</table>
 		</div>
 		<div class="box-content" ng-show="isGeneratedGrades">
+			<div>
+				按组别选择：<select class="selectpicker gridInput4" data-style="btn-info"
+					ng-model="choosedOptionId"
+					ng-change="chooseAttendeesByTag(choosedOptionId)"
+					ng-options="option.id as option.name for option in eventTags"></select>
+					<div><span class="btn btn-info" ng-click="cancelTagGroupChoose()">取消组别选择</span></div>
+			</div>
 			<table
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>

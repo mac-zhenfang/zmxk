@@ -657,19 +657,15 @@ zmxk
 											})
 									$scope.listEvents = angular.copy(events);
 								}
-								//console.log($scope.serieId);
-								//console.log($scope.eventTypeId);
-								/*if ($scope.serieId == null
-										&& $scope.eventTypeId == null) {
-									if (!$scope.isSingleEvent(updateEvent)) {
-										$scope.launch("error", "", "请选择系列",
-												function() {
-
-												}, function() {
-												});
-										return;
-									}
-								}*/
+								// console.log($scope.serieId);
+								// console.log($scope.eventTypeId);
+								/*
+								 * if ($scope.serieId == null &&
+								 * $scope.eventTypeId == null) { if
+								 * (!$scope.isSingleEvent(updateEvent)) {
+								 * $scope.launch("error", "", "请选择系列",
+								 * function() { }, function() { }); return; } }
+								 */
 								console.log(updateEvent);
 								// save event
 								if (!updateEvent.existed) {
@@ -976,7 +972,7 @@ zmxk
 
 								});
 							}
-							
+
 							$scope.clickEditScore = function(attendee) {
 								attendee.editing = true;
 								console.log(attendee);
@@ -1042,16 +1038,44 @@ zmxk
 								}
 							}
 							$scope.clickToEdit = function() {
-								//if (canStartEditScore()) {
-									$scope.editing = true;
-								//}
+								// if (canStartEditScore()) {
+								$scope.editing = true;
+								// }
 
 							}
 							
+							$scope.cancelTagGroupChoose = function() {
+								if(!angular.isUndefined($scope.toShowAttendees)){
+									$scope.eventInit.attendees = angular.copy($scope.toShowAttendees);
+								}
+							}
+							
+							 
+							$scope.chooseAttendeesByTag = function(choosedTagId){
+								//console.log(choosedTagId);
+								if(angular.isUndefined($scope.toShowAttendees)){
+									$scope.toShowAttendees = angular.copy($scope.eventInit.attendees);
+								} else {
+									$scope.eventInit.attendees = angular.copy($scope.toShowAttendees);
+								}
+								var newShowAttendees = [];
+								angular
+								.forEach($scope.eventInit.attendees,function(attendee){
+									if(!angular.isUndefined(attendee.tagId) && choosedTagId == attendee.tagId){
+										newShowAttendees.push(attendee);
+									}
+								});
+								$scope.eventInit.attendees = newShowAttendees;
+							}
+
 							$scope.clickToEditScore = function(attendee) {
-								attendee.editing=true;
-								attendee.min="";
-								attendee.sec="";
+								attendee.editing = true;
+								if (attendee.min == 0) {
+									attendee.min = "";
+								}
+								if (attendee.sec == 0) {
+									attendee.sec = "";
+								}
 							}
 							var canStartEditScore = function() {
 								var d = new Date();
@@ -1079,53 +1103,51 @@ zmxk
 								}
 							}
 							$scope.editScore = function() {
-								
-									var m = {};
-									angular
-											.forEach(
-													$scope.eventInit.attendees,
-													function(attendee, index) {
-														if(attendee.min == "") {
-															attendee.min = 0;
-														}
-														if(attendee.sec == "") {
-															attendee.sec = 0;
-														}
-														
-														attendee.score = parseInt(attendee.min)
-																* 60
-																+ parseInt(attendee.sec);
-														console
-																.log(attendee.score);
-														if (angular
-																.isUndefined(m[attendee.tagId])) {
-															m[attendee.tagId] = [];
-														}
-														if (attendee.score) {
-															m[attendee.tagId]
-																	.push(attendee);
-														}
-													});
-									angular.forEach(m, function(attendees,
-											tagId) {
-										attendees.sort(function(a, b) {
-											var key = "score";
-											var x = a[key];
-											var y = b[key];
-											return ((x < y) ? -1 : ((x > y) ? 1
-													: 0));
-										});
-										attendees.forEach(function(attendee,
-												index) {
-											attendee.rank = index + 1;
-										})
-									})
-									/*
-									 * m.forEach(function(attendees, tagId) {
-									 * 
-									 * });
-									 */
-								//}
+
+								var m = {};
+								angular
+										.forEach(
+												$scope.eventInit.attendees,
+												function(attendee, index) {
+													if (attendee.min == "") {
+														attendee.min = 0;
+													}
+													if (attendee.sec == "") {
+														attendee.sec = 0;
+													}
+
+													attendee.score = parseInt(attendee.min)
+															* 60
+															+ parseInt(attendee.sec);
+													console.log(attendee.score);
+													if (angular
+															.isUndefined(m[attendee.tagId])) {
+														m[attendee.tagId] = [];
+													}
+													if (attendee.score) {
+														m[attendee.tagId]
+																.push(attendee);
+													}
+												});
+								angular.forEach(m, function(attendees, tagId) {
+									attendees.sort(function(a, b) {
+										var key = "score";
+										var x = a[key];
+										var y = b[key];
+										return ((x < y) ? -1
+												: ((x > y) ? 1 : 0));
+									});
+									attendees
+											.forEach(function(attendee, index) {
+												attendee.rank = index + 1;
+											})
+								})
+								/*
+								 * m.forEach(function(attendees, tagId) {
+								 * 
+								 * });
+								 */
+								// }
 							}
 
 							$scope.generateGrades = function() {
@@ -1137,7 +1159,7 @@ zmxk
 								}
 							}
 							$scope.deleteAttendee = function(attendee, index) {
-								
+
 							}
 							$scope.applyAttendeeChanges = function() {
 								$scope.editScore();
