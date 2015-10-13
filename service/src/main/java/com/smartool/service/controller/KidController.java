@@ -50,10 +50,10 @@ public class KidController extends BaseController {
 		if (CommonUtils.isEmptyString(kid.getName())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_NAME_ERROR_MESSAGE);
 		}
-		if (CommonUtils.isEmptyString(kid.getSchoolName())) {
+		/*if (CommonUtils.isEmptyString(kid.getSchoolName())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.WRONG_KID_SCHOOL_NAME_ERROR_MESSAGE);
-		}
+		}*/
 		return true;
 	}
 

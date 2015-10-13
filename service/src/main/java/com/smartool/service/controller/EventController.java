@@ -139,7 +139,7 @@ public class EventController extends BaseController {
 			Attendee att = new Attendee();
 			att.setId(CommonUtils.getRandomUUID());
 			att.setEventId(eventId);
-			// att.setSeq(p);
+			att.setSeq(p);
 			attendeeDao.create(att);
 			p++;
 		}

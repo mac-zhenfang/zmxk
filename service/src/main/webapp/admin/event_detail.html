@@ -51,7 +51,7 @@
 							ng-model="attendee.sec" ng-show="attendee.editing"
 							class="form-control gridInput" />秒
 							<button class="btn btn-info" ng-hide="attendee.editing"
-								ng-click="attendee.editing=true;">修改</button>
+								ng-click="clickToEditScore()">修改</button>
 							<button class="btn btn-info" ng-show="attendee.editing"
 								ng-click="editScore();attendee.editing=false;">确定</button></td>
 						<td class="center">{{attendee.rank}}</td>

@@ -1047,6 +1047,12 @@ zmxk
 								//}
 
 							}
+							
+							$scope.clickToEditScore = function(attendee) {
+								attendee.editing=true;
+								attendee.min="";
+								attendee.sec="";
+							}
 							var canStartEditScore = function() {
 								var d = new Date();
 								var t = d.getTime();
@@ -1073,12 +1079,19 @@ zmxk
 								}
 							}
 							$scope.editScore = function() {
-								//if (canStartEditScore()) {
+								
 									var m = {};
 									angular
 											.forEach(
 													$scope.eventInit.attendees,
 													function(attendee, index) {
+														if(attendee.min == "") {
+															attendee.min = 0;
+														}
+														if(attendee.sec == "") {
+															attendee.sec = 0;
+														}
+														
 														attendee.score = parseInt(attendee.min)
 																* 60
 																+ parseInt(attendee.sec);

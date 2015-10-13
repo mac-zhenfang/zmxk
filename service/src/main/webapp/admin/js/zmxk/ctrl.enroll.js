@@ -159,16 +159,7 @@ zmxk
 										}
 
 									}
-									var avatar = attendee["kidAvatar"]
-											|| attendee.kid.avatar;
-									console.log("~~~~~ input ~~~~~~");
-									console.log(attendee);
-
-									// imageService.resize(avatar,
-									// 50, 50).then(
-									// function(resizedImage) {
-									// console.log(resizedImage.src);
-									// })
+									
 
 									var enrollAttendee = {};
 									angular.copy(attendee, enrollAttendee);
