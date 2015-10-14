@@ -22,6 +22,10 @@ public class Event extends BaseDateTrackingBean {
 	private String siteId; // enum
 
 	private String seriesId;
+	
+	private String eventDefName;
+	
+	private String eventShortName;
 
 	private int status;
 
@@ -156,5 +160,21 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setEventTeam(boolean isEventTeam) {
 		this.isEventTeam = isEventTeam;
+	}
+
+	public String getEventDefName() {
+		return eventDefName;
+	}
+
+	public void setEventDefName(String eventDefName) {
+		this.eventDefName = eventDefName;
+	}
+
+	public String getEventShortName() {
+		return eventShortName;
+	}
+
+	public void setEventShortName(String eventShortName) {
+		this.eventShortName = eventShortName;
 	}
 }
