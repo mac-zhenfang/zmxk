@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.EventDef;
+import com.smartool.common.dto.EventSerieDef;
 import com.smartool.common.dto.Serie;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.UserRole;
 import com.smartool.service.controller.annotation.ApiScope;
+import com.smartool.service.dao.EventDefDao;
+import com.smartool.service.dao.EventSerieDefDao;
 import com.smartool.service.dao.SerieDao;
 
 @RestController
@@ -22,7 +26,12 @@ public class SerieController {
 
 	@Autowired
 	SerieDao serieDao;
+	
+	@Autowired
+	EventSerieDefDao eventSerieDefDao;
 
+	@Autowired
+	EventDefDao eventDefDao;
 	/**
 	 * CREATE
 	 * 
@@ -102,5 +111,16 @@ public class SerieController {
 	public Serie update(@PathVariable String eventTypeId, @PathVariable String serieId, @RequestBody Serie serie) {
 		return serieDao.update(serie);
 	}
-
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventSerieDefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<EventSerieDef> listEventSerieDefs(){
+		return eventSerieDefDao.listAll();
+	}
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}/eventdefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<EventDef> getEventDefsBySerieId(@PathVariable String serieId){
+		return eventDefDao.listEventDefBySerieId(serieId);
+	}
 }

@@ -5,7 +5,7 @@ import java.io.File;
 import org.apache.catalina.startup.Tomcat;
 
 public class Main {
-	 int port = 1099;
+	 int port = 8080;
 	 private void startTomcat() throws Exception {
 	        Tomcat tomcat = new Tomcat();
 	        tomcat.setPort(port);

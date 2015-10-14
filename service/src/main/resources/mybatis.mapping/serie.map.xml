@@ -6,10 +6,10 @@
 	<select id="create" parameterType="com.smartool.common.dto.Serie">
 		insert series (id,
 		name,startTime,
-		endTime, stages, rankUpgradeQualification, eventTypeId, isTeam,
+		endTime, stages, rankUpgradeQualification, eventTypeId, isTeam, eventSerieDefId,
 		createdTime, lastModifiedTime)
 		values
-		(#{id},#{name},#{startTime},#{endTime},#{stages},#{rankUpgradeQualification},#{eventTypeId},#{isTeam},now(),now())
+		(#{id},#{name},#{startTime},#{endTime},#{stages},#{rankUpgradeQualification},#{eventTypeId},#{isTeam},#{eventSerieDefId}, now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Serie">
 		update series
@@ -20,6 +20,7 @@
 		stages=#{stages},
 		rankUpgradeQualification=#{rankUpgradeQualification},
 		isTeam=#{isTeam},
+		eventSerieDefId=#{eventSerieDefId},
 		eventTypeId=#{eventTypeId}
 		where id =
 		#{id};

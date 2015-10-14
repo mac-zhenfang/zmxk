@@ -48,6 +48,10 @@ import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.CreditRuleDaoImpl;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.EventDaoImpl;
+import com.smartool.service.dao.EventDefDao;
+import com.smartool.service.dao.EventDefDaoImpl;
+import com.smartool.service.dao.EventSerieDefDao;
+import com.smartool.service.dao.EventSerieDefDaoImpl;
 import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.EventTypeDaoImpl;
 import com.smartool.service.dao.KidDao;
@@ -207,6 +211,15 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public SecurityCodeDao getSecurityCodeDao() {
 		return new SecurityCodeDaoImpl();
+	}
+	
+	@Bean
+	public EventDefDao eventDefDao(){
+		return new EventDefDaoImpl();
+	}
+	@Bean
+	public EventSerieDefDao eventSerieDefDao(){
+		return new EventSerieDefDaoImpl();
 	}
 
 	@Bean

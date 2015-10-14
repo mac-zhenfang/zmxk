@@ -11,6 +11,7 @@ public class Serie {
 	private int rankUpgradeQualification;
 	private boolean isTeam;
 	private String eventTypeId;
+	private int eventSerieDefId;
 
 	public String getId() {
 		return id;
@@ -75,5 +76,13 @@ public class Serie {
 
 	public void setTeam(boolean isTeam) {
 		this.isTeam = isTeam;
+	}
+
+	public int getEventSerieDefId() {
+		return eventSerieDefId;
+	}
+
+	public void setEventSerieDefId(int eventSerieDefId) {
+		this.eventSerieDefId = eventSerieDefId;
 	}
 }
