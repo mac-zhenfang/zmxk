@@ -5,7 +5,7 @@ public class EventCreditRule extends CreditRule {
 	private Integer upperRank;
 	private Integer lowerRank;
 	private Integer stage;
-
+	private Integer eventGroupLevel;
 	public String getEventTypeId() {
 		return eventTypeId;
 	}
@@ -41,5 +41,13 @@ public class EventCreditRule extends CreditRule {
 	@Override
 	public String getRuleType() {
 		return "GENERAL";
+	}
+
+	public Integer getEventGroupLevel() {
+		return eventGroupLevel;
+	}
+
+	public void setEventGroupLevel(Integer eventGroupLevel) {
+		this.eventGroupLevel = eventGroupLevel;
 	}
 }

@@ -212,8 +212,8 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name) {
-		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, name);
+	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name, Integer eventGroupLevel) {
+		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, name, eventGroupLevel);
 	}
 
 	@Override

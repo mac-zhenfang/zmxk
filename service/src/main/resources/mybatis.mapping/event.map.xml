@@ -30,6 +30,7 @@
 		<result property="stage" column="stage" />
 		<result property="status" column="status" />
 		<result property="quota" column="quota" />
+		<result property="eventGroupLevel" column="eventGroupLevel" />
 		<result property="isEventTeam" column="isEventTeam" />
 		<result property="isSerieTeam" column="isSerieTeam" />
 		<result property="createdTime" column="createdTime" />
@@ -75,6 +76,7 @@
 		seq,
 		tagId,
 		tag,
+		eventGroupLevel,
 		attendeeNotifyTimes,
 		attendeeStatus,
 		f.name as eventDefName,
@@ -113,7 +115,7 @@
 		ts.name as
 		teamName, ts.id as
 		teamId, a.tagId as
-		tagId, tg.name as tag
+		tagId, tg.name as tag, tg.level as eventGroupLevel
 		from kids k
 		JOIN attendees a on
 		a.kidId=k.id
@@ -148,7 +150,7 @@
 		userId,
 		seq,
 		tagId,
-		tag,
+		tag,eventGroupLevel
 		attendeeStatus,
 		attendeeNotifyTimes,
 		f.name as eventDefName,
@@ -187,7 +189,7 @@
 		teamName, ts.id as
 		teamId, a.tagId as
 		tagId, tg.name
-		as tag
+		as tag, tg.level as eventGroupLevel
 		from kids k
 		JOIN attendees a on
 		a.kidId=k.id
@@ -227,6 +229,7 @@
 		seq,
 		tagId,
 		tag,
+		eventGroupLevel,
 		attendeeStatus,
 		attendeeNotifyTimes,
 		f.name as eventDefName,
@@ -265,7 +268,7 @@
 		eventId, ts.name as
 		teamName, ts.id as teamId, a.tagId as
 		tagId, tg.name
-		as tag
+		as tag, tg.level as eventGroupLevel
 		from kids k
 		JOIN attendees a on a.kidId=k.id
 		LEFT
@@ -308,6 +311,7 @@
 		seq,
 		tagId,
 		tag,
+		eventGroupLevel,
 		attendeeStatus,
 		attendeeNotifyTimes,
 		f.name as eventDefName,
@@ -344,7 +348,7 @@
 		a.eventId as eventId, ts.name
 		as
 		teamName, ts.id as teamId, a.tagId as
-		tagId, tg.name as tag
+		tagId, tg.name as tag, tg.level as eventGroupLevel
 		from kids
 		k
 		JOIN attendees a on a.kidId=k.id
@@ -378,6 +382,7 @@
 		seq,
 		tagId,
 		tag,
+		eventGroupLevel,
 		attendeeStatus,
 		attendeeNotifyTimes,
 		f.name as eventDefName,
@@ -420,7 +425,7 @@
 		ts.name as
 		teamName, ts.id as
 		teamId, a.tagId as
-		tagId, tg.name as tag
+		tagId, tg.name as tag, tg.level as eventGroupLevel
 		from kids k
 		JOIN attendees a on
 		a.kidId=k.id
@@ -480,6 +485,7 @@
 		seq,
 		tagId,
 		tag,
+		eventGroupLevel,
 		attendeeStatus,
 		attendeeNotifyTimes,
 		f.name as eventDefName,
@@ -520,7 +526,7 @@
 		a.eventId as eventId, ts.name as
 		teamName, ts.id as
 		teamId, a.tagId as
-		tagId, tg.name as tag
+		tagId, tg.name as tag, tg.level as eventGroupLevel
 		from kids k
 		JOIN attendees a on
 		a.kidId=k.id

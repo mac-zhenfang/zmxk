@@ -6,11 +6,11 @@
 	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,upperRank,lowerRank,stage,
+		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,upperRank,lowerRank,stage,eventGroupLevel,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{upperRank},#{lowerRank},#{stage},now(),now())
+		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{upperRank},#{lowerRank},#{stage},#{eventGroupLevel}, now(),now())
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
@@ -23,7 +23,8 @@
 		eventTypeId=#{eventTypeId},
 		stage=#{stage},
 		upperRank=#{upperRank},
-		lowerRank=#{lowerRank}
+		lowerRank=#{lowerRank},
+		eventGroupLeve=#{eventGroupLevel}
 		where id =
 		#{id};
 	</update>
@@ -62,6 +63,12 @@
 		</if>
 		<if test="stage != null">
 			AND stage = #{stage}
+		</if>
+		<if test="stage != null">
+			AND stage = #{stage}
+		</if>
+		<if test="eventGroupLevel != null">
+			AND eventGroupLevel = #{eventGroupLevel}
 		</if>
 	</select>
 

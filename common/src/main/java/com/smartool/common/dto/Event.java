@@ -36,6 +36,7 @@ public class Event extends BaseDateTrackingBean {
 	private boolean isSerieTeam;
 	
 	private boolean isEventTeam;
+	private Integer eventGroupLevel;
 	
 	public enum EventStatus {
 		PREPARE(0), START(1), COMPLETE(2), FROZEN(3);
@@ -176,5 +177,13 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setEventShortName(String eventShortName) {
 		this.eventShortName = eventShortName;
+	}
+
+	public Integer getEventGroupLevel() {
+		return eventGroupLevel;
+	}
+
+	public void setEventGroupLevel(Integer eventGroupLevel) {
+		this.eventGroupLevel = eventGroupLevel;
 	}
 }
