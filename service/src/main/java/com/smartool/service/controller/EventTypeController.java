@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.smartool.common.dto.EventDef;
 import com.smartool.common.dto.EventType;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.UserRole;
 import com.smartool.service.controller.annotation.ApiScope;
+import com.smartool.service.dao.EventDefDao;
 import com.smartool.service.dao.EventTypeDao;
 
 @RestController
@@ -23,6 +25,9 @@ public class EventTypeController {
 	@Autowired
 	EventTypeDao eventTypeDao;
 	
+
+	@Autowired
+	EventDefDao eventDefDao;
 
 	/**
 	 * List
@@ -94,6 +99,12 @@ public class EventTypeController {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public EventType update(@PathVariable String eventTypeId, @RequestBody EventType eventType) {
 		return eventTypeDao.update(eventType);
+	}
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/eventtypes/{eventTypeId}/eventdefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<EventDef> getEventDefsBySerieId(@PathVariable String eventTypeId){
+		return eventDefDao.listEventDef(eventTypeId);
 	}
 
 }

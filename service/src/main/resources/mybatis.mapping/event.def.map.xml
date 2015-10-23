@@ -6,7 +6,7 @@
 	<select id="listAll" resultType="com.smartool.common.dto.EventDef">
 		select * from event_def;
 	</select>
-	<select id="listBySerieId" resultType="com.smartool.common.dto.EventDef" parameterType="String">
-		select * from event_def where eventSerieDefId in (select eventSerieDefId from series where id=#{serieId})
+	<select id="listByEventTypeId" resultType="com.smartool.common.dto.EventDef" parameterType="String">
+		select * from event_def where eventSerieDefId in (select eventSerieDefId from eventTypes where id=#{eventTypeId})
 	</select>
 </mapper>

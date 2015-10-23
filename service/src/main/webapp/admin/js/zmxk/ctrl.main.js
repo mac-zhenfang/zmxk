@@ -13,7 +13,8 @@ zmxk.controller('MainController', [
 
 			$scope.userId = $scope.$location.search().userId;
 			$scope.eventId = $scope.$location.search().eventId;
-			$scope.stages = [ {
+			$scope.stages = [{id : 0, name : "N/A"}];
+			/*$scope.stages = [ {
 				value : 0,
 				label : "N/A"
 			}, {
@@ -25,7 +26,7 @@ zmxk.controller('MainController', [
 			}, {
 				value : 3,
 				label : "年度赛"
-			} ];
+			} ];*/
 
 			$scope.roles_option = [ {
 				value : 0,
@@ -38,11 +39,7 @@ zmxk.controller('MainController', [
 				label : "管理员"
 			} ];
 
-			$scope.stageNameMap = {
-				"1" : "A",
-				"2" : "B",
-				"3" : "C"
-			}
+			
 
 			$scope.nameStageMap = {
 				"A" : 1,

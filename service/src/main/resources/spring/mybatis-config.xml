@@ -25,5 +25,6 @@
 		<mapper resource="mybatis.mapping/team.map.xml" />
 		<mapper resource="mybatis.mapping/event.serie.def.map.xml" />
 		<mapper resource="mybatis.mapping/event.def.map.xml" />
+		<mapper resource="mybatis.mapping/round.map.xml" />
 	</mappers>
 </configuration>

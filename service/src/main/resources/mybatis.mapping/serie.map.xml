@@ -6,10 +6,12 @@
 	<select id="create" parameterType="com.smartool.common.dto.Serie">
 		insert series (id,
 		name,startTime,
-		endTime, stages, rankUpgradeQualification, eventTypeId, isTeam, eventSerieDefId,
+		endTime, stages, rankUpgradeQualification, eventTypeId,
+		isTeam,
 		createdTime, lastModifiedTime)
 		values
-		(#{id},#{name},#{startTime},#{endTime},#{stages},#{rankUpgradeQualification},#{eventTypeId},#{isTeam},#{eventSerieDefId}, now(),now())
+		(#{id},#{name},#{startTime},#{endTime},#{stages},#{rankUpgradeQualification},#{eventTypeId},#{isTeam},
+		now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Serie">
 		update series
@@ -20,7 +22,6 @@
 		stages=#{stages},
 		rankUpgradeQualification=#{rankUpgradeQualification},
 		isTeam=#{isTeam},
-		eventSerieDefId=#{eventSerieDefId},
 		eventTypeId=#{eventTypeId}
 		where id =
 		#{id};
@@ -37,15 +38,36 @@
 		#{eventTypeId}
 	</select>
 	<select id="listAll" resultType="com.smartool.common.dto.Serie">
-		select * from series
+		select s.name as name, s.id as
+		id, s.startTime as startTime, s.endTime as endTime, s.stages as
+		stages, s.isTeam as isTeam, s.rankUpgradeQualification as
+		rankUpgradeQualification, s.eventTypeId as eventTypeId, s.createdTime
+		as createdTime, s.lastModifiedTime as lastModifiedTime from series s
 	</select>
-	<select id="listByEventType" resultType="com.smartool.common.dto.Serie" parameterType="String">
-		select * from series where eventTypeId=#{eventTypeId}
+	<select id="listByEventType" resultType="com.smartool.common.dto.Serie"
+		parameterType="String">
+		select s.name as name, s.id as
+		id, s.startTime as
+		startTime, s.endTime as endTime, s.stages as
+		stages, s.isTeam as
+		isTeam, s.rankUpgradeQualification as
+		rankUpgradeQualification,
+		s.eventTypeId as eventTypeId, s.createdTime
+		as createdTime,
+		s.lastModifiedTime as lastModifiedTime
+		from series s where eventTypeId=#{eventTypeId}
 	</select>
 	<select id="get" parameterType="String" resultType="com.smartool.common.dto.Serie">
-		select *
-		from
-		series where id = #{id}
+		select s.name
+		as name, s.id as id, s.startTime as startTime, s.endTime as
+		endTime,
+		s.stages as stages, s.isTeam as isTeam,
+		s.rankUpgradeQualification as
+		rankUpgradeQualification, s.eventTypeId
+		as eventTypeId, s.createdTime
+		as createdTime, s.lastModifiedTime as
+		lastModifiedTime from series s
+		where s.id = #{id}
 	</select>
 
 </mapper>

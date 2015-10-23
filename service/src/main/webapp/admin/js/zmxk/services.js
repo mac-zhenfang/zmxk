@@ -29,7 +29,9 @@ zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
 					method : 'DELETE'
 				}
 			})
-
+			
+			
+			
 			this.create = function(giveEventTypeId, serie) {
 				var defer = $q.defer();
 				serieResource.create({
@@ -118,6 +120,22 @@ zmxk.service('serieService', [ '$resource', 'zmxkConfig', '$q',
 			}
 
 		} ]);
+// eventseriedefs service
+zmxk.service('eventSerieDefService', ['$resource', 'zmxkConfig', '$q', function(
+		$resource, zmxkConfig, $q) {
+	var eventSerieDefResource = $resource(zmxkConfig.event_serie_def_rest_uri, {})
+
+	this.list = function() {
+		var defer = $q.defer();
+		eventSerieDefResource.query(function(data, headers) {
+			defer.resolve(data);
+		}, function(data, headers) {
+			defer.reject(data);
+		});
+
+		return defer.promise;
+	}
+}])
 // Site Service
 zmxk.service('siteService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
@@ -241,8 +259,28 @@ zmxk.service('eventTypeService', [ '$resource', 'zmxkConfig', '$q',
 					headers : {
 						'Content-Type' : 'application/json'
 					}
+				},
+				getEventDefs : {
+					url : zmxkConfig.event_defs_rest_uri,
+					method : "GET",
+					isArray : true,
+					headers : {
+						'Content-Type' : 'application/json'
+					}
 				}
 			})
+			
+			this.getEventDefs = function(giveEventTypeId){
+				var defer = $q.defer();
+				eventTypeResource.getEventDefs({
+					eventTypeId : giveEventTypeId
+				}, function(data, headers) {
+					defer.resolve(data);
+				}, function(data, headers) {
+					defer.reject(data);
+				});
+				return defer.promise;
+			}
 
 			this.createEventType = function(eventType) {
 				var defer = $q.defer();
@@ -312,6 +350,21 @@ zmxk.service('eventTypeService', [ '$resource', 'zmxkConfig', '$q',
 			}
 
 		} ]);
+// Round Service round_rest_uri
+zmxk.service('roundService', [ '$resource', 'zmxkConfig', '$q',
+                       		function($resource, zmxkConfig, $q) {
+	var roundResource = $resource(zmxkConfig.round_rest_uri, {});
+	this.list = function() {
+		var defer = $q.defer();
+		roundResource.query(function(data, headers) {
+			defer.resolve(data);
+		}, function(data, headers) {
+			defer.reject(data);
+		});
+
+		return defer.promise;
+	}
+}]);
 // Event Service
 zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 		function($resource, zmxkConfig, $q) {
@@ -562,7 +615,7 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 				}
 			})
 			this.uploadAvatar = function(giveUserId, giveKidId, giveFile) {
-				
+
 				var defer = $q.defer();
 				kidResource.uploadAvatar({
 					kidId : giveKidId,

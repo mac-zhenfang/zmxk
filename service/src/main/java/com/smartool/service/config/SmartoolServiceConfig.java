@@ -56,6 +56,8 @@ import com.smartool.service.dao.EventTypeDao;
 import com.smartool.service.dao.EventTypeDaoImpl;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.KidDaoImpl;
+import com.smartool.service.dao.RoundDao;
+import com.smartool.service.dao.RoundDaoImpl;
 import com.smartool.service.dao.SecurityCodeDao;
 import com.smartool.service.dao.SecurityCodeDaoImpl;
 import com.smartool.service.dao.SerieDao;
@@ -206,6 +208,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public CreditRuleDao getCreditRuleDao() {
 		return new CreditRuleDaoImpl();
+	}
+	
+	@Bean
+	public RoundDao roundDao(){
+		return new RoundDaoImpl();
 	}
 
 	@Bean

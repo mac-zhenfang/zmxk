@@ -7,9 +7,9 @@ zmxk.controller('EventRuleCtrl', [
 		'eventRuleService',
 		'$interval',
 		'$timeout',
-		'$routeParams','$q',
+		'$routeParams','$q','eventSerieDefService','tagService',
 		function($scope, userService, eventService, eventTypeService, serieService, eventRuleService, $interval, $timeout,
-				$routeParams,  $q) {
+				$routeParams,  $q, eventSerieDefService, tagService) {
 			$scope.deleteLabel = "删除";
 			$scope.eventRules = [];
 			$scope.seriesMap = {};
@@ -30,18 +30,10 @@ zmxk.controller('EventRuleCtrl', [
 				label : "单次事件"
 			} ];
 			$scope.stages = [ {
-				value : 1,
-				label : "预赛"
-			}, {
-				value : 2,
-				label : "季度赛"
-			}, {
-				value : 3,
-				label : "年度赛"
-			}, {
 				value : null,
 				label : "------"
 			} ];
+			$scope.tagList = [];
 			var init = function() {
 				eventTypeService.list().then(function(data) {
 					$scope.eventTypeList = data;
@@ -54,17 +46,34 @@ zmxk.controller('EventRuleCtrl', [
 								$scope.seriesMap[eventType.id] = data;
 								recievedSerieMaps++;
 								if($scope.eventTypeList.length == recievedSerieMaps) {
-									defer.resolve(recievedSerieMaps);
+									defer.resolve($scope.seriesMap);
 								}
 							});
 						});
 						return defer.promise;
 					};
+					var tagMap = {};
+					tagService.search("eventGroup").then(function(returnTags){
+						angular.forEach(returnTags, function(tag, index){
+							if(angular.isUndefined(tagMap[tag.level])) {
+								$scope.tagList.push(tag);
+								tagMap[tag.level] = tag.tagGroup;
+							}
+						})
+						//console.log($scope.tagList)
+						//console.log(tagMap)
+					},function(data){
+					alsert(data.data.message);
+					});
 					
 					getSeries().then(function(returnList){
-
-						eventRuleService.listAll().then(function(data) {
-							$scope.eventRules = data;
+						//console.log(returnList);
+						eventRuleService.listAll().then(function(rules) {
+							angular.forEach(rules, function(rule, idx){
+								$scope.getEventDefs(rule);
+								$scope.eventRules.push(rule);
+							})
+								console.log($scope.eventRules);
 						}, function(data){
 							alert(data.data.message);
 							return;
@@ -76,12 +85,32 @@ zmxk.controller('EventRuleCtrl', [
 				});
 			};
 			init();
+			
+			$scope.getEventDefs = function(rule){
+				console.log(rule.eventTypeId);
+				rule.stages = [ {
+					stage : null,
+					name : "------"
+				} ];
+				eventTypeService.getEventDefs(
+						rule.eventTypeId).then(
+								
+						function(data) {
+							angular.forEach(data, function(
+									stage, index) {
+								stage.name = stage.name + "(" + stage.shortName + ")";
+								rule.stages.push(stage);
+							})
+							// console.log($scope.stages)
+						}, function(data) {
 
+						})
+			}
 			$scope.createNewRule = function() {
 				var newRule = {
 					showInput : true
 				};
-				$scope.eventRules.push(newRule);
+				$scope.eventRules.unshift(newRule);
 			}
 
 			$scope.updateRule = function(ruleIndex, rule) {
@@ -139,6 +168,7 @@ zmxk.controller('EventRuleCtrl', [
 						angular.forEach($scope.eventRules, function(rule, index) {
 							if (index == ruleIndex) {
 								updateRule = angular.copy(data);
+								$scope.getEventDefs(updateRule);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -158,6 +188,7 @@ zmxk.controller('EventRuleCtrl', [
 						angular.forEach($scope.eventRules, function(rule, index) {
 							if (index == ruleIndex) {
 								updateRule = angular.copy(data);
+								$scope.getEventDefs(updateRule);
 								$scope.newRules.push(updateRule);
 							} else {
 								$scope.newRules.push(angular.copy(rule));
@@ -171,6 +202,7 @@ zmxk.controller('EventRuleCtrl', [
 						return;
 					});
 				}
+				
 			};
 
 		} ]);

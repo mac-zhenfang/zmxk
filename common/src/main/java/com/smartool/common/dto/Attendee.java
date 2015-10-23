@@ -36,6 +36,14 @@ public class Attendee extends BaseDateTrackingBean {
 						// (complete event)
 	private Integer attendeeNotifyTimes;
 	
+	private String roundId;
+	
+	private String roundShortName;
+	
+	private String roundLevelName;
+	
+	private int roundLevel;
+	
 	public Attendee() {
 	}
 
@@ -174,4 +182,37 @@ public class Attendee extends BaseDateTrackingBean {
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
 	}
+
+	public String getRoundId() {
+		return roundId;
+	}
+
+	public void setRoundId(String roundId) {
+		this.roundId = roundId;
+	}
+
+	public String getRoundShortName() {
+		return roundShortName;
+	}
+
+	public void setRoundShortName(String roundShortName) {
+		this.roundShortName = roundShortName;
+	}
+
+	public String getRoundLevelName() {
+		return roundLevelName;
+	}
+
+	public void setRoundLevelName(String roundLevelName) {
+		this.roundLevelName = roundLevelName;
+	}
+
+	public int getRoundLevel() {
+		return roundLevel;
+	}
+
+	public void setRoundLevel(int roundLevel) {
+		this.roundLevel = roundLevel;
+	}
+
 }

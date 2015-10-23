@@ -110,8 +110,8 @@ public class CreditController extends BaseController {
 	public List<EventCreditRule> searchRankingEventCreditRules(
 			@RequestParam(value = "eventTypeId", required = false) String eventTypeId,
 			@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "stage", required = false) Integer stage,@RequestParam(value = "eventGroupLevel", required = false) Integer eventGroupLevel) {
-		return creditService.searchRankingEventCreditRules(eventTypeId, stage, name,eventGroupLevel);
+			@RequestParam(value = "stage", required = false) Integer stage) {
+		return creditService.searchRankingEventCreditRules(eventTypeId, stage, name);
 	}
 
 	@ApiScope(userScope = UserRole.ADMIN)

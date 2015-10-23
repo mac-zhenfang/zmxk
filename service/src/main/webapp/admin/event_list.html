@@ -75,9 +75,9 @@
 								阶段：<select ng-disabled={{!event.showInput}}
 									class="selectpicker gridInput4" data-style="btn-info"
 									ng-model="event.stage"
-									ng-options="stage.value as stage.label for stage in stages"
-									ng-init="event.stage==stage.value"
-									ng-change="formEventName($index)">
+									ng-options="stage.id as stage.name for stage in stages"
+									ng-init="event.stage==stage.id"
+									ng-change="formEventName($index, event)">
 								</select>
 							</div>
 						</td>

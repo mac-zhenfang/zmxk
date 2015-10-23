@@ -6,5 +6,5 @@ import com.smartool.common.dto.EventDef;
 
 public interface EventDefDao {
 	
-	public List<EventDef> listEventDefBySerieId(String serieId);
+	public List<EventDef> listEventDef(String eventTypeId);
 }

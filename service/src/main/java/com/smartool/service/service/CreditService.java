@@ -29,7 +29,7 @@ public interface CreditService {
 
 	void removeEventCreditRule(String eventCreditRuleId);
 
-	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name, Integer eventGroupLevel);
+	List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name);
 
 	List<EventCreditRule> searchNonrankingEventCreditRules(String eventTypeId, Integer stage, String name);
 

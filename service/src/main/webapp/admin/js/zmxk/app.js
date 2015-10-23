@@ -1,6 +1,6 @@
 var currentModule;
 var zmxk = angular.module('zmxk', [ 'ngResource', 'datePicker', 'ui.bootstrap',
-		'dialogs', 'ngRoute', 'ngCookies','ImageCropper'], function(
+		'dialogs', 'ngRoute', 'ngCookies','ImageCropper','angular.filter'], function(
 		$httpProvider) {
 	$httpProvider.interceptors.push(function($q) {
 		return {
@@ -57,6 +57,7 @@ zmxk
 					event_search_uri : "/service/smartool/api/v1/events/search",
 					site_rest_uri : "/service/smartool/api/v1/sites/:siteId",
 					serie_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId/series/:serieId",
+					event_defs_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId/eventdefs",
 					event_type_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId",
 					event_type_site_rest_uri : "/service/smartool/api/v1/:siteId/eventtypes/",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
@@ -91,7 +92,9 @@ zmxk
 					team_remove_uri : "/service/smartool/api/v1/teams/:teamId",
 					team_list_uri : "/service/smartool/api/v1/teams",
 					team_get_uri : "/service/smartool/api/v1/teams/:teamId",
-					team_list_members_uri : "/service/smartool/api/v1/teams/:teamId/members"
+					team_list_members_uri : "/service/smartool/api/v1/teams/:teamId/members",
+					event_serie_def_rest_uri : "/service/smartool/api/v1/eventseriedefs",
+					round_rest_uri : "/service/smartool/api/v1/rounds"
 				});
 
 zmxk.config([ '$resourceProvider', function($resourceProvider) {

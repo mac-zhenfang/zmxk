@@ -15,6 +15,7 @@ zmxk.controller('SerieManageCtrl', [
 			$scope.eventTypeId = $routeParams.eventTypeId;
 			$scope.eventSeries = [];
 			$scope.eventTypes = [];
+
 			$scope.siteId = null;
 			$scope.eventSeriesCategories = [ {
 				id : true,
@@ -39,6 +40,7 @@ zmxk.controller('SerieManageCtrl', [
 				}, function(data) {
 
 				});
+
 			}
 
 			$scope.updateSerie = function(giveUpdateSerie, idx) {
@@ -172,14 +174,31 @@ zmxk
 						'$interval',
 						'$timeout',
 						'$routeParams',
+						'eventSerieDefService',
 						function($scope, userService, eventService,
 								eventTypeService, siteService, serieService,
-								$interval, $timeout, $routeParams) {
+								$interval, $timeout, $routeParams,
+								eventSerieDefService) {
 
 							$scope.sites = [];
 							$scope.giveUpdateEventType = {};
 							$scope.toDeleteEventType = {};
+							$scope.eventSerieDefs = [ {
+								id : 0,
+								name : "N/A"
+							} ];
 							$scope.init = function() {
+
+								eventSerieDefService.list().then(
+										function(data) {
+											angular.forEach(data,
+													function(def, index) {
+														$scope.eventSerieDefs
+																.push(def);
+													})
+										}, function(data) {
+
+										})
 								eventTypeService
 										.list()
 										.then(
@@ -408,7 +427,33 @@ zmxk
 								if ($scope.seriesId) {
 									criteria.seriesId = $scope.seriesId;
 								}
+								$scope.seriesFromEventType = [];
+								if (!angular.isUndefined($scope.eventTypeId)) {
+									serieService.list($scope.eventTypeId).then(
+											function(data) {
+												angular.forEach(data, function(
+														serie, index) {
+													$scope.seriesFromEventType
+															.push(serie);
+												})
+											})
+								}
+								// stages
+								if (!angular.isUndefined($scope.eventTypeId)
+										&& !angular
+												.isUndefined($scope.seriesId)) {
+									eventTypeService.getEventDefs(
+											$scope.eventTypeId).then(
+											function(data) {
+												angular.forEach(data, function(
+														stage, index) {
+													$scope.stages.push(stage);
+												})
+												// console.log($scope.stages)
+											}, function(data) {
 
+											})
+								}
 								eventService
 										.search(criteria)
 										.then(
@@ -453,29 +498,17 @@ zmxk
 																			id : "",
 																			name : "N/A"
 																		} ];
-																		serieService
-																				.list(
-																						event.eventTypeId)
-																				.then(
+
+																		angular
+																				.forEach(
+																						$scope.seriesFromEventType,
 																						function(
-																								data) {
-																							angular
-																									.forEach(
-																											data,
-																											function(
-																													serie,
-																													index) {
-																												event.eventSeries
-																														.push(serie);
-																												/*
-																												 * console.log("<<<<<<<<<<<<<<<")
-																												 * console.log(serie.id)
-																												 * console.log(serie.name)
-																												 * console.log(event.seriesId)
-																												 * console.log(">>>>>>>>>>>>>>>")
-																												 */
-																												// $scope.listEvents.push(event);
-																											})
+																								serie,
+																								index) {
+
+																							event.eventSeries
+																									.push(serie);
+
 																						})
 																	});
 												}, function(data) {
@@ -559,39 +592,33 @@ zmxk
 								selectEvent.stage = num;
 							}
 
-							$scope.formEventName = function(idx) {
-								var selectEvent = undefined;
-								angular.forEach($scope.listEvents, function(
-										event, index2) {
-									if (index2 == idx) {
-										selectEvent = event;
-										console.log(selectEvent);
+							$scope.formEventName = function(idx, selectEvent) {
+								// console.log(selectEvent);
+								var namePrefix = "";
+								angular.forEach($scope.stages, function(stage,
+										index) {
+									if (stage.id == selectEvent.stage) {
+										namePrefix = stage.shortName;
 										return;
 									}
-								});
+								})
 
-								if (angular.isUndefined(selectEvent)) {
-									return;
-								}
-
-								var namePrefix = $scope.stageNameMap[selectEvent.stage];
 								if (angular.isUndefined(namePrefix)) {
 									namePrefix = "";
 								}
-								console.log(selectEvent);
-								var name;
-								if (angular.isUndefined(selectEvent.eventTime)) {
-									name = namePrefix;
-								} else {
-									var date = new Date(selectEvent.eventTime);
-									var mon = date.getMonth() + 1;
-									mon = mon < 10 ? "0" + mon : mon;
-									var day = date.getDate();
-									day = day < 10 ? "0" + day : day;
-									name = mon + "-" + day + "-"
-											+ date.getFullYear();
-									name = namePrefix + " " + name;
-								}
+								// console.log(selectEvent);
+								var name = namePrefix;
+								/*
+								 * if
+								 * (angular.isUndefined(selectEvent.eventTime)) {
+								 * name = namePrefix; } else { var date = new
+								 * Date(selectEvent.eventTime); var mon =
+								 * date.getMonth() + 1; mon = mon < 10 ? "0" +
+								 * mon : mon; var day = date.getDate(); day =
+								 * day < 10 ? "0" + day : day; name = mon + "-" +
+								 * day + "-" + date.getFullYear(); name =
+								 * namePrefix + " " + name; }
+								 */
 								if (!angular.isUndefined(selectEvent.name)) {
 									if (selectEvent.name.search(name) < 0) {
 										console.log(name);
@@ -874,18 +901,22 @@ zmxk
 						'tagService',
 						'ruleService',
 						'eventRuleService',
+						'roundService',
 						function($scope, userService, eventService, $interval,
 								$timeout, $routeParams, $dialogs, tagService,
-								ruleService, eventRuleService) {
+								ruleService, eventRuleService, roundService) {
 							$scope.eventId = $routeParams.eventId;
 							// console.log("~~~~~" + $scope.eventId);
 							$scope.eventInit = {};
 							$scope.isGeneratedGrades = false;
 							$scope.generateGradesLabel = "生成表单";
+							$scope.promoteToNextLevelLabel = "晋级下一轮";
 							$scope.selectedRule
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
 							$scope.eventTags = [];
+							$scope.eventRounds = [];
+							
 							var tagTypeClasss = [ "btn btn-info",
 									"btn btn-success", "btn btn-danger",
 									"btn btn-active" ]
@@ -901,76 +932,127 @@ zmxk
 														var enrolledCount = 0;
 														var applyScoreCount = 0;
 														var leftCount = 0;
-														var tagsMap = {};
+														var roundsMap = {};
 														var newAttendees = [];
-														angular
-																.forEach(
-																		$scope.eventInit.attendees,
+														roundService
+																.list()
+																.then(
 																		function(
-																				attendee,
-																				index2) {
-																			if (angular
-																					.isUndefined(attendee.tagId)
-																					|| !attendee.tagId) {
-																				if (angular
-																						.isUndefined(tagsMap["fake"])) {
-																					tagsMap["fake"] = [];
-																				}
-																				tagsMap["fake"]
-																						.push(attendee);
-																			} else {
-																				if (angular
-																						.isUndefined(tagsMap[attendee.tagId])) {
-																					tagsMap[attendee.tagId] = [];
-																				}
-																				tagsMap[attendee.tagId]
-																						.push(attendee);
-																			}
-																			attendee.min = Math
-																					.floor(attendee.score / 60);
-																			attendee.sec = attendee.score % 60;
-																		});
-														var d = 0;
-														angular
-																.forEach(
-																		tagsMap,
-																		function(
-																				attendeeList,
-																				index) {
-																			d++;
+																				data) {
 																			angular
 																					.forEach(
-																							attendeeList,
+																							data,
 																							function(
-																									attendee,
-																									index2) {
-																								attendee["tagType"] = d;
-																								attendee["editing"] = false;
-																								attendee["editingTag"] = false;
-																								newAttendees
-																										.push(attendee);
+																									round,
+																									index) {
+																								var name = $scope.eventInit.eventShortName + round.levelName
+																										+ round.shortName;
+																								round["name"] = name;
+																								$scope.eventRounds
+																										.push(round);
 																							});
+																			angular
+																			.forEach(
+																					$scope.eventInit.attendees,
+																					function(
+																							attendee,
+																							index2) {
+																						if (angular
+																								.isUndefined(attendee.roundId)
+																								|| !attendee.roundId) {
+																							if (angular
+																									.isUndefined(roundsMap["fake"])) {
+																								roundsMap["fake"] = [];
+																							}
+																							roundsMap["fake"]
+																									.push(attendee);
+																						} else {
+																							if (angular
+																									.isUndefined(roundsMap[attendee.roundId])) {
+																								roundsMap[attendee.roundId] = [];
+																							}
+																							roundsMap[attendee.roundId]
+																									.push(attendee);
+																						}
+																						attendee.min = Math
+																								.floor(attendee.score / 60);
+																						attendee.sec = attendee.score % 60;
+																					});
+																	var d = 0;
+																	angular
+																			.forEach(
+																					roundsMap,
+																					function(
+																							attendeeList,
+																							index) {
+																						d++;
+																						angular
+																								.forEach(
+																										attendeeList,
+																										function(
+																												attendee,
+																												index2) {
+																											attendee["roundName"]  = null;
+																											if (attendee["roundShortName"]
+																													&& attendee["roundLevelName"]) {
+																												attendee["roundName"] = $scope.eventInit.eventShortName
+																														+ attendee["roundLevelName"] + attendee["roundShortName"];
+																											}
+
+																											attendee["roundType"] = d;
+																											attendee["editing"] = false;
+																											attendee["editingRound"] = false;
+																											attendee["toNextRound"] = false;
+																											//for each attendee, it can have this level and next leve, 2 rounds list.
+																											//this function is to split into 2
+																											attendee["thisLevelRounds"] = [];
+																											attendee["nextLevelRounds"] = [];
+																											//console.log($scope.eventRounds);
+																											//console.log($scope.generateGradesLabel);
+																											angular.forEach($scope.eventRounds, function(round, index3) {
+																												
+																												if(attendee["roundLevel"]) {
+																													if(attendee["roundLevel"] == round.level) {
+																														attendee["thisLevelRounds"].push(round);
+																														// 10 = AX
+																														// AB -> AC,  AA -> AB + AX
+																													} else if (attendee["roundLevel"] + 1 == round.level || (attendee["roundLevel"] == 1 && round.level == 10)) {
+																														attendee["nextLevelRounds"].push(round);
+																													}
+																												} else {
+																													if(round.level == 1) {
+																														attendee["thisLevelRounds"].push(round);
+																													} else {
+																														attendee["nextLevelRounds"].push(round);
+																													}
+																												}
+																											})
+																											
+																											newAttendees
+																													.push(attendee);
+																										});
+																					});
+
+																	$scope.eventInit.attendees = angular
+																			.copy(newAttendees);
+																	console
+																	.log($scope.eventInit.attendees);
+																	$scope.eventInit.leftCount = $scope.eventInit.quota
+																			- enrolledCount
+																			- applyScoreCount;
+																	$scope.eventInit.applyScoreCount = applyScoreCount;
+																	$scope.eventInit.enrolledCount = enrolledCount;
+																		},
+																		function(
+																				data) {
 																		});
-
-														$scope.eventInit.attendees = angular
-																.copy(newAttendees);
-														$scope.eventInit.leftCount = $scope.eventInit.quota
-																- enrolledCount
-																- applyScoreCount;
-														$scope.eventInit.applyScoreCount = applyScoreCount;
-														$scope.eventInit.enrolledCount = enrolledCount;
-
 													}, function(data) {
 														console.log(data);
 													});
+								} else {
+									alert(" can not find event id");
 								}
 
-								// get tags
-								tagService.search("event").then(function(data) {
-									$scope.eventTags = data;
-								}, function(data) {
-
-								});
 							}
 
 							$scope.clickEditScore = function(attendee) {
@@ -1043,28 +1125,36 @@ zmxk
 								// }
 
 							}
-							
+
 							$scope.cancelTagGroupChoose = function() {
-								if(!angular.isUndefined($scope.toShowAttendees)){
-									$scope.eventInit.attendees = angular.copy($scope.toShowAttendees);
+								if (!angular
+										.isUndefined($scope.toShowAttendees)) {
+									$scope.eventInit.attendees = angular
+											.copy($scope.toShowAttendees);
 								}
 							}
-							
-							 
-							$scope.chooseAttendeesByTag = function(choosedTagId){
-								//console.log(choosedTagId);
-								if(angular.isUndefined($scope.toShowAttendees)){
-									$scope.toShowAttendees = angular.copy($scope.eventInit.attendees);
+
+							$scope.chooseAttendeesByTag = function(choosedTagId) {
+								// console.log(choosedTagId);
+								if (angular.isUndefined($scope.toShowAttendees)) {
+									$scope.toShowAttendees = angular
+											.copy($scope.eventInit.attendees);
 								} else {
-									$scope.eventInit.attendees = angular.copy($scope.toShowAttendees);
+									$scope.eventInit.attendees = angular
+											.copy($scope.toShowAttendees);
 								}
 								var newShowAttendees = [];
 								angular
-								.forEach($scope.eventInit.attendees,function(attendee){
-									if(!angular.isUndefined(attendee.tagId) && choosedTagId == attendee.tagId){
-										newShowAttendees.push(attendee);
-									}
-								});
+										.forEach(
+												$scope.eventInit.attendees,
+												function(attendee) {
+													if (!angular
+															.isUndefined(attendee.tagId)
+															&& choosedTagId == attendee.tagId) {
+														newShowAttendees
+																.push(attendee);
+													}
+												});
 								$scope.eventInit.attendees = newShowAttendees;
 							}
 

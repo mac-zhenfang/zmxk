@@ -21,6 +21,8 @@ import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.EventStages;
+import com.smartool.common.dto.Tag;
+import com.smartool.common.dto.Tag.TagType;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
@@ -29,6 +31,7 @@ import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
+import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {
@@ -212,8 +215,8 @@ public class CreditServiceImpl implements CreditService {
 	}
 
 	@Override
-	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name, Integer eventGroupLevel) {
-		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, name, eventGroupLevel);
+	public List<EventCreditRule> searchRankingEventCreditRules(String eventTypeId, Integer stage, String name) {
+		return creditRuleDao.listRankingEventCreditRules(eventTypeId, stage, name);
 	}
 
 	@Override

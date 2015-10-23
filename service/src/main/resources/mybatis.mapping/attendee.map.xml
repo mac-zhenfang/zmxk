@@ -5,8 +5,8 @@
 <mapper namespace="ATTENDEE">
 	<select id="create" parameterType="com.smartool.common.dto.Attendee">
 		insert attendees (id, kidId,
-		userId,eventId, tagId, seq, createdTime,lastModifiedTime) values
-		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},now(),now())
+		userId,eventId, tagId, seq, roundId, createdTime,lastModifiedTime) values
+		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},#{roundId},now(),now())
 	</select>
 	<select id="complete" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
@@ -15,6 +15,7 @@
 		seq=#{seq},
 		score=#{score},
 		tagId=#{tagId},
+		roundId=#{roundId},
 		status=#{status}
 		where id =
 		#{id};
@@ -37,7 +38,7 @@
 		id, a.kidId as
 		kidId, a.createdTime as createdTime, a.lastModifiedTime
 		as
-		lastModifiedTime, a.status as status, a.score as score, a.tagId as tagId,
+		lastModifiedTime, a.status as status, a.score as score, a.tagId as tagId,a.roundId as roundId,
 		a.seq as seq from attendees a
 	</select>
 	<select id="getById" parameterType="String"
@@ -57,7 +58,7 @@
 		id, a.kidId as kidId, a.createdTime as
 		createdTime, a.lastModifiedTime
 		as lastModifiedTime, a.status as
-		status, a.score as score, a.seq as seq, a.tagId as tagId  from attendees a where
+		status, a.score as score, a.seq as seq, a.tagId as tagId a.roundId as roundId  from attendees a where
 		a.eventId = #{eventId} and
 		a.status = 0
 	</select>

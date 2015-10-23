@@ -30,8 +30,6 @@ public class SerieController {
 	@Autowired
 	EventSerieDefDao eventSerieDefDao;
 
-	@Autowired
-	EventDefDao eventDefDao;
 	/**
 	 * CREATE
 	 * 
@@ -113,14 +111,8 @@ public class SerieController {
 	}
 	
 	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/eventSerieDefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	@RequestMapping(value = "/eventseriedefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<EventSerieDef> listEventSerieDefs(){
 		return eventSerieDefDao.listAll();
-	}
-	
-	@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}/eventdefs", method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<EventDef> getEventDefsBySerieId(@PathVariable String serieId){
-		return eventDefDao.listEventDefBySerieId(serieId);
 	}
 }

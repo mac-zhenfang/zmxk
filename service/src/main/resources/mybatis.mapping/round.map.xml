@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ROUND">
+	<select id="listAll" resultType="com.smartool.common.dto.Round">
+		select * from rounds;
+	</select>
+	<select id="listByLevel" parameterType="Integer" resultType="com.smartool.common.dto.Round">
+		select * from rounds where level = #{level};
+	</select>
+</mapper>

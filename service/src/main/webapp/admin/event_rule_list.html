@@ -9,6 +9,15 @@
 			<input ng-model="filterRule.name" class="form-control gridInput2" />
 		</div>
 		<div class="box-content">
+			<div class="control-group">
+				<div class="controls">
+					<button type="button" class="btn btn-info"
+						ng-click="createNewRule()">创建</button>
+				</div>
+			</div>
+		</div>
+		<div class="box-content">
+
 			<table
 				class="table table-striped table-bordered bootstrap-datatable datatable">
 				<thead>
@@ -16,6 +25,7 @@
 						<th>规则名</th>
 						<th>赛事类型名</th>
 						<th>赛事阶段</th>
+						<th>组别</th>
 						<th>排名</th>
 						<th>给予积分</th>
 						<th>给予奖牌</th>
@@ -33,26 +43,34 @@
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.eventTypeId"
 							ng-options="eventType.id as eventType.name for eventType in eventTypeList"
-							ng-init="rule.eventTypeId==eventType.id">
+							ng-init="rule.eventTypeId==eventType.id" ng-change="getEventDefs(rule)">
 						</select></td>
 						<td class="center"><select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
 							ng-model="rule.stage"
-							ng-options="stage.value as stage.label for stage in stages"
-							ng-init="rule.stage==stage.value">
+							ng-options="stage.stage as stage.name for stage in rule.stages"
+							ng-init="rule.stage==stage.stage">
 						</select></td>
+						<td class="center"> <select ng-disabled={{!rule.showInput}}
+							class="selectpicker gridInput2" data-style="btn-info"
+							ng-model="rule.eventGroupLevel"
+							ng-options="tag.level as tag.tagGroup for tag in tagList"
+							ng-init="rule.eventGroupLevel==tag.level">
+						</td>
+						
 						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.upperRank"></span> <input ng-model="rule.upperRank"
-							ng-show="{{rule.showInput}}" class="form-control gridInput" />
-							~ <span ng-hide="{{rule.showInput}}" ng-bind="rule.lowerRank"></span>
+							ng-show="{{rule.showInput}}" class="form-control gridInput" /> ~
+							<span ng-hide="{{rule.showInput}}" ng-bind="rule.lowerRank"></span>
 							<input ng-model="rule.lowerRank" ng-show="{{rule.showInput}}"
-							class="form-control gridInput" /> </select></td>
+							class="form-control gridInput" /></td>
 						<td class="center"><span ng-hide="{{rule.showInput}}"
 							ng-bind="rule.credit"></span> <input ng-model="rule.credit"
 							ng-show="{{rule.showInput}}" class="form-control gridInput" /></td>
 						<td class="center">金<span ng-hide="{{rule.showInput}}"
-							ng-bind="rule.goldenMedal"></span> <input ng-model="rule.goldenMedal"
-							ng-show="{{rule.showInput}}" class="form-control gridInput" /><br />银<span
+							ng-bind="rule.goldenMedal"></span> <input
+							ng-model="rule.goldenMedal" ng-show="{{rule.showInput}}"
+							class="form-control gridInput" /><br />银<span
 							ng-hide="{{rule.showInput}}" ng-bind="rule.silverMedal"></span> <input
 							ng-model="rule.silverMedal" ng-show="{{rule.showInput}}"
 							class="form-control gridInput" /><br />铜<span
@@ -68,12 +86,7 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="control-group">
-				<div class="controls">
-					<button type="button" class="btn btn-info"
-						ng-click="createNewRule()">创建</button>
-				</div>
-			</div>
+
 		</div>
 	</div>
 </div>

@@ -7,6 +7,10 @@ public class EventType extends BaseDateTrackingBean {
 	private String name;
 	
 	private String siteId;
+	
+	private int eventSerieDefId;
+	
+	private String eventSerieDefName;
 
 	public String getId() {
 		return id;
@@ -30,5 +34,21 @@ public class EventType extends BaseDateTrackingBean {
 
 	public void setSiteId(String siteId) {
 		this.siteId = siteId;
+	}
+
+	public int getEventSerieDefId() {
+		return eventSerieDefId;
+	}
+
+	public void setEventSerieDefId(int eventSerieDefId) {
+		this.eventSerieDefId = eventSerieDefId;
+	}
+
+	public String getEventSerieDefName() {
+		return eventSerieDefName;
+	}
+
+	public void setEventSerieDefName(String eventSerieDefName) {
+		this.eventSerieDefName = eventSerieDefName;
 	}
 }

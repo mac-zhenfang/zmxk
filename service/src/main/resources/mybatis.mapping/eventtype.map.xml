@@ -5,16 +5,17 @@
 <mapper namespace="EVENT_TYPE">
 	<select id="create" parameterType="com.smartool.common.dto.EventType">
 		insert eventTypes (id,
-		name,siteId,
+		name,siteId,eventSerieDefId,
 		createdTime, lastModifiedTime)
 		values
-		(#{id},#{name},#{siteId},now(),now())
+		(#{id},#{name},#{siteId},#{eventSerieDefId},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.EventType">
 		update eventTypes
 		set
 		name=#{name},
-		siteId=#{siteId}
+		siteId=#{siteId},
+		eventSerieDefId = #{eventSerieDefId}
 		where id =
 		#{id};
 	</select>
@@ -23,24 +24,47 @@
 		id = #{id}
 	</select>
 	<select id="list" resultType="com.smartool.common.dto.EventType">
-		select * from eventTypes
+		select et.id as id, et.siteId as
+		siteId, et.name as
+		name, et.eventSerieDefId as eventSerieDefId,
+		esd.name as
+		eventSerieDefName,et.createdTime as createdTime,
+		et.lastModifiedTime as lastModifiedTime from eventTypes et LEFT JOIN
+		event_serie_def esd on
+		et.eventSerieDefId=esd.id
 	</select>
 	<select id="get" parameterType="String"
 		resultType="com.smartool.common.dto.EventType">
-		select *
-		from eventTypes where id = #{id}
+		select et.id as id,et.siteId as siteId, et.name as
+		name,
+		et.eventSerieDefId as
+		eventSerieDefId, esd.name as
+		eventSerieDefName,et.createdTime as createdTime, et.lastModifiedTime
+		as lastModifiedTime from eventTypes et LEFT
+		JOIN event_serie_def esd on
+		et.eventSerieDefId=esd.id where et.id = #{id}
 	</select>
 
 	<select id="listBySiteId" resultType="com.smartool.common.dto.EventType"
 		parameterType="String">
-		select * from eventTypes where siteId=#{siteId} or
-		siteId is null
+		select et.id as id,es.siteId as siteId, et.name as
+		name,
+		et.eventSerieDefId as
+		eventSerieDefId, esd.name as
+		eventSerieDefName,et.createdTime as createdTime, et.lastModifiedTime
+		as lastModifiedTime from eventTypes et LEFT
+		JOIN event_serie_def esd on
+		et.eventSerieDefId=esd.id where et.siteId=#{siteId} or
+		et.siteId is
+		null
 	</select>
 
 	<select id="listDistinctEventTypes" resultType="com.smartool.common.dto.EventType"
 		parameterType="String">
-		select DISTINCT et.id as id, et.name as name, et.siteId as siteId from attendees a,
-		events e, eventTypes et where et.id=e.eventTypeId and e.id=a.eventId
+		select DISTINCT et.id as id, et.name as name, et.siteId
+		as siteId from attendees a,
+		events e, eventTypes et where
+		et.id=e.eventTypeId and e.id=a.eventId
 		and a.userId = #{id}
 	</select>
 </mapper>

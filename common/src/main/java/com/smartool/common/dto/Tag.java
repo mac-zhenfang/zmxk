@@ -6,6 +6,9 @@ public class Tag extends BaseDateTrackingBean {
 	private String name;
 	
 	private String type;
+	
+	
+	private Integer level;
 
 	public String getId() {
 		return id;
@@ -31,8 +34,17 @@ public class Tag extends BaseDateTrackingBean {
 		this.type = type;
 	}
 	
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
 	public enum TagType {
-		event, user, site, eventType, serie
+		event, eventGroup, user, site, eventType, serie
 	}
 }
 

@@ -13,8 +13,8 @@ public class EventDefDaoImpl implements EventDefDao {
 	private SqlSession sqlSession;
 	
 	@Override
-	public List<EventDef> listEventDefBySerieId(String serieId) {
-		return sqlSession.selectList("EVENT_DEF.listBySerieId", serieId);
+	public List<EventDef> listEventDef(String eventTypeId) {
+		return sqlSession.selectList("EVENT_DEF.listByEventTypeId", eventTypeId);
 	}
 
 }
