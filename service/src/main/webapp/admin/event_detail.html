@@ -8,11 +8,14 @@
 		<!-- <div class="gridStyle" ng-grid="gridOptions"></div> -->
 		<div class="box-content">
 			<div class="controls">
-				按组别选择：<select class="selectpicker gridInput4" data-style="btn-info"
+				组：<select class="selectpicker gridInput4" data-style="btn-info"
 					ng-model="choosedOptionId"
 					ng-change="chooseAttendeesByRound(choosedOptionId)"
 					ng-options="option.id as option.name for option in eventRounds"></select>
-
+				组别：<select class="selectpicker gridInput4" data-style="btn-info"
+					ng-model="choosedOptionLevelId"
+					ng-change="chooseAttendeesByRoundLevel(choosedOptionLevelId)"
+					ng-options="id as name for (id, name) in roundLevelList"></select>
 				<span class="btn btn-info" ng-click="cancelRoundChoose()">取消组别选择</span>
 
 				<button type="button" class="btn btn-warn"
@@ -29,15 +32,15 @@
 					<th>属性</th>
 					<th>车次</th>
 					<th>状态</th>
-					<th>成绩</th>
-					<th>排名</th>
-					<th>当前组别</th>
+					<th><a href="" ng-click="order('score')">成绩</a><span class="sortorder" ng-show="predicate === 'score'" ng-class="{reverse:reverse}"></span></th>
+					<th><a href="" ng-click="order('rank')">排名</a><span class="sortorder" ng-show="predicate === 'rank'" ng-class="{reverse:reverse}"></span></th>
+					<th><a href="" ng-click="order('roundAndRank')">当前组别</a><span class="sortorder" ng-show="predicate === 'roundAndRank'" ng-class="{reverse:reverse}"></span></th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<!-- ng-repeat="(key, value) in eventInit.attendees | groupBy:'team'" -->
 			<tbody>
-				<tr ng-repeat="attendee in eventInit.attendees | orderBy:'rank'">
+				<tr ng-repeat="attendee in eventInit.attendees | orderBy:predicate:reverse">
 					<td class="center">
 						<center>
 							<div>
@@ -47,6 +50,7 @@
 						</center>
 					</td>
 					<td class="center">
+					
 						<div ng-show="eventInit.team">
 							战队：<span class="label label-success">{{attendee.teamName}}</span>
 						</div>
@@ -81,8 +85,7 @@
 						<span
 						ng-disabled="{{attendee.nextLevelRounds.length==0}}"
 						ng-class="{true:'btn btn-warn', false:'btn btn-error'}[attendee.nextLevelRounds.length==0]"
-						ng-click="editNextRound(attendee)" ng-hide="attendee.toNextRound"
-						ng-bind="{true: '比赛完成', false : '晋级下一轮'}[attendee.nextLevelRounds.length==0]"></span>
+						ng-click="editNextRound(attendee)" ng-hide="attendee.toNextRound"> {{attendee.nextRoundLabel}}</span>
 						<select ng-show="attendee.toNextRound"
 						class="selectpicker gridInput1" data-style="btn-info"
 						ng-model="attendee.roundId"

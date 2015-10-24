@@ -396,7 +396,6 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				saveAttendee : {
 					url : zmxkConfig.event_update_attendee_uri,
 					method : "POST",
-					isArray : true,
 					headers : {
 						'Content-Type' : 'application/json'
 					}

@@ -1,6 +1,7 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.smartool.common.dto.Attendee;
 
@@ -23,4 +24,8 @@ public interface AttendeeDao {
 	void removeUnused(String eventId);
 	
 	Attendee update(Attendee attendee);
+	
+	Attendee updateNextRound(Attendee attendee);
+	
+	Map<String, Attendee> getAttendeesFromEvent(String eventId, String roundId);
 }

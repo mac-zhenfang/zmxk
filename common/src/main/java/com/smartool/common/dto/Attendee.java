@@ -31,6 +31,8 @@ public class Attendee extends BaseDateTrackingBean {
 	private int schoolType;
 	
 	private String schoolName;
+	
+	private String nextRoundId;
 
 	private int status; // 0 (prepared when create event) / 1 (enrolled) / 2
 						// (complete event)
@@ -213,6 +215,14 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setRoundLevel(int roundLevel) {
 		this.roundLevel = roundLevel;
+	}
+
+	public String getNextRoundId() {
+		return nextRoundId;
+	}
+
+	public void setNextRoundId(String nextRoundId) {
+		this.nextRoundId = nextRoundId;
 	}
 
 }

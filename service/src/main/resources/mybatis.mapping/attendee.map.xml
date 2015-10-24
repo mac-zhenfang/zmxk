@@ -20,6 +20,9 @@
 		where id =
 		#{id};
 	</select>
+	<select id="updateNextRound"  parameterType="com.smartool.common.dto.Attendee">
+		update attendees set nextRoundId=#{nextRoundId} where id = #{id};
+	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
@@ -56,7 +59,7 @@
 		kidId, a.createdTime as createdTime, a.lastModifiedTime
 		as
 		lastModifiedTime, a.status as status, a.score as score, a.tagId as tagId,a.roundId as roundId,
-		a.seq as seq from attendees a
+		a.seq as seq, a.nextRoundId as nextRoundId from attendees a
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
@@ -68,7 +71,14 @@
 		select * from attendees where eventId = #{eventId} and
 		status > 0
 	</select>
-
+	<select id="getByEventRoundId" parameterType="Map"
+		resultType="com.smartool.common.dto.Attendee">
+		select * from attendees where eventId = #{eventId} 
+		<if test="roundId != null">
+			and  roundId=#{roundId}
+		</if> 
+		and status = 2
+	</select>
 	<select id="getPendingAttendees" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
 		select a.id as

@@ -1,12 +1,13 @@
 package com.smartool.service.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.smartool.common.dto.Attendee;
-import com.smartool.common.dto.Event;
 
 public class AttendeeDaoImpl implements AttendeeDao {
 
@@ -63,6 +64,21 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	@Override
 	public Attendee update(Attendee attendee) {
 		sqlSession.selectOne("ATTENDEE.update", attendee);
+		return getAttendeeInternal(attendee.getId());
+	}
+
+	@Override
+	public Map<String, Attendee> getAttendeesFromEvent(String eventId, String roundId) {
+		Map<String, String> param = new HashMap<>();
+		param.put("eventId", eventId);
+		param.put("roundId", roundId);
+
+		return sqlSession.selectMap("ATTENDEE.getByEventRoundId", param, "id");
+	}
+
+	@Override
+	public Attendee updateNextRound(Attendee attendee) {
+		sqlSession.selectOne("ATTENDEE.updateNextRound", attendee);
 		return getAttendeeInternal(attendee.getId());
 	}
 }

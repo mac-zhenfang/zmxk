@@ -49,6 +49,7 @@
 			<result property="teamName" column="teamName" />
 			<result property="tagId" column="tagId" />
 			<result property="roundId" column="roundId" />
+			<result property="nextRoundId" column="nextRoundId" />
 			<result property="roundLevel" column="roundLevel" />
 			<result property="roundLevelName" column="roundLevelName" />
 			<result property="roundShortName" column="roundShortName" />
@@ -79,6 +80,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -119,7 +121,7 @@
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
-		seq,
+		seq,a.nextRoundId as nextRoundId,
 		a.status as
 		attendeeStatus, a.eventId as eventId,
 		ts.name as
@@ -165,6 +167,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -205,8 +208,8 @@
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
-		seq,
-		a.status as
+		seq,a.nextRoundId as nextRoundId,
+		a.status as 
 		attendeeStatus, a.eventId as eventId,
 		ts.name as
 		teamName, ts.id as
@@ -253,6 +256,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -292,7 +296,7 @@
 		a.userId as
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
-		as score, a.seq as
+		as score, a.nextRoundId as nextRoundId,a.seq as
 		seq,
 		a.status as
 		attendeeStatus, a.eventId as eventId,
@@ -347,6 +351,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -387,7 +392,7 @@
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
-		seq,
+		seq,a.nextRoundId as nextRoundId,
 		a.status as
 		attendeeStatus, a.eventId as eventId,
 		ts.name as
@@ -434,6 +439,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -474,7 +480,7 @@
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
-		seq,
+		seq,a.nextRoundId as nextRoundId,
 		a.status as
 		attendeeStatus, a.eventId as eventId,
 		ts.name as
@@ -542,6 +548,7 @@
 		seq,
 		tagId,
 		roundId,
+		nextRoundId,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -582,7 +589,7 @@
 		userId,a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
-		seq,
+		seq,a.nextRoundId as nextRoundId,
 		a.status as
 		attendeeStatus, a.eventId as eventId,
 		ts.name as

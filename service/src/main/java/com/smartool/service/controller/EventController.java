@@ -1,9 +1,12 @@
 package com.smartool.service.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -165,6 +168,10 @@ public class EventController extends BaseController {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.SCORE_CAN_NOT_BE_NULL);
 		}
 		
+		if(!Strings.isNullOrEmpty(attendee.getNextRoundId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_PROMOTE);
+		}
+		
 		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
 		Event event = eventDao.getEvent(eventId);
 		int quota = event.getQuota();
@@ -182,9 +189,10 @@ public class EventController extends BaseController {
 		if(att == null) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_QUOTA_ENROLL_MESSAGE);
 		}
-
+		
 		Attendee toPromoteAttendee = createPromoteAttendee(attendee, att);
-
+		attendee.setNextRoundId(attendee.getRoundId());
+		attendeeDao.updateNextRound(attendee);
 		attendeeDao.update(toPromoteAttendee);
 
 		return toPromoteAttendee;
@@ -210,6 +218,7 @@ public class EventController extends BaseController {
 		promotedAttendee.setTagId(attendee.getTagId());
 		promotedAttendee.setTag(attendee.getTag());
 		promotedAttendee.setTeamId(attendee.getTeamId());
+		promotedAttendee.setUserId(attendee.getUserId());
 		return promotedAttendee;
 	}
 	
@@ -218,7 +227,7 @@ public class EventController extends BaseController {
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public List<Attendee> complete(@PathVariable String eventId, @RequestBody List<Attendee> attendees) {
+	public Attendee complete(@PathVariable String eventId, @RequestBody Attendee attendee) {
 		List<Attendee> retAttendees = new ArrayList<>();
 		// TagId to seqs
 		Map<String, Set<Integer>> groupMap = new HashMap<String, Set<Integer>>();
@@ -241,11 +250,11 @@ public class EventController extends BaseController {
 				}
 			}
 		}
-		for (Attendee attendee : attendees) {
+		//clean rank
+		
 			
 			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
-				
 			} else {
 				attendee.setStatus(2);
 				
@@ -271,11 +280,33 @@ public class EventController extends BaseController {
 				attendee.setSeq(seq);
 				groupMap.get(tagId).add(seq);
 			}*/
-			// update attendee
-			retAttendees.add(attendeeDao.complete(attendee));
-		}
-
-		return retAttendees;
+			// clean attendees
+			if(attendee.getStatus() == 1) {
+				return attendeeDao.complete(attendee);
+			}
+			
+			Map<String, Attendee> attendeesPerRound = attendeeDao.getAttendeesFromEvent(eventId, attendee.getRoundId());
+			attendeesPerRound.put(attendee.getId(), attendee);
+			List<Attendee> listAttendees = new ArrayList<>();
+			for(Entry<String, Attendee> entry : attendeesPerRound.entrySet()) {
+				listAttendees.add(entry.getValue());
+			}
+			Collections.sort(listAttendees, new Comparator<Attendee>() {
+				@Override
+				public int compare(Attendee o1, Attendee o2) {
+					int ret = o1.getScore() <= o2.getScore() ? -1 : 1;
+					return ret;
+				}
+			});
+			for(int i =0;i<listAttendees.size();i++) {
+				Attendee toSave = listAttendees.get(i);
+				toSave.setRank(i+1);
+				Attendee ret = attendeeDao.complete(toSave);
+				if(ret.getId().equals(attendee.getId())) {
+					attendee = ret;
+				}
+			}
+			return attendee;
 	}
 
 	private Integer getSeqNumber(Map<String, Set<Integer>> groupMap, String tagId) {
