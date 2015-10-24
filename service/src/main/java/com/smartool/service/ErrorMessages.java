@@ -24,6 +24,7 @@ public class ErrorMessages {
 	public static final String ATTENDEE_DO_NOT_EXIST_ERROR_MESSAGE = "该选手不存在";
 	public static final String RULE_DO_NOT_EXIST_ERROR_MESSAGE = "该奖励规则不存在";
 	public static final String DUPLICATE_ENROLL_MESSAGE = "您已经录入了该选手";
+	public static final String MISS_USER_ID = "录入小孩信息有误，却少用户，请检查";
 	public static final String EXCEED_QUOTA_ENROLL_MESSAGE = "已经超过赛事名额上线";
 	public static final String EXCEED_GROUP_QUOTA_ERROR_MESSAGE = "已经超过分组名额上线";
 	public static final String EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE = "请输入有效的积分奖励规则名称";

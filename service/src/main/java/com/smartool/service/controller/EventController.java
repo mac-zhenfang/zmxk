@@ -306,9 +306,13 @@ public class EventController extends BaseController {
 		String givenKidId = enrollAttendee.getKidId();
 		if (enrollAttendee.getKid() != null && Strings.isNullOrEmpty(enrollAttendee.getKidId())) {
 			Kid kid = enrollAttendee.getKid();
+			if(Strings.isNullOrEmpty(kid.getUserId())) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.MISS_USER_ID);
+			}
 			kid.setId(CommonUtils.getRandomUUID());
 			returnKid = kidDao.create(kid);
 			givenKidId = returnKid.getId();
+			enrollAttendee.setUserId(returnKid.getUserId());
 		}
 
 		int quota = event.getQuota();
