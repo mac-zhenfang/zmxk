@@ -10,23 +10,21 @@ zmxk.controller('MainController', [
 				$routeParams, $cookies) {
 			currentModule = "userList";
 			$scope.$location = $location;
-
+			$scope.onExit = function() {
+				return ('请在离开页面前确保修改已经保存');
+			};
+			$window.onbeforeunload =  $scope.onExit;
 			$scope.userId = $scope.$location.search().userId;
 			$scope.eventId = $scope.$location.search().eventId;
-			$scope.stages = [{id : 0, name : "N/A"}];
-			/*$scope.stages = [ {
-				value : 0,
-				label : "N/A"
-			}, {
-				value : 1,
-				label : "预赛"
-			}, {
-				value : 2,
-				label : "季度赛"
-			}, {
-				value : 3,
-				label : "年度赛"
-			} ];*/
+			$scope.stages = [ {
+				id : 0,
+				name : "N/A"
+			} ];
+			/*
+			 * $scope.stages = [ { value : 0, label : "N/A" }, { value : 1,
+			 * label : "预赛" }, { value : 2, label : "季度赛" }, { value : 3, label :
+			 * "年度赛" } ];
+			 */
 
 			$scope.roles_option = [ {
 				value : 0,
@@ -38,8 +36,6 @@ zmxk.controller('MainController', [
 				value : 2,
 				label : "管理员"
 			} ];
-
-			
 
 			$scope.nameStageMap = {
 				"A" : 1,
@@ -59,12 +55,12 @@ zmxk.controller('MainController', [
 			} ]
 
 			$scope.loginUser = angular.fromJson($cookies.get("loginUser"));
-			//console.log($scope.loginUser);
+			// console.log($scope.loginUser);
 			$scope.init = function() {
 
-				//console.log($scope.loginUser);
+				// console.log($scope.loginUser);
 				userService.getUser($scope.loginUser.id).then(function(data) {
-					
+
 				}, function(data) {
 				});
 				if (!angular.isUndefined($scope.$location.search().page)) {

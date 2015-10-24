@@ -59,4 +59,10 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public void removeUnused(String eventId) {
 		sqlSession.delete("ATTENDEE.removeUnused", eventId);
 	}
+
+	@Override
+	public Attendee update(Attendee attendee) {
+		sqlSession.selectOne("ATTENDEE.update", attendee);
+		return getAttendeeInternal(attendee.getId());
+	}
 }

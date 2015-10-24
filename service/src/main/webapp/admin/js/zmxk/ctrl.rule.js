@@ -7,9 +7,9 @@ zmxk.controller('EventRuleCtrl', [
 		'eventRuleService',
 		'$interval',
 		'$timeout',
-		'$routeParams','$q','eventSerieDefService','tagService',
+		'$routeParams','$q','eventSerieDefService','tagService','roundService',
 		function($scope, userService, eventService, eventTypeService, serieService, eventRuleService, $interval, $timeout,
-				$routeParams,  $q, eventSerieDefService, tagService) {
+				$routeParams,  $q, eventSerieDefService, tagService, roundService) {
 			$scope.deleteLabel = "删除";
 			$scope.eventRules = [];
 			$scope.seriesMap = {};
@@ -34,6 +34,7 @@ zmxk.controller('EventRuleCtrl', [
 				label : "------"
 			} ];
 			$scope.tagList = [];
+			$scope.roundList = [];
 			var init = function() {
 				eventTypeService.list().then(function(data) {
 					$scope.eventTypeList = data;
@@ -53,7 +54,7 @@ zmxk.controller('EventRuleCtrl', [
 						return defer.promise;
 					};
 					var tagMap = {};
-					tagService.search("eventGroup").then(function(returnTags){
+					/*tagService.search("eventGroup").then(function(returnTags){
 						angular.forEach(returnTags, function(tag, index){
 							if(angular.isUndefined(tagMap[tag.level])) {
 								$scope.tagList.push(tag);
@@ -64,7 +65,22 @@ zmxk.controller('EventRuleCtrl', [
 						//console.log(tagMap)
 					},function(data){
 					alsert(data.data.message);
+					});*/
+					var roundMap = {};
+					roundService.list().then(function(data){
+						angular.forEach(data, function(round, index) {
+							if(angular.isUndefined(roundMap[round.level])) {
+								roundMap[round.level] = round;
+							}
+						});
+						angular.forEach(roundMap, function(round, index2) {
+							$scope.roundList.push(round);
+						})
+						console.log($scope.roundList);
+					},function(error){
+						
 					});
+					
 					
 					getSeries().then(function(returnList){
 						//console.log(returnList);

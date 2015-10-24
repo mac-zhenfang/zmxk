@@ -401,6 +401,13 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 						'Content-Type' : 'application/json'
 					}
 				},
+				promoteAttendee : {
+					url : zmxkConfig.event_promote_attendee_uri,
+					method : "POST",
+					headers : {
+						'Content-Type' : 'application/json'
+					}
+				},
 				addAttendee : {
 					url : zmxkConfig.event_add_attendee_uri,
 					method : "POST",
@@ -457,6 +464,8 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 				});
 				return defer.promise;
 			}
+			
+			
 
 			this.deleteEvent = function(giveEventId) {
 				var defer = $q.defer();
@@ -529,6 +538,20 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 			this.saveAttendee = function(eventId, attendeeData) {
 				var defer = $q.defer();
 				eventResource.saveAttendee({
+					eventId : eventId
+				}, attendeeData, function(body, headers) {
+					console.log(body);
+					defer.resolve(body);
+				}, function(body, headers) {
+					console.log(body);
+					defer.reject(body);
+				})
+				return defer.promise;
+			}
+			
+			this.promoteAttendee = function(eventId, attendeeData) {
+				var defer = $q.defer();
+				eventResource.promoteAttendee({
 					eventId : eventId
 				}, attendeeData, function(body, headers) {
 					console.log(body);

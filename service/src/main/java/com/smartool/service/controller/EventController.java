@@ -4,19 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.quartz.CronScheduleBuilder;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +23,7 @@ import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.Round;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
@@ -42,8 +34,8 @@ import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.RoundDao;
 import com.smartool.service.dao.TagDao;
-import com.smartool.service.service.EventStartNotificationJob;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -61,7 +53,10 @@ public class EventController extends BaseController {
 
 	// @Autowired
 	// private UserDao userDao;
-
+	
+	@Autowired
+	private RoundDao roundDao;
+	
 	@Autowired
 	private TagDao tagDao;
 
@@ -145,6 +140,80 @@ public class EventController extends BaseController {
 		}
 		return retEvent;
 	}
+	
+	/*@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public Attendee updateAttendee(@RequestBody Attendee attendee) {
+		if(attendee.getScore() > 0) {
+			if(Strings.isNullOrEmpty(attendee.getRoundId())) {
+				// update the current attendee if admin did not choose any round
+				
+			}
+		}
+	}*/
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/events/{eventId}/promote", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public Attendee promote(@PathVariable String eventId, @RequestBody Attendee attendee){
+		if(Strings.isNullOrEmpty(attendee.getRoundId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.ROUND_ID_CAN_NOT_BE_NULL);
+		}
+		
+		if(attendee.getScore() == 0 || attendee.getStatus() !=2 ) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.SCORE_CAN_NOT_BE_NULL);
+		}
+		
+		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
+		Event event = eventDao.getEvent(eventId);
+		int quota = event.getQuota();
+		int rt = quota >= attendees.size() ? attendees.size() : quota;
+		Attendee att = null;
+		for (int i = 0; i < rt; i++) {
+			int num = r.nextInt(rt);
+			att = attendees.get(num);
+			
+			if(att!=null) {
+				break;
+			}
+		}
+		
+		if(att == null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_QUOTA_ENROLL_MESSAGE);
+		}
+
+		Attendee toPromoteAttendee = createPromoteAttendee(attendee, att);
+
+		attendeeDao.update(toPromoteAttendee);
+
+		return toPromoteAttendee;
+	}
+	
+	private Attendee createPromoteAttendee(Attendee attendee, Attendee promotedAttendee) {
+		promotedAttendee.setAttendeeNotifyTimes(attendee.getAttendeeNotifyTimes());
+		promotedAttendee.setAvatarUrl(attendee.getAvatarUrl());
+		promotedAttendee.setEventId(attendee.getEventId());
+		promotedAttendee.setKidId(attendee.getKidId());
+		promotedAttendee.setKidName(attendee.getKidName());
+		promotedAttendee.setSchoolName(attendee.getSchoolName());
+		promotedAttendee.setSchoolType(attendee.getSchoolType());
+		promotedAttendee.setRank(0);
+		promotedAttendee.setRoundId(attendee.getRoundId());
+		Round round = roundDao.get(attendee.getRoundId());
+		promotedAttendee.setRoundLevel(round.getLevel());
+		promotedAttendee.setRoundLevelName(round.getLevelName());
+		promotedAttendee.setRoundShortName(round.getShortName());
+		promotedAttendee.setSeq(attendee.getSeq());
+		promotedAttendee.setRank(0);
+		promotedAttendee.setStatus(1);
+		promotedAttendee.setTagId(attendee.getTagId());
+		promotedAttendee.setTag(attendee.getTag());
+		promotedAttendee.setTeamId(attendee.getTeamId());
+		return promotedAttendee;
+	}
+	
+	
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
@@ -173,12 +242,15 @@ public class EventController extends BaseController {
 			}
 		}
 		for (Attendee attendee : attendees) {
+			
 			if (attendee.getScore() == 0) {
 				attendee.setStatus(1);
+				
 			} else {
 				attendee.setStatus(2);
+				
 			}
-			if (existeAttendeeMap.get(attendee.getId()) != null
+			/*if (existeAttendeeMap.get(attendee.getId()) != null
 					&& (existeAttendeeMap.get(attendee.getId()).getSeq() == null || !Objects
 							.equals(existeAttendeeMap.get(attendee.getId()).getTagId(), attendee.getTagId()))) {
 				String tagId = attendee.getTagId();
@@ -198,7 +270,7 @@ public class EventController extends BaseController {
 				Integer seq = getSeqNumber(groupMap, tagId);
 				attendee.setSeq(seq);
 				groupMap.get(tagId).add(seq);
-			}
+			}*/
 			// update attendee
 			retAttendees.add(attendeeDao.complete(attendee));
 		}

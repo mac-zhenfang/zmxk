@@ -9,4 +9,8 @@ public interface RoundDao {
 	public List<Round> listAll();
 	
 	public List<Round> listAll(Integer level);
+	
+	public Round get(String roundId);
+	
+	public List<Round> listGroupByLevel();
 }

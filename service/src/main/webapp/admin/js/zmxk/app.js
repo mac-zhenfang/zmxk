@@ -61,6 +61,7 @@ zmxk
 					event_type_rest_uri : "/service/smartool/api/v1/eventtypes/:eventTypeId",
 					event_type_site_rest_uri : "/service/smartool/api/v1/:siteId/eventtypes/",
 					event_add_attendee_uri : "/service/smartool/api/v1/events/:eventId/enroll",
+					event_promote_attendee_uri : "/service/smartool/api/v1/events/:eventId/promote",
 					event_update_attendee_uri : "/service/smartool/api/v1/events/:eventId/complete",
 					rule_create_uri : "/service/smartool/api/v1/creditrules",
 					rule_update_uri : "/service/smartool/api/v1/creditrules/:creditRuleId",

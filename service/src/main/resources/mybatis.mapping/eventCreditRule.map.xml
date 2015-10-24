@@ -6,11 +6,11 @@
 	<insert id="create" parameterType="com.smartool.common.dto.EventCreditRule">
 		insert eventCreditRules (id,
 		name,
-		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,upperRank,lowerRank,stage
+		credit,goldenMedal,silverMedal,bronzeMedal,eventTypeId,upperRank,lowerRank,stage,roundLevel,
 		createdTime,
 		lastModifiedTime)
 		values
-		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{upperRank},#{lowerRank},#{stage}, now(),now())
+		(#{id},#{name},#{credit},#{goldenMedal},#{silverMedal},#{bronzeMedal},#{eventTypeId},#{upperRank},#{lowerRank},#{stage}, #{roundLevel},now(),now())
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.EventCreditRule">
 		update eventCreditRules
@@ -22,6 +22,7 @@
 		bronzeMedal=#{bronzeMedal},
 		eventTypeId=#{eventTypeId},
 		stage=#{stage},
+		roundLevel=#{roundLevel},
 		upperRank=#{upperRank},
 		lowerRank=#{lowerRank}
 		where id =

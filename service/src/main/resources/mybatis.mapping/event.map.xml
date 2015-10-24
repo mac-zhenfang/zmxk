@@ -45,6 +45,7 @@
 			<result property="schoolType" column="schoolType" />
 			<result property="schoolName" column="schoolName" />
 			<result property="teamId" column="teamId" />
+			<result property="score" column="score" />
 			<result property="teamName" column="teamName" />
 			<result property="tagId" column="tagId" />
 			<result property="roundId" column="roundId" />

@@ -9,9 +9,9 @@ public enum EventStages {
 	private static Map<Integer, String> eventStagesDisplayNameMap = new HashMap<Integer, String>();
 
 	static {
-		eventStagesDisplayNameMap.put(1, "预赛");
-		eventStagesDisplayNameMap.put(2, "季度赛");
-		eventStagesDisplayNameMap.put(3, "年度赛");
+		eventStagesDisplayNameMap.put(1, "A");
+		eventStagesDisplayNameMap.put(2, "B");
+		eventStagesDisplayNameMap.put(3, "C");
 	}
 
 	private int id;

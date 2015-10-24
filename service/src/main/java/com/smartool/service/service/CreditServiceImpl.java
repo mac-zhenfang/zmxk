@@ -87,6 +87,9 @@ public class CreditServiceImpl implements CreditService {
 			if (eventCreditRule.getStage() != null) {
 				sb.append(" - ").append(EventStages.getDisplayName(eventCreditRule.getStage()));
 			}
+			if(attendee.getRoundLevel()!=0) {
+				sb.append(" - ").append(attendee.getRoundLevelName());
+			}
 			if (eventCreditRule.getUpperRank() != null || eventCreditRule.getLowerRank() != null) {
 				sb.append(" - ").append(attendee.getRank());
 			}

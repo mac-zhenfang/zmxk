@@ -20,6 +20,23 @@
 		where id =
 		#{id};
 	</select>
+	<select id="update" parameterType="com.smartool.common.dto.Attendee">
+		update attendees
+		set
+		rank=#{rank},
+		seq=#{seq},
+		score=#{score},
+		tagId=#{tagId},
+		roundId=#{roundId},
+		eventId=#{eventId},
+		kidId=#{kidId},
+		userId=#{userId},
+		teamId=#{teamId},
+		notify_times = #{attendeeNotifyTimes},
+		status=#{status}
+		where id =
+		#{id};
+	</select>
 	<select id="updateNotifyTimes" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
@@ -58,7 +75,7 @@
 		id, a.kidId as kidId, a.createdTime as
 		createdTime, a.lastModifiedTime
 		as lastModifiedTime, a.status as
-		status, a.score as score, a.seq as seq, a.tagId as tagId a.roundId as roundId  from attendees a where
+		status, a.score as score, a.seq as seq, a.tagId as tagId, a.roundId as roundId  from attendees a where
 		a.eventId = #{eventId} and
 		a.status = 0
 	</select>

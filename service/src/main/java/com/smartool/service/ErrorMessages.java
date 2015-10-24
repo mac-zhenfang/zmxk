@@ -29,4 +29,7 @@ public class ErrorMessages {
 	public static final String EMPTY_CREDIT_RULE_NAME_ERROR_MESSAGE = "请输入有效的积分奖励规则名称";
 	public static final String DUPLICATED_CREDIT_RULE_NAME_ERROR_MESSAGE = "积分奖励规则名称重复";
 	public static final String CREDIT_RECORD_ALREADY_WITHDRAWN_ERROR_MESSAGE = "积分记录已经被撤销";
+	public static final String ROUND_ID_CAN_NOT_BE_NULL = "请检查组别，组别不能为空";
+	public static final String SCORE_CAN_NOT_BE_NULL = "选手成绩未录入,或者未保存";
+
 }

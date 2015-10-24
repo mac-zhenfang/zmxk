@@ -53,9 +53,9 @@
 						</select></td>
 						<td class="center"> <select ng-disabled={{!rule.showInput}}
 							class="selectpicker gridInput2" data-style="btn-info"
-							ng-model="rule.eventGroupLevel"
-							ng-options="tag.level as tag.tagGroup for tag in tagList"
-							ng-init="rule.eventGroupLevel==tag.level">
+							ng-model="rule.roundLevel"
+							ng-options="tag.level as tag.levelName for tag in roundList"
+							ng-init="rule.roundLevel==tag.level">
 						</td>
 						
 						<td class="center"><span ng-hide="{{rule.showInput}}"

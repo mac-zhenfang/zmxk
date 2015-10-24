@@ -16,7 +16,7 @@
 		<java.target.version>${java.version}</java.target.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<guava.version>15.0</guava.version>
+		<guava.version>19.0</guava.version>
 		<jackson2.version>2.4.3</jackson2.version>
 		<junit.version>4.8.1</junit.version>
 		<testng.version>6.1.1</testng.version>

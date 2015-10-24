@@ -46,6 +46,7 @@ insert rounds (id, level, levelName, shortName, createdTime, lastModifiedTime) v
 insert rounds (id, level, levelName, shortName, createdTime, lastModifiedTime) values ("951d936c-9f11-4648-afbb-b0ee530e31x3", 10, "X", "03", now(), now());
 
 ALTER TABLE attendees ADD roundId varchar(36);
+ALTER TABLE eventCreditRules ADD roundLevel int;
 DROP TABLE IF EXISTS `event_serie_def`;
 CREATE TABLE `event_serie_def` (
 	`id` int(4) NOT NULL AUTO_INCREMENT,

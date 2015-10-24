@@ -9,4 +9,11 @@
 	<select id="listByLevel" parameterType="Integer" resultType="com.smartool.common.dto.Round">
 		select * from rounds where level = #{level};
 	</select>
+	<select id="get" parameterType="String" resultType="com.smartool.common.dto.Round">
+		select * from rounds where id = #{id};
+	</select>
+	<select id="groupLevel" resultType="com.smartool.common.dto.Round">
+		select levelName, level from rounds group by level
+	</select>
+	
 </mapper>

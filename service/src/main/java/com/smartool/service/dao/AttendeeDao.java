@@ -21,4 +21,6 @@ public interface AttendeeDao {
 	List<Attendee> getAllPendingAttendees(String eventId);
 
 	void removeUnused(String eventId);
+	
+	Attendee update(Attendee attendee);
 }

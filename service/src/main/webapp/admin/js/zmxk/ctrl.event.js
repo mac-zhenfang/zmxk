@@ -915,8 +915,9 @@ zmxk
 							$scope.applyCreditRuleAttendeeList = [];
 							$scope.eventInit.attendees = [];
 							$scope.eventTags = [];
-							$scope.eventRounds = [];
 							
+							$scope.eventRounds = [];
+
 							var tagTypeClasss = [ "btn btn-info",
 									"btn btn-success", "btn btn-danger",
 									"btn btn-active" ]
@@ -934,6 +935,7 @@ zmxk
 														var leftCount = 0;
 														var roundsMap = {};
 														var newAttendees = [];
+														var eventRounds = [];
 														roundService
 																.list()
 																.then(
@@ -945,103 +947,142 @@ zmxk
 																							function(
 																									round,
 																									index) {
-																								var name = $scope.eventInit.eventShortName + round.levelName
+																								var name = $scope.eventInit.eventShortName
+																										+ round.levelName
 																										+ round.shortName;
 																								round["name"] = name;
-																								$scope.eventRounds
+																								eventRounds
 																										.push(round);
 																							});
+																			$scope.eventRounds = eventRounds;	
 																			angular
-																			.forEach(
-																					$scope.eventInit.attendees,
-																					function(
-																							attendee,
-																							index2) {
-																						if (angular
-																								.isUndefined(attendee.roundId)
-																								|| !attendee.roundId) {
-																							if (angular
-																									.isUndefined(roundsMap["fake"])) {
-																								roundsMap["fake"] = [];
-																							}
-																							roundsMap["fake"]
-																									.push(attendee);
-																						} else {
-																							if (angular
-																									.isUndefined(roundsMap[attendee.roundId])) {
-																								roundsMap[attendee.roundId] = [];
-																							}
-																							roundsMap[attendee.roundId]
-																									.push(attendee);
-																						}
-																						attendee.min = Math
-																								.floor(attendee.score / 60);
-																						attendee.sec = attendee.score % 60;
-																					});
-																	var d = 0;
-																	angular
-																			.forEach(
-																					roundsMap,
-																					function(
-																							attendeeList,
-																							index) {
-																						d++;
-																						angular
-																								.forEach(
-																										attendeeList,
-																										function(
-																												attendee,
-																												index2) {
-																											attendee["roundName"]  = null;
-																											if (attendee["roundShortName"]
-																													&& attendee["roundLevelName"]) {
-																												attendee["roundName"] = $scope.eventInit.eventShortName
-																														+ attendee["roundLevelName"] + attendee["roundShortName"];
-																											}
-
-																											attendee["roundType"] = d;
-																											attendee["editing"] = false;
-																											attendee["editingRound"] = false;
-																											attendee["toNextRound"] = false;
-																											//for each attendee, it can have this level and next leve, 2 rounds list.
-																											//this function is to split into 2
-																											attendee["thisLevelRounds"] = [];
-																											attendee["nextLevelRounds"] = [];
-																											//console.log($scope.eventRounds);
-																											//console.log($scope.generateGradesLabel);
-																											angular.forEach($scope.eventRounds, function(round, index3) {
-																												
-																												if(attendee["roundLevel"]) {
-																													if(attendee["roundLevel"] == round.level) {
-																														attendee["thisLevelRounds"].push(round);
-																														// 10 = AX
-																														// AB -> AC,  AA -> AB + AX
-																													} else if (attendee["roundLevel"] + 1 == round.level || (attendee["roundLevel"] == 1 && round.level == 10)) {
-																														attendee["nextLevelRounds"].push(round);
+																					.forEach(
+																							$scope.eventInit.attendees,
+																							function(
+																									attendee,
+																									index2) {
+																								if (angular
+																										.isUndefined(attendee.roundId)
+																										|| !attendee.roundId) {
+																									if (angular
+																											.isUndefined(roundsMap["fake"])) {
+																										roundsMap["fake"] = [];
+																									}
+																									roundsMap["fake"]
+																											.push(attendee);
+																								} else {
+																									if (angular
+																											.isUndefined(roundsMap[attendee.roundId])) {
+																										roundsMap[attendee.roundId] = [];
+																									}
+																									roundsMap[attendee.roundId]
+																											.push(attendee);
+																								}
+																								attendee.min = Math
+																										.floor(attendee.score / 60);
+																								attendee.sec = attendee.score % 60;
+																							});
+																			var d = 0;
+																			angular
+																					.forEach(
+																							roundsMap,
+																							function(
+																									attendeeList,
+																									index) {
+																								d++;
+																								angular
+																										.forEach(
+																												attendeeList,
+																												function(
+																														attendee,
+																														index2) {
+																													attendee["roundName"] = null;
+																													if (attendee["roundShortName"]
+																															&& attendee["roundLevelName"]) {
+																														attendee["roundName"] = $scope.eventInit.eventShortName
+																																+ attendee["roundLevelName"]
+																																+ attendee["roundShortName"];
 																													}
-																												} else {
-																													if(round.level == 1) {
-																														attendee["thisLevelRounds"].push(round);
-																													} else {
-																														attendee["nextLevelRounds"].push(round);
-																													}
-																												}
-																											})
-																											
-																											newAttendees
-																													.push(attendee);
-																										});
-																					});
 
-																	$scope.eventInit.attendees = angular
-																			.copy(newAttendees);
-																	console
-																	.log($scope.eventInit.attendees);
-																	$scope.eventInit.leftCount = $scope.eventInit.quota
-																			- enrolledCount
-																			- applyScoreCount;
-																	$scope.eventInit.applyScoreCount = applyScoreCount;
-																	$scope.eventInit.enrolledCount = enrolledCount;
+																													attendee["roundType"] = d;
+																													attendee["editing"] = false;
+																													attendee["editingRound"] = false;
+																													attendee["toNextRound"] = false;
+																													// for
+																													// each
+																													// attendee,
+																													// it
+																													// can
+																													// have
+																													// this
+																													// level
+																													// and
+																													// next
+																													// leve,
+																													// 2
+																													// rounds
+																													// list.
+																													// this
+																													// function
+																													// is
+																													// to
+																													// split
+																													// into
+																													// 2
+																													attendee["thisLevelRounds"] = [];
+																													attendee["nextLevelRounds"] = [];
+																													// console.log($scope.eventRounds);
+																													// console.log($scope.generateGradesLabel);
+																													angular
+																															.forEach(
+																																	eventRounds,
+																																	function(
+																																			round,
+																																			index3) {
+
+																																		if (attendee["roundLevel"]) {
+																																			if (attendee["roundLevel"] == round.level) {
+																																				attendee["thisLevelRounds"]
+																																						.push(round);
+																																				// 10 =
+																																				// AX
+																																				// AB
+																																				// ->
+																																				// AC,
+																																				// AA
+																																				// ->
+																																				// AB +
+																																				// AX
+																																			} else if (attendee["roundLevel"] + 1 == round.level
+																																					|| (attendee["roundLevel"] == 1 && round.level == 10)) {
+																																				attendee["nextLevelRounds"]
+																																						.push(round);
+																																			}
+																																		} else {
+																																			if (round.level == 1) {
+																																				attendee["thisLevelRounds"]
+																																						.push(round);
+																																			} else {
+																																				attendee["nextLevelRounds"]
+																																						.push(round);
+																																			}
+																																		}
+																																	})
+
+																													newAttendees
+																															.push(attendee);
+																												});
+																							});
+
+																			$scope.eventInit.attendees = angular
+																					.copy(newAttendees);
+																			console
+																					.log($scope.eventInit.attendees);
+																			$scope.eventInit.leftCount = $scope.eventInit.quota
+																					- enrolledCount
+																					- applyScoreCount;
+																			$scope.eventInit.applyScoreCount = applyScoreCount;
+																			$scope.eventInit.enrolledCount = enrolledCount;
 																		},
 																		function(
 																				data) {
@@ -1054,10 +1095,29 @@ zmxk
 								}
 
 							}
+							
+							$scope.promoteToNextRound = function(attendee){
+								if(attendee.status !=2 && attendee.score == 0) {
+									alert("请先录入选手成绩并保存");
+									return;
+								}
+								eventService.promoteAttendee(
+										$scope.eventInit.id,
+										attendee).then(
+										function(data) {												
+											alert("晋级成功");
+											$scope.init();
+											//attendee.editing = false;
+										},
+										function(error) {
+											alert(error.data.message);
+							    })
+								
+							}
 
 							$scope.clickEditScore = function(attendee) {
 								attendee.editing = true;
-								console.log(attendee);
+								//console.log(attendee);
 							}
 
 							$scope.showTagClass = function(tagType) {
@@ -1125,8 +1185,20 @@ zmxk
 								// }
 
 							}
+							$scope.editNextRound = function(attendee) {
+								if (attendee.score > 0
+										&& attendee.nextLevelRounds.length > 0) {
+									attendee.toNextRound = true
+								} else {
+									if (attendee.score > 0) {
+										alert("选手已经完成3轮比赛");
+									} else {
+										alert("选手未被录入成绩");
+									}
+								}
 
-							$scope.cancelTagGroupChoose = function() {
+							}
+							$scope.cancelRoundChoose = function() {
 								if (!angular
 										.isUndefined($scope.toShowAttendees)) {
 									$scope.eventInit.attendees = angular
@@ -1134,7 +1206,8 @@ zmxk
 								}
 							}
 
-							$scope.chooseAttendeesByTag = function(choosedTagId) {
+							$scope.chooseAttendeesByRound = function(
+									choosedRoundId) {
 								// console.log(choosedTagId);
 								if (angular.isUndefined($scope.toShowAttendees)) {
 									$scope.toShowAttendees = angular
@@ -1149,8 +1222,8 @@ zmxk
 												$scope.eventInit.attendees,
 												function(attendee) {
 													if (!angular
-															.isUndefined(attendee.tagId)
-															&& choosedTagId == attendee.tagId) {
+															.isUndefined(attendee.roundId)
+															&& choosedRoundId == attendee.roundId) {
 														newShowAttendees
 																.push(attendee);
 													}
@@ -1249,70 +1322,39 @@ zmxk
 								}
 							}
 							$scope.deleteAttendee = function(attendee, index) {
-
+								
 							}
-							$scope.applyAttendeeChanges = function() {
+							
+							
+							$scope.applyAttendeeChanges = function(attendee) {
+								if(!attendee.editing) {
+									attendee.editing = true;
+									return;
+								}
+								var toSaveAttendees = [];
+								toSaveAttendees.push(attendee);
+								//console.log("~~~~");
+								console.log(attendee);
 								$scope.editScore();
 								var error_msg = "";
 								var error = false;
-								/*
-								 * angular .forEach( $scope.eventInit.attendees,
-								 * function(attendee, index) { if
-								 * ((attendee.rank == 0 && attendee.score >= 0) ||
-								 * (attendee.score == 0 && attendee.rank >= 0)) {
-								 * error_msg = "请核对选手的成绩与排名"; error = true;
-								 * return; } })
-								 */
+								
 								if (error) {
-									$scope.launch("error", "", error_msg,
-											function() {
-
-											}, function() {
-											});
+									alert(error_msg);
 								} else {
 									// going to save data
-									$scope
-											.launch(
-													"confirm",
-													"确定保存",
-													"确保您已经检查选手成绩，点击确定保存",
-													function() {
-														eventService
-																.saveAttendee(
-																		$scope.eventInit.id,
-																		$scope.eventInit.attendees)
-																.then(
-																		function(
-																				data) {
-																			$scope.editingTag = false;
-																			$scope
-																					.launch(
-																							"notify",
-																							"修改成功",
-																							"修改成功",
-																							function() {
+									eventService.saveAttendee(
+											$scope.eventInit.id,
+											toSaveAttendees).then(
+											function(data) {												
+												alert("修改成功");
+												$scope.init();
+												//attendee.editing = false;
+											},
+											function(error) {
+												alert(error.data.message);
+											})
 
-																							},
-																							function() {
-																							});
-																			$scope
-																					.init();
-																		},
-																		function(
-																				error) {
-																			$scope
-																					.launch(
-																							"error",
-																							"",
-																							error.data.message,
-																							function() {
-
-																							},
-																							function() {
-																							});
-																		})
-													}, function() {
-													});
 								}
 							}
 
