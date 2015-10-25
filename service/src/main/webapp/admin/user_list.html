@@ -57,16 +57,16 @@
 				<tr>
 					<th>用户名</th>
 					<th>手机号</th>
-					<th>注册时间</th>
+					<th><a href="" ng-click="order('createdTime')">注册时间</a><span class="sortorder" ng-show="predicate === 'createdTime'" ng-class="{reverse:reverse}"></span></th>
 					<th>角色</th>
 					<th>可管理赛道</th>
 					<th>小孩</th>
-					<th>积分</th>
+					<th><a href="" ng-click="order('credit')">积分</a><span class="sortorder" ng-show="predicate === 'credit'" ng-class="{reverse:reverse}"></span></th>
 					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="user in userList">
+				<tr ng-repeat="user in userList | orderBy:predicate:reverse">
 					<td><a href="#/users/{{user.id}}">{{user.name}}</a></td>
 					<td>{{user.mobileNum}}</td>
 					<td class="center">{{formatDate(user.createdTime)}}</td>
