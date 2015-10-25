@@ -67,7 +67,7 @@ CREATE TABLE `event_def` (
 	`name` varchar(128) CHARACTER SET utf8 NOT NULL,
 	`shortName` varchar(128) CHARACTER SET utf8 NOT NULL,
 	`stage` int COMMENT "1,2,3",
-	`eventSerieDefId` int(4) COMMENT 'event_serie_def'
+	`eventSerieDefId` int(4) COMMENT 'event_serie_def',
 	`createdTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	`lastModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   	PRIMARY KEY (`id`),
