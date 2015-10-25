@@ -387,6 +387,12 @@ zmxk
 								id : false,
 								name : "个人赛"
 							} ]
+							$scope.predicate = 'eventTime';
+							$scope.reverse = true;
+							$scope.order = function(predicate) {
+						        $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+						        $scope.predicate = predicate;
+						    };
 							$scope.viewEventManagePage = function() {
 								if (angular.isUndefined($scope.eventId)) {
 									return "event_manage_show_list.html";
