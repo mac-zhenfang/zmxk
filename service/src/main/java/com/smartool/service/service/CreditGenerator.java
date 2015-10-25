@@ -76,7 +76,7 @@ public class CreditGenerator {
 				if(attendee.getStatus()!=2) {
 					continue;
 				}
-				logger.info("level " + attendee.getRoundLevel());
+				logger.debug("level " + attendee.getRoundLevel());
 				RangeMap<Integer, List<EventCreditRule>> creditRuleMap = creditRuleMapByRound.get(attendee.getRoundLevel());
 				if(null == creditRuleMap) {
 					continue;
