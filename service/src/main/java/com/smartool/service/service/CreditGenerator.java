@@ -76,7 +76,11 @@ public class CreditGenerator {
 				if(attendee.getStatus()!=2) {
 					continue;
 				}
+				logger.info("level " + attendee.getRoundLevel());
 				RangeMap<Integer, List<EventCreditRule>> creditRuleMap = creditRuleMapByRound.get(attendee.getRoundLevel());
+				if(null == creditRuleMap) {
+					continue;
+				}
 				List<EventCreditRule> rulesToApply = creditRuleMap.get(attendee.getRank());
 				List<EventCreditRule> rulesToApplyAfterChooseRound = new ArrayList<EventCreditRule>();
 				if(rulesToApply!=null) {
