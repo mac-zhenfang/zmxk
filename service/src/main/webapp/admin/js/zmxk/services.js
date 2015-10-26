@@ -634,8 +634,26 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 					headers : {
 						'Content-Type' : 'image/jpeg'
 					}
+				},
+				listSchools : {
+					url : zmxkConfig.kid_schools_uri,
+					isArray: true,
+					method : 'GET'
 				}
 			})
+			
+			this.listSchools = function(giveUserId, giveSchoolType) {
+				var defer = $q.defer();
+				kidResource.listSchools({
+					schoolType : giveSchoolType,
+					userId : giveUserId
+				}, function(schools, headers) {
+					defer.resolve(schools);
+				}, function(avatar, headers) {
+					defer.reject(avatar);
+				});
+				return defer.promise;
+			}
 			this.uploadAvatar = function(giveUserId, giveKidId, giveFile) {
 
 				var defer = $q.defer();

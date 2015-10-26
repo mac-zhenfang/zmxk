@@ -11,9 +11,10 @@ zmxk
 						'$timeout',
 						'$routeParams',
 						'kidService',
+						'$cookies',
 						function($scope, userService, eventService,
 								teamService, $interval, $timeout, $routeParams,
-								kidService) {
+								kidService, $cookies) {
 							$scope.enroll_form_data = {};
 							$scope.enroll_form_data.kids = [];
 							$scope.kidsToShow = [];
@@ -27,11 +28,56 @@ zmxk
 							$scope.next_label = "下一步";
 							$scope.events = [];
 							$scope.errorProcess = false;
+							
+							$scope.selectedDropdownItem = null;
+							$scope.dropdownItems =  [];
+							$scope.chooseSchoolName = function(addKid) {
+								
+								if(null == addKid.schoolName || addKid.schoolName.length == 0) {
+									return;
+								}
+								
+								$timeout(function(){
+									var itemMatches = false;
+									var matchedText = null;
+									for(var i=0;i< $scope.dropdownItems.length;i++) {
+										item = $scope.dropdownItems[i];
+										if (item.toString().toLowerCase().indexOf(addKid.schoolName) !== -1) {
+									            itemMatches = true;
+									            matchedText = item;
+									            break;
+									    }
+									}
+									if(itemMatches) {
+										addKid.schoolName = matchedText;
+									}
+								}, 1000);
+								
+							}
+							$scope.getDistinctSchoolName = function(schoolType) {
+								if(schoolType < 2) {
+									$scope.addKid.schoolName = $cookies.get("school_"+schoolType);
+								}
+								kidService.listSchools($scope.enroll_form_data.user.id, schoolType).then(function(data) {
+									$scope.dropdownItems = data;
+								}, function(error){
+									alert(error.data.message);
+								});
+							}
 							$scope.addChild = function() {
 								if (!angular.isUndefined($scope.addKid.name)) {
 									$scope.addKid["existed"] = false;
 									$scope.addKid["selected"] = true;
 									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
+									if($scope.addKid.schoolType < 2) {
+										var now = new Date(),
+									    // this will set the expiration to 6 months
+									    exp = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+										$cookies.put("school_"+$scope.addKid.schoolType, $scope.addKid.schoolName,{
+											  expires: exp
+										});
+									}
+
 									kidService.createKid(
 											$scope.enroll_form_data.user.id,
 											$scope.addKid).then(function(data) {
@@ -355,7 +401,7 @@ zmxk
 									$scope.totalSteps = 3;
 									$scope.steps = [ 1, 2, 3 ];
 								}
-
+								
 								// FIXME, we dont need to have status
 
 								eventService

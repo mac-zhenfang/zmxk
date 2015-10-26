@@ -35,14 +35,9 @@
 			</div>
 			<div class="control-group"></div>
 
-			<div class="box span10" ng-show="showAddChildForm % 2 ==1">
-				<div class="box-header">
-					<h2>
-						<i class="icon-align-justify"></i><span class="break"></span>小孩信息
-					</h2>
-				</div>
+			<div ng-show="showAddChildForm % 2 ==1">
+				
 				<!---->
-				<div class="box-content">
 					<div class="control-group">
 						<label class="control-label" for="inputWarning">姓名</label>
 						<div class="controls">
@@ -53,19 +48,20 @@
 						<div class="controls">
 							<select class="selectpicker" data-style="btn-info"
 								ng-model="addKid.schoolType"
-								ng-options="option.value as option.label for option in kids_school_options">
+								ng-options="option.value as option.label for option in kids_school_options"
+								ng-change="getDistinctSchoolName(addKid.schoolType)">
 							</select>
 						</div>
 
 						<label class="control-label" for="inputWarning">学校名</label>
 						<div class="controls">
-							<input type="text" ng-model="addKid.schoolName" />
+							<input type="text" ng-model="addKid.schoolName" ng-change="chooseSchoolName(addKid)"/>
 						</div>
+						<label class="control-label" for="inputWarning"></label>
 						<div class="controls">
 							<button type="button" ng-click="addChild()" class="btn btn-info">确定</button>
 						</div>
 					</div>
-				</div>
 			</div>
 		</div>
 		<div class="box-content">
@@ -98,12 +94,10 @@
 							<div>
 								<input type="file" accept="image/*;capture=camera"
 									ng-model="kid.avatarBefore" app-filereader />
-								<image-crop
-									ng-show="imageCropStep == 2"
-									data-height="200" data-width="150" data-shape="square"
-									data-step="imageCropStep" src="kid.avatarBefore"
-									data-result="kid.avatar" crop="initCrop" padding="250"
-									max-size="4096"></image-crop>
+								<image-crop ng-show="imageCropStep == 2" data-height="200"
+									data-width="150" data-shape="square" data-step="imageCropStep"
+									src="kid.avatarBefore" data-result="kid.avatar" crop="initCrop"
+									padding="250" max-size="4096"></image-crop>
 							</div>
 							<div ng-show="imageCropStep == 3">
 								<button ng-click="uploadKidAvatar(kid)">上传照片</button>

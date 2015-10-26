@@ -58,4 +58,7 @@
 		UPDATE kids SET teamId=null
 		WHERE id=#{kidId} AND teamId=#{teamId}
 	</update>
+	<select id="getDistinctSchoolName" parameterType="int" resultType="String">
+		select distinct schoolName from kids where schoolType = #{schoolType}
+	</select>
 </mapper>

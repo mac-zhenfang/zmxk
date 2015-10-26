@@ -91,19 +91,24 @@ public class KidController extends BaseController {
 			baos.close();
 		}
 	}
-
-	@RequestMapping(value = "/users/{userId}/kids/{kidId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable String userId, @PathVariable String kidId) {
-		// Check userId/kidId;
-		kidDao.remove(kidId);
+	
+	
+	@ApiScope(userScope = UserRole.ADMIN)
+	@RequestMapping(value = "/users/{userId}/kids/{schoolType}/schools", method = RequestMethod.GET)
+	public List<String> getDistinctSchoolName(@PathVariable String userId, @PathVariable int schoolType) {
+		// Check userId/kidId
+		//TODO use userid to do some ACL
+		return kidDao.getDistinctSchoolName(schoolType);
 	}
-
+	
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/kids/{kidId}/joinTeam/{teamId}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Kid joinTeam(@PathVariable String kidId, @PathVariable String teamId) {
 		return kidDao.joinTeam(kidId, teamId);
 	}
-
+	
+	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/kids/{kidId}/leaveTeam/{teamId}", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Kid leaveTeam(@PathVariable String kidId, @PathVariable String teamId) {

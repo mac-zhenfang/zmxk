@@ -65,7 +65,8 @@
 	<script src="js/angular-cookies.min.js"></script>
 	<script src="js/angular-filter.min.js"></script>
 	<script src="js/image-crop.js"></script>
-	
+	<script src="js/angular-sanitize.js"></script>
+
 	<script src="js/dialogs.min.js"></script>
 	<script src="js/ui-bootstrap-tpls-0.6.0.js"></script>
 	<script src="js/index.min.js"></script>
@@ -135,11 +136,16 @@
 																	.then(
 																			function(
 																					data) {
+																				var now = new Date(),
+																			    // this will set the expiration to 6 months
+																			    var exp = new Date(now.getFullYear(), now.getMonth()+1, now.getDate());
 																				$cookies
 																						.put(
 																								"loginUser",
 																								angular
-																										.toJson(data));
+																										.toJson(data),{
+																											  expires: exp
+																										});
 																				$scope
 																						.launch(
 																								"notify",

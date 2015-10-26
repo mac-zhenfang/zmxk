@@ -75,4 +75,9 @@ public class KidDaoImpl implements KidDao {
 		sqlSession.update("KID.setAvatar", kid);
 		return kid;
 	}
+
+	@Override
+	public List<String> getDistinctSchoolName(int schoolType) {
+		return sqlSession.selectList("KID.getDistinctSchoolName", schoolType);
+	}
 }

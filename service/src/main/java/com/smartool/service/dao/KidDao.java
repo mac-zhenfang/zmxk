@@ -24,4 +24,6 @@ public interface KidDao {
 	Kid leaveTeam(String kidId, String teamId);
 	
 	Kid updateAvatarUrl(String kidId, String avatarUrl);
+	
+	List<String> getDistinctSchoolName(int schoolType);
 }
