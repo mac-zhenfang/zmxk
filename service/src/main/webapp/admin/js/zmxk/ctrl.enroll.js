@@ -70,9 +70,9 @@ zmxk
 									$scope.addKid["selected"] = true;
 									$scope.addKid["userId"] = $scope.enroll_form_data.user.id;
 									if($scope.addKid.schoolType < 2) {
-										var now = new Date(),
+										var now = new Date();
 									    // this will set the expiration to 6 months
-									    exp = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+									    var exp = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
 										$cookies.put("school_"+$scope.addKid.schoolType, $scope.addKid.schoolName,{
 											  expires: exp
 										});
