@@ -42,7 +42,9 @@ zmxk
 									var matchedText = null;
 									for(var i=0;i< $scope.dropdownItems.length;i++) {
 										item = $scope.dropdownItems[i];
-										if (item.toString().toLowerCase().indexOf(addKid.schoolName) !== -1) {
+										
+										if (addKid.schoolName.length!=0 && item.toString().toLowerCase().indexOf(addKid.schoolName) !== -1) {
+											//	console.log(addKid.schoolName + "~~" + item.toString());
 									            itemMatches = true;
 									            matchedText = item;
 									            break;
@@ -51,7 +53,7 @@ zmxk
 									if(itemMatches) {
 										addKid.schoolName = matchedText;
 									}
-								}, 1000);
+								}, 2000);
 								
 							}
 							$scope.getDistinctSchoolName = function(schoolType) {
