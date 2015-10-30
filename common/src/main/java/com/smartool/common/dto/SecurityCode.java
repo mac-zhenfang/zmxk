@@ -5,6 +5,7 @@ public class SecurityCode extends BaseDateTrackingBean {
 	private String securityCode;
 	private String mobileNumber;
 	private String remoteAddr;
+	private boolean isMobileExisted;
 
 	public String getSecurityCode() {
 		return securityCode;
@@ -36,5 +37,13 @@ public class SecurityCode extends BaseDateTrackingBean {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public boolean isMobileExisted() {
+		return isMobileExisted;
+	}
+
+	public void setMobileExisted(boolean isMobileExisted) {
+		this.isMobileExisted = isMobileExisted;
 	}
 }

@@ -32,6 +32,8 @@ public interface UserService {
 	List<Grade> getGrades(String userId);
 	
 	SecurityCode getSecurityCode(SecurityCode securityCode);
+	
+	SecurityCode getSecurityCode4Login(SecurityCode securityCode);
 
 	List<User> search(String mobileNum, String wcId, String kidName);
 

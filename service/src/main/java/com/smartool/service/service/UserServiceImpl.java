@@ -270,6 +270,8 @@ public class UserServiceImpl implements UserService {
 		securityCode.setSecurityCode(securityCodeString);
 		return securityCode;
 	}
+	
+
 
 	@Override
 	public List<BaseGrade> getRanks(User user) {
@@ -318,6 +320,22 @@ public class UserServiceImpl implements UserService {
 		User createdUser = userDao.createUser(loginUser);
 		securityCodeDao.remove(user.getMobileNum());
 		return createdUser;
+	}
+
+	@Override
+	public SecurityCode getSecurityCode4Login(SecurityCode securityCode) {
+		//validateMobileNumberForRegister(securityCode.getMobileNumber());
+		String mobileNumber = securityCode.getMobileNumber();
+		boolean isMobileExisted;
+		if (CommonUtils.isEmptyString(mobileNumber)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.WRONG_MOBILE_NUMBER_ERROR_MESSAGE);
+		}
+		isMobileExisted = (userDao.getUserByMobileNumber(mobileNumber) != null);
+		String securityCodeString = createCodeInternal(securityCode);
+		//securityCode.setSecurityCode(securityCodeString);
+		securityCode.setMobileExisted(isMobileExisted);
+		return securityCode;
 	}
 
 }

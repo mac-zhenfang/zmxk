@@ -107,6 +107,20 @@ public class UserController extends BaseController {
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
 		userService.getSecurityCode(securityCode);
 	}
+	
+	/**
+	 * Get code
+	 */
+	@RequestMapping(value = "/users/codeforlogin", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public SecurityCode getSecurityCodeForNewLogin(@RequestBody LoginUser user) {
+		SecurityCode securityCode = new SecurityCode();
+		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
+		return userService.getSecurityCode4Login(securityCode);
+	}
+	
+	
 
 	@RequestMapping(value = "/users/codeforsetpassword", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
