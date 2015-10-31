@@ -28,10 +28,10 @@ public class SecurityCodeDaoImpl implements SecurityCodeDao {
 		return sqlSession.selectOne("SECURITY_CODE.getByMobileNumber", mobileNumber);
 	}
 
-	@Override
-	public SecurityCode getSecurityCodeByRemoteAddr(String remoteAddr) {
-		return sqlSession.selectOne("SECURITY_CODE.getByRemoteAddr", remoteAddr);
-	}
+	//@Override
+	//public SecurityCode getSecurityCodeByRemoteAddr(String remoteAddr) {
+	//	return sqlSession.selectOne("SECURITY_CODE.getByRemoteAddr", remoteAddr);
+	//}
 
 	@Override
 	public SecurityCode create(SecurityCode securityCode) {

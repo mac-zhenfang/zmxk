@@ -105,7 +105,7 @@ public class UserController extends BaseController {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setMobileNumber(user.getMobileNum());
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-		userService.getSecurityCode(securityCode);
+		userService.getSecurityCode4Login(securityCode);
 	}
 	
 	/**
@@ -117,7 +117,9 @@ public class UserController extends BaseController {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setMobileNumber(user.getMobileNum());
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
-		return userService.getSecurityCode4Login(securityCode);
+		SecurityCode newCode = userService.getSecurityCode4Login(securityCode);
+		newCode.setSecurityCode("");
+		return newCode;
 	}
 	
 	

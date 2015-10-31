@@ -417,4 +417,9 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public String getAvatarFileFormatSuffix() {
 		return env.getProperty("avatar_file_format_suffix", "png");
 	}
+	
+	public boolean needPassword() {
+		String needPassword =  env.getProperty("need_password", "N");
+		return needPassword.equals("Y");
+	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.google.common.base.Strings;
 import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.EventType;
 import com.smartool.common.dto.Grade;
@@ -58,6 +59,29 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(LoginUser user) {
+		if(config.needPassword()) {
+			return internalPasswdLogin(user);
+		} else {
+			return internalSecurityCodeLogin(user);
+		}
+	}
+	
+	private User internalSecurityCodeLogin(LoginUser user) {
+		if (CommonUtils.isEmptyString(user.getCode())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_SECURITY_CODE_ERROR_MESSAGE);
+		} else {
+			SecurityCode securityCode = new SecurityCode();
+			securityCode.setMobileNumber(user.getMobileNum());
+			securityCode.setSecurityCode(user.getCode());
+			if (!isValidSecurityCode(securityCode)) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+			}
+			LoginUser existUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
+			return userDao.getUserById(existUser.getId());
+		}
+	}
+	private User internalPasswdLogin(LoginUser user) {
+
 		if (CommonUtils.isEmptyString(user.getPassword())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_PASSWORD_ERROR_MESSAGE);
 		}
@@ -72,6 +96,7 @@ public class UserServiceImpl implements UserService {
 		}
 		throw new SmartoolException(HttpStatus.NOT_FOUND.value(),
 				ErrorMessages.INVALID_MOBILE_NUMBER_OR_PASSWORD_ERROR_MESSAGE);
+	
 	}
 
 	private String createCodeInternal(SecurityCode securityCode) {
@@ -155,7 +180,7 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 		SecurityCode getSecurityCode = securityCodeDao.getSecurityCodeByMobileNumber(securityCode.getMobileNumber());
-		return getSecurityCode != null && getSecurityCode.getSecurityCode() != null
+		return getSecurityCode != null && !Strings.isNullOrEmpty(getSecurityCode.getSecurityCode())
 				&& getSecurityCode.getSecurityCode().equals(securityCode.getSecurityCode());
 	}
 
@@ -171,11 +196,11 @@ public class UserServiceImpl implements UserService {
 	private SecurityCode getExistedSecurityCode(SecurityCode securityCode) {
 		SecurityCode existedSecurityCode = securityCodeDao
 				.getSecurityCodeByMobileNumber(securityCode.getMobileNumber());
-		if (existedSecurityCode != null) {
+		//if (existedSecurityCode != null) {
 			return existedSecurityCode;
-		}
-		String remoteAddr = securityCode.getRemoteAddr();
-		return securityCodeDao.getSecurityCodeByRemoteAddr(remoteAddr);
+		//}
+		//String remoteAddr = securityCode.getRemoteAddr();
+		//return securityCodeDao.getSecurityCodeByRemoteAddr(remoteAddr);
 	}
 
 	public boolean validateMobileNumberForLogin(String mobileNumber) {
@@ -196,6 +221,12 @@ public class UserServiceImpl implements UserService {
 		if (!isValidSecurityCode(securityCode)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
 		}
+		
+		if(Strings.isNullOrEmpty(user.getPassword()) && !config.needPassword()) {
+			user.setPassword(config.getDefaultPassword());
+			user.setIdp(Constants.USE_DEFAULT_PASSWORD);
+		}
+		
 		isUserValidForCreate(user);
 		user.setId(CommonUtils.getRandomUUID());
 		user.setRoleId(UserRole.NORMAL_USER.getValue());
@@ -204,7 +235,7 @@ public class UserServiceImpl implements UserService {
 		securityCodeDao.remove(user.getMobileNum());
 		return createdUser;
 	}
-
+	
 	@Override
 	public User getUserById(String userId) {
 		User user = userDao.getUserById(userId);

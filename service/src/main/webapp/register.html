@@ -88,41 +88,7 @@
 
 	<script>
 		var zmxk = angular.module('zmxk', []);
-		zmxk
-				.service(
-						'userService',
-						[
-								'$resource',
-								'$q',
-								function($resource, $q) {
-									var usersResource = $resource(
-											zmxkConfig.user_rest_uri,
-											{
-												userId : '@id'
-											},
-											{
-												register : {
-													url : zmxk.user_register_uri,
-													method : 'Post',
-													headers : {
-														'Content-Type' : 'application/x-www-form-urlencoded'
-													}
-												}
-											});
-									this.register = function(userData) {
-										var defer = $q.defer();
-										usersResource.save(
-												zmxkConfig.user_rest_uri,
-												userData, function(body,
-														headers) {
-													console.log(body.data);
-													defer.resolve(body);
-												}, function(body, headers) {
-													console.log(body.data);
-													defer.reject(body);
-												})
-									}
-								} ]);
+		
 		zmxk.value('zmxkConfig', {
 			user_login_uri : "/service/api/v1/users/login",
 			user_register_uri : "/service/api/v1/users/register",

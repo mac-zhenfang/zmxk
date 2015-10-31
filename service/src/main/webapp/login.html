@@ -11,229 +11,219 @@
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-<link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" />
-<!-- Optional theme 
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">-->
-<!-- FONTAWESOME STYLE CSS -->
-<link href="assets/css/font-awesome.min.css" rel="stylesheet" />
-<link href="assets/css/font-awesome-ie7.min.css" rel="stylesheet" />
 <!-- CUSTOM STYLE CSS -->
 <link href="assets/css/style.css" rel="stylesheet" />
-<link href="assets/css/zmxk.css" rel="stylesheet" />
+<link href="assets/css/angular-busy.css" rel="stylesheet" />
 
+<link href="admin/css/city.css" rel="stylesheet" />
+
+<!-- ANGULAR -->
+<script src="assets/js/angular/angular.min.js"></script>
+<script src="assets/js/angular-animate/angular-animate.min.js"></script>
+
+<script src="assets/js/angular-busy.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="admin/js/zmxk/city.js"></script>
 </head>
 <body ng-controller="MainController as main">
-	<div class="container">
-		<div class="row  pad-top">
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<form role="form"
-						ng-init="buttonDisabled=false;showPassword=false;"
-						ng-controller="LoginController"
-						ng-submit="buttonDisabled=true;processForm();buttonDisabled=false;">
-						<div class="form-group input-group"
-							ng-show="currentStep == 1 || currentStep == 2">
-							<!--  <i
-									class="fa fa-circle-o-notch"></i> -->
-							<span class="input-group-addon"></span> <input type="text"
-								class="form-control" placeholder="手机"
-								ng-model="formData.mobileNum" />
-						</div>
-						<div class="form-group input-group" ng-show="currentStep == 2">
-							<span class="input-group-addon"></span> <input
-								ng-hide="showPassword" type="password" class="form-control"
-								ng-model="formData.password" placeholder="密码" /><input
-								ng-show="showPassword" type="text" class="form-control"
-								ng-model="formData.password" placeholder="密码" />
-						</div>
-						<div class="checkbox">
-							<input type="checkbox" ng-model="showPassword"
-								ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
-						</div>
+	<div
+		cg-busy="{promise:promise,templateUrl:templateUrl,message:message,backdrop:backdrop,delay:delay,minDuration:minDuration}">
+		<div class="container">
+			<div class="row  pad-top">
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<form role="form" ng-submit="processForm()">
+							<div class="form-group input-group"
+								ng-show="currentStep == 1 || currentStep == 2">
+								<span class="input-group-addon"></span> <input type="text"
+									required class="form-control" placeholder="手机号码"
+									ng-model="formData.mobileNum" ng-readonly="currentStep == 2" />
+							</div>
+							<div class="form-group input-group" ng-show="currentStep == 2">
+								<span class="input-group-addon"></span><input type="text"
+									class="form-control" ng-model="formData.code" placeholder="验证码" />
+								<input type="button" class="btn btn-info"
+									value="{{security_code_resend_label}}"
+									ng-disabled="canResendQrCode()" ng-click="resendQrCode()" />
+							</div>
+							<div ng-show="currentStep == 2 && isMobileExisted == false">
+								<div class="form-group input-group">
+									<span class="input-group-addon"></span><input type="text"
+										class="form-control" placeholder="真实姓名"
+										ng-model="formData.name" />
+								</div>
+								<!--  <div class="form-group input-group">
+								<span class="input-group-addon"></span><input
+									ng-hide="showPassword" type="password" class="form-control"
+									placeholder="密码" ng-model="formData.password" /><input
+									ng-show="showPassword" type="text" class="form-control"
+									placeholder="密码" ng-model="formData.password" />
+							</div> 
+							<div class="checkbox">
+								<input type="checkbox" ng-model="showPassword"
+									ng-show="currentStep == 2" /><span ng-show="currentStep == 2">显示密码</span>
+							</div>-->
 
-						<input ng-disabled="buttonDisabled" type="submit" value="登录"
-							class="btn btn-info btn-block" ng-show="currentStep != 3">
-						<div ng-show="currentStep != 3"><a href="register.html">注册</a> <a href="chang_password.html">
-							忘记密码</a></div>
-						<button class="btn btn-success btn-block" ng-show="currentStep == 3">
-							登录成功，正在跳转...
-						</button>
-					</form>
+								<div class="form-group input-group"
+									ng-show="currentStep == 2 && isMobileExisted == false">
+									<span class="input-group-addon"></span><input type="text"
+										class="form-control" placeholder="所在城市" id="city"
+										ng-model="formData.location" />
+								</div>
+							</div>
+							<input type="submit" value="{{submit_label}}"
+								class="btn btn-info btn-block" ng-show="currentStep != 3">
+
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- ANGULAR -->
-
-	<script src="assets/js/angular.js"></script>
-	<script src="assets/js/angular-resource.min.js"></script>
-	<script src="assets/js/angular-route.min.js"></script>
-	<script src="assets/js/angular-cookies.min.js"></script>
-	<!-- JAVASCRIPT FILES PLACED AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
-	<!-- CORE JQUERY  -->
-	<script src="assets/plugins/jquery-1.10.2.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="assets/plugins/bootstrap.js"></script>
 	<script>
-		var zmxk = angular.module('zmxk', [ 'ngResource', 'ngRoute',
-				'ngCookies' ]);
-		zmxk.config([ '$resourceProvider', function($resourceProvider) {
-			// Don't strip trailing slashes from calculated URLs
-			$resourceProvider.defaults.stripTrailingSlashes = false;
-		} ]);
-		zmxk
-				.service(
-						'userService',
-						[
-								'$resource',
-								'$q',
-								function($resource, $q) {
-									var usersResource = $resource(
-											zmxkConfig.user_rest_uri,
-											{
-												userId : '@id'
-											},
-											{
-												register : {
-													url : zmxk.user_register_uri,
-													method : 'Post',
-													headers : {
-														'Content-Type' : 'application/x-www-form-urlencoded'
-													}
-												}
-											});
-									this.register = function(userData) {
-										var defer = $q.defer();
-										usersResource.save(
-												zmxkConfig.user_rest_uri,
-												userData, function(body,
-														headers) {
-													console.log(body.data);
-													defer.resolve(body);
-												}, function(body, headers) {
-													console.log(body.data);
-													defer.reject(body);
-												})
-									}
-								} ]);
+		var zmxk = angular.module('zmxk', [ 'ngAnimate', 'cgBusy' ]);
 
 		zmxk.value('zmxkConfig', {
 			user_login_uri : "/service/api/v1/users/login",
 			user_register_uri : "/service/api/v1/users/register",
 			user_rest_uri : "/service/smartool/api/v1/users/:userId"
 		});
-		zmxk.controller('MainController', [
-				'$scope',
-				'$location',
-				'$window',
-				'$route',
-				'$cookies',
-				'$routeParams',
-				function($scope, $location, $window, $route, $cookies,
-						$routeParams) {
-					$scope.const = {};
-					$scope.const.registerTitle = '登录';
-					$scope.const.mobile = '手机号码';
-					//$scope.const.submit_enter_verification = "输入验证码";
-					$scope.const.submit_register = "登录";
-					$scope.submit_label = $scope.const.submit_register;
-
-					$scope.mobileVerifySent = false;
-					$scope.mobileVerified = false;
-					$scope.TotalStep = 3;
-					$scope.currentStep = 2;
-
-					$scope.message = "";
-
-					$scope.$location = $location;
-					var url = $scope.$location;
-					$scope.popTo = $location.search().page;
-
-					if (angular.isUndefined($scope.popTo)) {
-						$scope.popTo = "qrcode";
-					}
-
-					$scope.popTo = $scope.popTo + ".html";
-
-					$scope.popTo = window.location.origin + "/" + $scope.popTo;
-					console.log($scope.popTo);
-
-				} ]);
-		var send_code_uri;
-
 		zmxk
 				.controller(
-						'LoginController',
+						'MainController',
 						[
 								'$scope',
 								'$http',
-								'$cookies',
 								'$timeout',
-								function($scope, $http, $cookies, $timeout) {
+								'$interval',
+								function($scope, $http, $timeout, $interval) {
+									$scope.const = {};
+									$scope.const.registerTitle = '注册';
+									$scope.const.loginTitle = '登录';
+									$scope.const.mobile = '手机号码';
+									$scope.const.submit_send_verification = "发送验证码";
+									//$scope.const.submit_enter_verification = "输入验证码";
+									$scope.const.submit_register = "注册";
+									$scope.submit_label = $scope.const.submit_send_verification;
+
+									$scope.mobileVerifySent = false;
+									$scope.mobileVerified = false;
+									$scope.TotalStep = 3;
+									$scope.currentStep = 1;
+									$scope.enableResendQrcode = false;
+									$scope.timelmt = 120;
+									$scope.security_code_resend_label = "("
+											+ $scope.timelmt + ")秒后，重新发送验证码";
+									$scope.popTo = window.location.origin
+											+ "/qrcode.html";
+									$scope.isMobileExisted = false;
+									$scope.delay = 1;
+									$scope.minDuration = 1;
+									$scope.message = '请等待...';
+									$scope.backdrop = true;
+									$scope.promise = null;
+
+									$scope.canResendQrCode = function() {
+										return !$scope.enableResendQrcode;
+									}
+
+									$scope.resendQrCode = function() {
+										if (!$scope.enableResendQrcode) {
+											return;
+										}
+
+										url = $scope.send_code_uri;
+										$scope.promise = $http.post(url, JSON
+												.stringify($scope.formData)).success(function(data) {
+
+										}).error(function(data, header) {
+											alert(data.message)
+										});
+									}
+
 									$scope.formData = {};
 									$scope.formData.kids = [];
 									$scope.processForm = function() {
-										$scope.send_code_uri = "service/smartool/api/v1/users/login";
+										$scope.login_url = "service/smartool/api/v1/users/login";
+										$scope.register_uri = "service/smartool/api/v1/users/register";
+										$scope.send_code_uri = "service/smartool/api/v1/users/code";
+										$scope.send_code_4_login_uri = "service/smartool/api/v1/users/codeforlogin";
 										if ($scope.currentStep == 2) {
-											$scope.send_code_uri = $scope.send_code_uri
-													+ "?code="
-													+ $scope.formData.code;
+
+											$scope.formData.location = test.input.value;
+											var url;
+											if ($scope.isMobileExisted) {
+												url = $scope.login_url;
+											} else {
+												url = $scope.register_uri
+														+ "?code="
+														+ $scope.formData.code;
+											}
+
+											$scope.promise = $http.post(url, JSON
+													.stringify($scope.formData))
+													.success(
+															function(data) {
+																$scope.currentStep = 3;
+																$scope.submit_label = $scope.const.submit_send_verification;
+																if ($scope.isMobileExisted) {
+																	alert("登录成功");
+																} else {
+																	alert("注册成功");
+																}
+																window.location.href = $scope.popTo;
+															})
+													.error(
+															function(data,
+																	header) {
+																alert(data.message)
+															});
+										} else {
+											url = $scope.send_code_4_login_uri;
+											if ($scope.formData.mobileNum.length < 11) {
+												alert("请输入有效的手机号码");
+												return;
+											}
+											$scope.promise = $http.post(url, JSON
+													.stringify($scope.formData))
+													.success(
+															function(data) {
+																//console.log(data);
+																$scope.isMobileExisted = data.mobileExisted;
+
+																$scope.currentStep = 2;
+																if ($scope.isMobileExisted) {
+																	$scope.submit_label = $scope.const.loginTitle;
+																} else {
+																	$scope.submit_label = $scope.const.registerTitle;
+																}
+
+																$interval(
+																		function() {
+																			if ($scope.timelmt > 0) {
+																				$scope.timelmt -= 1;
+																				$scope.security_code_resend_label = "("
+																						+ $scope.timelmt
+																						+ ")秒后,重新发送验证码"
+																			} else {
+																				$scope.enableResendQrcode = true;
+																				$scope.security_code_resend_label = "重新发送验证码";
+																			}
+																		}, 1000);
+															})
+													.error(
+															function(data,
+																	header) {
+																alert(data.message)
+															});
 										}
-										$http(
-												{
-													method : 'POST',
-													url : $scope.send_code_uri,
-													data : JSON
-															.stringify($scope.formData), // pass in data as strings
-													headers : {
-														'Content-Type' : 'application/json'
-													}
-												// set the headers so angular passing info as form data (not request payload)
-												})
-												.success(
-														function(data) {
-															$scope.currentStep = 3;
-															$scope.status = 200;
-															$scope.submit_label = $scope.const.registerTitle;
-
-															$cookies
-																	.put(
-																			"loginUser",
-																			angular
-																					.toJson(data));
-
-															$timeout(
-																	function() {
-																		window.location.href = $scope.popTo;
-																	}, 3000)
-														})
-												.error(
-														function(data, header) {
-															console
-																	.log(data.message)
-															if (406 == header
-																	&& data.message) {
-																$scope.currentStep = 2;
-																$scope.formData.code = data.message;
-																$scope.submit_label = $scope.const.registerTitle;
-																alert("登录失败，如果未注册，请点击注册");
-															} else if (404 == header
-																	&& data.message) {
-																$scope.currentStep = 2;
-																alert("登录失败，如果未注册，请点击注册");
-																$scope.status = 404;
-															} else if (data.message) {
-																alert("登录失败，如果未注册，请点击注册");
-															}
-															// 														else {
-															// 															alert("")
-															// 														}
-														});
-
 									};
 								} ]);
 		angular.bootstrap(document, [ 'zmxk' ]);
+		var test = new Vcity.CitySelector({
+			input : 'city'
+		});
 	</script>
 </body>
 </html>

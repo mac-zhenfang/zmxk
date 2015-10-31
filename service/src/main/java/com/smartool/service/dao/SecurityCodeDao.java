@@ -13,5 +13,5 @@ public interface SecurityCodeDao {
 
 	void remove(String mobileNumber);
 
-	SecurityCode getSecurityCodeByRemoteAddr(String remoteAddr);
+	//SecurityCode getSecurityCodeByRemoteAddr(String remoteAddr);
 }
