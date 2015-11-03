@@ -28,4 +28,6 @@ public interface AttendeeDao {
 	Attendee updateNextRound(Attendee attendee);
 	
 	Map<String, Attendee> getAttendeesFromEvent(String eventId, String roundId);
+	
+	List<Attendee> listRoundsByLevelName(int level, String shortName, String eventId);
 }

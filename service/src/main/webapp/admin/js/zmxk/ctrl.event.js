@@ -412,12 +412,12 @@ zmxk
 							$scope.eventTypeId = null;
 							$scope.siteId = null;
 							var dateNames = {};
-							$scope.$on('setDate1', function(e, date, idx) {
+							/*$scope.$on('setDate1', function(e, date, idx) {
 								// console.log(idx);
 								if (!angular.isUndefined(idx)) {
 									$scope.formEventName(idx);
 								}
-							});
+							});*/
 							$scope.sites = [];
 
 							$scope.eventTypes = [ {

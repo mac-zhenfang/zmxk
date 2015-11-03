@@ -5,7 +5,8 @@
 <mapper namespace="ATTENDEE">
 	<select id="create" parameterType="com.smartool.common.dto.Attendee">
 		insert attendees (id, kidId,
-		userId,eventId, tagId, seq, roundId, createdTime,lastModifiedTime) values
+		userId,eventId, tagId, seq, roundId, createdTime,lastModifiedTime)
+		values
 		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},#{roundId},now(),now())
 	</select>
 	<select id="complete" parameterType="com.smartool.common.dto.Attendee">
@@ -20,8 +21,9 @@
 		where id =
 		#{id};
 	</select>
-	<select id="updateNextRound"  parameterType="com.smartool.common.dto.Attendee">
-		update attendees set nextRoundId=#{nextRoundId} where id = #{id};
+	<select id="updateNextRound" parameterType="com.smartool.common.dto.Attendee">
+		update attendees set
+		nextRoundId=#{nextRoundId} where id = #{id};
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
@@ -35,7 +37,8 @@
 		kidId=#{kidId},
 		userId=#{userId},
 		teamId=#{teamId},
-		notify_times = #{attendeeNotifyTimes},
+		notify_times =
+		#{attendeeNotifyTimes},
 		status=#{status}
 		where id =
 		#{id};
@@ -49,7 +52,7 @@
 	</select>
 	<select id="enroll" parameterType="com.smartool.common.dto.Attendee">
 		update attendees set
-		kidId=#{kidId}, userId=#{userId}, status=#{status} where
+		kidId=#{kidId}, userId=#{userId}, roundId = #{roundId}, status=#{status} where
 		lastModifiedTime = #{lastModifiedTime} and status = 0 and id = #{id}
 	</select>
 
@@ -58,8 +61,10 @@
 		id, a.kidId as
 		kidId, a.createdTime as createdTime, a.lastModifiedTime
 		as
-		lastModifiedTime, a.status as status, a.score as score, a.tagId as tagId,a.roundId as roundId,
-		a.seq as seq, a.nextRoundId as nextRoundId from attendees a
+		lastModifiedTime, a.status as status, a.score as score, a.tagId as
+		tagId,a.roundId as roundId,
+		a.seq as seq, a.nextRoundId as nextRoundId
+		from attendees a
 	</select>
 	<select id="getById" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
@@ -73,10 +78,10 @@
 	</select>
 	<select id="getByEventRoundId" parameterType="Map"
 		resultType="com.smartool.common.dto.Attendee">
-		select * from attendees where eventId = #{eventId} 
+		select * from attendees where eventId = #{eventId}
 		<if test="roundId != null">
-			and  roundId=#{roundId}
-		</if> 
+			and roundId=#{roundId}
+		</if>
 		and status = 2
 	</select>
 	<select id="getPendingAttendees" parameterType="String"
@@ -85,11 +90,19 @@
 		id, a.kidId as kidId, a.createdTime as
 		createdTime, a.lastModifiedTime
 		as lastModifiedTime, a.status as
-		status, a.score as score, a.seq as seq, a.tagId as tagId, a.roundId as roundId  from attendees a where
+		status, a.score as score, a.seq as seq, a.tagId as tagId, a.roundId as
+		roundId from attendees a where
 		a.eventId = #{eventId} and
 		a.status = 0
 	</select>
+	<select id="listRoundsByLevelName" parameterType="Map"
+		resultType="com.smartool.common.dto.Attendee" flushCache="true" useCache="false">
+		select * from attendees a LEFT JOIN rounds r on
+		a.roundId=r.id where r.level = #{level} and r.shortName=#{shortName} and
+		a.eventId=#{eventId}
+	</select>
 	<delete id="removeUnused" parameterType="String">
-		delete from attendees where kidId IS NULL and eventId = #{eventId}
+		delete from attendees
+		where kidId IS NULL and eventId = #{eventId}
 	</delete>
 </mapper>

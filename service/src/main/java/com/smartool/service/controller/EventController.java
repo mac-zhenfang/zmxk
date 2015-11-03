@@ -33,6 +33,7 @@ import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
+import com.smartool.service.config.SmartoolServiceConfig;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.EventDao;
@@ -68,7 +69,8 @@ public class EventController extends BaseController {
 	private static Random r = new Random();
 	
 	
-
+	@Autowired
+	private SmartoolServiceConfig config;
 
 	/**
 	 * List events by site
@@ -344,6 +346,8 @@ public class EventController extends BaseController {
 			returnKid = kidDao.create(kid);
 			givenKidId = returnKid.getId();
 			enrollAttendee.setUserId(returnKid.getUserId());
+		} else {
+			returnKid = kidDao.get(enrollAttendee.getKidId());
 		}
 
 		int quota = event.getQuota();
@@ -374,10 +378,47 @@ public class EventController extends BaseController {
 		}
 		return false;
 	}
-
+	
+	private Map<String, Round> groupRoundsByLevel() {
+		List<Round> rounds = roundDao.listAll(1);
+		Map<String, Round> map = new HashMap<String, Round>();
+		for(Round round : rounds) {
+			map.put(round.getShortName(), round);
+		}
+		return map;
+	}
+	
+	private Round selectRound(int level, String eventId, String shortName, Map<String, Round> roundMap) {
+		List<Attendee> attendees = attendeeDao.listRoundsByLevelName(level, shortName, eventId);
+		int attendeeSize = attendees==null?0:attendees.size();
+		Round round = roundMap.get(shortName);
+		
+		if(round == null) {
+			return null;
+		}
+		if(attendeeSize < config.getRoundAttendNum()) {
+			return round;
+		} else {
+			String nextShortName = nextShortName(shortName);
+			return selectRound(level, eventId, nextShortName, roundMap);
+		}
+	}
+	
+	private String nextShortName(String currentShortName){
+		String  c;
+		if(currentShortName.startsWith("0")) {
+			c = "0" + (Integer.parseInt(currentShortName.substring(1)) + 1);
+		} else {
+			c = Integer.parseInt(currentShortName)+"";
+		}
+		return c;
+	}
+	
 	private Attendee internalEnroll(EnrollAttendee enrollAttendee, List<Attendee> attendees, Kid returnKid,
 			String eventId, int retryTimes, int quota) {
-
+		
+		Map<String, Round> roundMap = groupRoundsByLevel();
+		Round round = selectRound(1, eventId, config.getDefaultRoundName(), roundMap);
 		for (int i = 0; i < retryTimes; i++) {
 			int num = r.nextInt(quota);
 			Attendee attendee = attendees.get(num);
@@ -385,6 +426,7 @@ public class EventController extends BaseController {
 			// FIXME: check Kid/User/Event if valid
 			attendee.setEventId(eventId);
 			attendee.setUserId(enrollAttendee.getUserId());
+			attendee.setRoundId(round.getId());
 			String kidId = enrollAttendee.getKidId();
 			if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
 				kidId = returnKid.getId();
@@ -398,6 +440,7 @@ public class EventController extends BaseController {
 			Kid kid = kidDao.get(kidId);
 			createdAttendee.setKidName(kid.getName());
 			if (null != createdAttendee) {
+				
 				return createdAttendee;
 			}
 

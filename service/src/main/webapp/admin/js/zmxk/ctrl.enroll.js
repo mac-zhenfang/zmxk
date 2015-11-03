@@ -84,6 +84,8 @@ zmxk
 											$scope.enroll_form_data.user.id,
 											$scope.addKid).then(function(data) {
 										var kid = angular.copy($scope.addKid);
+										kid["existed"] = true;
+										kid["id"] = data.id;
 										$scope.kidsToShow.push(kid);
 										$scope.showAddChildForm = 0;
 										$scope.addKid = {};
@@ -188,7 +190,7 @@ zmxk
 										$scope.enroll_form_data.kids.push(kid);
 									}
 								}
-								// console.log($scope.enroll_form_data.kids);
+								console.log($scope.enroll_form_data.kids);
 
 								// TODO call Kid API to create Kid
 								var returnAttendees = [];
@@ -220,6 +222,8 @@ zmxk
 											.isUndefined(enrollAttendee["kidAvatar"])) {
 										delete enrollAttendee["kidAvatar"];
 									}
+									
+									console.log(enrollAttendee);
 
 									var msg = "";
 									eventService

@@ -6,9 +6,12 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.smartool.common.dto.Attendee;
 
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class AttendeeDaoImpl implements AttendeeDao {
 
 	@Autowired
@@ -80,5 +83,14 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public Attendee updateNextRound(Attendee attendee) {
 		sqlSession.selectOne("ATTENDEE.updateNextRound", attendee);
 		return getAttendeeInternal(attendee.getId());
+	}
+
+	@Override
+	public List<Attendee> listRoundsByLevelName(int level, String shortName, String eventId) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("level", level);
+		param.put("shortName", shortName);
+		param.put("eventId", eventId);
+		return sqlSession.selectList("ATTENDEE.listRoundsByLevelName", param);
 	}
 }

@@ -422,4 +422,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		String needPassword =  env.getProperty("need_password", "N");
 		return needPassword.equals("Y");
 	}
+	public int getRoundAttendNum() {
+		String attendeeNum = env.getProperty("round_attend_num", "7");
+		return Integer.parseInt(attendeeNum);
+	}
+	public String getDefaultRoundName(){
+		return env.getProperty("default_round_short_name", "01");
+	}
 }

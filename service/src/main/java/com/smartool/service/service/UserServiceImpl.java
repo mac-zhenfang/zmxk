@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User login(LoginUser user) {
-		if(config.needPassword()) {
+		if(!Strings.isNullOrEmpty(user.getPassword())) {
 			return internalPasswdLogin(user);
 		} else {
 			return internalSecurityCodeLogin(user);
