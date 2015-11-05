@@ -10,7 +10,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
+import com.mysql.jdbc.log.Log;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
@@ -40,12 +44,14 @@ import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.RoundDao;
 import com.smartool.service.dao.TagDao;
+import com.smartool.service.service.CreditGeneratingJob;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class EventController extends BaseController {
 	private final static String NULL_TAG_ID = "NULL_TAG_ID";
-
+	
+	private static Logger logger = Logger.getLogger(EventController.class);
 	@Autowired
 	private EventDao eventDao;
 
@@ -57,20 +63,21 @@ public class EventController extends BaseController {
 
 	// @Autowired
 	// private UserDao userDao;
-	
+
 	@Autowired
 	private RoundDao roundDao;
-	
+
 	@Autowired
 	private TagDao tagDao;
 
 	private int attendeePerGourpLimitation = 100;
 
 	private static Random r = new Random();
-	
-	
+
 	@Autowired
 	private SmartoolServiceConfig config;
+
+	private ReentrantLock enrollLock = new ReentrantLock();
 
 	/**
 	 * List events by site
@@ -145,35 +152,36 @@ public class EventController extends BaseController {
 		}
 		return retEvent;
 	}
-	
-	/*@ApiScope(userScope = UserRole.ADMIN)
-	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}", method = RequestMethod.POST, consumes = {
-			MediaType.APPLICATION_JSON_VALUE })
-	public Attendee updateAttendee(@RequestBody Attendee attendee) {
-		if(attendee.getScore() > 0) {
-			if(Strings.isNullOrEmpty(attendee.getRoundId())) {
-				// update the current attendee if admin did not choose any round
-				
-			}
-		}
-	}*/
-	
+
+	/*
+	 * @ApiScope(userScope = UserRole.ADMIN)
+	 * 
+	 * @RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}",
+	 * method = RequestMethod.POST, consumes = {
+	 * MediaType.APPLICATION_JSON_VALUE }) public Attendee
+	 * updateAttendee(@RequestBody Attendee attendee) { if(attendee.getScore() >
+	 * 0) { if(Strings.isNullOrEmpty(attendee.getRoundId())) { // update the
+	 * current attendee if admin did not choose any round
+	 * 
+	 * } } }
+	 */
+
 	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/events/{eventId}/promote", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Attendee promote(@PathVariable String eventId, @RequestBody Attendee attendee){
-		if(Strings.isNullOrEmpty(attendee.getRoundId())) {
+	public Attendee promote(@PathVariable String eventId, @RequestBody Attendee attendee) {
+		if (Strings.isNullOrEmpty(attendee.getRoundId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.ROUND_ID_CAN_NOT_BE_NULL);
 		}
-		
-		if(attendee.getScore() == 0 || attendee.getStatus() !=2 ) {
+
+		if (attendee.getScore() == 0 || attendee.getStatus() != 2) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.SCORE_CAN_NOT_BE_NULL);
 		}
-		
-		if(!Strings.isNullOrEmpty(attendee.getNextRoundId())) {
+
+		if (!Strings.isNullOrEmpty(attendee.getNextRoundId())) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_PROMOTE);
 		}
-		
+
 		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
 		Event event = eventDao.getEvent(eventId);
 		int quota = event.getQuota();
@@ -182,16 +190,16 @@ public class EventController extends BaseController {
 		for (int i = 0; i < rt; i++) {
 			int num = r.nextInt(rt);
 			att = attendees.get(num);
-			
-			if(att!=null) {
+
+			if (att != null) {
 				break;
 			}
 		}
-		
-		if(att == null) {
+
+		if (att == null) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_QUOTA_ENROLL_MESSAGE);
 		}
-		
+
 		Attendee toPromoteAttendee = createPromoteAttendee(attendee, att);
 		attendee.setNextRoundId(attendee.getRoundId());
 		attendeeDao.updateNextRound(attendee);
@@ -199,7 +207,7 @@ public class EventController extends BaseController {
 
 		return toPromoteAttendee;
 	}
-	
+
 	private Attendee createPromoteAttendee(Attendee attendee, Attendee promotedAttendee) {
 		promotedAttendee.setAttendeeNotifyTimes(attendee.getAttendeeNotifyTimes());
 		promotedAttendee.setAvatarUrl(attendee.getAvatarUrl());
@@ -223,8 +231,6 @@ public class EventController extends BaseController {
 		promotedAttendee.setUserId(attendee.getUserId());
 		return promotedAttendee;
 	}
-	
-	
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/complete", method = RequestMethod.POST, consumes = {
@@ -252,63 +258,56 @@ public class EventController extends BaseController {
 				}
 			}
 		}
-		//clean rank
-		
-			
-			if (attendee.getScore() == 0) {
-				attendee.setStatus(1);
-			} else {
-				attendee.setStatus(2);
-				
+		// clean rank
+
+		if (attendee.getScore() == 0) {
+			attendee.setStatus(1);
+		} else {
+			attendee.setStatus(2);
+
+		}
+		/*
+		 * if (existeAttendeeMap.get(attendee.getId()) != null &&
+		 * (existeAttendeeMap.get(attendee.getId()).getSeq() == null || !Objects
+		 * .equals(existeAttendeeMap.get(attendee.getId()).getTagId(),
+		 * attendee.getTagId()))) { String tagId = attendee.getTagId(); if
+		 * (tagId == null) { tagId = NULL_TAG_ID; } String oldTagId =
+		 * existeAttendeeMap.get(attendee.getId()).getTagId(); if (oldTagId ==
+		 * null) { oldTagId = NULL_TAG_ID; } if (!groupMap.containsKey(tagId)) {
+		 * groupMap.put(tagId, new TreeSet<Integer>()); } if
+		 * (groupMap.containsKey(oldTagId) &&
+		 * existeAttendeeMap.get(attendee.getId()).getSeq() != null) {
+		 * groupMap.get(oldTagId).remove(existeAttendeeMap.get(attendee.getId())
+		 * .getSeq()); } Integer seq = getSeqNumber(groupMap, tagId);
+		 * attendee.setSeq(seq); groupMap.get(tagId).add(seq); }
+		 */
+		// clean attendees
+		if (attendee.getStatus() == 1) {
+			return attendeeDao.complete(attendee);
+		}
+
+		Map<String, Attendee> attendeesPerRound = attendeeDao.getAttendeesFromEvent(eventId, attendee.getRoundId());
+		attendeesPerRound.put(attendee.getId(), attendee);
+		List<Attendee> listAttendees = new ArrayList<>();
+		for (Entry<String, Attendee> entry : attendeesPerRound.entrySet()) {
+			listAttendees.add(entry.getValue());
+		}
+		Collections.sort(listAttendees, new Comparator<Attendee>() {
+			@Override
+			public int compare(Attendee o1, Attendee o2) {
+				int ret = o1.getScore() <= o2.getScore() ? -1 : 1;
+				return ret;
 			}
-			/*if (existeAttendeeMap.get(attendee.getId()) != null
-					&& (existeAttendeeMap.get(attendee.getId()).getSeq() == null || !Objects
-							.equals(existeAttendeeMap.get(attendee.getId()).getTagId(), attendee.getTagId()))) {
-				String tagId = attendee.getTagId();
-				if (tagId == null) {
-					tagId = NULL_TAG_ID;
-				}
-				String oldTagId = existeAttendeeMap.get(attendee.getId()).getTagId();
-				if (oldTagId == null) {
-					oldTagId = NULL_TAG_ID;
-				}
-				if (!groupMap.containsKey(tagId)) {
-					groupMap.put(tagId, new TreeSet<Integer>());
-				}
-				if (groupMap.containsKey(oldTagId) && existeAttendeeMap.get(attendee.getId()).getSeq() != null) {
-					groupMap.get(oldTagId).remove(existeAttendeeMap.get(attendee.getId()).getSeq());
-				}
-				Integer seq = getSeqNumber(groupMap, tagId);
-				attendee.setSeq(seq);
-				groupMap.get(tagId).add(seq);
-			}*/
-			// clean attendees
-			if(attendee.getStatus() == 1) {
-				return attendeeDao.complete(attendee);
+		});
+		for (int i = 0; i < listAttendees.size(); i++) {
+			Attendee toSave = listAttendees.get(i);
+			toSave.setRank(i + 1);
+			Attendee ret = attendeeDao.complete(toSave);
+			if (ret.getId().equals(attendee.getId())) {
+				attendee = ret;
 			}
-			
-			Map<String, Attendee> attendeesPerRound = attendeeDao.getAttendeesFromEvent(eventId, attendee.getRoundId());
-			attendeesPerRound.put(attendee.getId(), attendee);
-			List<Attendee> listAttendees = new ArrayList<>();
-			for(Entry<String, Attendee> entry : attendeesPerRound.entrySet()) {
-				listAttendees.add(entry.getValue());
-			}
-			Collections.sort(listAttendees, new Comparator<Attendee>() {
-				@Override
-				public int compare(Attendee o1, Attendee o2) {
-					int ret = o1.getScore() <= o2.getScore() ? -1 : 1;
-					return ret;
-				}
-			});
-			for(int i =0;i<listAttendees.size();i++) {
-				Attendee toSave = listAttendees.get(i);
-				toSave.setRank(i+1);
-				Attendee ret = attendeeDao.complete(toSave);
-				if(ret.getId().equals(attendee.getId())) {
-					attendee = ret;
-				}
-			}
-			return attendee;
+		}
+		return attendee;
 	}
 
 	private Integer getSeqNumber(Map<String, Set<Integer>> groupMap, String tagId) {
@@ -339,7 +338,7 @@ public class EventController extends BaseController {
 		String givenKidId = enrollAttendee.getKidId();
 		if (enrollAttendee.getKid() != null && Strings.isNullOrEmpty(enrollAttendee.getKidId())) {
 			Kid kid = enrollAttendee.getKid();
-			if(Strings.isNullOrEmpty(kid.getUserId())) {
+			if (Strings.isNullOrEmpty(kid.getUserId())) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.MISS_USER_ID);
 			}
 			kid.setId(CommonUtils.getRandomUUID());
@@ -378,75 +377,86 @@ public class EventController extends BaseController {
 		}
 		return false;
 	}
-	
+
 	private Map<String, Round> groupRoundsByLevel() {
 		List<Round> rounds = roundDao.listAll(1);
 		Map<String, Round> map = new HashMap<String, Round>();
-		for(Round round : rounds) {
+		for (Round round : rounds) {
 			map.put(round.getShortName(), round);
 		}
 		return map;
 	}
-	
+
 	private Round selectRound(int level, String eventId, String shortName, Map<String, Round> roundMap) {
 		List<Attendee> attendees = attendeeDao.listRoundsByLevelName(level, shortName, eventId);
-		int attendeeSize = attendees==null?0:attendees.size();
+
+		int attendeeSize = attendees == null ? 0 : attendees.size();
 		Round round = roundMap.get(shortName);
-		
-		if(round == null) {
+
+		if (round == null) {
 			return null;
 		}
-		if(attendeeSize < config.getRoundAttendNum()) {
+		if (attendeeSize < config.getRoundAttendNum()) {
 			return round;
 		} else {
 			String nextShortName = nextShortName(shortName);
 			return selectRound(level, eventId, nextShortName, roundMap);
 		}
 	}
-	
-	private String nextShortName(String currentShortName){
-		String  c;
-		if(currentShortName.startsWith("0")) {
+
+	private String nextShortName(String currentShortName) {
+		String c;
+		if (currentShortName.startsWith("0")) {
 			c = "0" + (Integer.parseInt(currentShortName.substring(1)) + 1);
 		} else {
-			c = Integer.parseInt(currentShortName)+"";
+			c = Integer.parseInt(currentShortName) + "";
 		}
 		return c;
 	}
-	
+
 	private Attendee internalEnroll(EnrollAttendee enrollAttendee, List<Attendee> attendees, Kid returnKid,
 			String eventId, int retryTimes, int quota) {
-		
-		Map<String, Round> roundMap = groupRoundsByLevel();
-		Round round = selectRound(1, eventId, config.getDefaultRoundName(), roundMap);
-		for (int i = 0; i < retryTimes; i++) {
-			int num = r.nextInt(quota);
-			Attendee attendee = attendees.get(num);
-			attendee.setStatus(1); // change to enroll status
-			// FIXME: check Kid/User/Event if valid
-			attendee.setEventId(eventId);
-			attendee.setUserId(enrollAttendee.getUserId());
-			attendee.setRoundId(round.getId());
-			String kidId = enrollAttendee.getKidId();
-			if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
-				kidId = returnKid.getId();
+		try {
+			enrollLock.tryLock(5000, TimeUnit.MILLISECONDS);
+			Map<String, Round> roundMap = groupRoundsByLevel();
+			Round round = selectRound(1, eventId, config.getDefaultRoundName(), roundMap);
+			if (null == round) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_ROUND_MAX);
 			}
-			if (null == kidId) {
-				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_SELECTION);
-			}
-			attendee.setKidId(kidId);
-			Attendee createdAttendee = attendeeDao.enroll(attendee);
-
-			Kid kid = kidDao.get(kidId);
-			createdAttendee.setKidName(kid.getName());
-			if (null != createdAttendee) {
+			
+			for (int i = 0; i < retryTimes; i++) {
+				int num = r.nextInt(quota);
+				Attendee attendee = attendees.get(num);
+				attendee.setStatus(1); // change to enroll status
+				// FIXME: check Kid/User/Event if valid
+				attendee.setEventId(eventId);
+				attendee.setUserId(enrollAttendee.getUserId());
+				attendee.setRoundId(round.getId());
+				String kidId = enrollAttendee.getKidId();
 				
-				return createdAttendee;
+				if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
+					kidId = returnKid.getId();
+				}
+				if (null == kidId) {
+					throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_KID_SELECTION);
+				}
+				attendee.setKidId(kidId);
+				Attendee createdAttendee = attendeeDao.enroll(attendee);
+
+				Kid kid = kidDao.get(kidId);
+				createdAttendee.setKidName(kid.getName());
+				if (null != createdAttendee) {
+					logger.info(" enroll kid " + kidId);
+					return createdAttendee;
+				}
 			}
-
+			throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessages.WRONG_KID_SELECTION);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessages.WRONG_KID_SELECTION);
+		} finally {
+			enrollLock.unlock();
 		}
-
-		throw new SmartoolException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorMessages.WRONG_KID_SELECTION);
 	}
 
 	/**
@@ -491,24 +501,25 @@ public class EventController extends BaseController {
 		Event retEvent = eventDao.getFullEvent(eventId);
 		List<Attendee> newAttendees = new ArrayList<Attendee>();
 		List<Attendee> attendees = retEvent.getAttendees();
-		//List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
+		// List<Attendee> attendees =
+		// attendeeDao.getAttendeeFromEvent(retEvent.getId());
 		for (Attendee attendee : attendees) {
-			if(!Strings.isNullOrEmpty(attendee.getId())) {
+			if (!Strings.isNullOrEmpty(attendee.getId())) {
 				newAttendees.add(attendee);
 			}
 		}
 		retEvent.setAttendees(newAttendees);
-		/*List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
-		for (Attendee attendee : attendees) {
-			if (!Strings.isNullOrEmpty(attendee.getTagId())) {
-				attendee.setTag(tagDao.getTag(attendee.getTagId()).getName());
-			}
-
-			if (!Strings.isNullOrEmpty(attendee.getKidId())) {
-				attendee.setKidName(kidDao.get(attendee.getKidId()).getName());
-			}
-		}
-		retEvent.setAttendees(attendees);*/
+		/*
+		 * List<Attendee> attendees =
+		 * attendeeDao.getAttendeeFromEvent(retEvent.getId()); for (Attendee
+		 * attendee : attendees) { if
+		 * (!Strings.isNullOrEmpty(attendee.getTagId())) {
+		 * attendee.setTag(tagDao.getTag(attendee.getTagId()).getName()); }
+		 * 
+		 * if (!Strings.isNullOrEmpty(attendee.getKidId())) {
+		 * attendee.setKidName(kidDao.get(attendee.getKidId()).getName()); } }
+		 * retEvent.setAttendees(attendees);
+		 */
 		/*
 		 * List<Attendee> attendees =
 		 * attendeeDao.getAttendeeFromEvent(retEvent.getId()); for(Attendee

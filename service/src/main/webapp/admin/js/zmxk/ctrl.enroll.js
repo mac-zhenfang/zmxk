@@ -193,7 +193,7 @@ zmxk
 								console.log($scope.enroll_form_data.kids);
 
 								// TODO call Kid API to create Kid
-								var returnAttendees = [];
+								var enrollAttendees = [];
 								for (var j = 0; j < $scope.enroll_form_data.kids.length; j++) {
 									var kid = $scope.enroll_form_data.kids[j];
 									var attendee = {};
@@ -223,10 +223,9 @@ zmxk
 										delete enrollAttendee["kidAvatar"];
 									}
 									
-									console.log(enrollAttendee);
-
-									var msg = "";
-									eventService
+									enrollAttendees.push(enrollAttendee)
+									
+									/*eventService
 											.addAttendee(
 													$scope.enroll_form_data.id,
 													enrollAttendee)
@@ -255,14 +254,7 @@ zmxk
 																			},
 																			function() {
 																			});
-															/*
-															 * $timeout(
-															 * function() {
-															 * $scope .hoopPage(
-															 * "events", [
-															 * $scope.enroll_form_data.id ]) },
-															 * 5000)
-															 */
+															
 															// var url =
 															// $scope.$location.$$host;
 															$scope.enroll_form_data.kids = [];
@@ -281,12 +273,70 @@ zmxk
 																		function() {
 																		});
 														$scope.enroll_form_data.kids = [];
-													})
+													}) */
 
 								}
-
+								var returnAttendees = [];
+								var msg = "";
+								var i = 0;
+								$scope.enroll(enrollAttendees, i, returnAttendees, msg, false);
 								// console.log($scope.enroll_form_data);
 
+							}
+							
+							$scope.enroll = function(enrollAttendees, i, returnAttendees, msg, ifError) {
+								var enrollAttendee = enrollAttendees[i];
+								if(ifError) {
+									$scope
+									.launch(
+											"error",
+											"",
+											msg,
+											function() {
+
+											},
+											function() {
+											});
+									return;
+								} else if (returnAttendees.length == $scope.enroll_form_data.kids.length) {
+								
+									// msg += data.seq
+									// msg += " "
+									$scope
+											.launch(
+													"notify",
+													"赛事录入成功",
+													msg,
+													function() {
+														$scope
+																.hoopPage(
+																		"events",
+																		[ $scope.enroll_form_data.id ])
+													},
+													function() {
+													});
+									
+									$scope.enroll_form_data.kids = [];
+									return;
+								}
+								eventService
+								.addAttendee(
+										$scope.enroll_form_data.id,
+										enrollAttendee)
+								.then(
+										function(data) {
+											i++;
+											returnAttendees
+													.push(data);
+											msg += "姓名: "
+												msg += data.kidName;
+											msg += " 录入成功。";
+											$scope.enroll(enrollAttendees, i, returnAttendees, msg, false);
+										},
+										function(error) {
+											msg += error.data.message;
+											$scope.enroll(enrollAttendees, i, returnAttendees, msg, true);
+										})
 							}
 
 							$scope.searchUser = function() {
