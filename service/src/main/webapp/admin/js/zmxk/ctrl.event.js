@@ -772,6 +772,9 @@ zmxk
 							}
 
 							$scope.deleteEvent = function(deleteEvent, idx) {
+								if(!confirm("是否确定要删除本赛事")) {
+									return;
+								}
 								console.log(deleteEvent);
 								var handleReturn = function() {
 									var events = [];
@@ -1140,7 +1143,7 @@ zmxk
 										$scope.eventInit.id,
 										attendee).then(
 										function(data) {												
-											alert("晋级成功");
+											//alert("晋级成功");
 											$scope.init();
 											//attendee.editing = false;
 										},
@@ -1417,7 +1420,7 @@ zmxk
 											$scope.eventInit.id,
 											attendee).then(
 											function(data) {												
-												alert("修改成功");
+												//alert("修改成功");
 												$scope.init();
 												//attendee.editing = false;
 											},
