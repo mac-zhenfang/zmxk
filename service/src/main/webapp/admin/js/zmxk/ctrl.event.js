@@ -308,6 +308,9 @@ zmxk
 
 							$scope.deleteEventType = function(
 									toDeleteEventType, idx) {
+								if(!confirm("确定你要删除此数据?")){
+									return;
+								}
 								var handleReturn = function(data) {
 									var eventTypes = [];
 									angular.forEach($scope.listEventTypes,
@@ -669,25 +672,38 @@ zmxk
 									return false
 								}
 							}
+							$scope.safeApply = function(fn) {
+							    var phase = this.$root.$$phase;
+							    if (phase == '$apply' || phase == '$digest') {
+							        if (fn && (typeof(fn) === 'function')) {
+							            fn();
+							        }
+							    } else {
+							        this.$apply(fn);
+							    }
+							};
 
-							$scope.updateEvent = function(updateEvent, idx) {
+							$scope.updateEvent = function(updateEvent) {
 								var handleReturn = function(data) {
 
-									if (updateEvent.existed) {
-										updateEvent.changed = !updateEvent.changed;
+									if (data.existed) {
+										data.changed = !data.changed;
 									}
-
-									updateEvent.showInput = !updateEvent.showInput;
+									
+									data.showInput = !data.showInput;
+									console.log(data);
 									// $scope.kids = kid; $scope.listEvents
 									var events = [];
+									
 									angular.forEach($scope.listEvents,
 											function(event, i) {
-												if (i == idx) {
-													events.push(updateEvent);
+												if (event.id == data.id) {
+													events.push(data);
 												} else {
 													events.push(event);
 												}
-											})
+									});
+									//$scope.safeApply();
 									$scope.listEvents = angular.copy(events);
 								}
 								// console.log($scope.serieId);
@@ -699,7 +715,7 @@ zmxk
 								 * $scope.launch("error", "", "请选择系列",
 								 * function() { }, function() { }); return; } }
 								 */
-								console.log(updateEvent);
+								//console.log(updateEvent);
 								// save event
 								if (!updateEvent.existed) {
 									eventService.createEvent(updateEvent).then(
@@ -708,6 +724,7 @@ zmxk
 												// data.existed = true;
 												updateEvent["id"] = data.id;
 												updateEvent.existed = true;
+												//data.showInput=false;
 												handleReturn(updateEvent);
 											}, function(data) {
 												console.log(data);
@@ -716,8 +733,7 @@ zmxk
 									eventService.updateEvent(updateEvent.id,
 											updateEvent).then(
 											function(data) {
-												handleReturn(data);
-
+												handleReturn(updateEvent);
 											},
 											function(data) {
 												$scope.launch("error", "",

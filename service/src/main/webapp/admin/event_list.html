@@ -109,7 +109,7 @@
 							ng-class="{0:'label label-success', 1:'label label-success', 2:'label label-success', 3:'label label-success'}[event.status]">{{{0:'已创建',
 								1:'已开始',2:'已冻结',3:'已授予奖励'}[event.status]}}</span></td>
 						<td class="center"><span class="btn btn-info"
-							ng-click="updateEvent(event, $index)"
+							ng-click="updateEvent(event)"
 							ng-show="{{event.status<2}}"
 							ng-bind="{true:'保存', false:'修改'}[event.changed==true]"></span><span
 							class="btn btn-danger" ng-click="deleteEvent(event, $index)">
