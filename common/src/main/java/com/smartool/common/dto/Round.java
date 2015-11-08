@@ -5,6 +5,7 @@ public class Round extends BaseDateTrackingBean {
 	private int level;
 	private String levelName;
 	private String shortName;
+	private int quota;
 	public String getId() {
 		return id;
 	}
@@ -28,5 +29,11 @@ public class Round extends BaseDateTrackingBean {
 	}
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
+	}
+	public int getQuota() {
+		return quota;
+	}
+	public void setQuota(int quota) {
+		this.quota = quota;
 	}
 }

@@ -73,7 +73,7 @@
 						ng-class="showTagClass(attendee.roundType)"> </span> <select
 						ng-show="attendee.editing" class="selectpicker gridInput1"
 						data-style="btn-info" ng-model="attendee.roundId"
-						ng-options="option.id as option.name for option in attendee.thisLevelRounds">
+						ng-options="option.id as option.name for option in attendee.thisLevelRounds" ng-change="confimrGroupUpdate(attendee, '{{attendee.roundId}}')">
 					</select>
 					<td class="center">
 						<span type="button" class="btn btn-info"

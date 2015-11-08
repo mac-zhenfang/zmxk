@@ -988,7 +988,7 @@ zmxk
 																								eventRounds
 																										.push(round);
 																								if(angular.isUndefined($scope.roundLevelMap[round.id])) {
-																									$scope.roundLevelMap[round.id] = name;
+																									$scope.roundLevelMap[round.id] = round;
 																								}
 																								if(angular.isUndefined($scope.roundLevelList[round.level])) {
 																									$scope.roundLevelList[round.level] = round.levelName;
@@ -1142,7 +1142,7 @@ zmxk
 							
 							$scope.showNextRoundLabel = function(attendee) {
 								if(attendee.nextRoundId) {
-									return "已经晋升至" + $scope.roundLevelMap[attendee.nextRoundId];
+									return "已经晋升至" + $scope.roundLevelMap[attendee.nextRoundId].name;
 								} else if (attendee.nextLevelRounds.length==0){
 									return "该比赛结束"
 								} else {
@@ -1172,6 +1172,29 @@ zmxk
 							$scope.clickEditScore = function(attendee) {
 								attendee.editing = true;
 								//console.log(attendee);
+							}
+							
+							$scope.confimrGroupUpdate = function(attendee, roundId){
+								//console.log(attendee);
+								//console.log(roundId);
+								var total = 0;
+								//HARDCODE
+								var totalLimit = $scope.roundLevelMap[attendee.roundId].quota;
+								//console.log(totalLimit);
+								angular.forEach($scope.eventInit.attendees, function(att, index){
+									if(att.roundId == attendee.roundId) {
+										//console.log(att);
+										total ++;
+									}
+								});
+								//console.log(total);
+								if(total > totalLimit) {
+									if(!confirm("已经超过该组别的限定值:" + totalLimit + "人，是否继续")) {
+										attendee.roundId = roundId;
+										attendee.editing = false;
+									}
+								}
+								
 							}
 
 							$scope.showTagClass = function(tagType) {
