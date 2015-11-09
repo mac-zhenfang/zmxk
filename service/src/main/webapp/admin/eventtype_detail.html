@@ -18,8 +18,8 @@
 						<th>所属类型</th>
 						<th>开始时间</th>
 						<th>结束时间</th>
-						<!-- <th>升级条件</th> -->
-						<th>操作</th>
+						<!-- <th>升级条件</th>
+						<th>操作</th> -->
 					</tr>
 				</thead>
 				<tbody>
@@ -55,9 +55,7 @@
 							ng-show="{{serie.showInput}}" class="gridInput"/></td> -->
 						<td class="center"><span class="btn btn-info"
 							ng-click="updateSerie(serie, $index)"
-							ng-bind="{true:'保存', false:'修改'}[serie.changed==true]"></span><span
-							class="btn btn-danger" ng-click="deleteSerie(serie, $index)">
-								删除 </span></td>
+							ng-bind="{true:'保存', false:'修改'}[serie.changed==true]"></span></td>
 					</tr>
 				</tbody>
 			</table>

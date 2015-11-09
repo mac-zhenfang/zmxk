@@ -58,34 +58,34 @@ public class SerieController {
 	 * GET
 	 * 
 	 * @RequestMapping(value = "/series/{SerieId}")
-	 */
+	*/
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public Serie getSeries(@PathVariable String eventTypeId, @PathVariable String serieId) {
 		return serieDao.get(serieId);
-	}
+	} 
 
 	/**
 	 * DELETE
 	 * 
 	 * @RequestMapping(value = "/Series/{SerieId}")
-	 */
+	
 	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventtypes/{eventTypeId}/series/{serieId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String eventTypeId, @PathVariable String serieId) {
 		serieDao.delete(serieId);
-	}
+	} */
 	/**
 	 * DELETE ALL
 	 * 
 	 * @RequestMapping(value = "/eventtypes/{eventTypeId}/series")
-	 */
+	 
 	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/eventtypes/{eventTypeId}/series", method = RequestMethod.DELETE)
 	public void deleteAll(@PathVariable String eventTypeId) {
 		serieDao.batchDeleteByEventType(eventTypeId);
-	}
+	}*/
 	/**
 	 * LIST
 	 * 

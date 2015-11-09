@@ -17,7 +17,6 @@
 						<th>联赛类型</th>
 						<th>赛道</th>
 						<th>赛制</th>
-						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,11 +37,6 @@
 							ng-options="option.id as option.name for option in eventSerieDefs"
 							ng-init="eventType.eventSerieDefId==option.id">
 						</select></td>
-						<td class="center"><span class="btn btn-info"
-							ng-click="updateEventType(eventType, $index)"
-							ng-bind="{true:'保存', false:'修改'}[eventType.changed==true]"></span><span
-							class="btn btn-danger"
-							ng-click="deleteEventType(eventType, $index)"> 删除 </span></td>
 					</tr>
 				</tbody>
 			</table>

@@ -26,4 +26,10 @@ public interface EventDao {
 	void delete(String eventId);
 
 	List<Event> search(Map<String, Object> param);
+	
+	void backup(Event event);
+	
+	List<Event> listAllEvent(long interval);
+	
+	void removeFromHis(long inteval);
 }

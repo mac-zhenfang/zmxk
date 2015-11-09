@@ -306,7 +306,7 @@ zmxk
 
 							}
 
-							$scope.deleteEventType = function(
+							/*$scope.deleteEventType = function(
 									toDeleteEventType, idx) {
 								if(!confirm("确定你要删除此数据?")){
 									return;
@@ -345,7 +345,7 @@ zmxk
 											})
 								}
 
-							}
+							}*/
 
 							$scope.createEventType = function() {
 
@@ -787,7 +787,7 @@ zmxk
 								}
 							}
 
-							$scope.deleteEvent = function(deleteEvent, idx) {
+							/*$scope.deleteEvent = function(deleteEvent, idx) {
 								if(!confirm("是否确定要删除本赛事")) {
 									return;
 								}
@@ -829,7 +829,7 @@ zmxk
 													})
 								}
 
-							}
+							}*/
 
 							$scope.createEvent = function() {
 

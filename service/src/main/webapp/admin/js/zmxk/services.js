@@ -466,7 +466,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 			
 			
 
-			this.deleteEvent = function(giveEventId) {
+			/*this.deleteEvent = function(giveEventId) {
 				var defer = $q.defer();
 				eventResource.remove({
 					eventId : giveEventId
@@ -476,7 +476,7 @@ zmxk.service('eventService', [ '$resource', 'zmxkConfig', '$q',
 					defer.reject(e);
 				});
 				return defer.promise;
-			}
+			}*/
 
 			this.list = function(s) {
 				var defer = $q.defer();

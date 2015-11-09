@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.mysql.jdbc.log.Log;
 import com.smartool.common.dto.Attendee;
 import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
@@ -44,7 +43,6 @@ import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.RoundDao;
 import com.smartool.service.dao.TagDao;
-import com.smartool.service.service.CreditGeneratingJob;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -483,12 +481,12 @@ public class EventController extends BaseController {
 
 	/**
 	 * Delete Event
-	 */
+	 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable String eventId) {
 		eventDao.delete(eventId);
-	}
+	}*/
 
 	/**
 	 * 

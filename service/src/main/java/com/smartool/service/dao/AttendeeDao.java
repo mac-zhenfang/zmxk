@@ -30,4 +30,12 @@ public interface AttendeeDao {
 	Map<String, Attendee> getAttendeesFromEvent(String eventId, String roundId);
 	
 	List<Attendee> listRoundsByLevelName(int level, String shortName, String eventId);
+	
+	void batchDelete(String eventId);
+	
+	void backup(Attendee attendee);
+	
+	List<Attendee> getAllAttendeeFromEvent(String eventId);
+	
+	void removeFromHis(long interval);
 }

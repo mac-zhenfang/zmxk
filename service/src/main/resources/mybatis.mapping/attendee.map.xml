@@ -9,6 +9,34 @@
 		values
 		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},#{roundId},now(),now())
 	</select>
+	
+	 <insert id="batchCreateHist" parameterType="java.util.List">
+        insert into attendees_hist (id, kidId,
+		userId,eventId, tagId, seq, roundId, createdTime,lastModifiedTime)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+           (#{item.id},#{item.kidId},#{item.userId},#{item.eventId},#{item.tagId},#{item.seq},#{item.roundId},now(),now()) ON DUPLICATE KEY UPDATE
+			lastModifiedTime=VALUES(lastModifiedTime)
+        </foreach>
+    </insert>
+    
+    <delete id="deleteBatch" parameterType="java.util.List">
+		delete from attendees where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+    
+    
+	<select id="createHist" parameterType="com.smartool.common.dto.Attendee">
+		insert attendees_hist (id, kidId,
+		userId,eventId, tagId, seq, roundId, createdTime,lastModifiedTime)
+		values
+		(#{id},#{kidId},#{userId},#{eventId},#{tagId},#{seq},#{roundId},#{createdTime},now())  ON DUPLICATE KEY UPDATE
+			lastModifiedTime=VALUES(lastModifiedTime)
+	</select>
+	
 	<select id="complete" parameterType="com.smartool.common.dto.Attendee">
 		update attendees
 		set
@@ -76,6 +104,12 @@
 		select * from attendees where eventId = #{eventId} and
 		status > 0
 	</select>
+	
+	<select id="getAllByEventId" parameterType="String"
+		resultType="com.smartool.common.dto.Attendee">
+		select * from attendees where eventId = #{eventId}
+	</select>
+	
 	<select id="getByEventRoundId" parameterType="Map"
 		resultType="com.smartool.common.dto.Attendee">
 		select * from attendees where eventId = #{eventId}
@@ -104,5 +138,14 @@
 	<delete id="removeUnused" parameterType="String">
 		delete from attendees
 		where kidId IS NULL and eventId = #{eventId}
+	</delete>
+	
+	<delete id="remove" parameterType="String">
+		delete from attendees where eventId = #{eventId}
+	</delete>
+	<delete id="removeFromHis" parameterType="long">
+		delete from
+		attendees_hist a where UNIX_TIMESTAMP(now()) -
+		UNIX_TIMESTAMP(a.lastModifiedTime) > #{interval}
 	</delete>
 </mapper>

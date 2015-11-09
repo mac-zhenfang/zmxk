@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.smartool.common.dto.Event;
 
@@ -71,5 +69,20 @@ public class EventDaoImpl implements EventDao {
 	@Override
 	public List<Event> search(Map<String, Object> param) {
 		return sqlSession.selectList("EVENT.search", param);
+	}
+
+	@Override
+	public void backup(Event event) {
+		sqlSession.insert("EVENT.createHist", event);
+	}
+
+	@Override
+	public List<Event> listAllEvent(long interval) {
+		return sqlSession.selectList("EVENT.listAllEventInterval", interval);
+	}
+
+	@Override
+	public void removeFromHis(long inteval) {
+		sqlSession.delete("EVENT.removeFromHis", inteval);
 	}
 }

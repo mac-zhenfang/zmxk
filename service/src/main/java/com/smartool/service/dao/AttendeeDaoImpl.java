@@ -93,4 +93,25 @@ public class AttendeeDaoImpl implements AttendeeDao {
 		param.put("eventId", eventId);
 		return sqlSession.selectList("ATTENDEE.listRoundsByLevelName", param);
 	}
+
+
+	@Override
+	public void batchDelete(String eventId) {
+		sqlSession.selectOne("ATTENDEE.remove", eventId);
+	}
+
+	@Override
+	public void backup(Attendee attendee) {
+		sqlSession.selectOne("ATTENDEE.createHist", attendee);
+	}
+
+	@Override
+	public List<Attendee> getAllAttendeeFromEvent(String eventId) {
+		return sqlSession.selectList("ATTENDEE.getAllByEventId", eventId);
+	}
+
+	@Override
+	public void removeFromHis(long interval) {
+		sqlSession.delete("ATTENDEE.removeFromHis", interval);
+	}
 }

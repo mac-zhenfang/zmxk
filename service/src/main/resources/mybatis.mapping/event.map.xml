@@ -88,7 +88,8 @@
 		attendeeStatus,
 		f.name as
 		eventDefName,
-		f.shortName as eventShortName,
+		f.shortName
+		as eventShortName,
 		e.stage as
 		stage,
 		e.seriesId
@@ -118,22 +119,27 @@
 		kidName,k.avatarUrl as
 		avatarUrl,
 		a.userId as
-		userId,a.notify_times as attendeeNotifyTimes,
+		userId,a.notify_times as
+		attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
 		seq,a.nextRoundId as nextRoundId,
 		a.status as
-		attendeeStatus, a.eventId as eventId,
+		attendeeStatus, a.eventId
+		as eventId,
 		ts.name as
 		teamName, ts.id as
 		teamId, a.tagId as
-		tagId, a.roundId as roundId,
+		tagId,
+		a.roundId as roundId,
 		r.level as roundLevel,
-		r.levelName as roundLevelName,
+		r.levelName as
+		roundLevelName,
 		r.shortName as roundShortName
 		from kids k
 		JOIN
-		attendees a on
+		attendees a
+		on
 		a.kidId=k.id
 		LEFT
 		JOIN teams ts
@@ -141,7 +147,7 @@
 		k.teamId=ts.id
 		LEFT JOIN
 		tags tg on
-		a.tagId=tg.id 
+		a.tagId=tg.id
 		LEFT JOIN rounds r on a.roundId=r.id) akts on e.id =
 		akts.eventId
 	</select>
@@ -151,7 +157,8 @@
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -209,7 +216,7 @@
 		a.rank as rank, a.score
 		as score, a.seq as
 		seq,a.nextRoundId as nextRoundId,
-		a.status as 
+		a.status as
 		attendeeStatus, a.eventId as eventId,
 		ts.name as
 		teamName, ts.id as
@@ -226,22 +233,27 @@
 		JOIN teams ts
 		on
 		k.teamId=ts.id
-		LEFT JOIN
+		LEFT
+		JOIN
 		tags tg on
-		a.tagId=tg.id 
-		LEFT JOIN rounds r on a.roundId=r.id) akts on e.id =
+		a.tagId=tg.id
+		LEFT JOIN rounds r on a.roundId=r.id) akts
+		on e.id =
 		akts.eventId
 		WHERE
 		e.siteId=#{siteId}
 	</select>
 
 	<select id="listAllStatus" parameterType="int" resultMap="event">
-		SELECT e.eventTime as eventTime,
+		SELECT
+		e.eventTime as eventTime,
 		e.name as eventName, t.name as
-		eventType, e.id as eventId,
+		eventType, e.id
+		as eventId,
 		e.eventTypeId as
 		eventTypeId, e.quota as quota,
-		e.siteId as siteId,
+		e.siteId as
+		siteId,
 		e.createdTime as
 		createdTime,
 		e.lastModifiedTime as
@@ -315,10 +327,12 @@
 		JOIN teams ts
 		on
 		k.teamId=ts.id
-		LEFT JOIN
+		LEFT
+		JOIN
 		tags tg on
-		a.tagId=tg.id 
-		LEFT JOIN rounds r on a.roundId=r.id) akts on e.id =
+		a.tagId=tg.id
+		LEFT JOIN rounds r on a.roundId=r.id) akts
+		on e.id =
 		akts.eventId
 		WHERE
 		e.status =
@@ -331,7 +345,8 @@
 	</select>
 
 	<select id="listFullAll" resultMap="event">
-		SELECT e.eventTime as eventTime,
+		SELECT e.eventTime as
+		eventTime,
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
@@ -359,7 +374,8 @@
 		attendeeStatus,
 		f.name as
 		eventDefName,
-		f.shortName as eventShortName,
+		f.shortName
+		as eventShortName,
 		e.stage as
 		stage,
 		e.seriesId
@@ -389,22 +405,27 @@
 		kidName,k.avatarUrl as
 		avatarUrl,
 		a.userId as
-		userId,a.notify_times as attendeeNotifyTimes,
+		userId,a.notify_times as
+		attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
 		seq,a.nextRoundId as nextRoundId,
 		a.status as
-		attendeeStatus, a.eventId as eventId,
+		attendeeStatus, a.eventId
+		as eventId,
 		ts.name as
 		teamName, ts.id as
 		teamId, a.tagId as
-		tagId, a.roundId as roundId,
+		tagId,
+		a.roundId as roundId,
 		r.level as roundLevel,
-		r.levelName as roundLevelName,
+		r.levelName as
+		roundLevelName,
 		r.shortName as roundShortName
 		from kids k
 		JOIN
-		attendees a on
+		attendees a
+		on
 		a.kidId=k.id
 		LEFT
 		JOIN teams ts
@@ -412,7 +433,7 @@
 		k.teamId=ts.id
 		LEFT JOIN
 		tags tg on
-		a.tagId=tg.id 
+		a.tagId=tg.id
 		LEFT JOIN rounds r on a.roundId=r.id) akts
 		on e.id =
 		akts.eventId
@@ -423,7 +444,8 @@
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -498,10 +520,11 @@
 		JOIN teams ts
 		on
 		k.teamId=ts.id
-		LEFT JOIN
+		LEFT
+		JOIN
 		tags tg on
-		a.tagId=tg.id 
-		LEFT JOIN rounds r on a.roundId=r.id) akts 
+		a.tagId=tg.id
+		LEFT JOIN rounds r on a.roundId=r.id) akts
 		on e.id =
 		akts.eventId
 		<trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -517,14 +540,27 @@
 		</trim>
 	</select>
 
-	<select id="create" parameterType="com.smartool.common.dto.Event">
-		insert events (id, name,
+	<select id="createHist" parameterType="com.smartool.common.dto.Event">
+		insert events_hist (id,
+		name,
 		eventTypeId,siteId, quota, stage, eventTime, seriesId, isTeam,
 		createdTime,lastModifiedTime)
 		values
 		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},#{seriesId},
-		#{isTeam}, now(),now())
+		#{isTeam}, #{createdTime},now()) ON DUPLICATE KEY UPDATE
+		lastModifiedTime=VALUES(lastModifiedTime)
 	</select>
+
+	
+
+	<delete id="delete" parameterType="String">
+		delete from events where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+
 
 
 	<select id="getFullById" parameterType="String" resultMap="event">
@@ -532,7 +568,8 @@
 		e.name as eventName, t.name as
 		eventType, e.id as eventId,
 		e.eventTypeId as
-		eventTypeId, e.quota as quota,
+		eventTypeId, e.quota as
+		quota,
 		e.siteId as siteId,
 		e.createdTime as
 		createdTime,
@@ -607,10 +644,11 @@
 		JOIN teams ts
 		on
 		k.teamId=ts.id
-		LEFT JOIN
+		LEFT
+		JOIN
 		tags tg on
-		a.tagId=tg.id 
-		LEFT JOIN rounds r on a.roundId=r.id) akts 
+		a.tagId=tg.id
+		LEFT JOIN rounds r on a.roundId=r.id) akts
 		on
 		e.id =
 		akts.eventId
@@ -642,4 +680,15 @@
 		where id =
 		#{id};
 	</select>
+
+	<select id="listAllEventInterval" parameterType="long" resultType="com.smartool.common.dto.Event">
+		select * from
+		events e where UNIX_TIMESTAMP(now()) -
+		UNIX_TIMESTAMP(e.lastModifiedTime) > #{interval}
+	</select>
+	<delete id="removeFromHis" parameterType="long">
+		delete from
+		events_hist a where UNIX_TIMESTAMP(now()) -
+		UNIX_TIMESTAMP(a.lastModifiedTime) > #{interval}
+	</delete>
 </mapper>

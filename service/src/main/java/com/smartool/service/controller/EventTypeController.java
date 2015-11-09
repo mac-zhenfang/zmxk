@@ -68,13 +68,13 @@ public class EventTypeController {
 	 * GET
 	 * 
 	 * @RequestMapping(value = "/eventtypes/{eventTypeId}")
-	 */
+	
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/eventtypes/{eventTypeId}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public EventType getEventTypes(@PathVariable String eventTypeId) {
 		return eventTypeDao.get(eventTypeId);
-	}
+	} */
 	
 
 

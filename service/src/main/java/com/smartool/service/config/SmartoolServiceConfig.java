@@ -75,6 +75,7 @@ import com.smartool.service.service.AvatarServiceImpl;
 import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
+import com.smartool.service.service.EventBackup;
 import com.smartool.service.service.EventStartNotification;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
@@ -99,6 +100,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean
 	public CreditGenerator getCreditGenerator() {
 		return new CreditGenerator(env.getProperty("credit.generate.interval.hour", Long.class));
+	}
+	
+	@Bean
+	public EventBackup getEventBackup(){
+		return new EventBackup();
 	}
 
 	@Bean
@@ -326,6 +332,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerFactoryBean.setApplicationContextSchedulerContextKey("applicationContext");
 		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
+		schedulerContextAsMap.put("EventBackup", getEventBackup());
 		// schedulerContextAsMap.put("EventStartNotification",
 		// eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
@@ -428,5 +435,19 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 	public String getDefaultRoundName(){
 		return env.getProperty("default_round_short_name", "01");
+	}
+	
+	public long getDefaultEventExpireInteval() {
+		// 3 month
+		String eventExpireIntevalStr =  env.getProperty("default_event_expire_time_interval", "2592000");
+		long eventExpireInteval = Long.parseLong(eventExpireIntevalStr);
+		return eventExpireInteval;
+	}
+	
+	public long getDefaultEventExpireIntevalHist() {
+		//6 month
+		String eventExpireIntevalStr =  env.getProperty("default_event_his_expire_time_interval", "15552000");
+		long eventExpireInteval = Long.parseLong(eventExpireIntevalStr);
+		return eventExpireInteval;
 	}
 }
