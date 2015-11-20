@@ -3,6 +3,7 @@ package com.smartool.service.service;
 import java.util.List;
 
 import com.smartool.common.dto.BaseGrade;
+import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
@@ -40,4 +41,6 @@ public interface UserService {
 	SecurityCode getSecurityCodeToSetPassword(SecurityCode securityCode);
 
 	User setPassword(SecurityCode securityCode, LoginUser user);
+	
+	List<Cover> getUserCovers(String userId);
 }

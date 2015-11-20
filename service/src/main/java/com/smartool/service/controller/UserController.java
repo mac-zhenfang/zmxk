@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartool.common.dto.BaseGrade;
+import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
 import com.smartool.service.UserRole;
@@ -156,7 +158,38 @@ public class UserController extends BaseController {
 		List<Grade> grades = userService.getGrades(user.getId());
 		return grades;
 	}
-
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/{userId}/grades", method = RequestMethod.GET)
+	public List<Grade> getUserGrades() {
+		User user = UserSessionManager.getSessionUser();
+		// FIXME, get user site
+		List<Grade> grades = userService.getGrades(user.getId());
+		return grades;
+	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/{userId}/covers", method = RequestMethod.GET)
+	public List<Cover> getUserCovers(@PathVariable String userId){
+		return userService.getUserCovers(userId);
+	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/{userId}/likes", method = RequestMethod.PUT)
+	public void like() {
+		//TODO
+		//put into redis
+		//get from redis
+		//every 2 min, append all user likes to DB
+	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/{userId}/teams", method = RequestMethod.GET)
+	public List<Team> getTeams(){
+		//TODO
+		return null;
+	}
+	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me", method = RequestMethod.GET)
 	public User getMe() {

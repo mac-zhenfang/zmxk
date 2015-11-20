@@ -95,20 +95,20 @@
 	</select>
 	<select id="getBaseGrades" parameterType="String"
 		resultType="com.smartool.common.dto.BaseGrade">
-		select et.id as eventTypeId, cr.`bronzeMedal` as
+		select e.id as eventId, et.id as eventTypeId, cr.`bronzeMedal` as
 		bronzeMedal, cr.`attendeeId` as attendeeId,
 		cr.`rank` as rank, cr.score
-		as score, cr.`silverMedal` as silverMedal,
+		as score, cr.`silverMedal` as silverMedal,cr.credit as credit,
 		cr.`goldenMedal` as
 		goldenMedal, et.name as eventTypeName,k.id as kidId, k.name as
-		kidName, e.stage as
-		stage, k.userId as userId from events e,
-		creditRecords cr,attendees a,
-		eventTypes et, kids
-		k where k.id=a.kidId
+		kidName, u.name as userName, e.stage as
+		stage, k.userId as userId, k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as roundLevel, e.siteId as siteId from events e,
+		creditRecords cr,
+		eventTypes et, users u, kids
+		k , sites s, attendees a left join rounds r on a.roundId = r.id where k.id=a.kidId
 		and et.id=e.eventTypeId and
-		cr.attendeeId=a.id and
-		e.id = cr.eventId and
+		cr.attendeeId=a.id and s.id=et.siteId and
+		e.id = cr.eventId and k.userId=u.id and 
 		et.id = #{id} and cr.status=0
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
@@ -130,6 +130,13 @@
 		siteId=#{siteId},
 		status=#{status}, credit=#{credit}
 		where id = #{id};
+	</select>
+	<select id="getUserStat" parameterType="String"
+		resultType="com.smartool.common.dto.UserStat">
+		select count(1) as totalAttend,
+		min(a.score) as fatestScore, u.credit as credit from attendees a, events e, users u where
+		a.userId = u.id and a.eventId=e.id and u.id =
+		#{id} and a.score >0
 	</select>
 	<update id="updatePassword" parameterType="com.smartool.common.dto.LoginUser">
 		update users

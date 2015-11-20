@@ -3,19 +3,28 @@ package com.smartool.service.service;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.smartool.common.dto.BaseGrade;
+import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.EventType;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.common.dto.Trophy;
 import com.smartool.common.dto.User;
+import com.smartool.common.dto.UserGrade;
+import com.smartool.common.dto.UserStat;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.Constants;
 import com.smartool.service.ErrorMessages;
@@ -44,6 +53,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private SmartoolServiceConfig config;
+	
+	private final static Joiner joiner = Joiner.on(":");
+	
+	private final static Splitter splitter = Splitter.on(":");
 
 	@Override
 	public List<User> listAllUser() {
@@ -369,4 +382,68 @@ public class UserServiceImpl implements UserService {
 		return securityCode;
 	}
 
+	@Override
+	public List<Cover> getUserCovers(String userId) {
+		List<BaseGrade> baseGrades = new ArrayList<>();
+		List<EventType> eventTypes = eventTypeDao.getDistinctEventTypes(userId);
+		for (EventType eventType : eventTypes) {
+			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId()));
+		}
+		Map<String, List<BaseGrade>> userGradeGroup = new HashMap<String, List<BaseGrade>>();
+		for(BaseGrade grade : baseGrades){
+			/*UserGrade userGrade = new UserGrade();
+			userGrade.setId(grade.getUserId());
+			userGrade.setName(grade.getUserName());
+			//FIXME
+			userGrade.setCenterLogoIcon("");
+			userGrade.setKid(buildKid(grade));
+			userGrade.setTotalAttendTimes(totalAttendTimes);*/
+			StringBuilder sb = new StringBuilder();
+			joiner.appendTo(sb, grade.getUserId(), grade.getEventTypeId(), grade.getSiteId(), grade.getKidId());
+			if(!userGradeGroup.containsKey(sb.toString())) {
+				userGradeGroup.put(sb.toString(), new ArrayList<BaseGrade>());
+			}
+			userGradeGroup.get(sb.toString()).add(grade);
+		}
+		List<Cover> returnUserGrades = new ArrayList<>();
+		for(Entry<String, List<BaseGrade>> entry : userGradeGroup.entrySet()) {
+			String id = entry.getKey();
+			List<String> ids =  splitter.splitToList(id);
+			String uid = ids.get(0);
+			String eventTypeId = ids.get(1);
+			String siteId = ids.get(2);
+			String kidId = ids.get(3);
+			Kid kid = kidDao.get(kidId);
+			UserGrade userGrade = new UserGrade();
+			
+			UserStat userStat = userDao.getUserStat(uid);
+			List<BaseGrade> gradesInEntry = entry.getValue();
+			userGrade.setId(uid);
+			userGrade.setKid(kid);
+			userGrade.setEventTypeId(eventTypeId);
+			userGrade.setSiteId(siteId);
+			userGrade.setName(gradesInEntry.get(0).getUserName());
+			userGrade.setCenterLogoIcon("");
+			userGrade.setFatestTime(userStat.getFatestScore());
+			userGrade.setTotalAttendTimes(userStat.getTotalAttend());
+			userGrade.setTotalUserCredit(userStat.getCredit());
+			//FIXME Credit * kids number != total user credit???
+			List<Trophy> trophyList = new ArrayList<>();
+			int credit =0;
+			for(BaseGrade grade : gradesInEntry) {
+				Trophy trophy = new Trophy();
+				trophy.setStage(grade.getStage());
+				trophy.setRank(grade.getRank());
+				trophy.setRoundId(grade.getRoundId());
+				trophy.setRoundLevel(grade.getRoundLevel());
+				trophy.setRoundLevelName(grade.getRoundLevelName());
+				credit+=grade.getCredit();
+				trophyList.add(trophy);
+			}
+			userGrade.setCredit(credit);
+			userGrade.setTrophyList(trophyList);
+			returnUserGrades.add(userGrade);
+		}
+		return returnUserGrades;
+	}
 }

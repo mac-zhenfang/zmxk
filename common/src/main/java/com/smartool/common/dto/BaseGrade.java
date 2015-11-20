@@ -10,6 +10,8 @@ public class BaseGrade {
 
 	private int stage;
 	
+	private int credit;
+	
 	private String userId;
 
 	private String eventTypeName;
@@ -25,6 +27,62 @@ public class BaseGrade {
 	private String eventTypeId;
 
 	private String kidName;
+	private int schoolType;
+	private String schoolName;
+	private String roundLevelName;
+	private String roundId;
+	private int roundLevel;
+	private String siteId;
+	public String getRoundLevelName() {
+		return roundLevelName;
+	}
+
+	public void setRoundLevelName(String roundLevelName) {
+		this.roundLevelName = roundLevelName;
+	}
+
+	public String getRoundId() {
+		return roundId;
+	}
+
+	public void setRoundId(String roundId) {
+		this.roundId = roundId;
+	}
+
+	public int getRoundLevel() {
+		return roundLevel;
+	}
+
+	public void setRoundLevel(int roundLevel) {
+		this.roundLevel = roundLevel;
+	}
+
+	public int getSchoolType() {
+		return schoolType;
+	}
+
+	public void setSchoolType(int schoolType) {
+		this.schoolType = schoolType;
+	}
+
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+
+	private String avatarUrl; 
 
 	private String userName;
 
@@ -150,6 +208,22 @@ public class BaseGrade {
 
 	public void setKidId(String kidId) {
 		this.kidId = kidId;
+	}
+
+	public String getSiteId() {
+		return siteId;
+	}
+
+	public void setSiteId(String siteId) {
+		this.siteId = siteId;
+	}
+
+	public int getCredit() {
+		return credit;
+	}
+
+	public void setCredit(int credit) {
+		this.credit = credit;
 	}
 
 }

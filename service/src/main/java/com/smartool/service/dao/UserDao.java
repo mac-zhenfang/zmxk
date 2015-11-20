@@ -8,6 +8,7 @@ import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.User;
+import com.smartool.common.dto.UserStat;
 
 public interface UserDao {
 	User createUser(LoginUser user);
@@ -39,4 +40,6 @@ public interface UserDao {
 	List<User> search(String mobileNum, String wcId, String kidName);
 
 	LoginUser updatePassword(LoginUser existedUser);
+	
+	UserStat getUserStat(String userId);
 }

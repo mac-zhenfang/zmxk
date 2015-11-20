@@ -14,6 +14,8 @@ import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.User;
+import com.smartool.common.dto.UserGrade;
+import com.smartool.common.dto.UserStat;
 import com.smartool.service.CommonUtils;
 
 public class UserDaoImpl implements UserDao {
@@ -161,5 +163,10 @@ public class UserDaoImpl implements UserDao {
 	public LoginUser updatePassword(LoginUser existedUser) {
 		sqlSession.update("USER.updatePassword", existedUser);
 		return getLoginUserByMobileNumber(existedUser.getMobileNum());
+	}
+
+	@Override
+	public UserStat getUserStat(String userId) {
+		return sqlSession.selectOne("USER.getUserStat", userId);
 	}
 }
