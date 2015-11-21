@@ -18,12 +18,19 @@ import com.smartool.common.dto.UserGrade;
 import com.smartool.common.dto.UserStat;
 import com.smartool.service.CommonUtils;
 
+import redis.clients.jedis.Jedis;
+
 public class UserDaoImpl implements UserDao {
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Autowired
 	private KidDao kidDao;
+	
+	@Autowired
+	private Jedis redis;
+	
+	private static final String TEMP_LIKE_USERS = "temp_like_users";
 
 	private User getUserInternal(String userId) {
 		User user = sqlSession.selectOne("USER.getById", userId);
@@ -173,5 +180,38 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public UserStat getUserStat(String userId) {
 		return sqlSession.selectOne("USER.getUserStat", userId);
+	}
+
+	@Override
+	public void incrLike(String fromUserId, String toUserId) {
+		redis.sadd(toUserId.getBytes(), fromUserId.getBytes());
+		redis.sadd(TEMP_LIKE_USERS, toUserId);
+	}
+
+	@Override
+	public int getLikeNum(String userId) {
+		User user = getUserInternal(userId);
+		long tempLikeSize = redis.scard(userId);
+		return (int)tempLikeSize + user.getLikes();
+	}
+
+	@Override
+	public boolean existUserInLike(String toUserId, String fromUserId) {
+		return redis.sismember(toUserId, fromUserId);
+	}
+
+	@Override
+	public void updateLikes(String toUserId, int num) {
+		// TODO Auto-generated method stub updateLikes
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", toUserId);
+		params.put("likes", num);
+		sqlSession.update("USER.updateLikes", params);
+	}
+
+	@Override
+	public void deleteTempLike(String userId) {
+		redis.srem(TEMP_LIKE_USERS, userId);
+		redis.del(userId);
 	}
 }

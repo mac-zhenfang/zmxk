@@ -42,4 +42,14 @@ public interface UserDao {
 	LoginUser updatePassword(LoginUser existedUser);
 	
 	UserStat getUserStat(String userId);
+	
+	void incrLike(String fromUserId, String toUserId);
+	
+	int getLikeNum(String userId);
+	
+	boolean existUserInLike(String toUserId, String fromUserId);
+	
+	void updateLikes(String toUserId, int num);
+	
+	void deleteTempLike(String userId);
 }

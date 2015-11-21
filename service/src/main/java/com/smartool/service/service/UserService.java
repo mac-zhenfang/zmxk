@@ -43,4 +43,6 @@ public interface UserService {
 	User setPassword(SecurityCode securityCode, LoginUser user);
 	
 	List<Cover> getUserCovers(String userId, int start, int limit);
+	
+	void like(String toUserId, String fromUserId);
 }

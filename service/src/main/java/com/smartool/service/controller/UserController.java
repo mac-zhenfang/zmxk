@@ -182,7 +182,8 @@ public class UserController extends BaseController {
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}/likes", method = RequestMethod.PUT)
-	public void like() {
+	public void like(@PathVariable String userId, @RequestParam(value="fromUserId") String fromUserId) {
+		userService.like(userId, fromUserId);
 		//TODO
 		//put into redis
 		//get from redis

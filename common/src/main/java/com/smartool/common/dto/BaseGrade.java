@@ -12,6 +12,8 @@ public class BaseGrade {
 	
 	private int credit;
 	
+	private int likes;
+	
 	private String userId;
 
 	private String eventTypeName;
@@ -224,6 +226,14 @@ public class BaseGrade {
 
 	public void setCredit(int credit) {
 		this.credit = credit;
+	}
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 
 }

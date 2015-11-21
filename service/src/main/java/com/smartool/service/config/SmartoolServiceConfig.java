@@ -147,8 +147,13 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 
 	@Bean
 	public Jedis redis() {
-		Jedis jedis = new Jedis("10.0.50.157");
+		Jedis jedis = new Jedis(redisAddr());
 		return jedis;
+	}
+	
+	@Bean
+	public String redisAddr(){
+		return env.getProperty("redis.addr", "127.0.0.1");
 	}
 
 	@Bean

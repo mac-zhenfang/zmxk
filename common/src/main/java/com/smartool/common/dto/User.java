@@ -18,6 +18,7 @@ public class User extends BaseDateTrackingBean {
 	private int silverMedal;
 	private int bronzeMedal;
 	private int idp;
+	private int likes;
 
 	public int getGoldenMedal() {
 		return goldenMedal;
@@ -133,5 +134,13 @@ public class User extends BaseDateTrackingBean {
 
 	public void setIdp(int idp) {
 		this.idp = idp;
+	}
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 }

@@ -39,6 +39,7 @@ import com.smartool.service.dao.UserDao;
 
 import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
+import redis.clients.jedis.Jedis;
 
 public class UserServiceImpl implements UserService {
 	@Autowired
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
 	private SecurityCodeDao securityCodeDao;
 	@Autowired
 	private KidDao kidDao;
+	
 
 	@Autowired
 	private EventTypeDao eventTypeDao;
@@ -445,5 +447,14 @@ public class UserServiceImpl implements UserService {
 			returnUserGrades.add(userGrade);
 		}
 		return returnUserGrades;
+	}
+
+	@Override
+	public void like(String toUserId, String fromUserId) {
+		if(userDao.existUserInLike(toUserId, fromUserId)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.USER_ALREADY_LIKE_YOU);
+		}
+		userDao.incrLike(fromUserId, toUserId);
 	}
 }
