@@ -154,8 +154,13 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<BaseGrade> getBaseGradesByEventType(String eventTypeId) {
-		List<BaseGrade> grades = sqlSession.selectList("USER.getBaseGrades", eventTypeId);
+	public List<BaseGrade> getBaseGradesByEventType(String eventTypeId, int  start, int limit) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", eventTypeId);
+		params.put("start", start);
+		params.put("limit", limit);
+		
+		List<BaseGrade> grades = sqlSession.selectList("USER.getBaseGrades", params);
 		return grades;
 	}
 

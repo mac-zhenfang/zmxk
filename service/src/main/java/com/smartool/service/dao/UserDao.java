@@ -31,7 +31,7 @@ public interface UserDao {
 
 	List<Grade> getGrades(String userId);
 	//FIXME: urgly interface
-	List<BaseGrade> getBaseGradesByEventType(String eventTypeId);
+	List<BaseGrade> getBaseGradesByEventType(String eventTypeId, int  start, int limit);
 
 	void withdrawCredit(String userId, CreditRecord creditRecord);
 

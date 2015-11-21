@@ -93,9 +93,9 @@
 		cr.userId=u.id and cr.userId = #{id} and cr.creditRuleType='EVENT' and
 		cr.status=0
 	</select>
-	<select id="getBaseGrades" parameterType="String"
+	<select id="getBaseGrades" parameterType="Map"
 		resultType="com.smartool.common.dto.BaseGrade">
-		select e.id as eventId, et.id as eventTypeId, cr.`bronzeMedal` as
+		select e.id as eventId, e.eventTime as eventTime, et.id as eventTypeId, cr.`bronzeMedal` as
 		bronzeMedal, cr.`attendeeId` as attendeeId,
 		cr.`rank` as rank, cr.score
 		as score, cr.`silverMedal` as silverMedal,cr.credit as credit,
@@ -109,7 +109,7 @@
 		and et.id=e.eventTypeId and
 		cr.attendeeId=a.id and s.id=et.siteId and
 		e.id = cr.eventId and k.userId=u.id and 
-		et.id = #{id} and cr.status=0
+		et.id = #{id} and cr.status=0 order by eventTime limit #{start}, #{limit}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,

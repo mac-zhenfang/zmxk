@@ -322,7 +322,7 @@ public class UserServiceImpl implements UserService {
 		List<BaseGrade> baseGrades = new ArrayList<>();
 		List<EventType> eventTypes = eventTypeDao.getDistinctEventTypes(user.getId());
 		for (EventType eventType : eventTypes) {
-			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId()));
+			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId(), 0, Integer.MAX_VALUE));
 		}
 		return baseGrades;
 	}
@@ -383,11 +383,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Cover> getUserCovers(String userId) {
+	public List<Cover> getUserCovers(String userId, int start, int limit) {
 		List<BaseGrade> baseGrades = new ArrayList<>();
 		List<EventType> eventTypes = eventTypeDao.getDistinctEventTypes(userId);
 		for (EventType eventType : eventTypes) {
-			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId()));
+			baseGrades.addAll(userDao.getBaseGradesByEventType(eventType.getId(), start, limit));
 		}
 		Map<String, List<BaseGrade>> userGradeGroup = new HashMap<String, List<BaseGrade>>();
 		for(BaseGrade grade : baseGrades){

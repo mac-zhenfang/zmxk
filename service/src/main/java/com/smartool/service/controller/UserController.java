@@ -170,8 +170,14 @@ public class UserController extends BaseController {
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}/covers", method = RequestMethod.GET)
-	public List<Cover> getUserCovers(@PathVariable String userId){
-		return userService.getUserCovers(userId);
+	public List<Cover> getUserCovers(@PathVariable String userId, @RequestParam(value="start", required = false) Integer start, @RequestParam(value="limit", required = false)  Integer limit){
+		if(start == null) {
+			start = 0;
+		}
+		if (limit == null) {
+			limit = Integer.MAX_VALUE;
+		}
+		return userService.getUserCovers(userId, start, limit);
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
