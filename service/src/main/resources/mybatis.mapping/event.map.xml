@@ -551,7 +551,16 @@
 		lastModifiedTime=VALUES(lastModifiedTime)
 	</select>
 
-	
+	<select id="create" parameterType="com.smartool.common.dto.Event">
+		insert events (id,
+		name,
+		eventTypeId,siteId, quota, stage, eventTime, seriesId, isTeam,
+		createdTime,lastModifiedTime)
+		values
+		(#{id},#{name},#{eventTypeId},#{siteId},#{quota},#{stage},#{eventTime},#{seriesId},
+		#{isTeam}, now(),now()) ON DUPLICATE KEY UPDATE
+		lastModifiedTime=VALUES(lastModifiedTime)
+	</select>
 
 	<delete id="delete" parameterType="String">
 		delete from events where id in

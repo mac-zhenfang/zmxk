@@ -759,7 +759,7 @@ zmxk
 												.forEach(
 														$scope.listEvents,
 														function(event, i) {
-															if (i == idx) {
+															if (event.id == freezeEvent.id) {
 																events
 																		.push(freezeEvent);
 															} else {
@@ -776,7 +776,7 @@ zmxk
 											function(data) {
 												handleReturn(data);
 											},
-											function(data) {
+											function(error) {
 												$scope.launch("error", "",
 														error.data.message,
 														function() {

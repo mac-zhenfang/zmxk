@@ -468,6 +468,11 @@ public class EventController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Event updateEvent(@PathVariable String eventId, @RequestBody Event event) {
 		isEventValid(event);
+		
+		Event eventInDb = eventDao.getEvent(event.getId());
+		if(alreadyComplete(eventInDb)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EVENT_ALREADY_COMPLETE);
+		}
 		Event retEvent = eventDao.updateEvent(event);
 		List<Attendee> attendees = attendeeDao.getAttendeeFromEvent(retEvent.getId());
 		for (Attendee attendee : attendees) {
@@ -477,6 +482,10 @@ public class EventController extends BaseController {
 		}
 		retEvent.setAttendees(attendees);
 		return retEvent;
+	}
+	
+	private boolean alreadyComplete(Event event){
+		return event.getStatus() >= 2;
 	}
 
 	/**
