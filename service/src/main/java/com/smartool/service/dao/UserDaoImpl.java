@@ -3,6 +3,7 @@ package com.smartool.service.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.User;
-import com.smartool.common.dto.UserGrade;
 import com.smartool.common.dto.UserStat;
 import com.smartool.service.CommonUtils;
 
@@ -213,5 +213,16 @@ public class UserDaoImpl implements UserDao {
 	public void deleteTempLike(String userId) {
 		redis.srem(TEMP_LIKE_USERS, userId);
 		redis.del(userId);
+	}
+
+	@Override
+	public Set<String> getTempLikeUsers() {
+		return 	redis.smembers(TEMP_LIKE_USERS);
+	}
+
+	@Override
+	public int getTempLikeNum(String userId) {
+		long tempLikeSize = redis.scard(userId);
+		return (int)tempLikeSize;
 	}
 }

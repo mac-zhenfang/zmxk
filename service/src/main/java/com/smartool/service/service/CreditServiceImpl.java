@@ -21,8 +21,6 @@ import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.CreditRuleType;
 import com.smartool.common.dto.EventCreditRule;
 import com.smartool.common.dto.EventStages;
-import com.smartool.common.dto.Tag;
-import com.smartool.common.dto.Tag.TagType;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
@@ -31,7 +29,6 @@ import com.smartool.service.dao.AttendeeDao;
 import com.smartool.service.dao.CreditRecordDao;
 import com.smartool.service.dao.CreditRuleDao;
 import com.smartool.service.dao.EventDao;
-import com.smartool.service.dao.TagDao;
 import com.smartool.service.dao.UserDao;
 
 public class CreditServiceImpl implements CreditService {
@@ -49,6 +46,7 @@ public class CreditServiceImpl implements CreditService {
 	private AttendeeDao attendeeDao;
 
 	public void iocInit() throws SchedulerException {
+		//FIXME put cron into properties
 		if (scheduler.getTrigger(TriggerKey.triggerKey("CreditGeneratorTrigger")) == null) {
 			JobDetail jobDetail = JobBuilder.newJob(CreditGeneratingJob.class)
 					.withIdentity(JobKey.jobKey("CreditGeneratorJob")).build();
@@ -69,6 +67,14 @@ public class CreditServiceImpl implements CreditService {
 			JobDetail jobDetail = JobBuilder.newJob(EventBackupJob.class)
 					.withIdentity(JobKey.jobKey("EventBackupJobTimer")).build();
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("EventBackupJobTimer"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+			scheduler.scheduleJob(jobDetail, trigger);
+		}
+		
+		if (scheduler.getTrigger(TriggerKey.triggerKey("LikesAuditJobTimer")) == null) {
+			JobDetail jobDetail = JobBuilder.newJob(LikesAuditJob.class)
+					.withIdentity(JobKey.jobKey("LikesAuditJobTimer")).build();
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("LikesAuditJobTimer"))
 					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
 			scheduler.scheduleJob(jobDetail, trigger);
 		}

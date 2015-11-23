@@ -1,6 +1,7 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.CreditRecord;
@@ -52,4 +53,8 @@ public interface UserDao {
 	void updateLikes(String toUserId, int num);
 	
 	void deleteTempLike(String userId);
+	
+	Set<String> getTempLikeUsers();
+	
+	int getTempLikeNum(String userId);
 }

@@ -167,6 +167,6 @@
 	</update>
 	<update id="updateLikes"  parameterType="Map">
 		update users
-		set likes = #{likes} where id = #{id}
+		set likes = likes+#{likes} where id = #{id}
 	</update>
 </mapper>

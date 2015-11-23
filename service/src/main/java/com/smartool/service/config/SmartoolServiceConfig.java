@@ -77,6 +77,7 @@ import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
 import com.smartool.service.service.EventBackup;
 import com.smartool.service.service.EventStartNotification;
+import com.smartool.service.service.LikesAudit;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
 import com.smartool.service.sms.SmsClient;
@@ -338,6 +339,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		Map<String, Object> schedulerContextAsMap = new HashMap<String, Object>();
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
 		schedulerContextAsMap.put("EventBackup", getEventBackup());
+		schedulerContextAsMap.put("LikesAudit",getLikesAudit());
 		// schedulerContextAsMap.put("EventStartNotification",
 		// eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
@@ -345,6 +347,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return schedulerFactoryBean;
 	}
 
+	@Bean
+	public LikesAudit getLikesAudit(){
+		return new LikesAudit();
+	}
 	/*
 	 * @Bean public ByteArrayHttpMessageConverter
 	 * byteArrayHttpMessageConverter() { ByteArrayHttpMessageConverter bam = new
