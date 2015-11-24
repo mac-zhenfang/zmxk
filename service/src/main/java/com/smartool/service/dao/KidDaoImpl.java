@@ -50,23 +50,6 @@ public class KidDaoImpl implements KidDao {
 		sqlSession.delete("KID.listByUserId", userId);
 	}
 
-	@Override
-	public Kid joinTeam(String kidId, String teamId) {
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("kidId", kidId);
-		param.put("teamId", teamId);
-		sqlSession.update("KID.joinTeam", param);
-		return get(kidId);
-	}
-
-	@Override
-	public Kid leaveTeam(String kidId, String teamId) {
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("kidId", kidId);
-		param.put("teamId", teamId);
-		sqlSession.update("KID.leaveTeam", param);
-		return get(kidId);
-	}
 
 	@Override
 	public Kid updateAvatarUrl(String kidId, String avatarUrl) {

@@ -144,7 +144,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT JOIN
 		tags tg on
 		a.tagId=tg.id
@@ -232,7 +232,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT
 		JOIN
 		tags tg on
@@ -326,7 +326,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT
 		JOIN
 		tags tg on
@@ -430,7 +430,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT JOIN
 		tags tg on
 		a.tagId=tg.id
@@ -519,7 +519,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT
 		JOIN
 		tags tg on
@@ -652,7 +652,7 @@
 		LEFT
 		JOIN teams ts
 		on
-		k.teamId=ts.id
+		a.teamId=ts.id
 		LEFT
 		JOIN
 		tags tg on

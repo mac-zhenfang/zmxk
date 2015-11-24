@@ -45,7 +45,7 @@ public class Attendee extends BaseDateTrackingBean {
 	private String roundLevelName;
 	
 	private int roundLevel;
-	
+		
 	public Attendee() {
 	}
 

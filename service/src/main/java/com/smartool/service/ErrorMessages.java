@@ -22,6 +22,7 @@ public class ErrorMessages {
 	public static final String PLEASE_LOGIN_FIRST_ERROR_MESSAGE="请先登录";
 	public static final String WRONG_EVENT_FORMAT = "错误的Event格式";
 	public static final String EVENT_ALREADY_COMPLETE = "比赛已冻结";
+	public static final String DUPLICATE_JOIN_TEAM = "您已经加入该团队";
 	public static final String WRONG_EVENT_STATUS= "错误的status格式";
 	public static final String FORBIDEN_ERROR_MESSAGE="您的账号没有权限执行该操作";
 	public static final String NOT_FOUND_ERROR_MESSAGE="您所访问的资源不存在";

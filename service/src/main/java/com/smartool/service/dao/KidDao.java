@@ -19,10 +19,6 @@ public interface KidDao {
 
 	void removeByUserId(String userId);
 
-	Kid joinTeam(String kidId, String teamId);
-
-	Kid leaveTeam(String kidId, String teamId);
-	
 	Kid updateAvatarUrl(String kidId, String avatarUrl);
 	
 	List<String> getDistinctSchoolName(int schoolType);

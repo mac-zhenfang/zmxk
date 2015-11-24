@@ -1,5 +1,6 @@
 package com.smartool.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,22 +39,33 @@ public class TeamController extends BaseController {
 		return teamDao.list();
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public List<Kid> getTeamMembers(@PathVariable String teamId) {
-		return teamDao.getMembers(teamId);
+		List<String> teamIds = teamDao.getMembers(teamId);
+		List<Kid> kids = new ArrayList<>();
+		for(String id : teamIds) {
+			kids.add(kidDao.get(id));
+		}
+		return kids;
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Kid joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
-		kid.setTeamId(teamId);
-		return kidDao.update(kid);
+	public void joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
+		teamDao.addMember(kid, teamId);
+	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/teams/{teamId}/members/{kidId}", method = RequestMethod.DELETE, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public void leaveTeam(@PathVariable String teamId, @PathVariable String kidId) {
+		teamDao.delMember(kidId, teamId);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Team createTeam(@RequestBody Team team) {
@@ -69,8 +81,12 @@ public class TeamController extends BaseController {
 		Team team = teamDao.get(teamId);
 		if (UserRole.INTERNAL_USER.getValue().compareTo(sessionUser.getRoleId()) > 0) {
 			// Is normal user
-			List<Kid> members = teamDao.getMembers(team.getId());
-			for (Kid kid : members) {
+			List<String> teamIds = teamDao.getMembers(teamId);
+			List<Kid> kids = new ArrayList<>();
+			for(String id : teamIds) {
+				kids.add(kidDao.get(id));
+			}
+			for (Kid kid : kids) {
 				if (kid.getUserId().equals(sessionUser.getId())) {
 					return team;
 				}
@@ -81,7 +97,7 @@ public class TeamController extends BaseController {
 		}
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.PUT, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Team updateTeam(@RequestBody Team team, @PathVariable String teamId) {
@@ -93,7 +109,7 @@ public class TeamController extends BaseController {
 		return teamDao.update(team);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable String teamId) {
 		teamDao.delete(teamId);

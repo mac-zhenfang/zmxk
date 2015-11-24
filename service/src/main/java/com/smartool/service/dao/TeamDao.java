@@ -17,7 +17,11 @@ public interface TeamDao {
 
 	public void delete(String id);
 
-	public List<Team> memberOf(String userId);
+	public List<Team> memberOf(String kidId);
 
-	public List<Kid> getMembers(String teamId);
+	public List<String> getMembers(String teamId);
+	
+	public void addMember(Kid kid, String teamId);
+	
+	public void delMember(String kidId, String teamId);
 }

@@ -6,9 +6,9 @@
 	<select id="list" resultType="com.smartool.common.dto.Team">
 		select * from teams
 	</select>
-	<select id="members" resultType="com.smartool.common.dto.Kid"
+	<select id="members" resultType="String"
 		parameterType="String">
-		select * from kids where teamId = #{teamId}
+		select members from teams where id = #{teamId}
 	</select>
 	<select id="memberOf" resultType="com.smartool.common.dto.Team"
 		parameterType="String">
@@ -25,6 +25,10 @@
 		update teams set name=#{name},
 		tp=#{tp}, size=#{size} where id=#{id}
 	</update>
+	<update id="updateMember" parameterType="Map">
+		update teams set members=#{members} where id=#{teamId}
+	</update>
+	
 	<delete id="delete" parameterType="String">
 		delete from teams where
 		id=#{id}
