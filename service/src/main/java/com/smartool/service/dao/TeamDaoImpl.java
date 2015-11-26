@@ -54,8 +54,27 @@ public class TeamDaoImpl implements TeamDao {
 	}
 
 	@Override
-	public List<Team> memberOf(String userId) {
-		return sqlSession.selectList("TEAM.memberOf", userId);
+	public Team memberOf(String kidId, String teamId) {
+		String members = sqlSession.selectOne("TEAM.members", teamId);
+		List<String> memberLst = new ArrayList<>();
+		if(null != members) {
+			try {
+				memberLst = om.readValue(members, new TypeReference<List<String>>(){});
+			} catch (IOException e) {
+				
+			}
+		}
+		boolean found = false;;
+		for(String id : memberLst) {
+			if(id.equals(kidId)){
+				found = true;
+				break;
+			}
+		}
+		if(found) {
+			return this.get(teamId);
+		}
+		return null;
 	}
 
 	@Override

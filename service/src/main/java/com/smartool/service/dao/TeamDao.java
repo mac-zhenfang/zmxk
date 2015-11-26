@@ -17,7 +17,7 @@ public interface TeamDao {
 
 	public void delete(String id);
 
-	public List<Team> memberOf(String kidId);
+	public Team memberOf(String kidId, String teamId);
 
 	public List<String> getMembers(String teamId);
 	

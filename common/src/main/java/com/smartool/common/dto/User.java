@@ -19,6 +19,7 @@ public class User extends BaseDateTrackingBean {
 	private int bronzeMedal;
 	private int idp;
 	private int likes;
+	private int maxTeamMemberSize;
 
 	public int getGoldenMedal() {
 		return goldenMedal;
@@ -142,5 +143,13 @@ public class User extends BaseDateTrackingBean {
 
 	public void setLikes(int likes) {
 		this.likes = likes;
+	}
+
+	public int getMaxTeamMemberSize() {
+		return maxTeamMemberSize;
+	}
+
+	public void setMaxTeamMemberSize(int maxTeamMemberSize) {
+		this.maxTeamMemberSize = maxTeamMemberSize;
 	}
 }

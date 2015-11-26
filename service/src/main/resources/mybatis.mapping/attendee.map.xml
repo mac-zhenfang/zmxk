@@ -83,7 +83,13 @@
 		kidId=#{kidId}, userId=#{userId}, roundId = #{roundId}, status=#{status} where
 		lastModifiedTime = #{lastModifiedTime} and status = 0 and id = #{id}
 	</select>
-
+	<update id="setVideoLink" parameterType="Map">
+		update attendees
+		set
+		videoLink=#{videoLink}
+		where id =
+		#{id};
+	</update>
 	<select id="listAll" resultType="com.smartool.common.dto.Attendee">
 		select a.id as
 		id, a.kidId as
@@ -121,7 +127,7 @@
 	<select id="getPendingAttendees" parameterType="String"
 		resultType="com.smartool.common.dto.Attendee">
 		select a.id as
-		id, a.kidId as kidId, a.createdTime as
+		id, a.kidId as kidId, a.videoLink as videoLink, a.createdTime as
 		createdTime, a.lastModifiedTime
 		as lastModifiedTime, a.status as
 		status, a.score as score, a.seq as seq, a.tagId as tagId, a.roundId as

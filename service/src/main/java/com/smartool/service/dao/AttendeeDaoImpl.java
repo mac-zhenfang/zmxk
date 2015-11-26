@@ -114,4 +114,12 @@ public class AttendeeDaoImpl implements AttendeeDao {
 	public void removeFromHis(long interval) {
 		sqlSession.delete("ATTENDEE.removeFromHis", interval);
 	}
+
+	@Override
+	public void setVideoLink(String attendeeId, String videoLink) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", attendeeId);
+		params.put("videoLink", videoLink);
+		sqlSession.update("ATTENDEE.setVideoLink", params);		
+	}
 }

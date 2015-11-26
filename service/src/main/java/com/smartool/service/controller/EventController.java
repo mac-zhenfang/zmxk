@@ -30,6 +30,7 @@ import com.smartool.common.dto.EnrollAttendee;
 import com.smartool.common.dto.Event;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.Round;
+import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
 import com.smartool.service.ErrorMessages;
@@ -43,12 +44,13 @@ import com.smartool.service.dao.EventDao;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.RoundDao;
 import com.smartool.service.dao.TagDao;
+import com.smartool.service.dao.TeamDao;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
 public class EventController extends BaseController {
 	private final static String NULL_TAG_ID = "NULL_TAG_ID";
-	
+
 	private static Logger logger = Logger.getLogger(EventController.class);
 	@Autowired
 	private EventDao eventDao;
@@ -58,6 +60,9 @@ public class EventController extends BaseController {
 
 	@Autowired
 	private KidDao kidDao;
+
+	@Autowired
+	private TeamDao teamDao;
 
 	// @Autowired
 	// private UserDao userDao;
@@ -109,6 +114,13 @@ public class EventController extends BaseController {
 		return returnList;
 	}
 
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/events/recent", method = RequestMethod.GET)
+	public List<Event> getRecentEvents(@RequestParam(value = "start", required = true) long start,
+			@RequestParam(value = "end", required = true) long end) {
+		return eventDao.ListAllEvent(0, start, end);
+	}
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/search", method = RequestMethod.GET)
 	public List<Event> search(@RequestParam(value = "status", required = false) Integer status,
@@ -125,6 +137,13 @@ public class EventController extends BaseController {
 			param.put("seriesId", seriesId);
 		}
 		return eventDao.search(param);
+	}
+	
+	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}/video", method = RequestMethod.POST, consumes = {
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE }) 
+	public void setVideoLink(@RequestParam String videoLink, @PathVariable String eventId, @PathVariable String attendeeId){
+		attendeeDao.setVideoLink(attendeeId, videoLink);
 	}
 
 	/**
@@ -324,11 +343,12 @@ public class EventController extends BaseController {
 	 * 
 	 * @RequestMapping(value = "/events/{eventId}/enroll")
 	 */
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/events/{eventId}/enroll", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Attendee enroll(@PathVariable String eventId, @RequestBody EnrollAttendee enrollAttendee) {
-
+	public Attendee enroll(@PathVariable String eventId, @RequestBody EnrollAttendee enrollAttendee,
+			@RequestParam(required = false) String teamId) {
+		User user = UserSessionManager.getSessionUser();
 		List<Attendee> attendees = attendeeDao.getAllPendingAttendees(eventId);
 
 		Event event = eventDao.getEvent(eventId);
@@ -345,6 +365,30 @@ public class EventController extends BaseController {
 			enrollAttendee.setUserId(returnKid.getUserId());
 		} else {
 			returnKid = kidDao.get(enrollAttendee.getKidId());
+		}
+
+		Team team = teamDao.memberOf(returnKid.getId(), teamId);
+		if (null == team && teamId != null) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_BELONG_TO_TEAM);
+		} else if (null != team && !user.getRoleId().equals("2") && !user.getId().equals(team.getOwnerId())) { // only
+																												// admin
+																												// or
+																												// owner
+																												// can
+																												// enroll
+																												// team
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
+
+		List<String> members = teamDao.getMembers(teamId);
+
+		if (members.size() < team.getMinSize()) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_REACH_MIN_TEAM_SIZE);
+		}
+		
+		
+		if(returnKid.getFirstTimeAttendEvent() == 0) {
+			kidDao.setFirstAttendEventTime(returnKid.getId(), event.getEventTime());
 		}
 
 		int quota = event.getQuota();
@@ -421,7 +465,7 @@ public class EventController extends BaseController {
 			if (null == round) {
 				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_ROUND_MAX);
 			}
-			
+
 			for (int i = 0; i < retryTimes; i++) {
 				int num = r.nextInt(quota);
 				Attendee attendee = attendees.get(num);
@@ -431,7 +475,7 @@ public class EventController extends BaseController {
 				attendee.setUserId(enrollAttendee.getUserId());
 				attendee.setRoundId(round.getId());
 				String kidId = enrollAttendee.getKidId();
-				
+
 				if (Strings.isNullOrEmpty(enrollAttendee.getKidId()) && returnKid != null) {
 					kidId = returnKid.getId();
 				}
@@ -468,9 +512,9 @@ public class EventController extends BaseController {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Event updateEvent(@PathVariable String eventId, @RequestBody Event event) {
 		isEventValid(event);
-		
+
 		Event eventInDb = eventDao.getEvent(event.getId());
-		if(alreadyComplete(eventInDb)) {
+		if (alreadyComplete(eventInDb)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EVENT_ALREADY_COMPLETE);
 		}
 		Event retEvent = eventDao.updateEvent(event);
@@ -483,19 +527,20 @@ public class EventController extends BaseController {
 		retEvent.setAttendees(attendees);
 		return retEvent;
 	}
-	
-	private boolean alreadyComplete(Event event){
+
+	private boolean alreadyComplete(Event event) {
 		return event.getStatus() >= 2;
 	}
 
 	/**
 	 * Delete Event
-	 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
-	@RequestMapping(value = "/events/{eventId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable String eventId) {
-		eventDao.delete(eventId);
-	}*/
+	 * 
+	 * @ApiScope(userScope = UserRole.INTERNAL_USER)
+	 * @RequestMapping(value = "/events/{eventId}", method =
+	 *                       RequestMethod.DELETE) public void
+	 *                       delete(@PathVariable String eventId) {
+	 *                       eventDao.delete(eventId); }
+	 */
 
 	/**
 	 * 

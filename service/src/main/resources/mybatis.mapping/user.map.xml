@@ -12,6 +12,7 @@
 		<result property="siteId" column="siteId" />
 		<result property="status" column="status" />
 		<result property="credit" column="credit" />
+		<result property="maxTeamMemberSize" column="maxTeamMemberSize" />
 		<result property="likes" column="likes" />
 		<result property="goldenMedal" column="goldenMedal" />
 		<result property="silverMedal" column="silverMedal" />
@@ -35,7 +36,7 @@
 	<select id="query" parameterType="Map" resultMap="user">
 		SELECT users.likes as likes, users.id as userId, users.name as userName, mobileNum,
 		location, roleId, siteId, status, credit, goldenMedal, silverMedal,
-		bronzeMedal, users.createdTime as userCreatedTime,
+		bronzeMedal, users.maxTeamMemberSize as maxTeamMemberSize, users.createdTime as userCreatedTime,
 		users.lastModifiedTime as userLastModifiedTime,
 		kids.id as kidId,
 		kids.name as kidName, schoolType, schoolName, kids.createdTime
@@ -78,7 +79,7 @@
 
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
-		select u.likes as likes, u.name as userName, k.name as kidName, e.name as
+		select u.maxTeamMemberSize as maxTeamMemberSize, u.likes as likes, u.name as userName, k.name as kidName, e.name as
 		eventName, e.stage as stage, et.name as eventTypeName, s.name as
 		serieName, e.eventTime
 		as eventTime, a.rank as rank, a.score as score,

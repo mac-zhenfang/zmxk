@@ -9,6 +9,8 @@ public interface EventDao {
 
 	List<Event> listAllEvent();
 	
+	List<Event> ListAllEvent(int status, long start, long end);
+	
 	List<Event> listAllEvent(String siteId);
 	
 	List<Event> listAllEvent (int status);

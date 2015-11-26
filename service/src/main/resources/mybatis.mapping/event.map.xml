@@ -54,6 +54,7 @@
 			<result property="roundLevelName" column="roundLevelName" />
 			<result property="roundShortName" column="roundShortName" />
 			<result property="rank" column="rank" />
+			<result property="videoLink" column="videoLink" />
 			<result property="seq" column="seq" />
 			<result property="status" column="attendeeStatus" />
 			<result property="attendeeNotifyTimes" column="attendeeNotifyTimes" />
@@ -81,6 +82,7 @@
 		tagId,
 		roundId,
 		nextRoundId,
+		videoLink,
 		roundLevel,
 		roundLevelName,
 		roundShortName,
@@ -114,7 +116,7 @@
 		series s on s.id=e.seriesId
 		LEFT JOIN ( select
 		a.id
-		as attendeeId, k.id
+		as attendeeId, a.videoLink as videoLink, k.id
 		as kidId, k.name as
 		kidName,k.avatarUrl as
 		avatarUrl,
@@ -174,6 +176,7 @@
 		seq,
 		tagId,
 		roundId,
+		videoLink,
 		nextRoundId,
 		roundLevel,
 		roundLevelName,
@@ -207,7 +210,7 @@
 		series s on s.id=e.seriesId
 		LEFT JOIN ( select
 		a.id
-		as attendeeId, k.id
+		as attendeeId, a.videoLink as videoLink, k.id
 		as kidId, k.name as
 		kidName,k.avatarUrl as
 		avatarUrl,
@@ -243,6 +246,42 @@
 		WHERE
 		e.siteId=#{siteId}
 	</select>
+	
+	
+	<select id="listAllStatusTime" parameterType="Map" resultMap="event">
+		SELECT
+		e.eventTime as eventTime,
+		e.name as eventName, t.name as
+		eventType, e.id
+		as eventId,
+		e.eventTypeId as
+		eventTypeId, e.quota as quota,
+		e.siteId as
+		siteId,
+		e.createdTime as
+		createdTime,
+		e.lastModifiedTime as
+		lastModifiedTime,
+		e.stage as
+		stage,
+		e.seriesId
+		as
+		seriesId,
+		e.status as
+		status
+		FROM events e
+		LEFT
+		JOIN event_def f on
+		e.stage=f.stage
+		LEFT JOIN
+		eventTypes t on t.id=
+		e.eventTypeId
+		LEFT JOIN
+		series s on s.id=e.seriesId
+		WHERE
+		e.status =
+		#{status} and e.eventTime &gt; #{leftMin} and e.eventTime &lt; #{rightMax};
+	</select>
 
 	<select id="listAllStatus" parameterType="int" resultMap="event">
 		SELECT
@@ -268,6 +307,7 @@
 		seq,
 		tagId,
 		roundId,
+		videoLink,
 		nextRoundId,
 		roundLevel,
 		roundLevelName,
@@ -306,7 +346,7 @@
 		kidName,k.avatarUrl as
 		avatarUrl,
 		a.userId as
-		userId,a.notify_times as attendeeNotifyTimes,
+		userId,a.videoLink as videoLink, a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.nextRoundId as nextRoundId,a.seq as
 		seq,
@@ -366,6 +406,7 @@
 		seq,
 		tagId,
 		roundId,
+		videoLink,
 		nextRoundId,
 		roundLevel,
 		roundLevelName,
@@ -400,7 +441,7 @@
 		series s on s.id=e.seriesId
 		LEFT JOIN ( select
 		a.id
-		as attendeeId, k.id
+		as attendeeId, a.videoLink as videoLink, k.id
 		as kidId, k.name as
 		kidName,k.avatarUrl as
 		avatarUrl,
@@ -461,6 +502,7 @@
 		seq,
 		tagId,
 		roundId,
+		videoLink,
 		nextRoundId,
 		roundLevel,
 		roundLevelName,
@@ -499,7 +541,7 @@
 		kidName,k.avatarUrl as
 		avatarUrl,
 		a.userId as
-		userId,a.notify_times as attendeeNotifyTimes,
+		userId,a.videoLink as videoLink, a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
 		seq,a.nextRoundId as nextRoundId,
@@ -594,6 +636,7 @@
 		seq,
 		tagId,
 		roundId,
+		videoLink,
 		nextRoundId,
 		roundLevel,
 		roundLevelName,
@@ -632,7 +675,7 @@
 		kidName,k.avatarUrl as
 		avatarUrl,
 		a.userId as
-		userId,a.notify_times as attendeeNotifyTimes,
+		userId,a.videoLink as videoLink, a.notify_times as attendeeNotifyTimes,
 		a.rank as rank, a.score
 		as score, a.seq as
 		seq,a.nextRoundId as nextRoundId,

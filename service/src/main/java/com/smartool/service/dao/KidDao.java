@@ -1,5 +1,6 @@
 package com.smartool.service.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.smartool.common.dto.Kid;
@@ -22,4 +23,6 @@ public interface KidDao {
 	Kid updateAvatarUrl(String kidId, String avatarUrl);
 	
 	List<String> getDistinctSchoolName(int schoolType);
+	
+	void setFirstAttendEventTime(String kidId, Date eventTime);
 }

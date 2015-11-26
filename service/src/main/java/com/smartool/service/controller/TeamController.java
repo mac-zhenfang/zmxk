@@ -16,9 +16,11 @@ import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
+import com.smartool.service.ErrorMessages;
 import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
+import com.smartool.service.config.SmartoolServiceConfig;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TeamDao;
@@ -29,7 +31,10 @@ public class TeamController extends BaseController {
 
 	@Autowired
 	private TeamDao teamDao;
-
+	
+	@Autowired
+	SmartoolServiceConfig config;
+	
 	@Autowired
 	private KidDao kidDao;
 
@@ -55,6 +60,14 @@ public class TeamController extends BaseController {
 	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public void joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
+		Team team = teamDao.get(teamId);
+		int size = team.getSize();
+		List<String> members = teamDao.getMembers(teamId);
+		int currentSize = members.size();
+		
+		if(currentSize + 1 > size) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
+		}
 		teamDao.addMember(kid, teamId);
 	}
 	
@@ -62,13 +75,26 @@ public class TeamController extends BaseController {
 	@RequestMapping(value = "/teams/{teamId}/members/{kidId}", method = RequestMethod.DELETE, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public void leaveTeam(@PathVariable String teamId, @PathVariable String kidId) {
-		teamDao.delMember(kidId, teamId);
+		User user = UserSessionManager.getSessionUser();
+		Team team = teamDao.get(teamId);
+		if(user.getRoleId().equals("2") || user.getId().equals(team.getOwnerId())) {
+			teamDao.delMember(kidId, teamId);
+		} else {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Team createTeam(@RequestBody Team team) {
+		User me = UserSessionManager.getSessionUser();
+		team.setOwnerId(me.getId());
+		int size = team.getSize();
+		if(size > me.getMaxTeamMemberSize()) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
+		}
 		team.setId(CommonUtils.getRandomUUID());
 		return teamDao.create(team);
 	}
@@ -112,6 +138,12 @@ public class TeamController extends BaseController {
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable String teamId) {
+		User me = UserSessionManager.getSessionUser();
+		Team team = teamDao.get(teamId);
+		if(!team.getOwnerId().equals(me.getId())) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
+					ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
 		teamDao.delete(teamId);
 	}
 

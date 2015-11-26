@@ -10,16 +10,10 @@
 		parameterType="String">
 		select members from teams where id = #{teamId}
 	</select>
-	<select id="memberOf" resultType="com.smartool.common.dto.Team"
-		parameterType="String">
-		select t.id as id, t.name as name, t.tp as tp, t.size as
-		size from teams t, users u, kids k.teamId = t.id where k.userId =
-		#{userId}
-	</select>
 	<insert id="create" parameterType="com.smartool.common.dto.Team">
 		insert into teams (id, name,
-		tp, size, createdTime, lastModifiedTime) values (#{id}, #{name},
-		#{tp}, #{size}, #{createdTime}, #{lastModifiedTime})
+		tp, size, minSize, ownerId, createdTime, lastModifiedTime) values (#{id}, #{name},
+		#{tp}, #{size}, #{minSize}, #{ownerId}, #{createdTime}, #{lastModifiedTime})
 	</insert>
 	<update id="update" parameterType="com.smartool.common.dto.Team">
 		update teams set name=#{name},

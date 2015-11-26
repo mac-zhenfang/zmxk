@@ -3,9 +3,11 @@ package com.smartool.common.dto;
 public class Team extends BaseDateTrackingBean {
 	private String id;
 	private String name;
+	private String ownerId;
 	private int tp;
 	private String pid;
 	private int size;
+	private int minSize;
 	public String getId() {
 		return id;
 	}
@@ -35,6 +37,18 @@ public class Team extends BaseDateTrackingBean {
 	}
 	public void setSize(int size) {
 		this.size = size;
+	}
+	public String getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
+	public int getMinSize() {
+		return minSize;
+	}
+	public void setMinSize(int minSize) {
+		this.minSize = minSize;
 	}
 
 }

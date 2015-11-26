@@ -1,5 +1,6 @@
 package com.smartool.service.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,5 +85,14 @@ public class EventDaoImpl implements EventDao {
 	@Override
 	public void removeFromHis(long inteval) {
 		sqlSession.delete("EVENT.removeFromHis", inteval);
+	}
+
+	@Override
+	public List<Event> ListAllEvent(int status, long start, long end) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("status", status);
+		params.put("leftMin", start);
+		params.put("rightMax", end);
+		return sqlSession.selectList("EVENT.listAllStatusTime", params);
 	}
 }

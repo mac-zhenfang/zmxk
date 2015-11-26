@@ -7,6 +7,9 @@ public class Kid extends BaseDateTrackingBean {
 	private String schoolName;
 	private String userId;
 	private String avatarUrl;
+	private int age;
+	private int gender;
+	private long firstTimeAttendEvent;
 
 	public Kid() {
 	}
@@ -57,5 +60,29 @@ public class Kid extends BaseDateTrackingBean {
 
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public long getFirstTimeAttendEvent() {
+		return firstTimeAttendEvent;
+	}
+
+	public void setFirstTimeAttendEvent(long firstTimeAttendEvent) {
+		this.firstTimeAttendEvent = firstTimeAttendEvent;
 	}
 }

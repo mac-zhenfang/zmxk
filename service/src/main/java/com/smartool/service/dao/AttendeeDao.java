@@ -38,4 +38,6 @@ public interface AttendeeDao {
 	List<Attendee> getAllAttendeeFromEvent(String eventId);
 	
 	void removeFromHis(long interval);
+	
+	void setVideoLink(String attendeeId, String videoLink);
 }

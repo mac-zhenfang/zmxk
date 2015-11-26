@@ -8,6 +8,8 @@ public class Grade extends BaseGrade {
 	
 	private int likes;
 	
+	private String videoLink;
+	
 	private List<Trophy> trophyList;
 
 	public int getCredit() {
@@ -32,6 +34,14 @@ public class Grade extends BaseGrade {
 
 	public void setTrophyList(List<Trophy> trophyList) {
 		this.trophyList = trophyList;
+	}
+
+	public String getVideoLink() {
+		return videoLink;
+	}
+
+	public void setVideoLink(String videoLink) {
+		this.videoLink = videoLink;
 	}
 
 }

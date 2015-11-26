@@ -45,7 +45,9 @@ public class Attendee extends BaseDateTrackingBean {
 	private String roundLevelName;
 	
 	private int roundLevel;
-		
+	
+	private String videoLink;
+	
 	public Attendee() {
 	}
 
@@ -223,6 +225,14 @@ public class Attendee extends BaseDateTrackingBean {
 
 	public void setNextRoundId(String nextRoundId) {
 		this.nextRoundId = nextRoundId;
+	}
+
+	public String getVideoLink() {
+		return videoLink;
+	}
+
+	public void setVideoLink(String videoLink) {
+		this.videoLink = videoLink;
 	}
 
 }

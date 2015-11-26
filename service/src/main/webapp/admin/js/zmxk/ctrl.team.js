@@ -217,7 +217,7 @@ zmxk.controller('FindKidCtrl', function($scope, $modalInstance, data) {
 	$scope.save = function() {
 		angular.forEach($scope.found_user.kids, function(kid, index) {
 			if (kid.selected) {
-				kidService.joinTeam(kid.id, teamId).then(function(data) {
+				kidService.joinTeam(kid, teamId).then(function(data) {
 				}, function(error) {
 					alert(error.data.message);
 				});

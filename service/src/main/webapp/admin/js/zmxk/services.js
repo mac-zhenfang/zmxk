@@ -626,7 +626,7 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 				},
 				leaveTeam : {
 					url : zmxkConfig.kid_leave_team_uri,
-					method : 'POST'
+					method : 'DELETE'
 				},
 				uploadAvatar : {
 					url : zmxkConfig.kid_avatar_uri,
@@ -717,12 +717,11 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 				return defer.promise;
 			}
 
-			this.joinTeam = function(kidId, teamId) {
+			this.joinTeam = function(kid, teamId) {
 				var defer = $q.defer();
 				kidResource.joinTeam({
-					kidId : kidId,
 					teamId : teamId
-				}, function(kid, headers) {
+				}, kid, function(kid, headers) {
 					defer.resolve(kid);
 				}, function(kid, headers) {
 					defer.reject(kid);
@@ -733,8 +732,8 @@ zmxk.service('kidService', [ '$resource', 'zmxkConfig', '$q',
 			this.leaveTeam = function(kidId, teamId) {
 				var defer = $q.defer();
 				kidResource.leaveTeam({
-					kidId : kidId,
-					teamId : teamId
+					teamId : teamId,
+					kidId : kidId
 				}, function(kid, headers) {
 					defer.resolve(kid);
 				}, function(kid, headers) {

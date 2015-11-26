@@ -1,5 +1,6 @@
 package com.smartool.service.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,5 +63,13 @@ public class KidDaoImpl implements KidDao {
 	@Override
 	public List<String> getDistinctSchoolName(int schoolType) {
 		return sqlSession.selectList("KID.getDistinctSchoolName", schoolType);
+	}
+
+	@Override
+	public void setFirstAttendEventTime(String kidId, Date eventTime) {
+		// TODO Auto-generated method stub firstTimeAttend
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("kidId", kidId);
+		params.put("firstTimeAttendEvent", eventTime);
 	}
 }

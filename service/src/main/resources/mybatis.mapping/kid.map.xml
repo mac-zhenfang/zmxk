@@ -4,11 +4,11 @@
 
 <mapper namespace="KID">
 	<select id="create" parameterType="com.smartool.common.dto.Kid">
-		insert kids (id, name,
+		insert kids (id, name,age,gender,
 		schoolType, schoolName,userId,
 		createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{schoolType},#{schoolName},#{userId},now(),now())
+		(#{id},#{name},#{age}, #{gender}, #{schoolType},#{schoolName},#{userId},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Kid">
 		update kids
@@ -58,7 +58,13 @@
 		UPDATE kids SET teamId=null
 		WHERE id=#{kidId} AND teamId=#{teamId}
 	</update>
+	<update id="firstTimeAttend" parameterType="Map">
+		UPDATE kids SET firstTimeAttendEvent=#{firstTimeAttendEvent}
+		WHERE id=#{kidId}
+	</update>
+	
 	<select id="getDistinctSchoolName" parameterType="int" resultType="String">
 		select distinct schoolName from kids where schoolType = #{schoolType}
 	</select>
+	
 </mapper>
