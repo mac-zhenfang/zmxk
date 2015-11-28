@@ -30,7 +30,7 @@ public interface UserService {
 	
 	void delete(String userId);
 	
-	List<Grade> getGrades(String userId);
+	List<Grade> getGrades(String userId, String kidId);
 	
 	SecurityCode getSecurityCode(SecurityCode securityCode);
 	
@@ -44,5 +44,5 @@ public interface UserService {
 	
 	List<Cover> getUserCovers(String userId, int start, int limit);
 	
-	void like(String toUserId, String fromUserId);
+	void like(String toUserId, String toKidId, String fromUserId);
 }

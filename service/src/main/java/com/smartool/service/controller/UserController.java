@@ -1,5 +1,6 @@
 package com.smartool.service.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,14 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.Grade;
+import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
 import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.Constants;
+import com.smartool.service.ErrorMessages;
+import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.UserSessionManager;
 import com.smartool.service.controller.annotation.ApiScope;
+import com.smartool.service.dao.KidDao;
+import com.smartool.service.dao.TeamDao;
 import com.smartool.service.service.UserService;
 
 @RestController
@@ -42,6 +48,12 @@ public class UserController extends BaseController {
 	private HttpServletRequest httpServletRequest;
 	@Autowired
 	private HttpServletResponse httpServletResponse;
+	
+	@Autowired
+	KidDao kidDao;
+	
+	@Autowired
+	TeamDao teamDao;
 
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/users/query", method = RequestMethod.POST)
@@ -145,7 +157,7 @@ public class UserController extends BaseController {
 		return userService.setPassword(securityCode, user);
 	}
 
-	@ApiScope(userScope = UserRole.INTERNAL_USER)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
 	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
 		return userService.getUserById(userId);
@@ -155,43 +167,59 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/users/me/grades", method = RequestMethod.GET)
 	public List<Grade> getMyGrades() {
 		User user = UserSessionManager.getSessionUser();
-		List<Grade> grades = userService.getGrades(user.getId());
+		List<Grade> grades = userService.getGrades(user.getId(), null);
 		return grades;
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
-	@RequestMapping(value = "/users/{userId}/grades", method = RequestMethod.GET)
-	public List<Grade> getUserGrades() {
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/grades", method = RequestMethod.GET)
+	public List<Grade> getUserGrades(@PathVariable String userId, @PathVariable String kidId) {
+		List<Grade> grades = userService.getGrades(userId, kidId);
+		return grades;
+	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/me/covers", method = RequestMethod.GET)
+	public List<Cover> getUserCovers(@RequestParam(value="start", required = false) Integer start, @RequestParam(value="limit", required = false)  Integer limit){
 		User user = UserSessionManager.getSessionUser();
-		// FIXME, get user site
-		List<Grade> grades = userService.getGrades(user.getId());
-		return grades;
-	}
-	
-	@ApiScope(userScope = UserRole.NORMAL_USER)
-	@RequestMapping(value = "/users/{userId}/covers", method = RequestMethod.GET)
-	public List<Cover> getUserCovers(@PathVariable String userId, @RequestParam(value="start", required = false) Integer start, @RequestParam(value="limit", required = false)  Integer limit){
 		if(start == null) {
 			start = 0;
 		}
 		if (limit == null) {
 			limit = Integer.MAX_VALUE;
 		}
+		String userId = user.getId();
 		return userService.getUserCovers(userId, start, limit);
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
-	@RequestMapping(value = "/users/{userId}/likes", method = RequestMethod.PUT)
-	public void like(@PathVariable String userId) {
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/likes", method = RequestMethod.PUT)
+	public void like(@PathVariable String userId, @PathVariable String kidId) {
 		User user = UserSessionManager.getSessionUser();
-		userService.like(userId, user.getId());
+		userService.like(userId, kidId, user.getId());
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
-	@RequestMapping(value = "/users/{userId}/teams", method = RequestMethod.GET)
-	public List<Team> getTeams(){
-		//TODO
-		return null;
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/teams", method = RequestMethod.GET)
+	public List<Team> getTeams(@PathVariable String userId, @PathVariable String kidId){
+		User user = userService.getUserById(userId);
+		List<Kid> kids = user.getKids();
+		boolean contains = false;
+		for(Kid kid : kids) {
+			if(kid.getId().equals(kidId)) {
+				contains = true;
+			}
+		}
+		if(!contains) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
+		List<String> teamStringLst = kidDao.getTeams(kidId);
+		List<Team> teamLst = new ArrayList<>();
+		for(String id: teamStringLst) {
+			Team team = teamDao.get(id);
+			teamLst.add(team);
+		}
+		return teamLst;
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
@@ -200,10 +228,15 @@ public class UserController extends BaseController {
 		User sessionUser = UserSessionManager.getSessionUser();
 		return userService.getUserById(sessionUser.getId());
 	}
+	
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
 	public User updateUser(@RequestBody User user) {
+		User me = UserSessionManager.getSessionUser();
+		if(!me.getId().equals(user.getId())) {
+			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(), ErrorMessages.NOT_AUTHORIZED_TO_UPDATE_USER);
+		}
 		return userService.update(user);
 	}
 

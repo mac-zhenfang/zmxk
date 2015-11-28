@@ -254,9 +254,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserById(String userId) {
 		User user = userDao.getUserById(userId);
+		int likes = 0;
 		if (user != null) {
 			List<Kid> kids = kidDao.listByUserId(userId);
+			for(Kid kid : kids) {
+				likes+=kid.getLikes();
+			}
 			user.setKids(kids);
+			user.setLikes(likes);
 		}
 		return user;
 	}
@@ -305,8 +310,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<Grade> getGrades(String userId) {
-		return userDao.getGrades(userId);
+	public List<Grade> getGrades(String userId, String kidId) {
+		List<Grade> grades = userDao.getGrades(userId);
+		List<Grade> returnGrades = new ArrayList<>();
+		if(null == kidId) {
+			return grades;
+		}
+		for(Grade grade : grades) {
+			if(grade.getKidId().equals(kidId)) {
+				returnGrades.add(grade);
+			}
+		}
+		return returnGrades;
 	}
 
 	@Override
@@ -450,11 +465,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void like(String toUserId, String fromUserId) {
-		if(userDao.existUserInLike(toUserId, fromUserId)) {
+	public void like(String toUserId, String toKidId, String fromUserId) {
+		Kid kid = kidDao.get(toKidId);
+		if(!kid.getUserId().equals(toUserId)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.NOT_ALLOWED_TO_LIKE_THIS_USER);
+		}
+		if(kid.getUserId().equals(fromUserId)) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
+					ErrorMessages.NOT_ALLOWED_TO_LIKE_THIS_USER);
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append(toUserId).append("|").append(toKidId);
+		if(userDao.existUserInLike(sb.toString(), fromUserId)) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(),
 					ErrorMessages.USER_ALREADY_LIKE_YOU);
 		}
-		userDao.incrLike(fromUserId, toUserId);
+		userDao.incrLike(fromUserId, sb.toString());
 	}
 }

@@ -1,5 +1,6 @@
 package com.smartool.service.dao;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class EventDaoImpl implements EventDao {
 	}
 
 	@Override
-	public List<Event> ListAllEvent(int status, long start, long end) {
+	public List<Event> ListAllEvent(int status, Date start, Date end) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("status", status);
 		params.put("leftMin", start);

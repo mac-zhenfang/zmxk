@@ -183,9 +183,9 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public void incrLike(String fromUserId, String toUserId) {
-		redis.sadd(toUserId.getBytes(), fromUserId.getBytes());
-		redis.sadd(TEMP_LIKE_USERS, toUserId);
+	public void incrLike(String fromUserId, String key) {
+		redis.sadd(key.getBytes(), fromUserId.getBytes());
+		redis.sadd(TEMP_LIKE_USERS, key);
 	}
 
 	@Override
@@ -196,15 +196,15 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public boolean existUserInLike(String toUserId, String fromUserId) {
-		return redis.sismember(toUserId, fromUserId);
+	public boolean existUserInLike(String key, String fromUserId) {
+		return redis.sismember(key, fromUserId);
 	}
 
 	@Override
-	public void updateLikes(String toUserId, int num) {
-		// TODO Auto-generated method stub updateLikes
+	public void updateLikes(String toUserId, String kidId, int num) {
 		Map<String, Object> params = new HashMap<>();
-		params.put("id", toUserId);
+		params.put("userId", toUserId);
+		params.put("kidId", kidId);
 		params.put("likes", num);
 		sqlSession.update("USER.updateLikes", params);
 	}
@@ -221,8 +221,8 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public int getTempLikeNum(String userId) {
-		long tempLikeSize = redis.scard(userId);
+	public int getTempLikeNum(String key) {
+		long tempLikeSize = redis.scard(key);
 		return (int)tempLikeSize;
 	}
 }

@@ -19,6 +19,15 @@
 		where id =
 		#{id};
 	</select>
+	<select id="getTeams" parameterType="String" resultType="String">
+		select teams from kids where id = #{id}
+	</select>
+	<update id="setTeams" parameterType="com.smartool.common.dto.Kid">
+		update kids
+		set
+		teams=#{teams}
+		where id = #{id};
+	</update>
 	<update id="setAvatar" parameterType="com.smartool.common.dto.Kid">
 	update kids
 		set

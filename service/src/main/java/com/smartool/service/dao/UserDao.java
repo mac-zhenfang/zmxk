@@ -44,17 +44,17 @@ public interface UserDao {
 	
 	UserStat getUserStat(String userId);
 	
-	void incrLike(String fromUserId, String toUserId);
+	void incrLike(String fromUserId, String key);
 	
 	int getLikeNum(String userId);
 	
 	boolean existUserInLike(String toUserId, String fromUserId);
 	
-	void updateLikes(String toUserId, int num);
+	void updateLikes(String kidId, String toUserId, int num);
 	
 	void deleteTempLike(String userId);
 	
 	Set<String> getTempLikeUsers();
 	
-	int getTempLikeNum(String userId);
+	int getTempLikeNum(String key);
 }

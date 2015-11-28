@@ -43,6 +43,8 @@ public class ErrorMessages {
 	public static final String NOT_ALOW_MANIPULATE_TEAM = "10038";
 	public static final String NOT_BELONG_TO_TEAM = "10039";
 	public static final String NOT_REACH_MIN_TEAM_SIZE = "10040";
+	public static final String NOT_AUTHORIZED_TO_UPDATE_USER = "10041";
+	public static final String NOT_ALLOWED_TO_LIKE_THIS_USER = "10042";
 
 
 

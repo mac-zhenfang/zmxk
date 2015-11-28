@@ -1,5 +1,7 @@
 package com.smartool.common.dto;
 
+import java.util.List;
+
 public class Kid extends BaseDateTrackingBean {
 	private String id;
 	private String name;
@@ -10,7 +12,9 @@ public class Kid extends BaseDateTrackingBean {
 	private int age;
 	private int gender;
 	private long firstTimeAttendEvent;
-
+	private String coverVideoLink;
+	private int likes;
+	
 	public Kid() {
 	}
 
@@ -84,5 +88,21 @@ public class Kid extends BaseDateTrackingBean {
 
 	public void setFirstTimeAttendEvent(long firstTimeAttendEvent) {
 		this.firstTimeAttendEvent = firstTimeAttendEvent;
+	}
+
+	public String getCoverVideoLink() {
+		return coverVideoLink;
+	}
+
+	public void setCoverVideoLink(String coverVideoLink) {
+		this.coverVideoLink = coverVideoLink;
+	}
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
 	}
 }

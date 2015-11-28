@@ -3,6 +3,7 @@ package com.smartool.service.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -116,8 +118,10 @@ public class EventController extends BaseController {
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/events/recent", method = RequestMethod.GET)
-	public List<Event> getRecentEvents(@RequestParam(value = "start", required = true) long start,
-			@RequestParam(value = "end", required = true) long end) {
+	public List<Event> getRecentEvents(
+			@RequestParam(value = "start", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss") Date start,
+			@RequestParam(value = "end", required = true) @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss") Date end) {
+		// 2015-09-19 08:00:00
 		return eventDao.ListAllEvent(0, start, end);
 	}
 
@@ -138,11 +142,12 @@ public class EventController extends BaseController {
 		}
 		return eventDao.search(param);
 	}
-	
+
 	@ApiScope(userScope = UserRole.INTERNAL_USER)
 	@RequestMapping(value = "/events/{eventId}/attendees/{attendeeId}/video", method = RequestMethod.POST, consumes = {
-			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE }) 
-	public void setVideoLink(@RequestParam String videoLink, @PathVariable String eventId, @PathVariable String attendeeId){
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public void setVideoLink(@RequestParam String videoLink, @PathVariable String eventId,
+			@PathVariable String attendeeId) {
 		attendeeDao.setVideoLink(attendeeId, videoLink);
 	}
 
@@ -366,28 +371,28 @@ public class EventController extends BaseController {
 		} else {
 			returnKid = kidDao.get(enrollAttendee.getKidId());
 		}
+		if (teamId != null) {
+			Team team = teamDao.memberOf(returnKid.getId(), teamId);
+			if (null == team && teamId != null) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_BELONG_TO_TEAM);
+			} else if (null != team && !user.getRoleId().equals("2") && !user.getId().equals(team.getOwnerId())) { // only
+																													// admin
+																													// or
+																													// owner
+																													// can
+																													// enroll
+																													// team
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+			}
 
-		Team team = teamDao.memberOf(returnKid.getId(), teamId);
-		if (null == team && teamId != null) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_BELONG_TO_TEAM);
-		} else if (null != team && !user.getRoleId().equals("2") && !user.getId().equals(team.getOwnerId())) { // only
-																												// admin
-																												// or
-																												// owner
-																												// can
-																												// enroll
-																												// team
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+			List<String> members = teamDao.getMembers(teamId);
+
+			if (members.size() < team.getMinSize()) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_REACH_MIN_TEAM_SIZE);
+			}
 		}
 
-		List<String> members = teamDao.getMembers(teamId);
-
-		if (members.size() < team.getMinSize()) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_REACH_MIN_TEAM_SIZE);
-		}
-		
-		
-		if(returnKid.getFirstTimeAttendEvent() == 0) {
+		if (returnKid.getFirstTimeAttendEvent() == 0) {
 			kidDao.setFirstAttendEventTime(returnKid.getId(), event.getEventTime());
 		}
 

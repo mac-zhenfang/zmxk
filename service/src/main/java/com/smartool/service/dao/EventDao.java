@@ -1,5 +1,6 @@
 package com.smartool.service.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ public interface EventDao {
 
 	List<Event> listAllEvent();
 	
-	List<Event> ListAllEvent(int status, long start, long end);
+	List<Event> ListAllEvent(int status, Date start, Date end);
 	
 	List<Event> listAllEvent(String siteId);
 	

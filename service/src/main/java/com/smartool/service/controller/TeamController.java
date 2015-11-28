@@ -63,12 +63,22 @@ public class TeamController extends BaseController {
 		Team team = teamDao.get(teamId);
 		int size = team.getSize();
 		List<String> members = teamDao.getMembers(teamId);
+		Kid selectKid = kidDao.get(kid.getId());
+		if(null == selectKid) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
+		
+		if(kid.getUserId()!=null && !selectKid.getUserId().equals(kid.getUserId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
+		}
+		
 		int currentSize = members.size();
 		
 		if(currentSize + 1 > size) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
 		}
 		teamDao.addMember(kid, teamId);
+		kidDao.setTeams(kid.getId(), teamId);
 	}
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
@@ -79,6 +89,7 @@ public class TeamController extends BaseController {
 		Team team = teamDao.get(teamId);
 		if(user.getRoleId().equals("2") || user.getId().equals(team.getOwnerId())) {
 			teamDao.delMember(kidId, teamId);
+			kidDao.leaveTeams(kidId, teamId);
 		} else {
 			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(),
 					ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
