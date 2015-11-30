@@ -84,7 +84,7 @@ public class KidController extends BaseController {
 			ImageIO.write(image, "png", baos);
 			baos.flush();
 			byte[] imageInByte = baos.toByteArray();
-			System.out.println("~~~~~~~~ image length " + imageInByte.length);
+			//System.out.println("~~~~~~~~ image length " + imageInByte.length);
 			InputStream avatar = new ByteArrayInputStream(imageInByte);
 			return avatarService.upload(userId, kidId, avatar);
 		} finally {

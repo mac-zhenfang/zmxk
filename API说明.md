@@ -1,3 +1,71 @@
+# 获得安全Code
+* API: http://localhost:8080/service/smartool/api/v1/users/code
+* Method: POST
+* Request:
+
+```json
+{
+		"mobileNum": 1370xxxx334,
+		
+}
+```
+
+* Response: 200
+
+> 必须在页面使用图片验证码
+
+# 注册
+* API: http://localhost:8080/service/smartool/api/v1/users/register?code=xxxxx
+* Method: POST
+* Request: code=xxxxx
+
+```json
+{
+		"mobileNum": 1370xxxx334,
+		"name": "xxxx",
+		"location": "杭州"
+		"kids" : [
+			{
+				"name" : "xxxx",
+				"schoolType": "0/1/2",
+				"schoolName": “xxxx”,
+				"age": 11,
+				"gender": 1,
+				"avatarUrl": "xxxxxx"
+			}
+		]
+}
+```
+
+> schoolType
+> * 0: 未上
+> * 1: 幼儿园
+> * 2: 小学
+> Gender
+> * 1: male
+> * 2: female
+
+# Avatar
+* API: http://localhost:8080/service/smartool/api/v1/users/{userId}/kids/{kidId}/avatar
+* Method: POST
+* content-type: image/jpeg
+* Request: base64 binary data
+
+
+# 登陆
+* API: http://localhost:8080/service/smartool/api/v1/users/login
+* Method: POST
+* Request
+
+```json
+{
+	"mobileNum" : 1111111,
+	"code" : 123414
+}
+```
+> 使用Security Code
+> 必须在页面使用图片验证码
+
 # Cover页面
 ### 获得Cover 列表
 * API: http://localhost:8080/service/smartool/api/v1/users/me/covers?start=0&limit=10
