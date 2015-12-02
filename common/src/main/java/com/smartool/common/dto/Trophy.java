@@ -1,6 +1,6 @@
 package com.smartool.common.dto;
 
-public class Trophy {
+public class Trophy implements Achievement {
 	
 	
 	private int stage;
@@ -53,6 +53,11 @@ public class Trophy {
 
 	public void setRoundLevelName(String roundLevelName) {
 		this.roundLevelName = roundLevelName;
+	}
+
+	@Override
+	public Type getType() {
+		return Type.trophy;
 	}
 }
 

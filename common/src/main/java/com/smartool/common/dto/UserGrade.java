@@ -14,7 +14,7 @@ public class UserGrade implements Cover {
 	private String centerLogoIcon;
 	private int fatestTime;
 	private int totalAttendTimes;
-	private List<Trophy> trophyList;
+	private List<Achievement> achievementList;
 	
 	public String getId() {
 		return id;
@@ -56,12 +56,12 @@ public class UserGrade implements Cover {
 		this.totalAttendTimes = totalAttendTimes;
 	}
 
-	public List<Trophy> getTrophyList() {
-		return trophyList;
+	public List<Achievement> getAchievementList() {
+		return achievementList;
 	}
 
-	public void setTrophyList(List<Trophy> trophyList) {
-		this.trophyList = trophyList;
+	public void setAchievementList(List<Achievement> trophyList) {
+		this.achievementList = trophyList;
 	}
 
 	public Kid getKid() {

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.smartool.common.dto.Achievement;
 import com.smartool.common.dto.BaseGrade;
 import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.EventType;
@@ -442,7 +443,7 @@ public class UserServiceImpl implements UserService {
 			userGrade.setTotalAttendTimes(userStat.getTotalAttend());
 			userGrade.setTotalUserCredit(userStat.getCredit());
 			//FIXME Credit * kids number != total user credit???
-			List<Trophy> trophyList = new ArrayList<>();
+			List<Achievement> trophyList = new ArrayList<>();
 			int credit =0;
 			for(BaseGrade grade : gradesInEntry) {
 				Trophy trophy = new Trophy();
@@ -455,7 +456,7 @@ public class UserServiceImpl implements UserService {
 				trophyList.add(trophy);
 			}
 			userGrade.setCredit(credit);
-			userGrade.setTrophyList(trophyList);
+			userGrade.setAchievementList(trophyList);
 			returnUserGrades.add(userGrade);
 		}
 		return returnUserGrades;
