@@ -35,6 +35,7 @@ public class BaseGrade {
 	private String roundId;
 	private int roundLevel;
 	private String siteId;
+	private String siteName;
 	public String getRoundLevelName() {
 		return roundLevelName;
 	}
@@ -234,6 +235,14 @@ public class BaseGrade {
 
 	public void setLikes(int likes) {
 		this.likes = likes;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
 	}
 
 }

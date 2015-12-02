@@ -95,6 +95,7 @@ public class UserServiceImpl implements UserService {
 			return userDao.getUserById(existUser.getId());
 		}
 	}
+	
 	private User internalPasswdLogin(LoginUser user) {
 
 		if (CommonUtils.isEmptyString(user.getPassword())) {
@@ -408,15 +409,9 @@ public class UserServiceImpl implements UserService {
 		}
 		Map<String, List<BaseGrade>> userGradeGroup = new HashMap<String, List<BaseGrade>>();
 		for(BaseGrade grade : baseGrades){
-			/*UserGrade userGrade = new UserGrade();
-			userGrade.setId(grade.getUserId());
-			userGrade.setName(grade.getUserName());
-			//FIXME
-			userGrade.setCenterLogoIcon("");
-			userGrade.setKid(buildKid(grade));
-			userGrade.setTotalAttendTimes(totalAttendTimes);*/
+	
 			StringBuilder sb = new StringBuilder();
-			joiner.appendTo(sb, grade.getUserId(), grade.getEventTypeId(), grade.getSiteId(), grade.getKidId());
+			joiner.appendTo(sb, grade.getUserId(), grade.getEventTypeId(), grade.getSiteId(), grade.getKidId(), grade.getSiteName());
 			if(!userGradeGroup.containsKey(sb.toString())) {
 				userGradeGroup.put(sb.toString(), new ArrayList<BaseGrade>());
 			}
@@ -430,6 +425,7 @@ public class UserServiceImpl implements UserService {
 			String eventTypeId = ids.get(1);
 			String siteId = ids.get(2);
 			String kidId = ids.get(3);
+			String siteName = ids.get(4);
 			Kid kid = kidDao.get(kidId);
 			UserGrade userGrade = new UserGrade();
 			
@@ -439,6 +435,7 @@ public class UserServiceImpl implements UserService {
 			userGrade.setKid(kid);
 			userGrade.setEventTypeId(eventTypeId);
 			userGrade.setSiteId(siteId);
+			userGrade.setSiteName(siteName);
 			userGrade.setName(gradesInEntry.get(0).getUserName());
 			userGrade.setCenterLogoIcon("");
 			userGrade.setFatestTime(userStat.getFatestScore());

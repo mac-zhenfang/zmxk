@@ -104,7 +104,7 @@
 		cr.`goldenMedal` as
 		goldenMedal, et.name as eventTypeName,k.id as kidId, k.name as
 		kidName, k.likes as likes, u.name as userName, e.stage as
-		stage, k.userId as userId, k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as roundLevel, e.siteId as siteId from events e,
+		stage, k.userId as userId, k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as roundLevel, e.siteId as siteId, s.name as siteName from events e,
 		creditRecords cr,
 		eventTypes et, users u, kids
 		k , sites s, attendees a left join rounds r on a.roundId = r.id where k.id=a.kidId

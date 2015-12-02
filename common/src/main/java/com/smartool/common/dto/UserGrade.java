@@ -8,6 +8,7 @@ public class UserGrade implements Cover {
 	private int credit;
 	private int totalUserCredit;
 	private String siteId;
+	private String siteName;
 	private String eventTypeId;
 	private String name;
 	private String centerLogoIcon;
@@ -109,6 +110,14 @@ public class UserGrade implements Cover {
 
 	public void setTotalUserCredit(int totalUserCredit) {
 		this.totalUserCredit = totalUserCredit;
+	}
+
+	public String getSiteName() {
+		return siteName;
+	}
+
+	public void setSiteName(String siteName) {
+		this.siteName = siteName;
 	}
 	
 	
