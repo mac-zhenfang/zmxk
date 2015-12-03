@@ -66,7 +66,7 @@
 > 使用Security Code
 > 必须在页面使用图片验证码
 
-# Cover页面
+# Cover页面／赛事排名
 ### 获得Cover 列表
 * API: http://localhost:8080/service/smartool/api/v1/users/me/covers?start=0&limit=10
 * Method：GET
@@ -193,38 +193,59 @@
 
 # 轨迹
 
-* API: http://localhost:8080/service/smartool/api/v1/users/{userId}/kids/{kidId}/grades
+* API: http://localhost:8080/service/smartool/api/v1/users/1b2b55bd-d716-4ec1-ab3d-78f2c7366392/kids/2b2aab04-73a4-4ec1-b1b5-2e68269bf316/tracks?start=0&limit=100
+> Request: start, limit, 用于分页
 
 ``` json
 
-[{
-        "score": 61,
-        "rank": 1,
-        "stage": 1,
-        "credit": 100,
-        "likes": 0,
-        "userId": null,
-        "eventTypeName": "彩虹拉力赛",
-        "eventName": "A 09-19-2015",
-        "kidId": "46307c40-9b45-475f-b1f2-d452943190cf",
-        "serieName": "2015年个人联赛",
-        "eventTime": 1442639100000,
-        "eventTypeId": null,
-        "kidName": "方弘毅",
-        "schoolType": 0,
-        "schoolName": null,
-        "roundLevelName": null,
-        "roundId": null,
-        "roundLevel": 0,
-        "siteId": null,
-        "avatarUrl": null,
-        "userName": "邵小华",
-        "goldenMedal": "0",
-        "silverMedal": "0",
-        "bronzeMedal": "2",
+[
+    {
+        "eventSeq": 24,
+        "eventTime": 1446651300000,
+        "eventId": "e9415c4d-42fd-462c-888a-8814ea9cc93d",
         "videoLink": null,
-        "trophyList": null
-    }]
+        "userId": "1b2b55bd-d716-4ec1-ab3d-78f2c7366392",
+        "kidId": "2b2aab04-73a4-4ec1-b1b5-2e68269bf316",
+        "achievementList": [
+            {
+                "stage": 1,
+                "roundLevel": 1,
+                "rank": 3,
+                "type": "trophy"
+            },
+            {
+                "stage": 1,
+                "roundLevel": 3,
+                "rank": 3,
+                "type": "trophy"
+            },
+            {
+                "stage": 1,
+                "roundLevel": 3,
+                "rank": 3,
+                "type": "trophy"
+            },
+            {
+                "stage": 1,
+                "roundLevel": 1,
+                "rank": 3,
+                "type": "trophy"
+            },
+            {
+                "stage": 1,
+                "roundLevel": 2,
+                "rank": 1,
+                "type": "trophy"
+            },
+            {
+                "stage": 1,
+                "roundLevel": 2,
+                "rank": 1,
+                "type": "trophy"
+            }
+        ]
+    }
+]
 ```
 > eventTime： 赛事时间
 > credit：单次获得的积分
