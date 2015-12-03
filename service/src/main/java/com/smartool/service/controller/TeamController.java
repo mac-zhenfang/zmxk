@@ -106,6 +106,7 @@ public class TeamController extends BaseController {
 		if(size > me.getMaxTeamMemberSize()) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
 		}
+		team.setMinSize(3);
 		team.setId(CommonUtils.getRandomUUID());
 		return teamDao.create(team);
 	}
