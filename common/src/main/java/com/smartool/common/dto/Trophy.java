@@ -6,11 +6,7 @@ public class Trophy implements Achievement {
 	private int stage;
 	
 	private int roundLevel;
-	
-	private String roundLevelName;
-	
-	private String roundId;
-	
+		
 	private int rank;
 
 	
@@ -31,14 +27,6 @@ public class Trophy implements Achievement {
 		this.roundLevel = roundLevel;
 	}
 
-	public String getRoundId() {
-		return roundId;
-	}
-
-	public void setRoundId(String roundId) {
-		this.roundId = roundId;
-	}
-
 	public int getRank() {
 		return rank;
 	}
@@ -47,13 +35,7 @@ public class Trophy implements Achievement {
 		this.rank = rank;
 	}
 
-	public String getRoundLevelName() {
-		return roundLevelName;
-	}
 
-	public void setRoundLevelName(String roundLevelName) {
-		this.roundLevelName = roundLevelName;
-	}
 
 	@Override
 	public Type getType() {

@@ -10,7 +10,9 @@ public class Grade extends BaseGrade {
 	
 	private String videoLink;
 	
-	private List<Trophy> trophyList;
+	
+	
+	private List<Achievement> achievementList;
 
 	public int getCredit() {
 		return credit;
@@ -28,12 +30,12 @@ public class Grade extends BaseGrade {
 		this.likes = likes;
 	}
 
-	public List<Trophy> getTrophyList() {
-		return trophyList;
+	public List<Achievement> getAchievementList() {
+		return achievementList;
 	}
 
-	public void setTrophyList(List<Trophy> trophyList) {
-		this.trophyList = trophyList;
+	public void setAchievementList(List<Achievement> achievementList) {
+		this.achievementList = achievementList;
 	}
 
 	public String getVideoLink() {

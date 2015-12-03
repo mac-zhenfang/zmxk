@@ -1,6 +1,7 @@
 package com.smartool.service.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.smartool.common.dto.BaseGrade;
@@ -49,6 +50,8 @@ public interface UserDao {
 	int getLikeNum(String userId);
 	
 	boolean existUserInLike(String toUserId, String fromUserId);
+	
+	List<Map<String, Object>> getUserTracks(String userId, int start, int limit);
 	
 	void updateLikes(String kidId, String toUserId, int num);
 	

@@ -12,6 +12,8 @@ public class Event extends BaseDateTrackingBean {
 	private Date eventTime;
 
 	private int quota;
+	
+	private int eventSeq;
 
 	private List<Attendee> attendees;
 
@@ -176,5 +178,13 @@ public class Event extends BaseDateTrackingBean {
 
 	public void setEventShortName(String eventShortName) {
 		this.eventShortName = eventShortName;
+	}
+
+	public int getSeq() {
+		return eventSeq;
+	}
+
+	public void setSeq(int seq) {
+		this.eventSeq = seq;
 	}
 }

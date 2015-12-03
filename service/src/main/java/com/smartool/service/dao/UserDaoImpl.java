@@ -14,6 +14,7 @@ import com.smartool.common.dto.CreditRule;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
+import com.smartool.common.dto.Track;
 import com.smartool.common.dto.User;
 import com.smartool.common.dto.UserStat;
 import com.smartool.service.CommonUtils;
@@ -26,10 +27,10 @@ public class UserDaoImpl implements UserDao {
 
 	@Autowired
 	private KidDao kidDao;
-	
+
 	@Autowired
 	private Jedis redis;
-	
+
 	private static final String TEMP_LIKE_USERS = "temp_like_users";
 
 	private User getUserInternal(String userId) {
@@ -161,12 +162,12 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<BaseGrade> getBaseGradesByEventType(String eventTypeId, int  start, int limit) {
+	public List<BaseGrade> getBaseGradesByEventType(String eventTypeId, int start, int limit) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("id", eventTypeId);
 		params.put("start", start);
 		params.put("limit", limit);
-		
+
 		List<BaseGrade> grades = sqlSession.selectList("USER.getBaseGrades", params);
 		return grades;
 	}
@@ -192,7 +193,7 @@ public class UserDaoImpl implements UserDao {
 	public int getLikeNum(String userId) {
 		User user = getUserInternal(userId);
 		long tempLikeSize = redis.scard(userId);
-		return (int)tempLikeSize + user.getLikes();
+		return (int) tempLikeSize + user.getLikes();
 	}
 
 	@Override
@@ -217,12 +218,21 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public Set<String> getTempLikeUsers() {
-		return 	redis.smembers(TEMP_LIKE_USERS);
+		return redis.smembers(TEMP_LIKE_USERS);
 	}
 
 	@Override
 	public int getTempLikeNum(String key) {
 		long tempLikeSize = redis.scard(key);
-		return (int)tempLikeSize;
+		return (int) tempLikeSize;
+	}
+
+	@Override
+	public List<Map<String, Object>> getUserTracks(String kidId, int start, int limit) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("kidId", kidId);
+		params.put("start", start);
+		params.put("limit", limit);
+		return sqlSession.selectList("USER.getTracks", params);
 	}
 }

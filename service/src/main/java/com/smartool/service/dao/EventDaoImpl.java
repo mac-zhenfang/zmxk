@@ -24,6 +24,8 @@ public class EventDaoImpl implements EventDao {
 
 	@Override
 	public Event createEvent(Event event) {
+		int count = sqlSession.selectOne("EVENT.selectEventCount", event.getSiteId());
+		event.setSeq(count + 1);
 		sqlSession.selectOne("EVENT.create", event);
 		return getEventInternal(event.getId());
 	}

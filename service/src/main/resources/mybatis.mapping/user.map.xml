@@ -34,9 +34,12 @@
 		select * from users
 	</select>
 	<select id="query" parameterType="Map" resultMap="user">
-		SELECT kids.likes as likes, users.id as userId, users.name as userName, mobileNum,
-		location, roleId, siteId, status, credit, goldenMedal, silverMedal,
-		bronzeMedal, users.maxTeamMemberSize as maxTeamMemberSize, users.createdTime as userCreatedTime,
+		SELECT kids.likes as likes, users.id as userId, users.name as
+		userName, mobileNum,
+		location, roleId, siteId, status, credit,
+		goldenMedal, silverMedal,
+		bronzeMedal, users.maxTeamMemberSize as
+		maxTeamMemberSize, users.createdTime as userCreatedTime,
 		users.lastModifiedTime as userLastModifiedTime,
 		kids.id as kidId,
 		kids.name as kidName, schoolType, schoolName, kids.createdTime
@@ -79,39 +82,69 @@
 
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
-		select u.maxTeamMemberSize as maxTeamMemberSize, k.likes as likes, u.name as userName, k.id as kidId, k.name as kidName, e.name as
+		select u.maxTeamMemberSize as maxTeamMemberSize, k.likes as
+		likes, u.name as userName, k.id as kidId, k.name as kidName, e.name as
 		eventName, e.stage as stage, et.name as eventTypeName, s.name as
 		serieName, e.eventTime
 		as eventTime, a.rank as rank, a.score as score,
 		cr.credit as credit,
 		cr.goldenMedal as goldenMedal, cr.silverMedal as
-		silverMedal, r.id as roundId, r.levelName as roundLevelName, r.level as roundLevel,
-		cr.bronzeMedal as bronzeMedal from creditRecords cr, users
+		silverMedal, r.id as roundId, r.levelName as roundLevelName, r.level
+		as roundLevel,
+		cr.bronzeMedal as bronzeMedal from creditRecords cr,
+		users
 		u, kids k,
-		events e, eventTypes et, series s, attendees a LEFT JOIN rounds r on a.roundId=r.id where
-		e.eventTypeId=et.id and s.id = e.seriesId and a.eventId=cr.eventId
+		events e, eventTypes et, series s, attendees a LEFT
+		JOIN rounds r on a.roundId=r.id where
+		e.eventTypeId=et.id and s.id =
+		e.seriesId and a.eventId=cr.eventId
 		and
-		a.kidId=k.id and k.userId=cr.userId and e.id=cr.eventId and
-		cr.userId=u.id and cr.userId = #{id} and cr.creditRuleType='EVENT' and
+		a.kidId=k.id and
+		k.userId=cr.userId and e.id=cr.eventId and
+		cr.userId=u.id and cr.userId
+		= #{id} and cr.creditRuleType='EVENT' and
 		cr.status=0
 	</select>
 	<select id="getBaseGrades" parameterType="Map"
 		resultType="com.smartool.common.dto.BaseGrade">
-		select e.id as eventId, e.eventTime as eventTime, et.id as eventTypeId, cr.`bronzeMedal` as
-		bronzeMedal, cr.`attendeeId` as attendeeId,
+		select e.id as eventId, e.eventTime as eventTime, et.id as
+		eventTypeId, cr.`bronzeMedal` as
+		bronzeMedal, cr.`attendeeId` as
+		attendeeId,
 		cr.`rank` as rank, cr.score
-		as score, cr.`silverMedal` as silverMedal,cr.credit as credit,
+		as score, cr.`silverMedal` as
+		silverMedal,cr.credit as credit,
 		cr.`goldenMedal` as
-		goldenMedal, et.name as eventTypeName,k.id as kidId, k.name as
-		kidName, k.likes as likes, u.name as userName, e.stage as
-		stage, k.userId as userId, k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as roundLevel, e.siteId as siteId, s.name as siteName from events e,
+		goldenMedal,
+		et.name as eventTypeName,k.id as kidId, k.name as
+		kidName, k.likes as
+		likes, u.name as userName, e.stage as
+		stage, k.userId as userId,
+		k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as
+		schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as
+		roundLevel, e.siteId as siteId, s.name as siteName from events e,
 		creditRecords cr,
 		eventTypes et, users u, kids
-		k , sites s, attendees a left join rounds r on a.roundId = r.id where k.id=a.kidId
-		and et.id=e.eventTypeId and
+		k , sites s, attendees a
+		left join rounds r on a.roundId = r.id where k.id=a.kidId
+		and
+		et.id=e.eventTypeId and
 		cr.attendeeId=a.id and s.id=et.siteId and
-		e.id = cr.eventId and k.userId=u.id and 
-		et.id = #{id} and cr.status=0 order by eventTime limit #{start}, #{limit}
+		e.id =
+		cr.eventId and k.userId=u.id and
+		et.id = #{id} and cr.status=0 order by
+		eventTime limit #{start}, #{limit}
+	</select>
+	<select id="getTracks" parameterType="Map"
+		resultType="Map">
+		select k.id as kidId, e.seq as eventSeq, cr.attendeeId as attendeeId, cr.credit as credit,
+		e.eventTime as eventTime, e.id as eventId, cr.userId as userId,
+		ecr.stage as stage, ecr.roundLevel as roundLevel,cr.rank as rank,
+		cr.score as score from creditRecords cr JOIN events e on cr.eventId =
+		e.id LEFT JOIN eventCreditRules ecr on cr.creditRuleId=ecr.`id` JOIN
+		attendees a on cr.attendeeId=a.id JOIN kids k on a.kidId=k.id where
+		k.id=#{kidId} and cr.status=0
+		order by e.eventTime limit #{start}, #{limit}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.LoginUser">
 		insert users (id, name,
@@ -136,8 +169,10 @@
 	<select id="getUserStat" parameterType="String"
 		resultType="com.smartool.common.dto.UserStat">
 		select count(1) as totalAttend,
-		min(a.score) as fatestScore, u.credit as credit from attendees a, events e, users u where
-		a.userId = u.id and a.eventId=e.id and u.id =
+		min(a.score) as fatestScore,
+		u.credit as credit from attendees a, events e, users u where
+		a.userId =
+		u.id and a.eventId=e.id and u.id =
 		#{id} and a.score >0
 	</select>
 	<update id="updatePassword" parameterType="com.smartool.common.dto.LoginUser">
@@ -166,8 +201,9 @@
 		where id =
 		#{id};
 	</update>
-	<update id="updateLikes"  parameterType="Map">
+	<update id="updateLikes" parameterType="Map">
 		update kids
-		set likes = likes+#{likes} where id = #{kidId}
+		set likes =
+		likes+#{likes} where id = #{kidId}
 	</update>
 </mapper>

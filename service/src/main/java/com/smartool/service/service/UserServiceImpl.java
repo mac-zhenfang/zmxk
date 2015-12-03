@@ -2,11 +2,14 @@ package com.smartool.service.service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.Kid;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.common.dto.Track;
 import com.smartool.common.dto.Trophy;
 import com.smartool.common.dto.User;
 import com.smartool.common.dto.UserGrade;
@@ -40,7 +44,6 @@ import com.smartool.service.dao.UserDao;
 
 import net.glxn.qrgen.core.image.ImageType;
 import net.glxn.qrgen.javase.QRCode;
-import redis.clients.jedis.Jedis;
 
 public class UserServiceImpl implements UserService {
 	@Autowired
@@ -449,9 +452,9 @@ public class UserServiceImpl implements UserService {
 				Trophy trophy = new Trophy();
 				trophy.setStage(grade.getStage());
 				trophy.setRank(grade.getRank());
-				trophy.setRoundId(grade.getRoundId());
+				//trophy.setRoundId(grade.getRoundId());
 				trophy.setRoundLevel(grade.getRoundLevel());
-				trophy.setRoundLevelName(grade.getRoundLevelName());
+				//trophy.setRoundLevelName(grade.getRoundLevelName());
 				credit+=grade.getCredit();
 				trophyList.add(trophy);
 			}
@@ -480,5 +483,58 @@ public class UserServiceImpl implements UserService {
 					ErrorMessages.USER_ALREADY_LIKE_YOU);
 		}
 		userDao.incrLike(fromUserId, sb.toString());
+	}
+
+	@Override
+	public List<Track> getTracks(String userId, String kidId, int start, int limit) {
+		List<Map<String, Object>> tracks = userDao.getUserTracks(kidId, start, limit);
+		
+		
+		SortedMap<String, List<Map<String, Object>>> tracksMapPerEvent = new TreeMap<>();
+		
+		for(Map<String, Object> track : tracks) {
+			String eventId = (String) track.get("eventId");
+			long d = ((Date)track.get("eventTime")).getTime();
+			int eventSeq = (int)track.get("eventSeq");
+			String key = joiner.join(eventId, d, eventSeq);
+			List<Map<String, Object>> trackPerEventLst = null;
+			if(!tracksMapPerEvent.containsKey(key)) {
+				trackPerEventLst = new ArrayList<>();
+			} else {
+				trackPerEventLst = tracksMapPerEvent.get(key);
+			}
+			trackPerEventLst.add(track);
+			tracksMapPerEvent.put(key, trackPerEventLst);
+		}
+		
+		List<Track> retTracks = new ArrayList<>();
+		
+		for(Entry<String, List<Map<String, Object>>> entry : tracksMapPerEvent.entrySet()) {
+			Track track = new Track();
+			List<Achievement> achievements = new ArrayList<>();
+			String key = entry.getKey();
+			List<String> pair1 = splitter.splitToList(key);
+			String eventId = pair1.get(0);
+			String eventTime = pair1.get(1);
+			int seq = Integer.parseInt(pair1.get(2));
+			Date d = new Date(Long.parseLong(eventTime));
+			track.setEventId(eventId);
+			track.setEventTime(d);
+			track.setKidId(kidId);
+			track.setEventSeq(seq);
+			track.setUserId(userId);
+			List<Map<String, Object>> fromTrackLst = entry.getValue();
+			for(Map<String, Object> t : fromTrackLst) {
+				Trophy trophy = new Trophy();
+				trophy.setRoundLevel((int)t.get("roundLevel"));
+				trophy.setRank((int)t.get("rank"));
+				trophy.setStage((int)t.get("stage"));
+				achievements.add(trophy);
+			}
+			track.setAchievementList(achievements);
+			retTracks.add(track);
+		}
+		
+		return retTracks;
 	}
 }

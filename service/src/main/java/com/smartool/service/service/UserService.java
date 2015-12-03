@@ -7,6 +7,7 @@ import com.smartool.common.dto.Cover;
 import com.smartool.common.dto.Grade;
 import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.SecurityCode;
+import com.smartool.common.dto.Track;
 import com.smartool.common.dto.User;
 
 public interface UserService {
@@ -29,6 +30,8 @@ public interface UserService {
 	User update(User user);
 	
 	void delete(String userId);
+	
+	List<Track> getTracks(String userId, String kidId,  int start, int limit);
 	
 	List<Grade> getGrades(String userId, String kidId);
 	
