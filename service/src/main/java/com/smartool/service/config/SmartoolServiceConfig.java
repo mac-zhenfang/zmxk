@@ -461,4 +461,14 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		long eventExpireInteval = Long.parseLong(eventExpireIntevalStr);
 		return eventExpireInteval;
 	}
+	
+	public String getDefaultUserName(){
+		String userName = env.getProperty("default_user_name", "智马小伙伴");
+		return userName;
+	}
+	
+	public String getDefaultKidName(){
+		String userName = env.getProperty("default_user_name", "小智马");
+		return userName;
+	}
 }

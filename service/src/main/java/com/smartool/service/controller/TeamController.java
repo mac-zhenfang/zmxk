@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Strings;
 import com.smartool.common.dto.Kid;
+import com.smartool.common.dto.LoginUser;
 import com.smartool.common.dto.Team;
 import com.smartool.common.dto.User;
 import com.smartool.service.CommonUtils;
@@ -24,6 +26,7 @@ import com.smartool.service.config.SmartoolServiceConfig;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.KidDao;
 import com.smartool.service.dao.TeamDao;
+import com.smartool.service.dao.UserDao;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -31,6 +34,9 @@ public class TeamController extends BaseController {
 
 	@Autowired
 	private TeamDao teamDao;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Autowired
 	SmartoolServiceConfig config;
@@ -59,10 +65,28 @@ public class TeamController extends BaseController {
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}/members", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public void joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
+	public Team joinTeam(@PathVariable String teamId, @RequestBody Kid kid) {
+		User me = UserSessionManager.getSessionUser();
 		Team team = teamDao.get(teamId);
 		int size = team.getSize();
 		List<String> members = teamDao.getMembers(teamId);
+		boolean duplicateMobile = false;
+		for(String kidId : members) {
+			if(kidId.equals(kid.getId())) {
+				duplicateMobile = true;
+				break;
+			}
+		}
+		kid = kidDao.get(kid.getId());
+		User kidUser = userDao.getUserById(kid.getUserId());
+		if(kidUser.getId().equals(me.getId())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CAN_JOIN_OWNER_SELF);
+		}
+		
+		if(duplicateMobile) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_TEAM_MEMBER);
+		}
+		
 		Kid selectKid = kidDao.get(kid.getId());
 		if(null == selectKid) {
 			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.NOT_ALOW_MANIPULATE_TEAM);
@@ -79,7 +103,79 @@ public class TeamController extends BaseController {
 		}
 		teamDao.addMember(kid, teamId);
 		kidDao.setTeams(kid.getId(), teamId);
+		team = teamDao.get(teamId);
+		return team;
 	}
+	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/teams/{teamId}/join", method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public void mobileJoin(@PathVariable String teamId, @RequestBody User user) {
+		User me = UserSessionManager.getSessionUser();
+		Team team = teamDao.get(teamId);
+		int size = team.getSize();
+		if(Strings.isNullOrEmpty(user.getMobileNum())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.MISS_MOBILE_NUM);
+		}
+		
+		if(me.getMobileNum().equals(user.getMobileNum())) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CAN_JOIN_OWNER_SELF);
+		}
+		
+		List<String> members = teamDao.getMembers(teamId);
+		boolean duplicateMobile = false;
+		for(String kidId : members) {
+			Kid kid = kidDao.get(kidId);
+			if(null != kid) {
+				String mobileNum = userDao.getUserById(kid.getUserId()).getMobileNum();
+				if(mobileNum.equals(user.getMobileNum())) {
+					duplicateMobile = true;
+					break;
+				}
+			}
+			
+		}
+		
+		if(duplicateMobile) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_TEAM_MEMBER);
+		}
+//		
+		int currentSize = members.size();
+		
+		if(currentSize + 1 > size) {
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
+		}
+		
+		User existedUser = userDao.getUserByMobileNumber(user.getMobileNum());
+		
+		if(null == existedUser) {
+			user.setName(config.getDefaultUserName());
+			user.setId(CommonUtils.getRandomUUID());
+			LoginUser loginUser = new LoginUser();
+			loginUser.setName(config.getDefaultUserName());
+			loginUser.setMobileNum(user.getMobileNum());
+			loginUser.setId(CommonUtils.getRandomUUID());
+			loginUser.setLocation(me.getLocation());
+			loginUser.setIdp(1);
+			loginUser.setRoleId("0"); 
+			loginUser.setPassword(CommonUtils.encryptBySha2(config.getDefaultPassword()));
+			user = userDao.createUser(loginUser);
+		}
+		
+		List<Kid> kids = kidDao.listByUserId(user.getId());
+		if(kids.size() == 0 ) {
+			Kid kid = new Kid();
+			kid.setId(CommonUtils.getRandomUUID());
+			kid.setUserId(user.getId());
+			kid.setName(config.getDefaultKidName());
+			kid = kidDao.create(kid);
+			kids.add(kid);
+		}
+		teamDao.addMember(kids.get(0), teamId);
+		kidDao.setTeams(kids.get(0).getId(), teamId);	
+	}
+	
+	
 	
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}/members/{kidId}", method = RequestMethod.DELETE, produces = {

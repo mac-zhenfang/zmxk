@@ -45,7 +45,7 @@ public class ErrorMessages {
 	public static final String NOT_REACH_MIN_TEAM_SIZE = "10040";
 	public static final String NOT_AUTHORIZED_TO_UPDATE_USER = "10041";
 	public static final String NOT_ALLOWED_TO_LIKE_THIS_USER = "10042";
-
-
-
+	public static final String MISS_MOBILE_NUM = "10043";
+	public static final String DUPLICATE_TEAM_MEMBER = "10044";
+	public static final String CAN_JOIN_OWNER_SELF = "10045";
 }
