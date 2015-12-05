@@ -16,3 +16,5 @@ ALTER TABLE attendees ADD videoLink varchar(64) default null;
 ALTER TABLE kids add coverVideoLink varchar(64) default null;
 ALTER TABLE events add seq int(3);
 ALTER TABLE events_hist add seq int(3);
+ALTER TABLE kids ADD kidNum int(1) unique;
+ALTER TABLE sites ADD siteNum int(1) unique;

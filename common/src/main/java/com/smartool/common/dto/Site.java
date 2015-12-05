@@ -8,6 +8,8 @@ public class Site extends BaseDateTrackingBean {
 	
 	private String location;
 	
+	private int siteNum;
+	
 	public String getId() {
 		return id;
 	}
@@ -30,5 +32,13 @@ public class Site extends BaseDateTrackingBean {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public int getSiteNum() {
+		return siteNum;
+	}
+
+	public void setSiteNum(int siteNum) {
+		this.siteNum = siteNum;
 	}
 }

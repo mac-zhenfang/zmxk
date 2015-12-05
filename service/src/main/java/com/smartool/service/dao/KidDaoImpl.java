@@ -19,13 +19,31 @@ import com.smartool.common.dto.Kid;
 public class KidDaoImpl implements KidDao {
 	@Autowired
 	private SqlSession sqlSession;
+	
 
 	static ObjectMapper om = new ObjectMapper();
 
 	@Override
 	public Kid create(Kid kid) {
-		sqlSession.insert("KID.create", kid);
-		return sqlSession.selectOne("KID.getById", kid.getId());
+		int i = 0;
+		Kid retKid = null;
+		int retryCount = 3;
+		Exception throwE = null;
+		while(i++<3)
+		try {
+			int kidNum = sqlSession.selectOne("getKidsCount");
+			kid.setKidNum(kidNum);
+			sqlSession.insert("KID.create", kid);
+			retKid = sqlSession.selectOne("KID.getById", kid.getId());
+			break;
+		}catch(Exception e) {
+			throwE = e;
+		}
+		if(i == retryCount && throwE!=null) {
+			throw new RuntimeException(throwE);
+		}
+		
+		return retKid;
 	}
 
 	@Override

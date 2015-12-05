@@ -110,70 +110,70 @@ public class TeamController extends BaseController {
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/teams/{teamId}/join", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public void mobileJoin(@PathVariable String teamId, @RequestBody User user) {
-		User me = UserSessionManager.getSessionUser();
-		Team team = teamDao.get(teamId);
-		int size = team.getSize();
-		if(Strings.isNullOrEmpty(user.getMobileNum())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.MISS_MOBILE_NUM);
-		}
-		
-		if(me.getMobileNum().equals(user.getMobileNum())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CAN_JOIN_OWNER_SELF);
-		}
-		
-		List<String> members = teamDao.getMembers(teamId);
-		boolean duplicateMobile = false;
-		for(String kidId : members) {
-			Kid kid = kidDao.get(kidId);
-			if(null != kid) {
-				String mobileNum = userDao.getUserById(kid.getUserId()).getMobileNum();
-				if(mobileNum.equals(user.getMobileNum())) {
-					duplicateMobile = true;
-					break;
-				}
+		public void mobileJoin(@PathVariable String teamId, @RequestBody User user) {
+			User me = UserSessionManager.getSessionUser();
+			Team team = teamDao.get(teamId);
+			int size = team.getSize();
+			if(Strings.isNullOrEmpty(user.getMobileNum())) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.MISS_MOBILE_NUM);
 			}
 			
+			if(me.getMobileNum().equals(user.getMobileNum())) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.CAN_JOIN_OWNER_SELF);
+			}
+			
+			List<String> members = teamDao.getMembers(teamId);
+			boolean duplicateMobile = false;
+			for(String kidId : members) {
+				Kid kid = kidDao.get(kidId);
+				if(null != kid) {
+					String mobileNum = userDao.getUserById(kid.getUserId()).getMobileNum();
+					if(mobileNum.equals(user.getMobileNum())) {
+						duplicateMobile = true;
+						break;
+					}
+				}
+				
+			}
+			
+			if(duplicateMobile) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_TEAM_MEMBER);
+			}
+	//		
+			int currentSize = members.size();
+			
+			if(currentSize + 1 > size) {
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
+			}
+			
+			User existedUser = userDao.getUserByMobileNumber(user.getMobileNum());
+			
+			if(null == existedUser) {
+				user.setName(config.getDefaultUserName());
+				user.setId(CommonUtils.getRandomUUID());
+				LoginUser loginUser = new LoginUser();
+				loginUser.setName(config.getDefaultUserName());
+				loginUser.setMobileNum(user.getMobileNum());
+				loginUser.setId(CommonUtils.getRandomUUID());
+				loginUser.setLocation(me.getLocation());
+				loginUser.setIdp(1);
+				loginUser.setRoleId("0"); 
+				loginUser.setPassword(CommonUtils.encryptBySha2(config.getDefaultPassword()));
+				user = userDao.createUser(loginUser);
+			}
+			
+			List<Kid> kids = kidDao.listByUserId(user.getId());
+			if(kids.size() == 0 ) {
+				Kid kid = new Kid();
+				kid.setId(CommonUtils.getRandomUUID());
+				kid.setUserId(user.getId());
+				kid.setName(config.getDefaultKidName());
+				kid = kidDao.create(kid);
+				kids.add(kid);
+			}
+			teamDao.addMember(kids.get(0), teamId);
+			kidDao.setTeams(kids.get(0).getId(), teamId);	
 		}
-		
-		if(duplicateMobile) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.DUPLICATE_TEAM_MEMBER);
-		}
-//		
-		int currentSize = members.size();
-		
-		if(currentSize + 1 > size) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EXCEED_MAX_TEAM_SIZE);
-		}
-		
-		User existedUser = userDao.getUserByMobileNumber(user.getMobileNum());
-		
-		if(null == existedUser) {
-			user.setName(config.getDefaultUserName());
-			user.setId(CommonUtils.getRandomUUID());
-			LoginUser loginUser = new LoginUser();
-			loginUser.setName(config.getDefaultUserName());
-			loginUser.setMobileNum(user.getMobileNum());
-			loginUser.setId(CommonUtils.getRandomUUID());
-			loginUser.setLocation(me.getLocation());
-			loginUser.setIdp(1);
-			loginUser.setRoleId("0"); 
-			loginUser.setPassword(CommonUtils.encryptBySha2(config.getDefaultPassword()));
-			user = userDao.createUser(loginUser);
-		}
-		
-		List<Kid> kids = kidDao.listByUserId(user.getId());
-		if(kids.size() == 0 ) {
-			Kid kid = new Kid();
-			kid.setId(CommonUtils.getRandomUUID());
-			kid.setUserId(user.getId());
-			kid.setName(config.getDefaultKidName());
-			kid = kidDao.create(kid);
-			kids.add(kid);
-		}
-		teamDao.addMember(kids.get(0), teamId);
-		kidDao.setTeams(kids.get(0).getId(), teamId);	
-	}
 	
 	
 	

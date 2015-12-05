@@ -25,6 +25,7 @@
 			<result property="schoolType" column="schoolType" />
 			<result property="schoolName" column="schoolName" />
 			<result property="userId" column="userId" />
+			<result property="kidNum" column="kidNum" />
 			<result property="likes" column="likes" />
 			<result property="createdTime" column="kidCreatedTime" />
 			<result property="lastModifiedTime" column="kidLastModifiedTime" />
@@ -41,7 +42,7 @@
 		bronzeMedal, users.maxTeamMemberSize as
 		maxTeamMemberSize, users.createdTime as userCreatedTime,
 		users.lastModifiedTime as userLastModifiedTime,
-		kids.id as kidId,
+		kids.id as kidId,kids.kidNum as kidNum,
 		kids.name as kidName, schoolType, schoolName, kids.createdTime
 		as
 		userCreatedTime, kids.lastModifiedTime as userLastModifiedTime
@@ -83,7 +84,7 @@
 	<select id="getGrade" parameterType="String"
 		resultType="com.smartool.common.dto.Grade">
 		select u.maxTeamMemberSize as maxTeamMemberSize, k.likes as
-		likes, u.name as userName, k.id as kidId, k.name as kidName, e.name as
+		likes, u.name as userName, k.id as kidId, k.kidNum as kidNum, k.name as kidName, e.name as
 		eventName, e.stage as stage, et.name as eventTypeName, s.name as
 		serieName, e.eventTime
 		as eventTime, a.rank as rank, a.score as score,
@@ -120,7 +121,7 @@
 		kidName, k.likes as
 		likes, u.name as userName, e.stage as
 		stage, k.userId as userId,
-		k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.schoolName as
+		k.avatarUrl as avatarUrl, k.schoolType as schoolType, k.kidNum as kidNum, k.schoolName as
 		schoolName, r.id as roundId, r.levelName as roundLevelName, r.level as
 		roundLevel, e.siteId as siteId, s.name as siteName from events e,
 		creditRecords cr,
