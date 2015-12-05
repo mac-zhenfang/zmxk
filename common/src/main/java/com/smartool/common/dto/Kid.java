@@ -13,7 +13,7 @@ public class Kid extends BaseDateTrackingBean {
 	private String coverVideoLink;
 	private int likes;
 	private int kidNum;
-	
+	private String coverUrl;
 	public Kid() {
 	}
 
@@ -111,5 +111,13 @@ public class Kid extends BaseDateTrackingBean {
 
 	public void setKidNum(int kidNum) {
 		this.kidNum = kidNum;
+	}
+
+	public String getCoverUrl() {
+		return coverUrl;
+	}
+
+	public void setCoverUrl(String coverUrl) {
+		this.coverUrl = coverUrl;
 	}
 }

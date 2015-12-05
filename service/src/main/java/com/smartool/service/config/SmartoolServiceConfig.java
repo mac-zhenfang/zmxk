@@ -70,8 +70,8 @@ import com.smartool.service.dao.TeamDao;
 import com.smartool.service.dao.TeamDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
-import com.smartool.service.service.AvatarService;
-import com.smartool.service.service.AvatarServiceImpl;
+import com.smartool.service.service.ImageService;
+import com.smartool.service.service.ImageServiceAliyunImpl;
 import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
@@ -158,8 +158,8 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean
-	public AvatarService getAvatarService() {
-		return new AvatarServiceImpl();
+	public ImageService getAvatarService() {
+		return new ImageServiceAliyunImpl();
 	}
 
 	@Bean
@@ -427,6 +427,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public String getAvatarBucket() {
 		return env.getProperty("oss_bucket_name", "ismartoolavatartest");
 	}
+	
+	public String getCoverBucket() {
+		return env.getProperty("oss_cover_bucket_name", "ismartoolcovertest");
+	}
 
 	public String getAvatarCName() {
 		return env.getProperty("avatar_cname", "img.ismartool.cn");
@@ -434,6 +438,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 
 	public String getAvatarFileFormatSuffix() {
 		return env.getProperty("avatar_file_format_suffix", "png");
+	}
+	
+	public String getCoverFileFormatSuffix() {
+		return env.getProperty("cover_file_format_suffix", "png");
 	}
 	
 	public boolean needPassword() {

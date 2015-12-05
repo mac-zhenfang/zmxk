@@ -4,11 +4,13 @@
 
 <mapper namespace="KID">
 	<select id="create" parameterType="com.smartool.common.dto.Kid">
-		insert kids (id, name,age,gender,
+		insert kids (id,
+		name,age,gender,
 		schoolType, schoolName,userId,kidNum,
 		createdTime,lastModifiedTime)
 		values
-		(#{id},#{name},#{age}, #{gender}, #{schoolType},#{schoolName},#{userId},#{kidNum},now(),now())
+		(#{id},#{name},#{age}, #{gender},
+		#{schoolType},#{schoolName},#{userId},#{kidNum},now(),now())
 	</select>
 	<select id="update" parameterType="com.smartool.common.dto.Kid">
 		update kids
@@ -20,7 +22,8 @@
 		#{id};
 	</select>
 	<select id="getTeams" parameterType="String" resultType="String">
-		select teams from kids where id = #{id}
+		select
+		teams from kids where id = #{id}
 	</select>
 	<select id="getKidsCount" resultType="int">
 		select count(1) from kids
@@ -32,9 +35,15 @@
 		where id = #{id};
 	</update>
 	<update id="setAvatar" parameterType="com.smartool.common.dto.Kid">
-	update kids
+		update kids
 		set
 		avatarUrl=#{avatarUrl}
+		where id = #{id};
+	</update>
+	<update id="setCover" parameterType="Map">
+		update kids
+		set
+		coverUrl=#{coverUrl}
 		where id = #{id};
 	</update>
 	<select id="remove" parameterType="String">
@@ -71,12 +80,15 @@
 		WHERE id=#{kidId} AND teamId=#{teamId}
 	</update>
 	<update id="firstTimeAttend" parameterType="Map">
-		UPDATE kids SET firstTimeAttendEvent=#{firstTimeAttendEvent}
+		UPDATE kids SET
+		firstTimeAttendEvent=#{firstTimeAttendEvent}
 		WHERE id=#{kidId}
 	</update>
-	
-	<select id="getDistinctSchoolName" parameterType="int" resultType="String">
-		select distinct schoolName from kids where schoolType = #{schoolType}
+
+	<select id="getDistinctSchoolName" parameterType="int"
+		resultType="String">
+		select distinct schoolName from kids where schoolType =
+		#{schoolType}
 	</select>
-	
+
 </mapper>

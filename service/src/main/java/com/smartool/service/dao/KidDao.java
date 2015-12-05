@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.smartool.common.dto.Kid;
-import com.smartool.common.dto.Team;
 
 public interface KidDao {
 	Kid create(Kid kid);
@@ -22,6 +21,8 @@ public interface KidDao {
 	void removeByUserId(String userId);
 
 	Kid updateAvatarUrl(String kidId, String avatarUrl);
+	
+	Kid updateCoverUrl(String kidId, String coverUrl);
 	
 	List<String> getDistinctSchoolName(int schoolType);
 	

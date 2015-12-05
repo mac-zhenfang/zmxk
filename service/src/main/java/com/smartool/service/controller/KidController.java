@@ -26,7 +26,7 @@ import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.KidDao;
-import com.smartool.service.service.AvatarService;
+import com.smartool.service.service.ImageService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -36,7 +36,7 @@ public class KidController extends BaseController {
 	private KidDao kidDao;
 
 	@Autowired
-	private AvatarService avatarService;
+	private ImageService avatarService;
 
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -74,7 +74,7 @@ public class KidController extends BaseController {
 		return retKid;
 	}
 
-	@ApiScope(userScope = UserRole.ADMIN)
+	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}/avatar", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public Avatar uploadKidAvatar(@PathVariable String userId, @PathVariable String kidId,
@@ -92,6 +92,23 @@ public class KidController extends BaseController {
 		}
 	}
 	
+	@ApiScope(userScope = UserRole.NORMAL_USER)
+	@RequestMapping(value = "/users/{userId}/kids/{kidId}/cover", method = RequestMethod.POST, produces = {
+			MediaType.APPLICATION_JSON_VALUE })
+	public Avatar uploadKidCover(@PathVariable String userId, @PathVariable String kidId,
+			@RequestBody BufferedImage image) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(image, "png", baos);
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			//System.out.println("~~~~~~~~ image length " + imageInByte.length);
+			InputStream avatar = new ByteArrayInputStream(imageInByte);
+			return avatarService.uploadCover(userId, kidId, avatar);
+		} finally {
+			baos.close();
+		}
+	}
 	
 	@ApiScope(userScope = UserRole.ADMIN)
 	@RequestMapping(value = "/users/{userId}/kids/{schoolType}/schools", method = RequestMethod.GET)

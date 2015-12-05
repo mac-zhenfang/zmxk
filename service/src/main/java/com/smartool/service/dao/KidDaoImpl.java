@@ -167,4 +167,13 @@ public class KidDaoImpl implements KidDao {
 				}
 		
 	}
+
+	@Override
+	public Kid updateCoverUrl(String kidId, String coverUrl) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("id", kidId);
+		params.put("coverUrl", coverUrl);
+		sqlSession.update("KID.setCover", params);
+		return get(kidId);
+	}
 }
