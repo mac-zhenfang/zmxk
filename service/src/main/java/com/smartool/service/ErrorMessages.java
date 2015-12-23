@@ -48,4 +48,8 @@ public class ErrorMessages {
 	public static final String MISS_MOBILE_NUM = "10043";
 	public static final String DUPLICATE_TEAM_MEMBER = "10044";
 	public static final String CAN_JOIN_OWNER_SELF = "10045";
+	public static final String JOB_NOT_INITIALIZED = "10046";
+	// contact admin
+	public static final String SERVER_ERROR_CONTACT_ADMIN_JOB_REGISTER_ERROR = "10101";
+
 }

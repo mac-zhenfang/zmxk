@@ -5,10 +5,10 @@
 <mapper namespace="SITE">
 	<select id="create" parameterType="com.smartool.common.dto.Site">
 		insert sites (id,
-		name,location,siteNum,
+		name,location,siteNum,level,
 		createdTime, lastModifiedTime)
 		values
-		(#{id},#{name},#{location},#{siteNum},now(),now())
+		(#{id},#{name},#{location},#{siteNum},#{level},now(),now())
 	</select>
 	<select id="getSitesCount" resultType="int">
 		select count(1) from sites
@@ -18,6 +18,13 @@
 		set
 		name=#{name},
 		location=#{location}
+		where id =
+		#{id};
+	</select>
+	<select id="updateLevel" parameterType="Map">
+		update sites
+		set
+		level=#{level}
 		where id =
 		#{id};
 	</select>

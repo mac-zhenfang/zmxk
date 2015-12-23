@@ -1,0 +1,1 @@
+java -cp "../service-1.0-SNAPSHOT/WEB-INF/lib/*" org.versly.rest.wsdoc.RestDocAssembler --format html --scope all -o web.html classes/org.versly.rest.wsdoc.web-service-api.ser

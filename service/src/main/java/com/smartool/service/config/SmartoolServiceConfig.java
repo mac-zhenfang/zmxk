@@ -70,13 +70,16 @@ import com.smartool.service.dao.TeamDao;
 import com.smartool.service.dao.TeamDaoImpl;
 import com.smartool.service.dao.UserDao;
 import com.smartool.service.dao.UserDaoImpl;
-import com.smartool.service.service.ImageService;
-import com.smartool.service.service.ImageServiceAliyunImpl;
+import com.smartool.service.service.BatchAttendeeComplete;
 import com.smartool.service.service.CreditGenerator;
 import com.smartool.service.service.CreditService;
 import com.smartool.service.service.CreditServiceImpl;
 import com.smartool.service.service.EventBackup;
+import com.smartool.service.service.EventService;
+import com.smartool.service.service.EventServiceImpl;
 import com.smartool.service.service.EventStartNotification;
+import com.smartool.service.service.FileService;
+import com.smartool.service.service.FileServiceAliyunImpl;
 import com.smartool.service.service.LikesAudit;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
@@ -158,11 +161,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	}
 
 	@Bean
-	public ImageService getAvatarService() {
-		return new ImageServiceAliyunImpl();
+	public FileService getAvatarService() {
+		return new FileServiceAliyunImpl();
 	}
 
-	@Bean
+	@Bean(initMethod = "iocInit")
 	public UserService getUserService() {
 		return new UserServiceImpl();
 	}
@@ -170,6 +173,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	@Bean(initMethod = "iocInit")
 	public CreditService getCreditService() {
 		return new CreditServiceImpl();
+	}
+	
+	@Bean(initMethod = "iocInit")
+	public EventService getEventService() {
+		return new EventServiceImpl();
 	}
 
 	@Bean
@@ -328,6 +336,11 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		}
 		return systemProperties;
 	}
+	
+	@Bean
+	public BatchAttendeeComplete getBatchAttendeeComplete() {
+		return new BatchAttendeeComplete();
+	}
 
 	@Bean
 	public SchedulerFactoryBean getSchedulerFactoryBean() throws Exception {
@@ -340,6 +353,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
 		schedulerContextAsMap.put("EventBackup", getEventBackup());
 		schedulerContextAsMap.put("LikesAudit",getLikesAudit());
+		schedulerContextAsMap.put("BatchAttendeeComplete", getBatchAttendeeComplete());
 		// schedulerContextAsMap.put("EventStartNotification",
 		// eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);
@@ -431,14 +445,28 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public String getCoverBucket() {
 		return env.getProperty("oss_cover_bucket_name", "ismartoolcovertest");
 	}
+	
+	public String getExcelBucket() {
+		return env.getProperty("oss_excel_bucket_name", "ismartoolexceltest");
+	}
 
 	public String getAvatarCName() {
 		return env.getProperty("avatar_cname", "img.ismartool.cn");
+	}
+	
+	public String getFileCName() {
+		return env.getProperty("file_cname", "img.ismartool.cn");
 	}
 
 	public String getAvatarFileFormatSuffix() {
 		return env.getProperty("avatar_file_format_suffix", "png");
 	}
+	
+	public String getCsvFileFormatSuffix() {
+		return env.getProperty("excel_file_format_suffix", "csv");
+	}
+	
+	
 	
 	public String getCoverFileFormatSuffix() {
 		return env.getProperty("cover_file_format_suffix", "png");
@@ -478,5 +506,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 	public String getDefaultKidName(){
 		String userName = env.getProperty("default_user_name", "小智马");
 		return userName;
+	}
+	
+	public int getEventCompleteHandleExecutorNum() {
+		String num = env.getProperty("event_complete_handle_executor_num", "10");
+		return Integer.parseInt(num);
 	}
 }

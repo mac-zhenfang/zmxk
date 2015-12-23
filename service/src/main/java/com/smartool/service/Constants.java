@@ -12,4 +12,5 @@ public class Constants {
 	public static final String USER_LOGIN_PATH = "/users/login";
 	public static final int USE_DEFAULT_PASSWORD = 1;
 	public static final int NOT_USE_DEFAULT_PASSWORD = 0;
+	public final static String NULL_TAG_ID = "NULL_TAG_ID";
 }

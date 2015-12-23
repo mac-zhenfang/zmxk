@@ -26,7 +26,7 @@ import com.smartool.service.SmartoolException;
 import com.smartool.service.UserRole;
 import com.smartool.service.controller.annotation.ApiScope;
 import com.smartool.service.dao.KidDao;
-import com.smartool.service.service.ImageService;
+import com.smartool.service.service.FileService;
 
 @RestController
 @RequestMapping(value = "/smartool/api/v1")
@@ -36,7 +36,7 @@ public class KidController extends BaseController {
 	private KidDao kidDao;
 
 	@Autowired
-	private ImageService avatarService;
+	private FileService avatarService;
 
 	@RequestMapping(value = "/users/{userId}/kids", method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })

@@ -32,7 +32,7 @@ public class Event extends BaseDateTrackingBean {
 	private int status;
 
 	private int stage;
-	
+		
 	private boolean isTeam;
 	
 	private boolean isSerieTeam;

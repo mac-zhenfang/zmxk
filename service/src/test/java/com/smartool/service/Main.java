@@ -1,6 +1,7 @@
 package com.smartool.service;
 
 import java.io.File;
+import java.util.UUID;
 
 import org.apache.catalina.startup.Tomcat;
 
@@ -21,5 +22,6 @@ public class Main {
 	    	Main main = new Main();
 
 	        main.startTomcat();
+	    	System.out.println(UUID.fromString("0f3d6550-8048-40a9-bf2c-1b730db0ca3c").hashCode());
 	    }
 }

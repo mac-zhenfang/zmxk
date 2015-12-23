@@ -1446,7 +1446,7 @@ zmxk
 								}
 
 								//console.log("~~~~");
-								console.log(attendee);
+								//console.log(attendee);
 								$scope.editScore();
 								var error_msg = "";
 								var error = false;

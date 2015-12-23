@@ -11,6 +11,15 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -63,7 +72,19 @@ public class UserServiceImpl implements UserService {
 	private final static Joiner joiner = Joiner.on(":");
 	
 	private final static Splitter splitter = Splitter.on(":");
+	
+	@Autowired
+	private Scheduler scheduler;
 
+	public void iocInit() throws SchedulerException {
+		if (scheduler.getTrigger(TriggerKey.triggerKey("LikesAuditJobTimer")) == null) {
+			JobDetail jobDetail = JobBuilder.newJob(LikesAuditJob.class)
+					.withIdentity(JobKey.jobKey("LikesAuditJobTimer")).build();
+			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("LikesAuditJobTimer"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
+			scheduler.scheduleJob(jobDetail, trigger);
+		}
+	}
 	@Override
 	public List<User> listAllUser() {
 		List<User> users = userDao.listAllUser();
