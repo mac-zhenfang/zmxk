@@ -5,7 +5,7 @@
 <mapper namespace="SECURITY_CODE">
 	<select id="getByMobileNumber" resultType="com.smartool.common.dto.SecurityCode">
 		select * from
-		securityCodes where mobileNumber = #{mobileNumber} and lastModifiedTime > now() - 600000
+		securityCodes where mobileNumber = #{mobileNumber}
 	</select>
 	<select id="create" parameterType="com.smartool.common.dto.SecurityCode">
 		insert securityCodes

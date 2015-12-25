@@ -20,7 +20,7 @@ public class LikesAudit {
 	
 	public void audit(){
 		Set<String> usersInTemp = userDao.getTempLikeUsers();
-		logger.info(" need to audit " + usersInTemp.size() );
+		logger.debug(" need to audit " + usersInTemp.size() );
 		for(String key : usersInTemp) {
 			List<String> pair = splitter.splitToList(key);
 			int tempLikeNum = userDao.getTempLikeNum(key);

@@ -1,7 +1,7 @@
 package com.smartool.service;
 
 import java.io.File;
-import java.util.UUID;
+import java.util.Date;
 
 import org.apache.catalina.startup.Tomcat;
 
@@ -20,8 +20,8 @@ public class Main {
 	     */
 	    public static void main(String[] args) throws Exception {
 	    	Main main = new Main();
-
+//
 	        main.startTomcat();
-	    	System.out.println(UUID.fromString("0f3d6550-8048-40a9-bf2c-1b730db0ca3c").hashCode());
+	    	System.out.println(new Date(1445990400000L));
 	    }
 }

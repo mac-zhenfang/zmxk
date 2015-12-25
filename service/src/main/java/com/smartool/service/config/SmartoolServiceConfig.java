@@ -517,4 +517,10 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		String num = env.getProperty("event_complete_handle_executor_num", "10");
 		return Integer.parseInt(num);
 	}
+	
+	
+	public boolean isSmsSendSecurityCodeEnabled() {
+		String isEnabled = env.getProperty("enable_sms_send_security_code", "1");
+		return Integer.parseInt(isEnabled) == 1;
+	}
 }

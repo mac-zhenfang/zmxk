@@ -401,7 +401,11 @@ public class UserServiceImpl implements UserService {
 		}
 		isMobileExisted = (userDao.getUserByMobileNumber(mobileNumber) != null);
 		String securityCodeString = createCodeInternal(securityCode);
-		//securityCode.setSecurityCode(securityCodeString);
+		if(!config.isSmsSendSecurityCodeEnabled()) {
+			securityCode.setSecurityCode(securityCodeString);
+		} else {
+			securityCode.setSecurityCode("");
+		}
 		securityCode.setMobileExisted(isMobileExisted);
 		return securityCode;
 	}

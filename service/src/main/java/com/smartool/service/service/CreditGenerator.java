@@ -58,7 +58,7 @@ public class CreditGenerator {
 		logger.debug("CreditGenerator generating credit ...");
 		List<Event> events = eventDao.listAllEvent(2);
 		if (events != null) {
-			logger.info("CreditGenerator generating credit for " + events.size() + " events");
+			logger.debug("CreditGenerator generating credit for " + events.size() + " events");
 		} else {
 			return;
 		}
