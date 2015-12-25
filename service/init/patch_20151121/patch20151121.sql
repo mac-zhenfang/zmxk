@@ -1,10 +1,10 @@
 ALTER TABLE users ADD likes int(1) DEFAULT 0;
-ALTER TABLE users DELETE likes;
+ALTER TABLE users  DROP COLUMN  likes;
 
 ALTER TABLE kids ADD likes int(1) DEFAULT 0;
 
 ALTER TABLE teams ADD members text;
-ALTER TABLE kids DELETE teamId;
+ALTER TABLE kids DROP COLUMN teamId;
 ALTER TABLE teams ADD ownerId varchar(36);
 ALTER TABLE users ADD maxTeamMemberSize int(1) default 12;
 ALTER TABLE teams ADD minSize int(1) DEFAULT 5;

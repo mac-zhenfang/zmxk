@@ -151,7 +151,7 @@
 	</delete>
 	<delete id="removeFromHis" parameterType="long">
 		delete from
-		attendees_hist a where UNIX_TIMESTAMP(now()) -
-		UNIX_TIMESTAMP(a.lastModifiedTime) > #{interval}
+		attendees_hist where UNIX_TIMESTAMP(now()) -
+		UNIX_TIMESTAMP(lastModifiedTime) > #{interval}
 	</delete>
 </mapper>

@@ -16,16 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
-import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -83,37 +78,11 @@ public class EventServiceImpl implements EventService {
 
 	@Autowired
 	private RoundDao roundDao;
+	
 
 	private final static String EVENT_COMPLETE_TIMER_KEY = "EventCompleteExecutor";
 
-	public void iocInit() throws SchedulerException {
-
-		if (scheduler.getTrigger(TriggerKey.triggerKey("EventStartNotificationJobTimer")) == null) {
-			JobDetail jobDetail = JobBuilder.newJob(EventStartNotificationJob.class)
-					.withIdentity(JobKey.jobKey("EventStartNotificationJobTimer")).build();
-			Trigger trigger = TriggerBuilder.newTrigger()
-					.withIdentity(TriggerKey.triggerKey("EventStartNotificationJobTimer"))
-					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
-			scheduler.scheduleJob(jobDetail, trigger);
-		}
-
-		if (scheduler.getTrigger(TriggerKey.triggerKey("EventBackupJobTimer")) == null) {
-			JobDetail jobDetail = JobBuilder.newJob(EventBackupJob.class)
-					.withIdentity(JobKey.jobKey("EventBackupJobTimer")).build();
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey("EventBackupJobTimer"))
-					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
-			scheduler.scheduleJob(jobDetail, trigger);
-		}
-
-		if (scheduler.getTrigger(TriggerKey.triggerKey(EVENT_COMPLETE_TIMER_KEY)) == null) {
-			JobDetail jobDetail = JobBuilder.newJob(EventBackupJob.class)
-					.withIdentity(JobKey.jobKey(EVENT_COMPLETE_TIMER_KEY)).build();
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.triggerKey(EVENT_COMPLETE_TIMER_KEY))
-					.withSchedule(CronScheduleBuilder.cronSchedule("0/20 * * * * ?")).build();
-			scheduler.scheduleJob(jobDetail, trigger);
-		}
-
-	}
+	
 
 	@Override
 	public Attendee complete(Attendee attendee, String eventId) {

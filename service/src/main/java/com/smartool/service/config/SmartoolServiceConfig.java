@@ -81,6 +81,7 @@ import com.smartool.service.service.EventStartNotification;
 import com.smartool.service.service.FileService;
 import com.smartool.service.service.FileServiceAliyunImpl;
 import com.smartool.service.service.LikesAudit;
+import com.smartool.service.service.SchedulerService;
 import com.smartool.service.service.UserService;
 import com.smartool.service.service.UserServiceImpl;
 import com.smartool.service.sms.SmsClient;
@@ -165,21 +166,25 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		return new FileServiceAliyunImpl();
 	}
 
-	@Bean(initMethod = "iocInit")
+	@Bean
 	public UserService getUserService() {
 		return new UserServiceImpl();
 	}
 
-	@Bean(initMethod = "iocInit")
+	@Bean
 	public CreditService getCreditService() {
 		return new CreditServiceImpl();
 	}
 	
-	@Bean(initMethod = "iocInit")
+	@Bean
 	public EventService getEventService() {
 		return new EventServiceImpl();
 	}
-
+	
+	@Bean(initMethod = "iocInit")
+	public SchedulerService getSchedulerService() {
+		return new SchedulerService();
+	}
 	@Bean
 	public UserDao getUserDao() {
 		return new UserDaoImpl();
@@ -353,7 +358,7 @@ public class SmartoolServiceConfig extends WebMvcConfigurationSupport {
 		schedulerContextAsMap.put("CreditGenerator", getCreditGenerator());
 		schedulerContextAsMap.put("EventBackup", getEventBackup());
 		schedulerContextAsMap.put("LikesAudit",getLikesAudit());
-		schedulerContextAsMap.put("BatchAttendeeComplete", getBatchAttendeeComplete());
+		//schedulerContextAsMap.put("BatchAttendeeComplete", getBatchAttendeeComplete());
 		// schedulerContextAsMap.put("EventStartNotification",
 		// eventStartNotification());
 		schedulerFactoryBean.setSchedulerContextAsMap(schedulerContextAsMap);

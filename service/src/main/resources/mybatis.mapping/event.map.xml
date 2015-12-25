@@ -785,9 +785,8 @@
 	</select>
 	<delete id="removeFromHis" parameterType="long">
 		delete from
-		events_hist
-		a where UNIX_TIMESTAMP(now()) -
-		UNIX_TIMESTAMP(a.lastModifiedTime) >
+		events_hist where UNIX_TIMESTAMP(now()) -
+		UNIX_TIMESTAMP(lastModifiedTime) >
 		#{interval}
 	</delete>
 </mapper>
