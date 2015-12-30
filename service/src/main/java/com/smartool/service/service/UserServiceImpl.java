@@ -89,13 +89,13 @@ public class UserServiceImpl implements UserService {
 	
 	private User internalSecurityCodeLogin(LoginUser user) {
 		if (CommonUtils.isEmptyString(user.getCode())) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_SECURITY_CODE_ERROR_MESSAGE);
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.EMPTY_SECURITY_CODE_ERROR_MESSAGE);
 		} else {
 			SecurityCode securityCode = new SecurityCode();
 			securityCode.setMobileNumber(user.getMobileNum());
 			securityCode.setSecurityCode(user.getCode());
 			if (!isValidSecurityCode(securityCode)) {
-				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+				throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_SECURITY_CODE_ERROR_MESSAGE);
 			}
 			LoginUser existUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
 			return userDao.getUserById(existUser.getId());
@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService {
 	public User register(SecurityCode securityCode, LoginUser user) {
 		validateMobileNumberForRegister(securityCode.getMobileNumber());
 		if (!isValidSecurityCode(securityCode)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_SECURITY_CODE_ERROR_MESSAGE);
 		}
 		
 		if(Strings.isNullOrEmpty(user.getPassword()) && !config.needPassword()) {
@@ -362,7 +362,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User setPassword(SecurityCode securityCode, LoginUser user) {
 		if (!isValidSecurityCode(securityCode)) {
-			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_ERROR_CODE_ERROR_MESSAGE);
+			throw new SmartoolException(HttpStatus.BAD_REQUEST.value(), ErrorMessages.WRONG_SECURITY_CODE_ERROR_MESSAGE);
 		}
 		LoginUser existedUser = userDao.getLoginUserByMobileNumber(user.getMobileNum());
 		existedUser.setPassword(CommonUtils.encryptBySha2(user.getPassword()));

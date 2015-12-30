@@ -1,10 +1,10 @@
 package com.smartool.service;
 
 public class ErrorMessages {
-	public static final String WRONG_ERROR_CODE_ERROR_MESSAGE = "10000";
+	public static final String WRONG_SECURITY_CODE_ERROR_MESSAGE = "10000";
 	public static final String WRONG_USER_NAME_ERROR_MESSAGE = "10001";
 	public static final String WRONG_PASSWORD_ERROR_MESSAGE = "10002";
-	public static final String WRONG_SECURITY_CODE_ERROR_MESSAGE = "10003";
+	public static final String EMPTY_SECURITY_CODE_ERROR_MESSAGE = "10003";
 
 	public static final String WRONG_MOBILE_NUMBER_ERROR_MESSAGE = "10004";
 	public static final String WRONG_WC_ID_ERROR_MESSAGE = "10005";

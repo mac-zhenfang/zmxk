@@ -1,3 +1,37 @@
+# Error Code
+> 10000: wrong security code
+> 10001: wrong user name
+> 10002: wrong password
+> 10003: empty security code
+> 10004: wrong mobile num
+> 10005: wrong wechat id
+> 10006: wrong/empty location infomation
+> 10007: wrong/empty kid name
+> 10008: wrong/empty school name
+> 10009: Frequent security code request
+> 10010: Exceed max round members limit 
+> 10011: Not select any kid when enroll
+> 10012: Mobile Num as already been regiested
+> 10013: Mobile Num has not been reigested before login
+> 10014: INVALID MOBILE NUMBER OR PASSWORD
+> 10016: Duplicate click likes
+> 10017: not login
+> 10018: Wrong Event Format
+> 10019: Event already complete
+> 10020:  Exceed max team size
+> 10021: Duplicate Join Team
+> 10022: WRONG EVENT STATUS
+> 10023: Unathorized to operate
+> 10024: Not found
+> 10025: Error when enroll
+> 10026: ATTENDEE DO NOT EXIST
+> 10027: RULE DO NOT EXIST
+> 10028: DUPLICATE ENROLL
+> 10029: Miss User Id
+> 10030: EXCEED QUOTA WHEN ENROLL
+> 10031: EXCEED GROUP QUOTA
+> 10101: SERVER ERROR CONTACT ADMIN
+
 # 获得安全Code
 * API: http://localhost:8080/service/smartool/api/v1/users/code
 * Method: POST

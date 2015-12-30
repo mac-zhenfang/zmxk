@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,10 +86,12 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = Constants.USER_LOGIN_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User login(@RequestBody LoginUser user) {
+	public MappingJacksonValue login(@RequestBody LoginUser user, @RequestParam(required = false) String callback) {
 		User existUser = userService.login(user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, existUser);
-		return existUser;
+		MappingJacksonValue value = new MappingJacksonValue(existUser);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	/**
@@ -100,27 +103,30 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping(value = Constants.USER_REGISTER_PATH, method = RequestMethod.POST, consumes = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public User register(@RequestParam(value = "code", required = false) String code, @RequestBody LoginUser user) {
+	public MappingJacksonValue register(@RequestParam(value = "code", required = false) String code, @RequestParam(required = false) String callback, @RequestBody LoginUser user) {
 		SecurityCode securityCode = new SecurityCode();
 		securityCode.setSecurityCode(code);
 		securityCode.setMobileNumber(user.getMobileNum());
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
 		User createdUser = userService.register(securityCode, user);
 		authenticationInterceptor.addCookieIntoResponse(httpServletResponse, createdUser);
-		return createdUser;
+		MappingJacksonValue value = new MappingJacksonValue(createdUser);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	/**
 	 * Get code
 	 */
-	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.POST, consumes = {
-			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public SecurityCode getSecurityCode(@RequestBody LoginUser user) {
+	@RequestMapping(value = Constants.GET_SECURITY_CODE_PATH, method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public MappingJacksonValue getSecurityCode(@RequestParam String mobileNum, @RequestParam(required = false) String callback) {
 		SecurityCode securityCode = new SecurityCode();
-		securityCode.setMobileNumber(user.getMobileNum());
+		securityCode.setMobileNumber(mobileNum);
 		securityCode.setRemoteAddr(httpServletRequest.getRemoteAddr());
 		userService.getSecurityCode4Login(securityCode);
-		return securityCode;
+		MappingJacksonValue value = new MappingJacksonValue(securityCode);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	/**
@@ -158,30 +164,37 @@ public class UserController extends BaseController {
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.GET)
-	public User getUser(@PathVariable(Constants.USER_ID_KEY) String userId) {
-		return userService.getUserById(userId);
+	public MappingJacksonValue getUser(@PathVariable(Constants.USER_ID_KEY) String userId, @RequestParam(required = false) String callback) {
+		User user =  userService.getUserById(userId);
+		MappingJacksonValue value = new MappingJacksonValue(user);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/grades", method = RequestMethod.GET)
-	public List<Grade> getMyGrades() {
+	public MappingJacksonValue getMyGrades(@RequestParam(required = false) String callback) {
 		User user = UserSessionManager.getSessionUser();
 		List<Grade> grades = userService.getGrades(user.getId(), null);
-		return grades;
+		MappingJacksonValue value = new MappingJacksonValue(grades);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}/grades", method = RequestMethod.GET)
-	public List<Grade> getUserGrades(@PathVariable String userId, @PathVariable String kidId) {
+	public MappingJacksonValue getUserGrades(@PathVariable String userId, @PathVariable String kidId, @RequestParam(required = false) String callback) {
 		List<Grade> grades = userService.getGrades(userId, kidId);
-		return grades;
+		MappingJacksonValue value = new MappingJacksonValue(grades);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}/kids/{kidId}/tracks", method = RequestMethod.GET)
-	public List<Track> getUserTracks(@PathVariable String userId, @PathVariable String kidId,
+	public MappingJacksonValue getUserTracks(@PathVariable String userId, @PathVariable String kidId,
 			@RequestParam(value = "limit", required = false) Integer limit,
-			@RequestParam(value = "start", required = false) Integer start) {
+			@RequestParam(value = "start", required = false) Integer start, @RequestParam(required = false) String callback) {
 		if (start == null) {
 			start = 0;
 		}
@@ -189,13 +202,15 @@ public class UserController extends BaseController {
 			limit = Integer.MAX_VALUE;
 		}
 		List<Track> tracks = userService.getTracks(userId, kidId, start, limit);
-		return tracks;
+		MappingJacksonValue value = new MappingJacksonValue(tracks);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/covers", method = RequestMethod.GET)
-	public List<Cover> getUserCovers(@RequestParam(value = "start", required = false) Integer start,
-			@RequestParam(value = "limit", required = false) Integer limit) {
+	public MappingJacksonValue getUserCovers(@RequestParam(value = "start", required = false) Integer start,
+			@RequestParam(value = "limit", required = false) Integer limit, @RequestParam(required = false) String callback) {
 		User user = UserSessionManager.getSessionUser();
 		if (start == null) {
 			start = 0;
@@ -204,7 +219,10 @@ public class UserController extends BaseController {
 			limit = Integer.MAX_VALUE;
 		}
 		String userId = user.getId();
-		return userService.getUserCovers(userId, start, limit);
+		List<Cover> covers = userService.getUserCovers(userId, start, limit);
+		MappingJacksonValue value = new MappingJacksonValue(covers);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
@@ -239,27 +257,36 @@ public class UserController extends BaseController {
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me", method = RequestMethod.GET)
-	public User getMe() {
+	public MappingJacksonValue getMe(@RequestParam(required = false) String callback) {
 		User sessionUser = UserSessionManager.getSessionUser();
-		return userService.getUserById(sessionUser.getId());
+		User retUser = userService.getUserById(sessionUser.getId());
+		MappingJacksonValue value = new MappingJacksonValue(retUser);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.PUT)
-	public User updateUser(@RequestBody User user) {
+	public MappingJacksonValue updateUser(@RequestBody User user, @RequestParam(required = false) String callback) {
 		User me = UserSessionManager.getSessionUser();
 		if (!me.getId().equals(user.getId())) {
 			throw new SmartoolException(HttpStatus.UNAUTHORIZED.value(), ErrorMessages.NOT_AUTHORIZED_TO_UPDATE_USER);
 		}
-		return userService.update(user);
+		User updateUser = userService.update(user);
+		MappingJacksonValue value = new MappingJacksonValue(updateUser);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me", method = RequestMethod.PUT)
-	public User updateMe(@RequestBody User user) {
+	public MappingJacksonValue updateMe(@RequestBody User user, @RequestParam(required = false) String callback) {
 		User sessionUser = UserSessionManager.getSessionUser();
 		user.setId(sessionUser.getId());
-		return userService.update(user);
+		User updateUser = userService.update(user);
+		MappingJacksonValue value = new MappingJacksonValue(updateUser);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 
 	@ApiScope(userScope = UserRole.ADMIN)
@@ -299,9 +326,11 @@ public class UserController extends BaseController {
 	 */
 	@ApiScope(userScope = UserRole.NORMAL_USER)
 	@RequestMapping(value = "/users/me/ranks", method = RequestMethod.GET)
-	public List<BaseGrade> getRanks() {
+	public MappingJacksonValue getRanks(@RequestParam(required = false) String callback) {
 		User sessionUser = UserSessionManager.getSessionUser();
 		List<BaseGrade> baseGrades = userService.getRanks(sessionUser);
-		return baseGrades;
+		MappingJacksonValue value = new MappingJacksonValue(baseGrades);
+		value.setJsonpFunction(callback);
+		return value;
 	}
 }
